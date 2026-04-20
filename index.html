@@ -307,7 +307,7 @@ input:checked+.tsl:before{transform:translateX(22px);}
 // ============================================================
 // CONFIG & DATA
 // ============================================================
-var SURL='https://script.google.com/macros/s/AKfycbzDPkJF7VI53PYTE4T1PmAAlU4jFtzTN1zjRi8V9Wz1-SsQySly6NNfpO1-gmMc4SbOdA/exec';
+var SURL='https://script.google.com/macros/s/AKfycbykKosVKNw-xac491m4MaaZViGRdl42e5hfeDvOhefNf5PhBAyozrADAwPATcLxqdiS/exec';
 var LANG='mr';
 var curRole=null,curUser=null,curTc=null,curMod=null,curTab=null;
 var PW={super:'samata@2025',mukh:'katemadhav@2025'};
@@ -519,7 +519,7 @@ function doLogin(){
   }
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  setupHeader();showHome();loadAll();
+  setupHeader();showHome();loadAll();loadShikshak();
 }
 
 function loginErr(msg){
@@ -1624,6 +1624,30 @@ function loadAll(){
       if(sR.length>1){parseStudents(sR);afterStudents();}
       else{sheetGet('vidyarthi',function(sR2){parseStudents(sR2);afterStudents();});}
     });
+  });
+}
+
+function loadShikshak(){
+  sheetGet('Shikshak',function(rows){
+    if(rows.length<2)return;
+    // cols: ID | Name | PW | ClassOf | Subjects | Classes
+    var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){
+      var subjs=String(r[4]||'').split('|').filter(Boolean);
+      var cls=String(r[5]||'').split('|').filter(Boolean);
+      return{
+        id:parseInt(r[0])||0,
+        name:String(r[1]||''),
+        pw:String(r[2]||''),
+        classOf:String(r[3]||''),
+        subjects:subjs,
+        classes:cls,
+        isMukh:String(r[1]||'').indexOf('मु.')>=0
+      };
+    });
+    if(loaded.length>0){
+      TEACHERS=loaded;
+      toast('शिक्षक यादी अपडेट झाली ✅');
+    }
   });
 }
 
