@@ -519,7 +519,7 @@ function doLogin(){
   }
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  setupHeader();showHome();loadAll();loadShikshak();
+  setupHeader();showHome();loadShikshakFirst();
 }
 
 function loginErr(msg){
@@ -1627,27 +1627,28 @@ function loadAll(){
   });
 }
 
+function parseShikshakRows(rows){
+  if(rows.length<2)return;
+  var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){
+    var subjs=String(r[4]||'').split('|').filter(Boolean);
+    var cls=String(r[5]||'').split('|').filter(Boolean);
+    var classOf=String(r[3]||'');
+    return{id:parseInt(r[0])||0,name:String(r[1]||''),pw:String(r[2]||''),classOf:classOf,subjects:subjs,classes:cls,isMukh:(classOf===''&&cls.length===0)};
+  });
+  if(loaded.length>0)TEACHERS=loaded;
+}
+
+function loadShikshakFirst(){
+  sheetGet('Shikshak',function(rows){
+    parseShikshakRows(rows);
+    loadAll();
+  });
+}
+
 function loadShikshak(){
   sheetGet('Shikshak',function(rows){
-    if(rows.length<2)return;
-    // cols: ID | Name | PW | ClassOf | Subjects | Classes
-    var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){
-      var subjs=String(r[4]||'').split('|').filter(Boolean);
-      var cls=String(r[5]||'').split('|').filter(Boolean);
-      return{
-        id:parseInt(r[0])||0,
-        name:String(r[1]||''),
-        pw:String(r[2]||''),
-        classOf:String(r[3]||''),
-        subjects:subjs,
-        classes:cls,
-        isMukh:String(r[1]||'').indexOf('मु.')>=0
-      };
-    });
-    if(loaded.length>0){
-      TEACHERS=loaded;
-      toast('शिक्षक यादी अपडेट झाली ✅');
-    }
+    parseShikshakRows(rows);
+    if(curTab)showTab(curTab);
   });
 }
 
