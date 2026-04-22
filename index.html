@@ -307,7 +307,7 @@ input:checked+.tsl:before{transform:translateX(22px);}
 // ============================================================
 // CONFIG & DATA
 // ============================================================
-var SURL='https://script.google.com/macros/s/AKfycbzDPkJF7VI53PYTE4T1PmAAlU4jFtzTN1zjRi8V9Wz1-SsQySly6NNfpO1-gmMc4SbOdA/exec';
+var SURL='https://script.google.com/macros/s/AKfycbykKosVKNw-xac491m4MaaZViGRdl42e5hfeDvOhefNf5PhBAyozrADAwPATcLxqdiS/exec';
 var LANG='mr';
 var curRole=null,curUser=null,curTc=null,curMod=null,curTab=null;
 var PW={super:'samata@2025',mukh:'katemadhav@2025'};
@@ -326,16 +326,17 @@ var CLASSES=[
 ];
 
 var TEACHERS=[
-  {id:1,name:'\u0936\u094D\u0930\u0940. \u0930\u0923\u0938\u093F\u0902\u0917 \u0921\u0940. \u092A\u0940.',pw:'ranasing@2025',classOf:'10',subjects:['\u0917\u0923\u093F\u0924'],classes:['10','9']},
-  {id:2,name:'\u0936\u094D\u0930\u0940. \u0926\u0939\u093F\u092B\u0933\u0947 \u092A\u0940. \u090F\u092E\u094D.',pw:'dahifale@2025',classOf:'9',subjects:['\u0935\u093F\u091C\u094D\u091E\u093E\u0928'],classes:['9','8']},
-  {id:3,name:'\u0936\u094D\u0930\u0940. \u0906\u0930\u0947 \u090F\u092E\u094D. \u092A\u0940.',pw:'aare@2025',classOf:'8',subjects:['\u0907\u0902\u0917\u094D\u0930\u091C\u0940'],classes:['8','7a','7b']},
-  {id:4,name:'\u0936\u094D\u0930\u0940. \u0918\u0941\u0917\u0947 \u090F. \u0921\u0940.',pw:'ghuge@2025',classOf:'7a',subjects:['\u092E\u0930\u093E\u0920\u0940'],classes:['7a','6a','5a']},
-  {id:5,name:'\u0936\u094D\u0930\u0940. \u0917\u094B\u0930\u094D\u0921\u0947 \u0915\u0947. \u091C\u0940.',pw:'gorde@2025',classOf:'7b',subjects:['\u0907\u0924\u093F\u0939\u093E\u0938','\u0928\u093E\u0917\u0930\u093F\u0915\u0936\u093E\u0938\u094D\u0924\u094D\u0930'],classes:['7b','6b','5b']},
-  {id:6,name:'\u092C\u0930\u0915\u0932\u0947 \u090F\u0938\u094D. \u0921\u0940.',pw:'barkale@2025',classOf:'6a',subjects:['\u0907\u0902\u0917\u094D\u0930\u091C\u0940'],classes:['6a','5a']},
-  {id:7,name:'\u0936\u094D\u0930\u0940. \u092C\u094B\u0921\u0916\u0947 \u0921\u0940. \u0906\u0930\u094D.',pw:'bodkhe@2025',classOf:'6b',subjects:['\u0939\u093F\u0902\u0926\u0940'],classes:['6b','5b']},
-  {id:8,name:'\u0936\u094D\u0930\u0940. \u0915\u0926\u092E \u090F\u0928\u094D. \u0906\u0930\u094D.',pw:'kadam@2025',classOf:'5a',subjects:['\u092E\u0930\u093E\u0920\u0940','\u0939\u093F\u0902\u0926\u0940'],classes:['5a','6a']},
-  {id:9,name:'\u0936\u094D\u0930\u0940\u092E\u094D. \u092D\u093E\u0917\u0935\u0924 \u0935\u094D\u0939\u0940. \u0915\u0947.',pw:'bhagwat@2025',classOf:'5b',subjects:['\u0915\u0932\u093E','\u0915\u093E\u0930\u094D\u092F\u093E\u0928\u0941\u092D\u0935'],classes:['5b','6b']},
-  {id:10,name:'\u0936\u094D\u0930\u0940. \u092E\u093E\u0927\u0935 \u0915\u093E\u091F\u0947 (\u092E\u0941.)',pw:'katemadhav@2025',classOf:'',subjects:[],classes:[],isMukh:true},
+  {id:1,name:'श्री. रणसिंग डी. पी.',pw:'ranasing@2025',classOf:'10',subjects:['गणित','विज्ञान2'],classes:['10','9','8'],isMukh:false},
+  {id:2,name:'श्री. दहिफळे पी. एम्.',pw:'dahifale@2025',classOf:'9',subjects:['इंग्रजी','समाज अभ्यास'],classes:['10','9','8','7a','7b'],isMukh:false},
+  {id:3,name:'श्री. आरे एम्. पी.',pw:'aare@2025',classOf:'8',subjects:['कला','विज्ञान1'],classes:['10','9','8','7a','7b','6a','6b','5a','5b'],isMukh:false},
+  {id:4,name:'श्री. घुगे ए. डी.',pw:'ghuge@2025',classOf:'7a',subjects:['इंग्रजी','परिसर अभ्यास'],classes:['7a','7b','6a','6b','5a'],isMukh:false},
+  {id:5,name:'श्री. गोर्डे के. जी.',pw:'gorde@2025',classOf:'7b',subjects:['मराठी','इतिहास','सामाजिक शास्त्रे'],classes:['10','9','8','7a','7b','6a'],isMukh:false},
+  {id:6,name:'बरकले एस्. डी.',pw:'barkale@2025',classOf:'6a',subjects:['गणित','विज्ञान'],classes:['6a','5a','5b'],isMukh:false},
+  {id:7,name:'श्री. बोडखे डी. आर्.',pw:'bodkhe@2025',classOf:'6b',subjects:['हिंदी','समाज अभ्यास'],classes:['6b','5b'],isMukh:false},
+  {id:8,name:'श्री. कदम एन्. आर्.',pw:'kadam@2025',classOf:'5a',subjects:['इंग्रजी','हिंदी'],classes:['5a','6a'],isMukh:false},
+  {id:9,name:'श्रीम्. भागवत व्ही. के.',pw:'bhagwat@2025',classOf:'5b',subjects:['मराठी','हिंदी'],classes:['5b','6b'],isMukh:false},
+  {id:10,name:'श्री. माधव काटे (मु.)',pw:'katemadhav@2025',classOf:'',subjects:[],classes:[],isMukh:true},
+  {id:11,name:'श्री. नजन के. व्ही.',pw:'najan@2025',classOf:'',subjects:['क्रीडा','भूगोल','समाज अभ्यास'],classes:['10','9','8','7a','7b','6a','6b','5a','5b'],isMukh:false},
 ];
 
 var SUBJS={
