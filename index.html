@@ -307,7 +307,7 @@ input:checked+.tsl:before{transform:translateX(22px);}
 // ============================================================
 // CONFIG & DATA
 // ============================================================
-var SURL='https://script.google.com/macros/s/AKfycbzDPkJF7VI53PYTE4T1PmAAlU4jFtzTN1zjRi8V9Wz1-SsQySly6NNfpO1-gmMc4SbOdA/exec';
+var SURL='https://script.google.com/macros/s/AKfycbykKosVKNw-xac491m4MaaZViGRdl42e5hfeDvOhefNf5PhBAyozrADAwPATcLxqdiS/exec';
 var LANG='mr';
 var curRole=null,curUser=null,curTc=null,curMod=null,curTab=null;
 var PW={super:'samata@2025',mukh:'katemadhav@2025'};
@@ -1568,19 +1568,20 @@ function syncSettings(){
 function parseClass(raw){
   if(!raw)return'';
   var s=String(raw).trim();
-  if(s.match(/^10/))return'10';
-  if(s.match(/^9/))return'9';
-  if(s.match(/^8/))return'8';
-  if(s.match(/7.*\u0905/))return'7a';
-  if(s.match(/7.*\u092C/))return'7b';
+  var sl=s.toLowerCase();
+  if(sl==='10'||s.match(/^10/))return'10';
+  if(sl==='9'||s.match(/^9/))return'9';
+  if(sl==='8'||s.match(/^8/))return'8';
+  if(sl==='7a'||s.match(/7.*[Aaअ]/))return'7a';
+  if(sl==='7b'||s.match(/7.*[Bbब]/))return'7b';
   if(s.match(/^7/))return'7b';
-  if(s.match(/6.*\u0905/))return'6a';
-  if(s.match(/6.*\u092C/))return'6b';
+  if(sl==='6a'||s.match(/6.*[Aaअ]/))return'6a';
+  if(sl==='6b'||s.match(/6.*[Bbब]/))return'6b';
   if(s.match(/^6/))return'6b';
-  if(s.match(/5.*\u0905/))return'5a';
-  if(s.match(/5.*\u092C/))return'5b';
+  if(sl==='5a'||s.match(/5.*[Aaअ]/))return'5a';
+  if(sl==='5b'||s.match(/5.*[Bbब]/))return'5b';
   if(s.match(/^5/))return'5b';
-  return s;
+  return sl;
 }
 
 function loadAll(){
@@ -1632,7 +1633,7 @@ function parseShikshakRows(rows){
   if(rows.length<2)return;
   var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){
     var subjs=String(r[4]||'').split('|').filter(Boolean);
-    var cls=String(r[5]||'').split('|').filter(Boolean);
+    var cls=String(r[5]||'').split('|').filter(Boolean).map(function(c){return c.trim().toLowerCase();});
     var classOf=String(r[3]||'');
     return{id:parseInt(r[0])||0,name:String(r[1]||''),pw:String(r[2]||''),classOf:classOf,subjects:subjs,classes:cls,isMukh:(classOf===''&&cls.length===0)};
   });
