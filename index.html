@@ -1144,8 +1144,8 @@ function secRM(){
   return '<div class="card"><div class="ct">\u270F\uFE0F \u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940</div>'+
     '<div class="alert ai"><div>\u2139\uFE0F</div><div>\u0935\u0930\u094D\u0917 \u0935 \u0935\u093F\u0937\u092F \u0928\u093F\u0935\u0921\u093E. 5-8: \u0906.\u092E\u0942. + \u0938\u0902.\u092E\u0942. | 9-10: \u0938\u0924\u094D\u0930 \u0917\u0941\u0923 \u092A\u0926\u094D\u0927\u0924</div></div>'+
     '<div class="fg2">'+
-    '<div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="m-cls""><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div>'+
-    '<div class="fg"><label>\u0935\u093F\u0937\u092F</label><select id="m-subj""><option value="">\u0928\u093F\u0935\u0921\u093E</option></select></div>'+
+    '<div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="m-cls" onchange="onMCls()"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div>'+
+    '<div class="fg"><label>\u0935\u093F\u0937\u092F</label><select id="m-subj" onchange="loadMkTable()"><option value="">\u0928\u093F\u0935\u0921\u093E</option></select></div>'+
     '</div>'+
     '<div id="mk-wrap"></div></div>';
 }
