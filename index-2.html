@@ -1548,7 +1548,7 @@ function parseClass(raw){
             .replace(/वी\s*$/,'').replace(/th$/i,'')
             .replace(/nd$/i,'').replace(/rd$/i,'').replace(/st$/i,'')
             .trim().toLowerCase();
-  if(s==='10')return'10';
+  function parseClass(raw){   if(!raw)return'';   var orig=String(raw).trim();   // "10 वी" → "10", "9 वी" → "9" etc.   var s=orig.replace(/\s*वी\s*$/,'')             .replace(/इयत्ता\s*/g,'')             .replace(/\s+/g,'')             .trim().toLowerCase();   if(s==='10')return'10';   if(s==='9')return'9';   if(s==='8')return'8';   if(s.indexOf('7')===0){     return (orig.indexOf('अ')>=0||s.indexOf('a')>=0)?'7a':'7b';   }   if(s.indexOf('6')===0){     return (orig.indexOf('अ')>=0||s.indexOf('a')>=0)?'6a':'6b';   }   if(s.indexOf('5')===0){     return (orig.indexOf('अ')>=0||s.indexOf('a')>=0)?'5a':'5b';   }   return s; }
   if(s==='9')return'9';
   if(s==='8')return'8';
   if(s.indexOf('7')===0){
