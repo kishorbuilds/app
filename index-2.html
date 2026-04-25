@@ -1543,7 +1543,7 @@ function parseClass(raw){
   if(!raw)return'';
   var orig=String(raw).trim();
   // Strip prefixes/suffixes
-  var s=orig.replace(/इयत्ता\s*/g,'')
+  function parseClass(raw){   if(!raw)return'';   var s=String(raw).trim()     .replace(/इयत्ता\s*/g,'')     .replace(/\s*वी\s*$/,'')     .replace(/\s*vi\s*$/i,'')     .replace(/\s+/g,'')     .toLowerCase();   if(s==='10')return'10';   if(s==='9')return'9';   if(s==='8')return'8';   if(s[0]==='7')return(raw.indexOf('अ')>=0||s.indexOf('a')>=0)?'7a':'7b';   if(s[0]==='6')return(raw.indexOf('अ')>=0||s.indexOf('a')>=0)?'6a':'6b';   if(s[0]==='5')return(raw.indexOf('अ')>=0||s.indexOf('a')>=0)?'5a':'5b';   return s; }(/इयत्ता\s*/g,'')
             .replace(/std\.?\s*/gi,'').replace(/class\s*/gi,'')
             .replace(/वी\s*$/,'').replace(/th$/i,'')
             .replace(/nd$/i,'').replace(/rd$/i,'').replace(/st$/i,'')
