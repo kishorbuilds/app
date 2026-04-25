@@ -5,13 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>EMVE School App</title>
 <style>
-:root{
-  --s:#C8500A;--s2:#E87030;--d:#1A1C2E;--d2:#262840;
-  --g:#1A6E3C;--g2:#23A058;--r:#B02020;--b:#1A4A98;
-  --gold:#B8860A;--pur:#5A2898;--bg:#F3EDE4;--card:#FFF;
-  --bdr:#DDD5C5;--mt:#786858;
-  --sh:0 2px 16px rgba(0,0,0,.07);--shl:0 8px 36px rgba(0,0,0,.13);
-}
+:root{--s:#C8500A;--s2:#E87030;--d:#1A1C2E;--d2:#262840;--g:#1A6E3C;--g2:#23A058;--r:#B02020;--b:#1A4A98;--gold:#B8860A;--pur:#5A2898;--bg:#F3EDE4;--card:#FFF;--bdr:#DDD5C5;--mt:#786858;--sh:0 2px 16px rgba(0,0,0,.07);--shl:0 8px 36px rgba(0,0,0,.13);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Kohinoor Devanagari','Noto Sans Devanagari',Arial,sans-serif;background:var(--bg);color:var(--d);min-height:100vh;font-size:14px;}
 #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--d) 0%,var(--d2) 50%,#30186A 100%);padding:14px;}
@@ -22,7 +16,6 @@ body{font-family:'Kohinoor Devanagari','Noto Sans Devanagari',Arial,sans-serif;b
 .llib{font-size:.78rem;font-weight:700;color:var(--s);background:#FFF3E8;padding:4px 10px;border-radius:7px;border-left:3px solid var(--s);display:inline-block;margin-top:6px;}
 .lf label{display:block;font-size:.69rem;font-weight:700;color:var(--mt);margin-bottom:3px;text-transform:uppercase;margin-top:10px;}
 .lf select,.lf input{width:100%;padding:9px 11px;border:1.5px solid var(--bdr);border-radius:8px;font-family:inherit;font-size:.88rem;background:#fff;}
-.lf select:focus,.lf input:focus{outline:none;border-color:var(--s);}
 .lbtn{width:100%;padding:11px;background:linear-gradient(135deg,var(--s),var(--s2));color:#fff;border:none;border-radius:9px;font-family:inherit;font-size:.94rem;font-weight:700;cursor:pointer;margin-top:13px;}
 .ltog{display:flex;gap:7px;justify-content:flex-end;margin-bottom:12px;}
 .ltbtn{padding:4px 11px;border:1.5px solid var(--bdr);border-radius:20px;background:#fff;font-family:inherit;font-size:.74rem;cursor:pointer;color:var(--mt);}
@@ -65,26 +58,16 @@ main{max-width:1400px;margin:0 auto;padding:13px 11px;}
 .bbtn{margin-bottom:11px;padding:6px 12px;background:var(--bg);border:1.5px solid var(--bdr);border-radius:7px;cursor:pointer;font-family:inherit;font-size:.78rem;font-weight:600;display:inline-flex;align-items:center;gap:4px;}
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:13px;}
 .sc{background:#fff;border-radius:10px;padding:11px 9px;box-shadow:var(--sh);text-align:center;border-top:4px solid var(--s);}
-.sc.g{border-top-color:var(--g);}
-.sc.r{border-top-color:var(--r);}
-.sc.b{border-top-color:var(--b);}
-.sc.p{border-top-color:var(--pur);}
-.sc.gold{border-top-color:var(--gold);}
+.sc.g{border-top-color:var(--g);}.sc.r{border-top-color:var(--r);}.sc.b{border-top-color:var(--b);}.sc.p{border-top-color:var(--pur);}.sc.gold{border-top-color:var(--gold);}
 .sn{font-size:1.5rem;font-weight:700;color:var(--d);}
 .sl{font-size:.64rem;color:var(--mt);margin-top:2px;}
 .fg2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:9px;}
 .fg label{display:block;font-size:.68rem;font-weight:700;color:var(--mt);margin-bottom:3px;text-transform:uppercase;}
 .fg input,.fg select,.fg textarea{width:100%;padding:7px 10px;border:1.5px solid var(--bdr);border-radius:7px;font-family:inherit;font-size:.82rem;background:#fff;}
-.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--s);}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--s);}
 .btn{padding:7px 13px;border:none;border-radius:7px;font-family:inherit;font-size:.79rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:opacity .15s;}
 .btn:hover{opacity:.88;}
-.bp{background:var(--s);color:#fff;}
-.bs{background:var(--g);color:#fff;}
-.bd{background:var(--r);color:#fff;}
-.bb{background:var(--b);color:#fff;}
-.bo{background:#fff;color:var(--s);border:1.5px solid var(--s);}
-.bsm{padding:4px 9px;font-size:.7rem;}
-.bgold{background:var(--gold);color:#fff;}
+.bp{background:var(--s);color:#fff;}.bs{background:var(--g);color:#fff;}.bd{background:var(--r);color:#fff;}.bb{background:var(--b);color:#fff;}.bo{background:#fff;color:var(--s);border:1.5px solid var(--s);}.bsm{padding:4px 9px;font-size:.7rem;}.bgold{background:var(--gold);color:#fff;}
 .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;}
 th{background:var(--bg);padding:7px 8px;text-align:left;font-size:.66rem;font-weight:700;color:var(--mt);text-transform:uppercase;white-space:nowrap;}
@@ -92,18 +75,12 @@ td{padding:7px 8px;border-bottom:1px solid var(--bdr);font-size:.78rem;vertical-
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#FDFAF5;}
 .bdg{display:inline-flex;align-items:center;padding:2px 6px;border-radius:18px;font-size:.65rem;font-weight:700;white-space:nowrap;}
-.bgg{background:#E6F5EC;color:var(--g);}
-.bgr{background:#FDECEA;color:var(--r);}
-.bgy{background:#FEF3E2;color:var(--gold);}
-.bgb{background:#EBF4FF;color:var(--b);}
-.bgp{background:#F0EAFA;color:var(--pur);}
+.bgg{background:#E6F5EC;color:var(--g);}.bgr{background:#FDECEA;color:var(--r);}.bgy{background:#FEF3E2;color:var(--gold);}.bgb{background:#EBF4FF;color:var(--b);}.bgp{background:#F0EAFA;color:var(--pur);}
 .sb{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
 .sb input,.sb select{padding:7px 10px;border:1.5px solid var(--bdr);border-radius:7px;font-family:inherit;font-size:.8rem;background:#fff;}
 .sb input{flex:1;min-width:120px;}
 .alert{border-radius:9px;padding:9px 12px;margin-bottom:11px;display:flex;align-items:flex-start;gap:7px;font-size:.78rem;}
-.aw{background:#FFF3F0;border:1.5px solid #FFCAB8;}
-.ai{background:#EBF4FF;border:1.5px solid #BDD9FF;}
-.ag{background:#E6F5EC;border:1.5px solid #A8DDB9;}
+.aw{background:#FFF3F0;border:1.5px solid #FFCAB8;}.ai{background:#EBF4FF;border:1.5px solid #BDD9FF;}.ag{background:#E6F5EC;border:1.5px solid #A8DDB9;}
 .pbar{background:#E5E7EB;border-radius:20px;height:9px;overflow:hidden;min-width:60px;}
 .pfill{height:100%;border-radius:20px;transition:width 1s ease;}
 .mi{width:52px;padding:3px 4px;border:1.5px solid var(--bdr);border-radius:5px;font-family:inherit;font-size:.76rem;text-align:center;background:#FFFDE7;}
@@ -121,7 +98,7 @@ input:checked+.tsl:before{transform:translateX(22px);}
 .mbox{background:#fff;border-radius:15px;padding:20px;max-width:460px;width:100%;box-shadow:var(--shl);max-height:90vh;overflow-y:auto;}
 .mbox h3{font-size:.93rem;margin-bottom:10px;color:var(--d);}
 .mfoot{display:flex;gap:7px;justify-content:flex-end;margin-top:11px;}
-#toast{position:fixed;bottom:16px;right:14px;background:var(--d);color:#fff;padding:9px 14px;border-radius:9px;font-size:.78rem;box-shadow:var(--shl);transform:translateY(70px);opacity:0;transition:all .3s;z-index:999;max-width:250px;}
+#toast{position:fixed;bottom:16px;right:14px;background:var(--d);color:#fff;padding:9px 14px;border-radius:9px;font-size:.78rem;box-shadow:var(--shl);transform:translateY(70px);opacity:0;transition:all .3s;z-index:999;max-width:260px;}
 #toast.show{transform:translateY(0);opacity:1;}
 #toast.ok{background:var(--g);}
 #toast.err{background:var(--r);}
@@ -143,9 +120,7 @@ input:checked+.tsl:before{transform:translateX(22px);}
 .pcard-marks th{background:#F0F0F0;font-size:.68rem;}
 .pcard-grade-tbl{width:100%;border-collapse:collapse;margin-top:6px;font-size:.7rem;}
 .pcard-grade-tbl th,.pcard-grade-tbl td{border:1px solid #000;padding:3px 5px;text-align:center;}
-.pcard-rules{font-size:.68rem;line-height:1.5;padding:6px;border-top:1px solid #000;margin-top:6px;}
 .pcard-signs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:8px;border-top:1px solid #000;font-size:.72rem;text-align:center;margin-top:4px;}
-/* Gosawara */
 .gos-tbl{width:100%;border-collapse:collapse;font-size:.72rem;}
 .gos-tbl th,.gos-tbl td{border:1px solid #999;padding:4px 6px;text-align:center;}
 .gos-tbl th{background:var(--d);color:#fff;}
@@ -155,402 +130,209 @@ input:checked+.tsl:before{transform:translateX(22px);}
 </style>
 </head>
 <body>
-
-<!-- LOGIN -->
 <div id="login-screen">
   <div style="width:100%;max-width:400px;padding:13px;">
-    <div class="ltog">
-      <button class="ltbtn on" id="btn-mr">मराठी</button>
-      <button class="ltbtn" id="btn-en">English</button>
-    </div>
     <div class="lbox">
       <div style="text-align:center;margin-bottom:18px;">
-        <div class="lemb">📚</div>
-        <div class="lsub">समता जोगेश्वरी मंडळाचे</div>
-        <div class="lschool">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>
-        <div class="lsub">ता. शेवगाव, जि. अहिल्यानगर</div>
-        <span class="llib">🎓 शिक्षणातून समृद्धी</span>
+        <div class="lemb">&#x1F4DA;</div>
+        <div class="lsub">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
+        <div class="lschool">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;, &#x090F;&#x0930;&#x0902;&#x0921;&#x0917;&#x093E;&#x0935;</div>
+        <div class="lsub">&#x0924;&#x093E;. &#x0936;&#x0947;&#x0935;&#x0917;&#x093E;&#x0935;, &#x091C;&#x093F;. &#x0905;&#x0939;&#x093F;&#x0932;&#x094D;&#x092F;&#x093E;&#x0928;&#x0917;&#x0930;</div>
+        <span class="llib">&#x1F393; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0923;&#x093E;&#x0924;&#x0942;&#x0928; &#x0938;&#x092E;&#x0943;&#x0926;&#x094D;&#x0927;&#x0940;</span>
       </div>
       <div class="lf">
-        <label>भूमिका</label>
+        <label>&#x092D;&#x0942;&#x092E;&#x093F;&#x0915;&#x093E;</label>
         <select id="l-role">
-          <option value="">-- भूमिका निवडा --</option>
-          <option value="super">🔴 संस्थाचालक</option>
-          <option value="mukh">🟢 मुख्याध्यापक</option>
-          <option value="shik">🔵 शिक्षक</option>
+          <option value="">-- &#x0928;&#x093F;&#x0935;&#x0921;&#x093E; --</option>
+          <option value="super">&#x1F534; &#x0938;&#x0902;&#x0938;&#x094D;&#x0925;&#x093E;&#x091A;&#x093E;&#x0932;&#x0915;</option>
+          <option value="mukh">&#x1F7E2; &#x092E;&#x0941;&#x0916;&#x094D;&#x092F;&#x093E;&#x0927;&#x094D;&#x092F;&#x093E;&#x092A;&#x0915;</option>
+          <option value="shik">&#x1F535; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0915;</option>
         </select>
         <div id="tc-sel" style="display:none;">
-          <label>शिक्षक निवडा</label>
-          <select id="l-tc"><option value="">— निवडा —</option></select>
+          <label>&#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0915; &#x0928;&#x093F;&#x0935;&#x0921;&#x093E;</label>
+          <select id="l-tc"><option value="">&#x2014; &#x0928;&#x093F;&#x0935;&#x0921;&#x093E; &#x2014;</option></select>
         </div>
-        <label>पासवर्ड</label>
-        <input type="password" id="l-pw" placeholder="पासवर्ड टाका...">
-        <button class="lbtn" id="login-btn">🔐 प्रवेश करा</button>
+        <label>&#x092A;&#x093E;&#x0938;&#x0935;&#x0930;&#x094D;&#x0921;</label>
+        <input type="password" id="l-pw" placeholder="&#x092A;&#x093E;&#x0938;&#x0935;&#x0930;&#x094D;&#x0921; &#x091F;&#x093E;&#x0915;&#x093E;...">
+        <button class="lbtn" id="login-btn">&#x1F510; &#x092A;&#x094D;&#x0930;&#x0935;&#x0947;&#x0936; &#x0915;&#x0930;&#x093E;</button>
       </div>
     </div>
   </div>
 </div>
-
-<!-- APP -->
 <div id="app">
 <header>
   <div class="hi">
     <div class="hl">
-      <div class="hico">📚</div>
+      <div class="hico">&#x1F4DA;</div>
       <div class="hinfo">
-        <div class="htop">समता जोगेश्वरी मंडळाचे</div>
-        <div class="hmain">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>
-        <div class="hsub">ता. शेवगाव, जि. अहिल्यानगर</div>
+        <div class="htop">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
+        <div class="hmain">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;, &#x090F;&#x0930;&#x0902;&#x0921;&#x0917;&#x093E;&#x0935;</div>
+        <div class="hsub">&#x0924;&#x093E;. &#x0936;&#x0947;&#x0935;&#x0917;&#x093E;&#x0935;, &#x091C;&#x093F;. &#x0905;&#x0939;&#x093F;&#x0932;&#x094D;&#x092F;&#x093E;&#x0928;&#x0917;&#x0930;</div>
       </div>
     </div>
     <div class="hr">
       <span id="sync"></span>
-      <div class="ubdg"><span id="uname">—</span><span class="rchip" id="rchip"></span></div>
-      <button class="sbtn" id="logout-btn">बाहेर</button>
+      <div class="ubdg"><span id="uname">&#x2014;</span><span class="rchip" id="rchip"></span></div>
+      <button class="sbtn" id="logout-btn">&#x092C;&#x093E;&#x0939;&#x0947;&#x0930;</button>
     </div>
   </div>
 </header>
-
 <div id="home-view" style="display:none;">
 <main>
   <div style="text-align:center;padding:13px 0 4px;">
-    <div style="font-size:1.05rem;font-weight:700;" id="h-welcome">स्वागत आहे!</div>
-    <div style="font-size:.78rem;color:var(--mt);margin-top:3px;" id="h-sub">खाली विभाग निवडा</div>
+    <div style="font-size:1.05rem;font-weight:700;">&#x0938;&#x094D;&#x0935;&#x093E;&#x0917;&#x0924; &#x0906;&#x0939;&#x0947;!</div>
+    <div style="font-size:.78rem;color:var(--mt);margin-top:3px;">&#x0916;&#x093E;&#x0932;&#x0940; &#x0935;&#x093F;&#x092D;&#x093E;&#x0917; &#x0928;&#x093F;&#x0935;&#x0921;&#x093E;</div>
   </div>
   <div class="modules">
-    <div class="mcard lib" id="mod-lib">
-      <div class="micon">📖</div>
-      <div class="mtit">ग्रंथालय</div>
-      <div class="mdesc">डॉ. ए.पी.जे. अब्दुल कलाम ग्रंथालय</div>
-    </div>
-    <div class="mcard res" id="mod-res">
-      <div class="micon">📊</div>
-      <div class="mtit">निकाल</div>
-      <div class="mdesc">गुण नोंदणी, प्रगतीपत्रक</div>
-    </div>
+    <div class="mcard lib" id="mod-lib"><div class="micon">&#x1F4D6;</div><div class="mtit">&#x0917;&#x094D;&#x0930;&#x0902;&#x0925;&#x093E;&#x0932;&#x092F;</div><div class="mdesc">&#x0921;&#x0949;. &#x090F;.&#x092A;&#x0940;.&#x091C;&#x0947;. &#x0917;&#x094D;&#x0930;&#x0902;&#x0925;&#x093E;&#x0932;&#x092F;</div></div>
+    <div class="mcard res" id="mod-res"><div class="micon">&#x1F4CA;</div><div class="mtit">&#x0928;&#x093F;&#x0915;&#x093E;&#x0932;</div><div class="mdesc">&#x0917;&#x0941;&#x0923; &#x0928;&#x094B;&#x0902;&#x0926;&#x0923;&#x0940;, &#x092A;&#x094D;&#x0930;&#x0917;&#x0924;&#x0940;&#x092A;&#x0924;&#x094D;&#x0930;</div></div>
   </div>
 </main>
 </div>
-
 <div id="mod-view" style="display:none;">
   <nav><div class="ni" id="nav-tabs"></div></nav>
   <main>
-    <button class="bbtn no-print" id="back-btn">← मुख्यपृष्ठ</button>
+    <button class="bbtn no-print" id="back-btn">&#x2190; &#x092E;&#x0941;&#x0916;&#x094D;&#x092F;&#x092A;&#x0943;&#x0937;&#x094D;&#x0920;</button>
     <div id="mod-secs"></div>
   </main>
 </div>
 </div>
-
 <div id="toast"></div>
 <div class="mov" id="cm">
   <div class="mbox">
     <h3 id="cm-t"></h3>
     <div id="cm-b" style="font-size:.82rem;color:var(--mt);margin-bottom:8px;"></div>
     <div id="cm-form"></div>
-    <div class="mfoot">
-      <button class="btn bo bsm" id="cm-cancel">रद्द</button>
-      <button class="btn bp bsm" id="cm-ok">ठीक</button>
-    </div>
+    <div class="mfoot"><button class="btn bo bsm" id="cm-cancel">&#x0930;&#x0926;&#x094D;&#x0926;</button><button class="btn bp bsm" id="cm-ok">&#x0920;&#x0940;&#x0915;</button></div>
   </div>
 </div>
-
 <script>
-// ============================================================
-// CONFIG & DATA
-// ============================================================
 var SURL='https://script.google.com/macros/s/AKfycbzDPkJF7VI53PYTE4T1PmAAlU4jFtzTN1zjRi8V9Wz1-SsQySly6NNfpO1-gmMc4SbOdA/exec';
-var LANG='mr';
 var curRole=null,curUser=null,curTc=null,curMod=null,curTab=null;
 var PW={super:'samata@2025',mukh:'katemadhav@2025'};
 var settings={marksLocked:false};
-
 var CLASSES=[
-  {id:'10',label:'10 वी',type:'high'},
-  {id:'9', label:'9 वी', type:'high'},
-  {id:'8', label:'8 वी', type:'mid'},
-  {id:'7a',label:'7 वी अ',type:'mid',medium:'Semi-English'},
-  {id:'7b',label:'7 वी ब',type:'mid',medium:'मराठी'},
-  {id:'6a',label:'6 वी अ',type:'mid',medium:'Semi-English'},
-  {id:'6b',label:'6 वी ब',type:'mid',medium:'मराठी'},
-  {id:'5a',label:'5 वी अ',type:'primary',medium:'Semi-English'},
-  {id:'5b',label:'5 वी ब',type:'primary',medium:'मराठी'},
+  {id:'10',label:'10 \u0935\u0940',type:'high'},
+  {id:'9', label:'9 \u0935\u0940', type:'high'},
+  {id:'8', label:'8 \u0935\u0940', type:'mid'},
+  {id:'7a',label:'7 \u0935\u0940 \u0905',type:'mid',medium:'Semi-English'},
+  {id:'7b',label:'7 \u0935\u0940 \u092C',type:'mid',medium:'\u092E\u0930\u093E\u0920\u0940'},
+  {id:'6a',label:'6 \u0935\u0940 \u0905',type:'mid',medium:'Semi-English'},
+  {id:'6b',label:'6 \u0935\u0940 \u092C',type:'mid',medium:'\u092E\u0930\u093E\u0920\u0940'},
+  {id:'5a',label:'5 \u0935\u0940 \u0905',type:'primary',medium:'Semi-English'},
+  {id:'5b',label:'5 \u0935\u0940 \u092C',type:'primary',medium:'\u092E\u0930\u093E\u0920\u0940'},
 ];
-
 var TEACHERS=[
-  {id:1, name:'श्री. रणसिंग डी. पी.',    pw:'ranasing@2025',  classOf:'10', subjects:['गणित','विज्ञान'],              classes:['10','9','8'],             isMukh:false},
-  {id:2, name:'श्री. दहिफळे पी. एम्.',  pw:'dahifale@2025',  classOf:'9',  subjects:['इंग्रजी','समाज अभ्यास'],      classes:['10','9','8','7a','7b'],   isMukh:false},
-  {id:3, name:'श्री. आरे एम्. पी.',     pw:'aare@2025',      classOf:'8',  subjects:['कला','विज्ञान'],               classes:['10','9','8','7a','7b','6a','6b','5a','5b'],isMukh:false},
-  {id:4, name:'श्री. घुगे ए. डी.',      pw:'ghuge@2025',     classOf:'7a', subjects:['इंग्रजी','परिसर अभ्यास'],     classes:['7a','7b','6a','6b','5a'],  isMukh:false},
-  {id:5, name:'श्री. गोर्डे के. जी.',   pw:'gorde@2025',     classOf:'7b', subjects:['मराठी','इतिहास','सामाजिक शास्त्रे'],classes:['10','9','8','7a','7b','6a'],isMukh:false},
-  {id:6, name:'बरकले एस्. डी.',         pw:'barkale@2025',   classOf:'6a', subjects:['गणित','विज्ञान'],              classes:['6a','5a','5b'],            isMukh:false},
-  {id:7, name:'श्री. बोडखे डी. आर्.',  pw:'bodkhe@2025',    classOf:'6b', subjects:['हिंदी','समाज अभ्यास'],        classes:['6b','5b'],                 isMukh:false},
-  {id:8, name:'श्री. कदम एन्. आर्.',   pw:'kadam@2025',     classOf:'5a', subjects:['इंग्रजी','हिंदी'],             classes:['5a','6a'],                 isMukh:false},
-  {id:9, name:'श्रीम्. भागवत व्ही. के.',pw:'bhagwat@2025',  classOf:'5b', subjects:['मराठी','हिंदी'],              classes:['5b','6b'],                 isMukh:false},
-  {id:10,name:'श्री. माधव काटे (मु.)',  pw:'katemadhav@2025',classOf:'',   subjects:[],                              classes:[],                          isMukh:true},
-  {id:11,name:'श्री. नजन के. व्ही.',    pw:'najan@2025',     classOf:'',   subjects:['क्रीडा','भूगोल','समाज अभ्यास'],classes:['10','9','8','7a','7b','6a','6b','5a','5b'],isMukh:false},
+  {id:1,name:'\u0936\u094D\u0930\u0940. \u0930\u0923\u0938\u093F\u0902\u0917 \u0921\u0940. \u092A\u0940.',pw:'ranasing@2025',classOf:'10',subjects:['\u0917\u0923\u093F\u0924','\u0935\u093F\u091C\u094D\u091E\u093E\u0928'],classes:['10','9','8'],isMukh:false},
+  {id:2,name:'\u0936\u094D\u0930\u0940. \u0926\u0939\u093F\u092B\u0933\u0947 \u092A\u0940. \u090F\u092E\u094D.',pw:'dahifale@2025',classOf:'9',subjects:['\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u0938\u092E\u093E\u091C \u0905\u092D\u094D\u092F\u093E\u0938'],classes:['10','9','8','7a','7b'],isMukh:false},
+  {id:3,name:'\u0936\u094D\u0930\u0940. \u0906\u0930\u0947 \u090F\u092E\u094D. \u092A\u0940.',pw:'aare@2025',classOf:'8',subjects:['\u0915\u0932\u093E','\u0935\u093F\u091C\u094D\u091E\u093E\u0928'],classes:['10','9','8','7a','7b','6a','6b','5a','5b'],isMukh:false},
+  {id:4,name:'\u0936\u094D\u0930\u0940. \u0918\u0941\u0917\u0947 \u090F. \u0921\u0940.',pw:'ghuge@2025',classOf:'7a',subjects:['\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u092A\u0930\u093F\u0938\u0930 \u0905\u092D\u094D\u092F\u093E\u0938'],classes:['7a','7b','6a','6b','5a'],isMukh:false},
+  {id:5,name:'\u0936\u094D\u0930\u0940. \u0917\u094B\u0930\u094D\u0921\u0947 \u0915\u0947. \u091C\u0940.',pw:'gorde@2025',classOf:'7b',subjects:['\u092E\u0930\u093E\u0920\u0940','\u0907\u0924\u093F\u0939\u093E\u0938','\u0938\u093E\u092E\u093E\u091C\u093F\u0915 \u0936\u093E\u0938\u094D\u0924\u094D\u0930\u0947'],classes:['10','9','8','7a','7b','6a'],isMukh:false},
+  {id:6,name:'\u092C\u0930\u0915\u0932\u0947 \u090F\u0938\u094D. \u0921\u0940.',pw:'barkale@2025',classOf:'6a',subjects:['\u0917\u0923\u093F\u0924','\u0935\u093F\u091C\u094D\u091E\u093E\u0928'],classes:['6a','5a','5b'],isMukh:false},
+  {id:7,name:'\u0936\u094D\u0930\u0940. \u092C\u094B\u0921\u0916\u0947 \u0921\u0940. \u0906\u0930\u094D.',pw:'bodkhe@2025',classOf:'6b',subjects:['\u0939\u093F\u0902\u0926\u0940','\u0938\u092E\u093E\u091C \u0905\u092D\u094D\u092F\u093E\u0938'],classes:['6b','5b'],isMukh:false},
+  {id:8,name:'\u0936\u094D\u0930\u0940. \u0915\u0926\u092E \u090F\u0928\u094D. \u0906\u0930\u094D.',pw:'kadam@2025',classOf:'5a',subjects:['\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u0939\u093F\u0902\u0926\u0940'],classes:['5a','6a'],isMukh:false},
+  {id:9,name:'\u0936\u094D\u0930\u0940\u092E\u094D. \u092D\u093E\u0917\u0935\u0924 \u0935\u094D\u0939\u0940. \u0915\u0947.',pw:'bhagwat@2025',classOf:'5b',subjects:['\u092E\u0930\u093E\u0920\u0940','\u0939\u093F\u0902\u0926\u0940'],classes:['5b','6b'],isMukh:false},
+  {id:10,name:'\u0936\u094D\u0930\u0940. \u092E\u093E\u0927\u0935 \u0915\u093E\u091F\u0947 (\u092E\u0941.)',pw:'katemadhav@2025',classOf:'',subjects:[],classes:[],isMukh:true},
+  {id:11,name:'\u0936\u094D\u0930\u0940. \u0928\u091C\u0928 \u0915\u0947. \u0935\u094D\u0939\u0940.',pw:'najan@2025',classOf:'',subjects:['\u0915\u094D\u0930\u0940\u0921\u093E','\u092D\u0942\u0917\u094B\u0932','\u0938\u092E\u093E\u091C \u0905\u092D\u094D\u092F\u093E\u0938'],classes:['10','9','8','7a','7b','6a','6b','5a','5b'],isMukh:false},
 ];
-
 var SUBJS={
-  primary:['मराठी','हिंदी','इंग्रजी','गणित','परिसर अभ्यास-1','परिसर अभ्यास-2','कला','कार्यानुभव','शा.शि.व आरोग्य'],
-  mid:    ['मराठी','हिंदी','इंग्रजी','गणित','विज्ञान','इतिहास','भूगोल','नागरिकशास्त्र','कला','कार्यानुभव','शा.शि.व आरोग्य'],
-  high:   ['मराठी','हिंदी','इंग्रजी','गणित','विज्ञान','इतिहास','भूगोल','नागरिकशास्त्र'],
+  primary:['\u092E\u0930\u093E\u0920\u0940','\u0939\u093F\u0902\u0926\u0940','\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u0917\u0923\u093F\u0924','\u092A\u0930\u093F\u0938\u0930 \u0905\u092D\u094D\u092F\u093E\u0938-1','\u092A\u0930\u093F\u0938\u0930 \u0905\u092D\u094D\u092F\u093E\u0938-2','\u0915\u0932\u093E','\u0915\u093E\u0930\u094D\u092F\u093E\u0928\u0941\u092D\u0935','\u0936\u093E.\u0936\u093F.\u0935 \u0906\u0930\u094B\u0917\u094D\u092F'],
+  mid:['\u092E\u0930\u093E\u0920\u0940','\u0939\u093F\u0902\u0926\u0940','\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u0917\u0923\u093F\u0924','\u0935\u093F\u091C\u094D\u091E\u093E\u0928','\u0907\u0924\u093F\u0939\u093E\u0938','\u092D\u0942\u0917\u094B\u0932','\u0928\u093E\u0917\u0930\u093F\u0915\u0936\u093E\u0938\u094D\u0924\u094D\u0930','\u0915\u0932\u093E','\u0915\u093E\u0930\u094D\u092F\u093E\u0928\u0941\u092D\u0935','\u0936\u093E.\u0936\u093F.\u0935 \u0906\u0930\u094B\u0917\u094D\u092F'],
+  high:['\u092E\u0930\u093E\u0920\u0940','\u0939\u093F\u0902\u0926\u0940','\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u0917\u0923\u093F\u0924','\u0935\u093F\u091C\u094D\u091E\u093E\u0928','\u0907\u0924\u093F\u0939\u093E\u0938','\u092D\u0942\u0917\u094B\u0932','\u0928\u093E\u0917\u0930\u093F\u0915\u0936\u093E\u0938\u094D\u0924\u094D\u0930'],
 };
-
-// 5-8वी: FA1+SA1 (सत्र1), FA2+SA2 (सत्र2) — each subject /200 → scaled to /100
-// 9-10वी: SA1 लेखी/60 + तोंडी/20, SA2 लेखी/60 + तोंडी/20 — each subject /160 → scaled to /100
 var EXAM_STRUCT={
   high:[
-    {key:'s1l',label:'SA-1 लेखी', max:60,group:'प्रथम सत्र'},
-    {key:'s1t',label:'SA-1 तोंडी',max:20,group:'प्रथम सत्र'},
-    {key:'s2l',label:'SA-2 लेखी', max:60,group:'द्वितीय सत्र'},
-    {key:'s2t',label:'SA-2 तोंडी',max:20,group:'द्वितीय सत्र'},
+    {key:'s1l',label:'SA-1 \u0932\u0947\u0916\u0940',max:60,group:'\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930'},
+    {key:'s1t',label:'SA-1 \u0924\u094B\u0902\u0921\u0940',max:20,group:'\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930'},
+    {key:'s2l',label:'SA-2 \u0932\u0947\u0916\u0940',max:60,group:'\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930'},
+    {key:'s2t',label:'SA-2 \u0924\u094B\u0902\u0921\u0940',max:20,group:'\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930'},
   ],
   mid:[
-    {key:'fa1',label:'FA-1',max:25,group:'प्रथम सत्र'},
-    {key:'sa1',label:'SA-1',max:75,group:'प्रथम सत्र'},
-    {key:'fa2',label:'FA-2',max:25,group:'द्वितीय सत्र'},
-    {key:'sa2',label:'SA-2',max:75,group:'द्वितीय सत्र'},
+    {key:'fa1',label:'FA-1',max:25,group:'\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930'},
+    {key:'sa1',label:'SA-1',max:75,group:'\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930'},
+    {key:'fa2',label:'FA-2',max:25,group:'\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930'},
+    {key:'sa2',label:'SA-2',max:75,group:'\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930'},
   ],
 };
 EXAM_STRUCT.primary=EXAM_STRUCT.mid;
-
-var GRADE_LABELS={high:'A/B/C/D',mid:'श्रेणी',primary:'श्रेणी'};
-
-var DESC_POS=['वाचन आवडते','सतत सुधारणा करतो/ते','इतरांना मदत करतो/ते','वेळेवर गृहपाठ करतो/ते','भाषा वापर चांगला आहे','विषयाची आवड आहे','वर्गात सक्रिय सहभाग घेतो/ते','शिस्तबद्ध वागणूक आहे','सर्जनशील विचार करतो/ते','खेळात चांगली कामगिरी','स्वच्छता पाळतो/ते','आत्मविश्वास आहे'];
-var DESC_IMP=['गृहपाठ नियमित करावा','वाचन सुधारणा आवश्यक','वर्गात अधिक सक्रिय व्हावे','लेखन सुधारणा आवश्यक','वेळेचे पालन करावे','आत्मविश्वास वाढवावा','अधिक सराव आवश्यक','इंग्रजी सुधारणा आवश्यक','गणिताचा सराव करावा','पाठ्यपुस्तक वाचन करावे','शाळेत नियमित यावे','सामाजिक वर्तनणूक सुधारावी'];
-
-var books=[];
-var transactions=[];
-var students=[];
-var marksData={};
-var descData={};
+var books=[],transactions=[],students=[],marksData={},descData={};
 var nextBId=1,nextTxId=1,nextSId=1;
 
-// ============================================================
-// UTILS
-// ============================================================
+// ---- UTILS ----
 function today(){return new Date().toISOString().split('T')[0];}
 function addDays(d,n){var dt=new Date(d);dt.setDate(dt.getDate()+n);return dt.toISOString().split('T')[0];}
-function dL(due){var d=new Date(due.split('T')[0]),n=new Date(today());return Math.floor((n-d)/86400000);}
-
-// FIX: handles ISO dates like "2026-04-19T18:30:00.000Z"
+function dL(due){if(!due)return 0;var d=new Date(String(due).split('T')[0]),n=new Date(today());return Math.floor((n-d)/86400000);}
 function fmt(d){
   if(!d||d===''||d===null)return'-';
-  try{
-    var s=String(d).split('T')[0]; // strip time component
-    var p=s.split('-');
-    if(p.length===3&&p[0].length===4)return p[2]+'/'+p[1]+'/'+p[0];
-  }catch(e){}
-  return String(d);
+  var s=String(d).split('T')[0];
+  var p=s.split('-');
+  if(p.length===3&&p[0].length===4)return p[2]+'/'+p[1]+'/'+p[0];
+  return s;
+}
+function avail(bId){var i=transactions.filter(function(t){return t.bId===bId&&!t.retDate;}).length;var b=books.find(function(x){return x.id===bId;});return b?b.copies-i:0;}
+
+// KEY FIX: extract digits only — handles "10 वी", "10वी", "इयत्ता 10" etc.
+function parseClass(raw){
+  if(!raw)return'';
+  var orig=String(raw).trim();
+  var digits=orig.replace(/[^0-9]/g,'');
+  var hasA=orig.indexOf('\u0905')>=0||/a/i.test(orig);
+  if(digits==='10')return'10';
+  if(digits==='9')return'9';
+  if(digits==='8')return'8';
+  if(digits==='7')return hasA?'7a':'7b';
+  if(digits==='6')return hasA?'6a':'6b';
+  if(digits==='5')return hasA?'5a':'5b';
+  return digits||orig.toLowerCase();
 }
 
-function avail(bId){
-  var i=transactions.filter(function(t){return t.bId===bId&&!t.retDate;}).length;
-  var b=books.find(function(x){return x.id===bId;});
-  return b?b.copies-i:0;
-}
-
-// 5-8वी श्रेणी
-function grade58(pct){
-  if(pct>=91)return'अ-1';if(pct>=81)return'अ-2';if(pct>=71)return'ब-1';
-  if(pct>=61)return'ब-2';if(pct>=51)return'क-1';if(pct>=41)return'क-2';
-  if(pct>=33)return'ड';  if(pct>=21)return'इ-1';return'इ-2';
-}
-// 9-10वी grade
-function grade910(pct){
-  if(pct>=75)return'A';if(pct>=60)return'B';if(pct>=35)return'C';return'D';
-}
-function grade(pct,clsId){
-  var type=getCtype(clsId||'8');
-  return type==='high'?grade910(pct):grade58(pct);
-}
-
+function grade58(p){if(p>=91)return'\u0905-1';if(p>=81)return'\u0905-2';if(p>=71)return'\u092C-1';if(p>=61)return'\u092C-2';if(p>=51)return'\u0915-1';if(p>=41)return'\u0915-2';if(p>=33)return'\u0921';if(p>=21)return'\u0907-1';return'\u0907-2';}
+function grade910(p){if(p>=75)return'A';if(p>=60)return'B';if(p>=35)return'C';return'D';}
+function grade(p,clsId){return getCtype(clsId||'8')==='high'?grade910(p):grade58(p);}
+function gradeColor(g){if(!g||g==='-')return'';if(g==='A'||g[0]==='\u0905')return'bgg';if(g==='B'||g[0]==='\u092C')return'bgb';if(g==='C'||g[0]==='\u0915')return'bgy';return'bgr';}
 function getCls(id){return CLASSES.find(function(c){return c.id===id;});}
 function getCtype(id){var c=getCls(id);return c?c.type:'mid';}
 function getSubjs(clsId){return SUBJS[getCtype(clsId)]||SUBJS.mid;}
 function getExams(clsId){return EXAM_STRUCT[getCtype(clsId)]||EXAM_STRUCT.mid;}
-function getMaxTotal(clsId){return getExams(clsId).reduce(function(s,e){return s+e.max;},0)*getSubjs(clsId).length;}
-function getStds(clsId){
-  return students.filter(function(s){return s.cls===clsId&&s.status!=='removed';})
-                 .sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);});
-}
-
-function getMk(sId,cls,subj,exam){
-  var k=cls+'|'+subj+'|'+exam;
-  var d=marksData[k];if(!d)return'';
-  var e=d.find(function(x){return x.sId===sId;});
-  return e?e.m:'';
-}
-function setMk(sId,cls,subj,exam,val){
-  var k=cls+'|'+subj+'|'+exam;
-  if(!marksData[k])marksData[k]=[];
-  var idx=-1;
-  for(var i=0;i<marksData[k].length;i++){if(marksData[k][i].sId===sId){idx=i;break;}}
-  if(idx>=0)marksData[k][idx].m=val;
-  else marksData[k].push({sId:sId,m:val});
-}
-
-function calcStudentTotal(sId,clsId){
-  var subjs=getSubjs(clsId);
-  var exams=getExams(clsId);
-  var total=0;var maxT=0;var hasAny=false;
-  subjs.forEach(function(subj){
-    exams.forEach(function(exam){
-      var v=getMk(sId,clsId,subj,exam.key);
-      if(v!==''){hasAny=true;total+=parseFloat(v)||0;}
-      maxT+=exam.max;
-    });
-  });
-  if(!hasAny)return{total:0,max:maxT,pct:0,hasData:false};
-  return{total:Math.round(total*10)/10,max:maxT,pct:maxT>0?Math.round(total/maxT*100):0,hasData:true};
-}
-
-function calcSubjTotal(sId,cls,subj){
-  var exams=getExams(cls);
-  var total=0;var max=0;var hasAny=false;
-  exams.forEach(function(e){
-    var v=getMk(sId,cls,subj,e.key);
-    if(v!==''){hasAny=true;total+=parseFloat(v)||0;}
-    max+=e.max;
-  });
-  if(!hasAny)return{total:'',max:max,pct:0};
-  return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0};
-}
-
-function getDesc(sId,cls,subj){return descData[cls+'|'+sId+'|'+subj]||{pos:'',imp:'',custom:''};}
-function setDesc(sId,cls,subj,data){descData[cls+'|'+sId+'|'+subj]=data;}
-
-function gradeColor(g){
-  if(!g||g==='-')return'';
-  if(g==='A'||g[0]==='अ')return'bgg';
-  if(g==='B'||g[0]==='ब')return'bgb';
-  if(g==='C'||g[0]==='क')return'bgy';
-  return'bgr';
-}
-
+function getStds(clsId){return students.filter(function(s){return s.cls===clsId&&s.status!=='removed';}).sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);});}
+function getMk(sId,cls,subj,exam){var k=cls+'|'+subj+'|'+exam;var d=marksData[k];if(!d)return'';var e=d.find(function(x){return x.sId===sId;});return e?e.m:'';}
+function setMk(sId,cls,subj,exam,val){var k=cls+'|'+subj+'|'+exam;if(!marksData[k])marksData[k]=[];var idx=-1;for(var i=0;i<marksData[k].length;i++){if(marksData[k][i].sId===sId){idx=i;break;}}if(idx>=0)marksData[k][idx].m=val;else marksData[k].push({sId:sId,m:val});}
+function calcSubjTotal(sId,cls,subj){var exams=getExams(cls);var total=0;var max=0;var hasAny=false;exams.forEach(function(e){var v=getMk(sId,cls,subj,e.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=e.max;});if(!hasAny)return{total:'',max:max,pct:0};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0};}
+function calcStudentTotal(sId,clsId){var subjs=getSubjs(clsId);var exams=getExams(clsId);var total=0;var max=0;var hasAny=false;subjs.forEach(function(subj){exams.forEach(function(exam){var v=getMk(sId,clsId,subj,exam.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=exam.max;});});if(!hasAny)return{total:0,max:max,pct:0,hasData:false};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0,hasData:true};}
 var _toast=null;
-function toast(msg,t){
-  var el=document.getElementById('toast');
-  el.textContent=msg;el.className='show '+(t||'ok');
-  if(_toast)clearTimeout(_toast);
-  _toast=setTimeout(function(){el.className='';},3000);
-}
+function toast(msg,t){var el=document.getElementById('toast');el.textContent=msg;el.className='show '+(t||'ok');if(_toast)clearTimeout(_toast);_toast=setTimeout(function(){el.className='';},3000);}
 function openM(id){document.getElementById(id).classList.add('op');}
 function closeM(id){document.getElementById(id).classList.remove('op');}
-function syncStatus(s){
-  var el=document.getElementById('sync');if(!el)return;
-  if(s==='ok'){el.textContent='☁️ Saved';el.style.color='#23A058';}
-  else if(s==='ing'){el.textContent='⏳...';el.style.color='#B8860A';}
-  else{el.textContent='📵 Offline';el.style.color='var(--r)';}
-}
-function noAccess(){return '<div class="alert aw"><div>🔒</div><div>अधिकार नाही</div></div>';}
+function syncStatus(s){var el=document.getElementById('sync');if(!el)return;if(s==='ok'){el.textContent='&#x2601;&#xFE0F; Saved';el.style.color='#23A058';}else if(s==='ing'){el.textContent='&#x23F3;...';el.style.color='#B8860A';}else{el.textContent='&#x1F4F5; Offline';el.style.color='var(--r)';}}
+function noAccess(){return '<div class="alert aw"><div>&#x1F512;</div><div>\u0905\u0927\u093F\u0915\u093E\u0930 \u0928\u093E\u0939\u0940</div></div>';}
 
-// ============================================================
-// LANGUAGE
-// ============================================================
-function setLang(l){
-  LANG=l;
-  var mr=document.getElementById('btn-mr');var en=document.getElementById('btn-en');
-  if(mr)mr.className='ltbtn'+(l==='mr'?' on':'');
-  if(en)en.className='ltbtn'+(l==='en'?' on':'');
-}
-
-// ============================================================
-// LOGIN
-// ============================================================
-function onRole(){
-  var r=document.getElementById('l-role').value;
-  var ts=document.getElementById('tc-sel');
-  ts.style.display=r==='shik'?'block':'none';
-  if(r==='shik'){
-    var sel=document.getElementById('l-tc');
-    sel.innerHTML='<option value="">— निवडा —</option>';
-    TEACHERS.filter(function(t){return !t.isMukh;}).forEach(function(t){
-      var o=document.createElement('option');o.value=t.id;o.textContent=t.name;sel.appendChild(o);
-    });
-  }
-}
-
-function doLogin(){
-  var r=document.getElementById('l-role').value;
-  var pw=document.getElementById('l-pw').value;
-  if(!r){toast('भूमिका निवडा!','err');return;}
-  if(r==='super'){
-    if(pw!==PW.super){loginErr('पासवर्ड चुकीचा!');return;}
-    curRole='super';curUser='संस्थाचालक';curTc=null;
-  }else if(r==='mukh'){
-    if(pw!==PW.mukh){loginErr('पासवर्ड चुकीचा!');return;}
-    curRole='mukh';curUser='मुख्याध्यापक';curTc=null;
-  }else{
-    var tid=parseInt(document.getElementById('l-tc').value)||0;
-    if(!tid){loginErr('शिक्षक निवडा!');return;}
-    var tc=TEACHERS.find(function(t){return t.id===tid;});
-    if(!tc||pw!==tc.pw){loginErr('पासवर्ड चुकीचा!');return;}
-    curRole='shik';curUser=tc.name;curTc=tc;
-  }
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='block';
-  setupHeader();showHome();loadShikshakFirst();
-}
-
-function loginErr(msg){
-  var p=document.getElementById('l-pw');
-  p.style.borderColor='var(--r)';p.value='';p.placeholder=msg;
-  setTimeout(function(){p.style.borderColor='';p.placeholder='पासवर्ड टाका...';},2500);
-}
-
-function doLogout(){
-  curRole=null;curUser=null;curTc=null;curMod=null;
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('app').style.display='none';
-  document.getElementById('home-view').style.display='none';
-  document.getElementById('mod-view').style.display='none';
-  document.getElementById('l-pw').value='';
-  document.getElementById('l-role').value='';
-  document.getElementById('tc-sel').style.display='none';
-}
-
-function setupHeader(){
-  document.getElementById('uname').textContent=curUser;
-  var chip=document.getElementById('rchip');
-  var map={super:'संस्थाचालक',mukh:'मुख्याध्यापक',shik:'शिक्षक'};
-  chip.textContent=map[curRole]||'';
-  chip.className='rchip r'+curRole[0];
-}
-
-function showHome(){
-  document.getElementById('home-view').style.display='block';
-  document.getElementById('mod-view').style.display='none';
-  curMod=null;
-}
-
-function openMod(mod){
-  curMod=mod;
-  document.getElementById('home-view').style.display='none';
-  document.getElementById('mod-view').style.display='block';
-  buildTabs();
-}
+// ---- LOGIN ----
+function onRole(){var r=document.getElementById('l-role').value;var ts=document.getElementById('tc-sel');ts.style.display=r==='shik'?'block':'none';if(r==='shik'){var sel=document.getElementById('l-tc');sel.innerHTML='<option value="">\u2014 \u0928\u093F\u0935\u0921\u093E \u2014</option>';TEACHERS.filter(function(t){return !t.isMukh;}).forEach(function(t){var o=document.createElement('option');o.value=t.id;o.textContent=t.name;sel.appendChild(o);});}}
+function doLogin(){var r=document.getElementById('l-role').value;var pw=document.getElementById('l-pw').value;if(!r){toast('\u092D\u0942\u092E\u093F\u0915\u093E \u0928\u093F\u0935\u0921\u093E!','err');return;}if(r==='super'){if(pw!==PW.super){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='super';curUser='\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915';curTc=null;}else if(r==='mukh'){if(pw!==PW.mukh){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='mukh';curUser='\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915';curTc=null;}else{var tid=parseInt(document.getElementById('l-tc').value)||0;if(!tid){loginErr('\u0936\u093F\u0915\u094D\u0937\u0915 \u0928\u093F\u0935\u0921\u093E!');return;}var tc=TEACHERS.find(function(t){return t.id===tid;});if(!tc||pw!==tc.pw){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='shik';curUser=tc.name;curTc=tc;}document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';setupHeader();showHome();loadShikshakFirst();}
+function loginErr(msg){var p=document.getElementById('l-pw');p.style.borderColor='var(--r)';p.value='';p.placeholder=msg;setTimeout(function(){p.style.borderColor='';p.placeholder='\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091F\u093E\u0915\u093E...';},2500);}
+function doLogout(){curRole=null;curUser=null;curTc=null;curMod=null;document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='none';document.getElementById('l-pw').value='';document.getElementById('l-role').value='';document.getElementById('tc-sel').style.display='none';}
+function setupHeader(){document.getElementById('uname').textContent=curUser;var chip=document.getElementById('rchip');var map={super:'\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915',mukh:'\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915',shik:'\u0936\u093F\u0915\u094D\u0937\u0915'};chip.textContent=map[curRole]||'';chip.className='rchip r'+curRole[0];}
+function showHome(){document.getElementById('home-view').style.display='block';document.getElementById('mod-view').style.display='none';curMod=null;}
+function openMod(mod){curMod=mod;document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='block';buildTabs();}
 
 function buildTabs(){
   var isA=(curRole==='super'||curRole==='mukh');
   var tabs=curMod==='lib'?[
-    {id:'ld',i:'🏠',l:'डॅशबोर्ड'},
-    {id:'li',i:'📤',l:'द्या'},
-    {id:'lr',i:'📥',l:'परत'},
-    {id:'lc',i:'📖',l:'ग्रंथसूची'},
-    {id:'ls',i:'👨‍🎓',l:'विद्यार्थी'},
-    {id:'lrp',i:'📊',l:'अहवाल',h:!isA},
-    {id:'ldon',i:'🤝',l:'देणगीदार',h:!isA},
-    {id:'la',i:'⚙️',l:'प्रशासन',h:!isA},
+    {id:'ld',i:'&#x1F3E0;',l:'\u0921\u0945\u0936\u092C\u094B\u0930\u094D\u0921'},
+    {id:'li',i:'&#x1F4E4;',l:'\u0926\u094D\u092F\u093E'},
+    {id:'lr',i:'&#x1F4E5;',l:'\u092A\u0930\u0924'},
+    {id:'lc',i:'&#x1F4D6;',l:'\u0917\u094D\u0930\u0902\u0925\u0938\u0942\u091A\u0940'},
+    {id:'ls',i:'&#x1F468;&#x200D;&#x1F393;',l:'\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940'},
+    {id:'lrp',i:'&#x1F4CA;',l:'\u0905\u0939\u0935\u093E\u0932',h:!isA},
+    {id:'la',i:'&#x2699;&#xFE0F;',l:'\u092A\u094D\u0930\u0936\u093E\u0938\u0928',h:!isA},
   ]:[
-    {id:'rd',i:'🏠',l:'डॅशबोर्ड'},
-    {id:'rm',i:'✏️',l:'गुण नोंदणी'},
-    {id:'rdesc',i:'📝',l:'वर्णनात्मक'},
-    {id:'rprog',i:'📈',l:'प्रगती'},
-    {id:'rgos',i:'📋',l:'गोषवारा',h:!isA},
-    {id:'rbook',i:'📃',l:'निकाल पुस्तिका',h:!isA},
-    {id:'rcard',i:'📋',l:'प्रगतीपत्रक'},
-    {id:'radm',i:'⚙️',l:'व्यवस्थापन',h:!isA},
+    {id:'rd',i:'&#x1F3E0;',l:'\u0921\u0945\u0936\u092C\u094B\u0930\u094D\u0921'},
+    {id:'rm',i:'&#x270F;&#xFE0F;',l:'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940'},
+    {id:'rprog',i:'&#x1F4C8;',l:'\u092A\u094D\u0930\u0917\u0924\u0940'},
+    {id:'rgos',i:'&#x1F4CB;',l:'\u0917\u094B\u0937\u0935\u093E\u0930\u093E',h:!isA},
+    {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932 \u092A\u0941\u0938\u094D\u0924\u093F\u0915\u093E',h:!isA},
+    {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930'},
+    {id:'radm',i:'&#x2699;&#xFE0F;',l:'\u0935\u094D\u092F\u0935\u0938\u094D\u0925\u093E\u092A\u0928',h:!isA},
   ];
   var nav=document.getElementById('nav-tabs');nav.innerHTML='';
   var first=null;
@@ -567,1081 +349,252 @@ function buildTabs(){
   if(first)showTab(first);
 }
 
-function showTab(id){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
-  var tb=document.getElementById('tab-'+id);if(tb)tb.classList.add('on');
-  curTab=id;
-  var el=document.getElementById('mod-secs');
-  if(!el)return;
-  el.innerHTML='<div style="padding:18px;text-align:center;color:var(--mt);">⏳ लोड...</div>';
-  setTimeout(function(){renderSec(id);},60);
-}
+function showTab(id){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});var tb=document.getElementById('tab-'+id);if(tb)tb.classList.add('on');curTab=id;var el=document.getElementById('mod-secs');if(!el)return;el.innerHTML='<div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; \u0932\u094B\u0921...</div>';setTimeout(function(){renderSec(id);},60);}
 
 function renderSec(id){
   var el=document.getElementById('mod-secs');if(!el)return;
-  var html='<div class="alert aw"><div>⚠️</div><div>Section not found: '+id+'</div></div>';
+  var html='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>Not found: '+id+'</div></div>';
   try{
-    if(id==='ld')html=secLD();
-    else if(id==='li')html=secLI();
-    else if(id==='lr')html=secLR();
-    else if(id==='lc')html=secLC();
-    else if(id==='ls')html=secLS();
-    else if(id==='lrp')html=secLRP();
-    else if(id==='ldon')html=secLDon();
-    else if(id==='la')html=secLA();
-    else if(id==='rd')html=secRD();
-    else if(id==='rm')html=secRM();
-    else if(id==='rdesc')html=secRDesc();
-    else if(id==='rprog')html=secRProg();
-    else if(id==='rgos')html=secRGos();
-    else if(id==='rbook')html=secRBook();
-    else if(id==='rcard')html=secRCard();
-    else if(id==='radm')html=secRAdm();
-  }catch(e){html='<div class="alert aw"><div>⚠️ Error: '+e.message+'</div></div>';}
+    if(id==='ld')html=secLD();else if(id==='li')html=secLI();else if(id==='lr')html=secLR();
+    else if(id==='lc')html=secLC();else if(id==='ls')html=secLS();else if(id==='lrp')html=secLRP();
+    else if(id==='la')html=secLA();else if(id==='rd')html=secRD();else if(id==='rm')html=secRM();
+    else if(id==='rprog')html=secRProg();else if(id==='rgos')html=secRGos();
+    else if(id==='rbook')html=secRBook();else if(id==='rcard')html=secRCard();else if(id==='radm')html=secRAdm();
+  }catch(e){html='<div class="alert aw"><div>&#x26A0;&#xFE0F; '+e.message+'</div></div>';}
   el.innerHTML=html;
-  // Post-render data loads
-  if(id==='li'){loadStdByClass('i-cls','i-roll');refreshIssued();}
-  if(id==='lr'){filterReturn();}
-  if(id==='lrp'){buildLibReport();}
-  if(id==='rd'){buildResDash();}
+  if(id==='li'){loadStdByClass();refreshIssued();}
+  if(id==='lr')filterReturn();
+  if(id==='lrp')buildLibReport();
+  if(id==='rd')buildResDash();
 }
 
-// ============================================================
-// LIBRARY - DASHBOARD
-// ============================================================
+// ---- LIBRARY SECTIONS ----
 function secLD(){
   var total=books.reduce(function(s,b){return s+b.copies;},0);
   var issd=transactions.filter(function(t){return !t.retDate;}).length;
   var over=transactions.filter(function(t){return !t.retDate&&dL(t.due)>0;});
   var actS=students.filter(function(s){return s.status!=='removed';}).length;
   var ret=transactions.filter(function(t){return t.retDate;}).length;
-  var withT=transactions.filter(function(t){return t.tId;}).length;
   var colors=['#C8500A','#1A4A98','#1A6E3C','#5A2898','#B8860A','#B02020'];
-  var tcStats=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){
-    return{name:tc.name.split(' ').slice(-1)[0],cnt:transactions.filter(function(t){return t.tId===tc.id;}).length};
-  }).sort(function(a,b){return b.cnt-a.cnt;}).slice(0,6);
+  var tcStats=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){return{name:tc.name.split(' ').slice(-1)[0],cnt:transactions.filter(function(t){return t.tId===tc.id;}).length};}).sort(function(a,b){return b.cnt-a.cnt;}).slice(0,6);
   var maxT=Math.max.apply(null,[1].concat(tcStats.map(function(t){return t.cnt;})));
-  var tcBars=tcStats.map(function(t,i){
-    var h=Math.max(Math.round(t.cnt/maxT*70),3);
-    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:90%;height:'+h+'px;background:'+colors[i%6]+';border-radius:3px 3px 0 0;" title="'+t.name+': '+t.cnt+'"></div><div style="font-size:.56rem;color:var(--mt);margin-top:2px;text-align:center;overflow:hidden;max-width:48px;white-space:nowrap;text-overflow:ellipsis;">'+t.name+'</div></div>';
-  }).join('');
-  var overRows=over.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--mt);padding:14px;">✅ कोणतीही नाही</td></tr>':
-    over.map(function(tx){return '<tr><td>'+tx.sName+'</td><td>'+tx.cls+'</td><td>'+tx.bTitle+'</td><td><span class="bdg bgr">+'+dL(tx.due)+' दि.</span></td></tr>';}).join('');
-  return '<div class="sg">'+
-    '<div class="sc"><div class="sn">'+total+'</div><div class="sl">सर्व पुस्तके</div></div>'+
-    '<div class="sc g"><div class="sn">'+(total-issd)+'</div><div class="sl">उपलब्ध</div></div>'+
-    '<div class="sc r"><div class="sn">'+over.length+'</div><div class="sl">मुदत संपली</div></div>'+
-    '<div class="sc b"><div class="sn">'+actS+'</div><div class="sl">विद्यार्थी</div></div>'+
-    '<div class="sc p"><div class="sn">'+withT+'</div><div class="sl">शिक्षक प्रेरित</div></div>'+
-    '<div class="sc gold"><div class="sn">'+ret+'</div><div class="sl">वाचलेली</div></div>'+
-    '</div>'+
-    (over.length>0?'<div class="alert aw"><div>⚠️</div><div><strong style="color:var(--r)">मुदत संपलेली पुस्तके: '+over.length+'</strong> — तात्काळ परत मागवा</div></div>':'')+
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">'+
-    '<div class="card"><div class="ct">👨‍🏫 शिक्षक प्रेरणा</div><div style="display:flex;align-items:flex-end;gap:3px;height:80px;">'+tcBars+'</div></div>'+
-    '<div class="card"><div class="ct">📊 आकडेवारी</div>'+
-    '<div style="font-size:.78rem;"><div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);"><span>एकूण व्यवहार</span><strong>'+transactions.length+'</strong></div>'+
-    '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);"><span>परत केलेली</span><strong>'+ret+'</strong></div>'+
-    '<div style="display:flex;justify-content:space-between;padding:5px 0;"><span>सध्या बाहेर</span><strong>'+issd+'</strong></div></div></div>'+
-    '</div>'+
-    '<div class="card"><div class="ct">⏰ मुदत संपलेली</div><div class="tw"><table><thead><tr><th>नाव</th><th>वर्ग</th><th>पुस्तक</th><th>थकित</th></tr></thead><tbody>'+overRows+'</tbody></table></div></div>';
+  var tcBars=tcStats.map(function(t,i){var h=Math.max(Math.round(t.cnt/maxT*70),3);return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:90%;height:'+h+'px;background:'+colors[i%6]+';border-radius:3px 3px 0 0;" title="'+t.cnt+'"></div><div style="font-size:.56rem;color:var(--mt);margin-top:2px;overflow:hidden;max-width:48px;white-space:nowrap;text-overflow:ellipsis;">'+t.name+'</div></div>';}).join('');
+  var overRows=over.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--mt);padding:14px;">&#x2705; \u0915\u094B\u0923\u0924\u0940\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':over.map(function(tx){return '<tr><td>'+tx.sName+'</td><td>'+tx.cls+'</td><td>'+tx.bTitle+'</td><td><span class="bdg bgr">+'+dL(tx.due)+' \u0926\u093F.</span></td></tr>';}).join('');
+  return '<div class="sg"><div class="sc"><div class="sn">'+total+'</div><div class="sl">\u0938\u0930\u094D\u0935 \u092A\u0941\u0938\u094D\u0924\u0915\u0947</div></div><div class="sc g"><div class="sn">'+(total-issd)+'</div><div class="sl">\u0909\u092A\u0932\u092C\u094D\u0927</div></div><div class="sc r"><div class="sn">'+over.length+'</div><div class="sl">\u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0940</div></div><div class="sc b"><div class="sn">'+actS+'</div><div class="sl">\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</div></div><div class="sc p"><div class="sn">'+transactions.filter(function(t){return t.tId;}).length+'</div><div class="sl">\u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0947\u0930\u093F\u0924</div></div><div class="sc gold"><div class="sn">'+ret+'</div><div class="sl">\u0935\u093E\u091A\u0932\u0947\u0932\u0940</div></div></div>'+(over.length>0?'<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div><strong style="color:var(--r)">\u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0947\u0932\u0940: '+over.length+'</strong></div></div>':'')+
+  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;"><div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; \u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0947\u0930\u0923\u093E</div><div style="display:flex;align-items:flex-end;gap:3px;height:80px;">'+tcBars+'</div></div><div class="card"><div class="ct">&#x1F4CA; \u0906\u0915\u0921\u0947\u0935\u093E\u0930\u0940</div><div style="font-size:.78rem;"><div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);"><span>\u090F\u0915\u0942\u0923 \u0935\u094D\u092F\u0935\u0939\u093E\u0930</span><strong>'+transactions.length+'</strong></div><div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);"><span>\u0935\u093E\u091A\u0932\u0947\u0932\u0940</span><strong>'+ret+'</strong></div><div style="display:flex;justify-content:space-between;padding:5px 0;"><span>\u0938\u0927\u094D\u092F\u093E \u092C\u093E\u0939\u0947\u0930</span><strong>'+issd+'</strong></div></div></div></div>'+
+  '<div class="card"><div class="ct">&#x23F0; \u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0947\u0932\u0940</div><div class="tw"><table><thead><tr><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0925\u0915\u0940\u0924</th></tr></thead><tbody>'+overRows+'</tbody></table></div></div>';
 }
 
-// ============================================================
-// LIBRARY - ISSUE
-// ============================================================
 function secLI(){
   var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  var bkOpts='<option value="">निवडा</option>'+books.filter(function(b){return avail(b.id)>0;}).map(function(b){return '<option value="'+b.id+'">'+b.title+' (उप:'+avail(b.id)+')</option>';}).join('');
-  var tcOpts='<option value="">-- निवडा --</option>'+TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');
-  return '<div class="card"><div class="ct">📤 पुस्तक देणे</div>'+
-    '<div class="fg2">'+
-    '<div class="fg"><label>वर्ग</label><select id="i-cls"><option value="">निवडा</option>'+clsOpts+'</select></div>'+
-    '<div class="fg"><label>हजेरी क्र.</label><select id="i-roll"><option value="">— निवडा —</option></select></div>'+
-    '<div class="fg"><label>पुस्तक</label><select id="i-bk">'+bkOpts+'</select></div>'+
-    '<div class="fg"><label>तारीख</label><input type="date" id="i-dt" value="'+today()+'"></div>'+
-    '<div class="fg"><label>प्रेरक शिक्षक <span style="color:var(--r)">*अनिवार्य</span></label><select id="i-tc">'+tcOpts+'</select></div>'+
-    '</div>'+
-    '<div class="alert ai"><div>📅</div><div>मुदत: <strong>7 दिवस</strong></div></div>'+
-    '<button class="btn bp" data-action="issuebook">📤 पुस्तक द्या</button>'+
-    '</div>'+
-    '<div class="card"><div class="ct">📋 सध्या दिलेली</div>'+
-    '<div class="sb"><input type="text" id="is-q" placeholder="शोधा..."><select id="is-cls"><option value="">सर्व वर्ग</option>'+clsOpts+'</select></div>'+
-    '<div class="tw"><table><thead><tr><th>नाव</th><th>वर्ग</th><th>पुस्तक</th><th>दिले</th><th>मुदत</th>'+(curRole!=='shik'?'<th>शिक्षक</th>':'')+'<th>स्थिती</th></tr></thead><tbody id="is-body"></tbody></table></div></div>';
+  var bkOpts='<option value="">\u0928\u093F\u0935\u0921\u093E</option>'+books.filter(function(b){return avail(b.id)>0;}).map(function(b){return '<option value="'+b.id+'">'+b.title+' (\u0909\u092A:'+avail(b.id)+')</option>';}).join('');
+  var tcOpts='<option value="">-- \u0928\u093F\u0935\u0921\u093E --</option>'+TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');
+  return '<div class="card"><div class="ct">&#x1F4E4; \u092A\u0941\u0938\u094D\u0924\u0915 \u0926\u0947\u0923\u0947</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="i-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div><div class="fg"><label>\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930.</label><select id="i-roll"><option value="">\u0928\u093F\u0935\u0921\u093E</option></select></div><div class="fg"><label>\u092A\u0941\u0938\u094D\u0924\u0915</label><select id="i-bk">'+bkOpts+'</select></div><div class="fg"><label>\u0924\u093E\u0930\u0940\u0916</label><input type="date" id="i-dt" value="'+today()+'"></div><div class="fg"><label>\u092A\u094D\u0930\u0947\u0930\u0915 \u0936\u093F\u0915\u094D\u0937\u0915 <span style="color:var(--r)">*</span></label><select id="i-tc">'+tcOpts+'</select></div></div><div class="alert ai"><div>&#x1F4C5;</div><div>\u092E\u0941\u0926\u0924: <strong>7 \u0926\u093F\u0935\u0938</strong></div></div><button class="btn bp" data-action="issuebook">&#x1F4E4; \u092A\u0941\u0938\u094D\u0924\u0915 \u0926\u094D\u092F\u093E</button></div><div class="card"><div class="ct">&#x1F4CB; \u0938\u0927\u094D\u092F\u093E \u0926\u093F\u0932\u0947\u0932\u0940</div><div class="sb"><input type="text" id="is-q" placeholder="\u0936\u094B\u0927\u093E..."><select id="is-cls"><option value="">\u0938\u0930\u094D\u0935 \u0935\u0930\u094D\u0917</option>'+clsOpts+'</select></div><div class="tw"><table><thead><tr><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0926\u093F\u0932\u0947</th><th>\u092E\u0941\u0926\u0924</th>'+(curRole!=='shik'?'<th>\u0936\u093F\u0915\u094D\u0937\u0915</th>':'')+'<th>\u0938\u094D\u0925\u093F\u0924\u0940</th></tr></thead><tbody id="is-body"></tbody></table></div></div>';
 }
+function loadStdByClass(){var cls=(document.getElementById('i-cls')||{}).value||'';var sel=document.getElementById('i-roll');if(!sel)return;sel.innerHTML='<option value="">\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930. \u0928\u093F\u0935\u0921\u093E</option>';students.filter(function(s){return s.status!=='removed'&&(!cls||s.cls===cls);}).sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);}).forEach(function(s){var o=document.createElement('option');o.value=s.id;o.textContent=s.roll+' - '+s.name;sel.appendChild(o);});}
+function refreshIssued(){var q=((document.getElementById('is-q')||{}).value||'').toLowerCase();var cf=(document.getElementById('is-cls')||{}).value||'';var body=document.getElementById('is-body');if(!body)return;var isA=curRole!=='shik';var rows=transactions.filter(function(t){return !t.retDate&&(t.sName.toLowerCase().indexOf(q)>=0||t.bTitle.toLowerCase().indexOf(q)>=0)&&(!cf||t.cls===cf);});body.innerHTML=rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--mt);padding:14px;">\u0915\u094B\u0923\u0924\u0947\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':rows.map(function(t){var late=dL(t.due);var badge=late>0?'<span class="bdg bgr">\u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0940</span>':'<span class="bdg bgb">\u0935\u0947\u0933\u0947\u0924</span>';return '<tr><td>'+t.sName+'</td><td>'+t.cls+'</td><td>'+t.bTitle+'</td><td>'+fmt(t.issueDate)+'</td><td>'+fmt(t.due)+'</td>'+(isA?'<td>'+(t.tName||'-')+'</td>':'')+'<td>'+badge+'</td></tr>';}).join('');}
+function issueBook(){var sId=parseInt((document.getElementById('i-roll')||{}).value)||0;var bId=parseInt((document.getElementById('i-bk')||{}).value)||0;var dt=(document.getElementById('i-dt')||{}).value||today();var tId=parseInt((document.getElementById('i-tc')||{}).value)||0;if(!sId){toast('\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093F\u0935\u0921\u093E!','err');return;}if(!bId){toast('\u092A\u0941\u0938\u094D\u0924\u0915 \u0928\u093F\u0935\u0921\u093E!','err');return;}if(!tId){toast('\u092A\u094D\u0930\u0947\u0930\u0915 \u0936\u093F\u0915\u094D\u0937\u0915 \u0905\u0928\u093F\u0935\u093E\u0930\u094D\u092F!','err');return;}if(avail(bId)<1){toast('\u092A\u0941\u0938\u094D\u0924\u0915 \u0909\u092A\u0932\u092C\u094D\u0927 \u0928\u093E\u0939\u0940!','err');return;}var s=students.find(function(x){return x.id===sId;});var b=books.find(function(x){return x.id===bId;});var tc=TEACHERS.find(function(x){return x.id===tId;});transactions.push({id:nextTxId++,sId:sId,sName:s.name,cls:s.cls,bId:bId,bTitle:b.title,subj:b.subject||'',issueDate:dt,retDate:null,due:addDays(dt,7),tId:tId,tName:tc?tc.name:null});toast(b.title+' \u2192 '+s.name+' \u0932\u093E \u0926\u093F\u0932\u0947! &#x2705;');syncAll();refreshIssued();}
 
-function loadStdByClass(clsElId,rollElId){
-  var cid=clsElId||'i-cls';var rid=rollElId||'i-roll';
-  var cls=(document.getElementById(cid)||{}).value||'';
-  var sel=document.getElementById(rid);if(!sel)return;
-  sel.innerHTML='<option value="">हजेरी क्र. निवडा</option>';
-  students.filter(function(s){return s.status!=='removed'&&(!cls||s.cls===cls);})
-    .sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);})
-    .forEach(function(s){var o=document.createElement('option');o.value=s.id;o.textContent=s.roll+' - '+s.name;sel.appendChild(o);});
-}
+function secLR(){var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');return '<div class="card"><div class="ct">&#x1F4E5; \u092A\u0941\u0938\u094D\u0924\u0915 \u092A\u0930\u0924 \u0918\u0947\u0923\u0947</div><div class="sb"><select id="rt-cls"><option value="">\u0938\u0930\u094D\u0935 \u0935\u0930\u094D\u0917</option>'+clsOpts+'</select><input type="text" id="rt-q" placeholder="\u0936\u094B\u0927\u093E..."></div><div class="tw"><table><thead><tr><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0926\u093F\u0932\u0947</th><th>\u0938\u094D\u0925\u093F\u0924\u0940</th><th>\u092A\u0930\u0924 \u0936\u093F\u0915\u094D\u0937\u0915 <span style="color:var(--r)">*</span></th><th>\u0915\u0943\u0924\u0940</th></tr></thead><tbody id="rt-body"></tbody></table></div></div>';}
+function filterReturn(){var q=((document.getElementById('rt-q')||{}).value||'').toLowerCase();var cf=(document.getElementById('rt-cls')||{}).value||'';var body=document.getElementById('rt-body');if(!body)return;var tcOpts=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');var rows=transactions.filter(function(t){return !t.retDate&&(t.sName.toLowerCase().indexOf(q)>=0||t.bTitle.toLowerCase().indexOf(q)>=0)&&(!cf||t.cls===cf);});body.innerHTML=rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--mt);padding:14px;">\u092A\u0930\u0924 \u0915\u0930\u093E\u092F\u091A\u0947 \u0915\u093E\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':rows.map(function(t){var late=dL(t.due);var badge=late>0?'<span class="bdg bgr">+'+late+' \u0926\u093F\u0935\u0938</span>':'<span class="bdg bgb">\u0935\u0947\u0933\u0947\u0924</span>';return '<tr><td>'+t.sName+'</td><td>'+t.cls+'</td><td>'+t.bTitle+'</td><td>'+fmt(t.issueDate)+'</td><td>'+badge+'</td><td><select id="rtc-'+t.id+'" style="padding:3px 6px;border:1.5px solid var(--bdr);border-radius:6px;font-family:inherit;font-size:.76rem;"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+tcOpts+'</select></td><td><button class="btn bs bsm" data-action="returnbook" data-txid="'+t.id+'">\u092A\u0930\u0924</button></td></tr>';}).join('');}
+function returnBook(txId){var tId=parseInt((document.getElementById('rtc-'+txId)||{}).value)||0;if(!tId){toast('\u092A\u0930\u0924 \u0936\u093F\u0915\u094D\u0937\u0915 \u0905\u0928\u093F\u0935\u093E\u0930\u094D\u092F!','err');return;}var tx=transactions.find(function(t){return t.id===txId;});if(!tx)return;var tc=TEACHERS.find(function(t){return t.id===tId;});tx.retDate=today();tx.retTId=tId;tx.retTName=tc?tc.name:null;toast(tx.bTitle+' \u092A\u0930\u0924 \u092E\u093F\u0933\u093E\u0932\u0947! &#x2705;');syncAll();filterReturn();}
 
-function refreshIssued(){
-  var q=((document.getElementById('is-q')||{}).value||'').toLowerCase();
-  var cf=(document.getElementById('is-cls')||{}).value||'';
-  var body=document.getElementById('is-body');if(!body)return;
-  var isA=curRole!=='shik';
-  var rows=transactions.filter(function(t){
-    return !t.retDate&&
-      (t.sName.toLowerCase().indexOf(q)>=0||t.bTitle.toLowerCase().indexOf(q)>=0)&&
-      (!cf||t.cls===cf);
-  });
-  body.innerHTML=rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--mt);padding:14px;">कोणतेही नाही</td></tr>':
-    rows.map(function(t){
-      var late=dL(t.due);
-      var badge=late>0?'<span class="bdg bgr">मुदत संपली</span>':'<span class="bdg bgb">वेळेत</span>';
-      return '<tr><td>'+t.sName+'</td><td>'+t.cls+'</td><td>'+t.bTitle+'</td><td>'+fmt(t.issueDate)+'</td><td>'+fmt(t.due)+'</td>'+(isA?'<td>'+(t.tName||'-')+'</td>':'')+'<td>'+badge+'</td></tr>';
-    }).join('');
-}
+function secLC(){var rows=books.map(function(b,i){var av=avail(b.id);return '<tr><td>'+(i+1)+'</td><td><strong>'+b.title+'</strong></td><td>'+(b.author||'-')+'</td><td>'+(b.subject||'\u0907\u0924\u0930')+'</td><td>'+b.copies+'</td><td>'+av+'</td><td>'+(av>0?'<span class="bdg bgg">\u0909\u092A\u0932\u092C\u094D\u0927</span>':'<span class="bdg bgr">\u0928\u093E\u0939\u0940</span>')+'</td></tr>';}).join('');return '<div class="card"><div class="ct">&#x1F4D6; \u0917\u094D\u0930\u0902\u0925\u0938\u0942\u091A\u0940</div><details style="margin-bottom:11px;"><summary style="cursor:pointer;font-weight:600;color:var(--s);padding:5px 0;">&#x2795; \u0928\u0935\u0940\u0928 \u092A\u0941\u0938\u094D\u0924\u0915 \u091C\u094B\u0921\u093E</summary><div style="margin-top:9px;"><div class="fg2"><div class="fg"><label>\u0928\u093E\u0935</label><input type="text" id="b-t" placeholder="\u092A\u0941\u0938\u094D\u0924\u0915\u093E\u091A\u0947 \u0928\u093E\u0935"></div><div class="fg"><label>\u0932\u0947\u0916\u0915</label><input type="text" id="b-a"></div><div class="fg"><label>\u0935\u093F\u0937\u092F/\u092A\u094D\u0930\u0915\u093E\u0930</label><input type="text" id="b-s" placeholder="\u0915\u093E\u0926\u0902\u092C\u0930\u0940, \u0935\u093F\u091C\u094D\u091E\u093E\u0928..."></div><div class="fg"><label>\u092A\u094D\u0930\u0924\u0940</label><input type="number" id="b-c" value="1" min="1"></div></div><button class="btn bs bsm" data-action="addbook">&#x2705; \u091C\u094B\u0921\u093E</button></div></details><div class="tw"><table><thead><tr><th>#</th><th>\u0928\u093E\u0935</th><th>\u0932\u0947\u0916\u0915</th><th>\u0935\u093F\u0937\u092F</th><th>\u090F\u0915\u0942\u0923</th><th>\u0909\u092A\u0932\u092C\u094D\u0927</th><th>\u0938\u094D\u0925\u093F\u0924\u0940</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';}
+function addBook(){var t=(document.getElementById('b-t')||{}).value||'';if(!t){toast('\u0928\u093E\u0935 \u091F\u093E\u0915\u093E!','err');return;}books.push({id:nextBId++,title:t,author:(document.getElementById('b-a')||{}).value||'',subject:(document.getElementById('b-s')||{}).value||'\u0907\u0924\u0930',copies:parseInt((document.getElementById('b-c')||{}).value)||1});toast(t+' \u091C\u094B\u0921\u0932\u0947! &#x2705;');syncAll();showTab('lc');}
 
-function issueBook(){
-  var sId=parseInt((document.getElementById('i-roll')||{}).value)||0;
-  var bId=parseInt((document.getElementById('i-bk')||{}).value)||0;
-  var dt=(document.getElementById('i-dt')||{}).value||today();
-  var tId=parseInt((document.getElementById('i-tc')||{}).value)||0;
-  if(!sId){toast('विद्यार्थी निवडा!','err');return;}
-  if(!bId){toast('पुस्तक निवडा!','err');return;}
-  if(!tId){toast('प्रेरक शिक्षक अनिवार्य आहे!','err');return;}
-  if(avail(bId)<1){toast('पुस्तक उपलब्ध नाही!','err');return;}
-  var s=students.find(function(x){return x.id===sId;});
-  var b=books.find(function(x){return x.id===bId;});
-  var tc=TEACHERS.find(function(x){return x.id===tId;});
-  var tx={id:nextTxId++,sId:sId,sName:s.name,cls:s.cls,bId:bId,bTitle:b.title,subj:b.subject||'',issueDate:dt,retDate:null,due:addDays(dt,7),tId:tId,tName:tc?tc.name:null};
-  transactions.push(tx);
-  toast(b.title+' → '+s.name+' ला दिले! ✅');
-  syncAll();refreshIssued();
-}
+function secLS(){var isA=(curRole==='super'||curRole==='mukh');var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');var rows=students.filter(function(s){return s.status!=='removed';}).map(function(s){var cnt=transactions.filter(function(t){return t.sId===s.id;}).length;var curr=transactions.filter(function(t){return t.sId===s.id&&!t.retDate;}).length;return '<tr><td>'+s.roll+'</td><td>'+s.name+'</td><td>'+s.cls+'</td><td><span class="bdg bgg">\u0938\u0915\u094D\u0930\u093F\u092F</span></td><td>'+cnt+'</td><td>'+(curr>0?'<span class="bdg bgy">'+curr+'</span>':'-')+'</td>'+(isA?'<td><button class="btn bo bsm" data-action="stdaction" data-sid="'+s.id+'">&#x1F527;</button></td>':'<td></td>')+'</tr>';}).join('');return '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F393; \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u092F\u093E\u0926\u0940</div>'+(isA?'<details style="margin-bottom:11px;"><summary style="cursor:pointer;font-weight:600;color:var(--s);padding:5px 0;">&#x2795; \u0928\u0935\u0940\u0928 \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</summary><div style="margin-top:9px;"><div class="fg2"><div class="fg"><label>\u0928\u093E\u0935</label><input type="text" id="st-n"></div><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="st-c"><option value="">--</option>'+clsOpts+'</select></div><div class="fg"><label>\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930.</label><input type="text" id="st-r"></div></div><button class="btn bs bsm" data-action="addstudent">&#x2705; \u0926\u093E\u0916\u0932</button></div></details>':'')+
+'<div class="tw"><table><thead><tr><th>\u0939.\u0915\u094D\u0930.</th><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u0938\u094D\u0925\u093F\u0924\u0940</th><th>\u0935\u093E\u091A\u0932\u0947\u0932\u0940</th><th>\u0938\u0927\u094D\u092F\u093E</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';}
+function addStudent(){var n=(document.getElementById('st-n')||{}).value||'';var c=(document.getElementById('st-c')||{}).value||'';var r=(document.getElementById('st-r')||{}).value||'';if(!n||!c){toast('\u0928\u093E\u0935 \u0935 \u0935\u0930\u094D\u0917 \u0906\u0935\u0936\u094D\u092F\u0915!','err');return;}students.push({id:nextSId++,name:n,cls:c,roll:r,status:'active',reason:''});toast(n+' \u0926\u093E\u0916\u0932 \u0915\u0947\u0932\u0947!');syncAll();showTab('ls');}
+function stdAction(sId){var s=students.find(function(x){return x.id===sId;});if(!s)return;document.getElementById('cm-t').textContent=s.name;document.getElementById('cm-b').textContent='\u0935\u0930\u094D\u0917: '+s.cls;document.getElementById('cm-form').innerHTML='<div class="fg"><label>\u0915\u094D\u0930\u093F\u092F\u093E</label><select id="sa-act"><option value="tc">TC \u0926\u094D\u092F\u093E</option><option value="fail">\u0928\u093E\u092A\u093E\u0938</option><option value="remove">\u0936\u093E\u0933\u0947\u0924\u0942\u0928 \u0915\u093E\u0922\u093E</option><option value="active">\u092A\u0941\u0928\u094D\u0939\u093E \u0938\u0915\u094D\u0930\u093F\u092F</option></select></div><div class="fg" style="margin-top:8px;"><label>\u0915\u093E\u0930\u0923 <span style="color:var(--r)">*</span></label><input type="text" id="sa-reason" placeholder="\u0915\u093E\u0930\u0923 \u0928\u092E\u0942\u0926 \u0915\u0930\u093E"></div>';document.getElementById('cm-ok').onclick=function(){var act=(document.getElementById('sa-act')||{}).value||'';var reason=(document.getElementById('sa-reason')||{}).value||'';if(!reason){toast('\u0915\u093E\u0930\u0923 \u0906\u0935\u0936\u094D\u092F\u0915!','err');return;}s.status=act;s.reason=reason;toast(s.name+' - '+act+'!');syncAll();closeM('cm');showTab('ls');};openM('cm');}
 
-// ============================================================
-// LIBRARY - RETURN
-// ============================================================
-function secLR(){
-  var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  return '<div class="card"><div class="ct">📥 पुस्तक परत घेणे</div>'+
-    '<div class="sb"><select id="rt-cls"><option value="">सर्व वर्ग</option>'+clsOpts+'</select>'+
-    '<input type="text" id="rt-q" placeholder="शोधा..."></div>'+
-    '<div class="tw"><table><thead><tr><th>नाव</th><th>वर्ग</th><th>पुस्तक</th><th>दिले</th><th>स्थिती</th><th>परत शिक्षक <span style="color:var(--r)">*</span></th><th>कृती</th></tr></thead><tbody id="rt-body"></tbody></table></div>'+
-    '</div>';
-}
+function secLRP(){return '<div id="lrp-content"><div style="padding:14px;text-align:center;color:var(--mt);">&#x1F504; \u0932\u094B\u0921...</div></div>';}
+function buildLibReport(){var el=document.getElementById('lrp-content');if(!el)return;var tcStats=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){var given=transactions.filter(function(tx){return tx.tId===tc.id;}).length;var ret2=transactions.filter(function(tx){return tx.tId===tc.id&&tx.retDate;}).length;var seen={};transactions.filter(function(tx){return tx.tId===tc.id;}).forEach(function(tx){seen[tx.sName]=1;});return{name:tc.name,given:given,ret:ret2,stds:Object.keys(seen).length};}).sort(function(a,b){return b.given-a.given;});var maxG=Math.max.apply(null,[1].concat(tcStats.map(function(t){return t.given;})));var tcRows=tcStats.map(function(tc){var pct=Math.round(tc.given/maxG*100);return '<tr><td><strong>'+tc.name+'</strong></td><td>'+tc.given+'</td><td>'+tc.ret+'</td><td>'+tc.stds+'</td><td><div class="pbar"><div class="pfill" style="width:'+pct+'%;background:var(--s);"></div></div></td></tr>';}).join('');var clsRows=CLASSES.map(function(c){var stds2=getStds(c.id);var readers=stds2.filter(function(s){return transactions.some(function(t){return t.sId===s.id&&t.retDate;});});var nonR=stds2.filter(function(s){return !transactions.some(function(t){return t.sId===s.id;});});return '<tr><td><strong>'+c.label+'</strong></td><td>'+stds2.length+'</td><td><span class="bdg bgg">'+readers.length+'</span></td><td><span class="bdg bgr">'+nonR.length+'</span></td></tr>';}).join('');el.innerHTML='<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; \u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0947\u0930\u0923\u093E</div><div class="tw"><table><thead><tr><th>\u0936\u093F\u0915\u094D\u0937\u0915</th><th>\u092A\u0941\u0938\u094D\u0924\u0915\u0947</th><th>\u092A\u0930\u0924</th><th>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</th><th>\u092A\u094D\u0930\u0917\u0924\u0940</th></tr></thead><tbody>'+tcRows+'</tbody></table></div></div><div class="card"><div class="ct">&#x1F3EB; \u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F \u0935\u093E\u091A\u0928</div><div class="tw"><table><thead><tr><th>\u0935\u0930\u094D\u0917</th><th>\u090F\u0915\u0942\u0923</th><th>\u0935\u093E\u091A\u0915</th><th>\u0935\u093E\u091A\u0928 \u0928\u093E\u0939\u0940</th></tr></thead><tbody>'+clsRows+'</tbody></table></div></div>';}
 
-function filterReturn(){
-  var q=((document.getElementById('rt-q')||{}).value||'').toLowerCase();
-  var cf=(document.getElementById('rt-cls')||{}).value||'';
-  var body=document.getElementById('rt-body');if(!body)return;
-  var tcOpts=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');
-  var rows=transactions.filter(function(t){
-    return !t.retDate&&
-      (t.sName.toLowerCase().indexOf(q)>=0||t.bTitle.toLowerCase().indexOf(q)>=0)&&
-      (!cf||t.cls===cf);
-  });
-  body.innerHTML=rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--mt);padding:14px;">परत करायचे काही नाही</td></tr>':
-    rows.map(function(t){
-      var late=dL(t.due);
-      var badge=late>0?'<span class="bdg bgr">+'+late+' दिवस</span>':'<span class="bdg bgb">वेळेत</span>';
-      // FIX: pass txId via data-txid attribute
-      return '<tr><td>'+t.sName+'</td><td>'+t.cls+'</td><td>'+t.bTitle+'</td><td>'+fmt(t.issueDate)+'</td><td>'+badge+'</td>'+
-        '<td><select id="rtc-'+t.id+'" style="padding:3px 6px;border:1.5px solid var(--bdr);border-radius:6px;font-family:inherit;font-size:.76rem;"><option value="">निवडा</option>'+tcOpts+'</select></td>'+
-        '<td><button class="btn bs bsm" data-action="returnbook" data-txid="'+t.id+'">परत</button></td></tr>';
-    }).join('');
-}
+function secLA(){if(curRole!=='super'&&curRole!=='mukh')return noAccess();var tcRows=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){return '<tr><td><strong>'+tc.name+'</strong></td><td>'+tc.pw+'</td><td>'+tc.classOf+'</td>'+(curRole==='super'?'<td><button class="btn bo bsm" data-action="changetcpw" data-tcid="'+tc.id+'">&#x1F511;</button></td>':'')+'</tr>';}).join('');return '<div class="card"><div class="ct">&#x1F511; \u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u0935\u094D\u092F\u0935\u0938\u094D\u0925\u093E\u092A\u0928</div>'+(curRole==='super'?'<div class="fg2"><div class="fg"><label>\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915 \u0928\u0935\u0940\u0928 PW</label><input type="password" id="pw-sup"></div><div class="fg"><label>\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915 \u0928\u0935\u0940\u0928 PW</label><input type="password" id="pw-muk"></div></div><button class="btn bp bsm" data-action="changepw">&#x1F511; \u092C\u0926\u0932\u093E</button><br><br>':'')+
+'<div class="tw"><table><thead><tr><th>\u0936\u093F\u0915\u094D\u0937\u0915</th><th>\u092A\u093E\u0938\u0935\u0930\u094D\u0921</th><th>\u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915</th>'+(curRole==='super'?'<th></th>':'')+'</tr></thead><tbody>'+tcRows+'</tbody></table></div></div>';}
+function changePW(){var ps=(document.getElementById('pw-sup')||{}).value||'';var pm=(document.getElementById('pw-muk')||{}).value||'';if(ps.length>=4)PW.super=ps;if(pm.length>=4)PW.mukh=pm;toast('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u092C\u0926\u0932\u0932\u0947! &#x2705;');syncAll();}
+function changeTcPw(id){var tc=TEACHERS.find(function(t){return t.id===id;});if(!tc)return;document.getElementById('cm-t').textContent=tc.name+' \u2014 \u092A\u093E\u0938\u0935\u0930\u094D\u0921';document.getElementById('cm-b').textContent='\u0938\u0927\u094D\u092F\u093E\u091A\u093E: '+tc.pw;document.getElementById('cm-form').innerHTML='<div class="fg"><label>\u0928\u0935\u0940\u0928 \u092A\u093E\u0938\u0935\u0930\u094D\u0921</label><input type="text" id="new-pw" placeholder="\u0915\u093F\u092E\u093E\u0928 4 \u0905\u0915\u094D\u0937\u0930\u0947"></div>';document.getElementById('cm-ok').onclick=function(){var np=(document.getElementById('new-pw')||{}).value||'';if(np.length<4){toast('\u0915\u093F\u092E\u093E\u0928 4!','err');return;}tc.pw=np;toast('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u092C\u0926\u0932\u0932\u093E! &#x2705;');syncAll();closeM('cm');showTab('la');};openM('cm');}
 
-function returnBook(txId){
-  var tId=parseInt((document.getElementById('rtc-'+txId)||{}).value)||0;
-  if(!tId){toast('परत घेणारा शिक्षक अनिवार्य आहे!','err');return;}
-  var tx=transactions.find(function(t){return t.id===txId;});if(!tx)return;
-  var tc=TEACHERS.find(function(t){return t.id===tId;});
-  tx.retDate=today();tx.retTId=tId;tx.retTName=tc?tc.name:null;
-  toast(tx.bTitle+' परत मिळाले! ✅');
-  syncAll();filterReturn();
-}
-
-// ============================================================
-// LIBRARY - CATALOG
-// ============================================================
-function secLC(){
-  var rows=books.map(function(b,i){
-    var av=avail(b.id);
-    return '<tr><td>'+(i+1)+'</td><td><strong>'+b.title+'</strong></td><td>'+(b.author||'-')+'</td><td>'+(b.subject||'इतर')+'</td><td>'+b.copies+'</td><td>'+av+'</td><td>'+(av>0?'<span class="bdg bgg">उपलब्ध</span>':'<span class="bdg bgr">नाही</span>')+'</td></tr>';
-  }).join('');
-  return '<div class="card"><div class="ct">📖 ग्रंथसूची</div>'+
-    '<details style="margin-bottom:11px;"><summary style="cursor:pointer;font-weight:600;color:var(--s);padding:5px 0;">➕ नवीन पुस्तक जोडा</summary>'+
-    '<div style="margin-top:9px;"><div class="fg2">'+
-    '<div class="fg"><label>नाव</label><input type="text" id="b-t" placeholder="पुस्तकाचे नाव"></div>'+
-    '<div class="fg"><label>लेखक</label><input type="text" id="b-a" placeholder="लेखकाचे नाव"></div>'+
-    '<div class="fg"><label>विषय/प्रकार</label><input type="text" id="b-s" placeholder="कादंबरी, विज्ञान..."></div>'+
-    '<div class="fg"><label>प्रती</label><input type="number" id="b-c" value="1" min="1"></div>'+
-    '</div><button class="btn bs bsm" data-action="addbook">✅ जोडा</button></div></details>'+
-    '<div class="tw"><table><thead><tr><th>#</th><th>नाव</th><th>लेखक</th><th>विषय</th><th>एकूण</th><th>उपलब्ध</th><th>स्थिती</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
-}
-
-function addBook(){
-  var t=(document.getElementById('b-t')||{}).value||'';
-  if(!t){toast('नाव टाका!','err');return;}
-  books.push({id:nextBId++,title:t,author:(document.getElementById('b-a')||{}).value||'',subject:(document.getElementById('b-s')||{}).value||'इतर',copies:parseInt((document.getElementById('b-c')||{}).value)||1});
-  toast(t+' जोडले! ✅');syncAll();showTab('lc');
-}
-
-// ============================================================
-// LIBRARY - STUDENTS
-// ============================================================
-function secLS(){
-  var isA=(curRole==='super'||curRole==='mukh');
-  var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  var rows=students.filter(function(s){return s.status!=='removed';}).map(function(s){
-    var cnt=transactions.filter(function(t){return t.sId===s.id;}).length;
-    var curr=transactions.filter(function(t){return t.sId===s.id&&!t.retDate;}).length;
-    // FIX: pass sId via data-sid attribute
-    return '<tr><td>'+s.roll+'</td><td>'+s.name+'</td><td>'+s.cls+'</td>'+
-      '<td><span class="bdg bgg">सक्रिय</span></td><td>'+cnt+'</td><td>'+(curr>0?'<span class="bdg bgy">'+curr+'</span>':'-')+'</td>'+
-      (isA?'<td><button class="btn bo bsm" data-action="stdaction" data-sid="'+s.id+'">क्रिया</button></td>':'<td></td>')+'</tr>';
-  }).join('');
-  return '<div class="card"><div class="ct">👨‍🎓 विद्यार्थी यादी</div>'+
-    (isA?'<details style="margin-bottom:11px;"><summary style="cursor:pointer;font-weight:600;color:var(--s);padding:5px 0;">➕ नवीन विद्यार्थी दाखल</summary>'+
-    '<div style="margin-top:9px;"><div class="fg2">'+
-    '<div class="fg"><label>नाव</label><input type="text" id="st-n"></div>'+
-    '<div class="fg"><label>वर्ग</label><select id="st-c"><option value="">--</option>'+clsOpts+'</select></div>'+
-    '<div class="fg"><label>हजेरी क्र.</label><input type="text" id="st-r"></div>'+
-    '</div><button class="btn bs bsm" data-action="addstudent">✅ दाखल</button></div></details>':'')+
-    '<div class="tw"><table><thead><tr><th>ह.क्र.</th><th>नाव</th><th>वर्ग</th><th>स्थिती</th><th>वाचलेली</th><th>सध्या</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
-}
-
-function addStudent(){
-  var n=(document.getElementById('st-n')||{}).value||'';
-  var c=(document.getElementById('st-c')||{}).value||'';
-  var r=(document.getElementById('st-r')||{}).value||'';
-  if(!n||!c){toast('नाव व वर्ग आवश्यक!','err');return;}
-  students.push({id:nextSId++,name:n,cls:c,roll:r,status:'active',reason:''});
-  toast(n+' दाखल केले!');syncAll();showTab('ls');
-}
-
-function stdAction(sId){
-  var s=students.find(function(x){return x.id===sId;});if(!s)return;
-  document.getElementById('cm-t').textContent=s.name;
-  document.getElementById('cm-b').textContent='वर्ग: '+s.cls+' | स्थिती: '+s.status;
-  document.getElementById('cm-form').innerHTML=
-    '<div class="fg"><label>क्रिया</label><select id="sa-act">'+
-    '<option value="tc">TC द्या</option>'+
-    '<option value="fail">नापास</option>'+
-    '<option value="remove">शाळेतून काढा</option>'+
-    '<option value="active">पुन्हा सक्रिय</option>'+
-    '</select></div>'+
-    '<div class="fg" style="margin-top:8px;"><label>कारण <span style="color:var(--r)">*</span></label><input type="text" id="sa-reason" placeholder="कारण नमूद करा"></div>';
-  document.getElementById('cm-ok').onclick=function(){
-    var act=(document.getElementById('sa-act')||{}).value||'';
-    var reason=(document.getElementById('sa-reason')||{}).value||'';
-    if(!reason){toast('कारण आवश्यक!','err');return;}
-    s.status=act;s.reason=reason;
-    toast(s.name+' - '+act+' केले!');syncAll();closeM('cm');showTab('ls');
-  };
-  openM('cm');
-}
-
-// ============================================================
-// LIBRARY - REPORT
-// ============================================================
-function secLRP(){
-  return '<div id="lrp-content"><div style="padding:14px;text-align:center;color:var(--mt);">🔄 लोड...</div></div>';
-}
-
-function buildLibReport(){
-  var el=document.getElementById('lrp-content');if(!el)return;
-  var tcStats=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){
-    var given=transactions.filter(function(tx){return tx.tId===tc.id;}).length;
-    var ret2=transactions.filter(function(tx){return tx.tId===tc.id&&tx.retDate;}).length;
-    var seen={};transactions.filter(function(tx){return tx.tId===tc.id;}).forEach(function(tx){seen[tx.sName]=1;});
-    var stds=Object.keys(seen).length;
-    return{name:tc.name,given:given,ret:ret2,stds:stds};
-  }).sort(function(a,b){return b.given-a.given;});
-  var maxG=Math.max.apply(null,[1].concat(tcStats.map(function(t){return t.given;})));
-  var tcRows=tcStats.map(function(tc){
-    var pct=Math.round(tc.given/maxG*100);
-    return '<tr><td><strong>'+tc.name+'</strong></td><td>'+tc.given+'</td><td>'+tc.ret+'</td><td>'+tc.stds+'</td><td><div class="pbar"><div class="pfill" style="width:'+pct+'%;background:var(--s);"></div></div></td></tr>';
-  }).join('');
-  var clsRows=CLASSES.map(function(c){
-    var stds2=getStds(c.id);
-    var readers=stds2.filter(function(s){return transactions.some(function(t){return t.sId===s.id&&t.retDate;});});
-    var nonR=stds2.filter(function(s){return !transactions.some(function(t){return t.sId===s.id;});});
-    return '<tr><td><strong>'+c.label+'</strong></td><td>'+stds2.length+'</td><td><span class="bdg bgg">'+readers.length+'</span></td><td><span class="bdg bgr">'+nonR.length+'</span></td></tr>';
-  }).join('');
-  el.innerHTML=
-    '<div class="card"><div class="ct">👨‍🏫 शिक्षक प्रेरणा अहवाल</div>'+
-    '<div class="tw"><table><thead><tr><th>शिक्षक</th><th>पुस्तके</th><th>परत</th><th>विद्यार्थी</th><th>प्रगती</th></tr></thead><tbody>'+tcRows+'</tbody></table></div></div>'+
-    '<div class="card"><div class="ct">🏫 वर्गनिहाय वाचन अहवाल</div>'+
-    '<div class="tw"><table><thead><tr><th>वर्ग</th><th>एकूण</th><th>वाचक</th><th>वाचन नाही</th></tr></thead><tbody>'+clsRows+'</tbody></table></div></div>';
-}
-
-// ============================================================
-// LIBRARY - DONOR
-// ============================================================
-function secLDon(){
-  var totalCopies=books.reduce(function(s,b){return s+b.copies;},0);
-  var totalDone=transactions.filter(function(t){return t.retDate;}).length;
-  var actS=students.filter(function(s){return s.status!=='removed';}).length;
-  return '<div class="dhero"><div class="dh-bg">📚</div><div class="dh-rel">'+
-    '<div style="font-size:1.25rem;font-weight:800;">📚 ग्रंथालय — आमची गरज</div>'+
-    '<div style="opacity:.7;font-size:.8rem;margin-top:3px;">एकनाथ माध्यमिक विद्यालय, एरंडगाव • डॉ. अ.पी.जे. अब्दुल कलाम ग्रंथालय</div>'+
-    '<div class="dhstats">'+
-    '<div class="dhs"><div class="dhs-n">'+actS+'</div><div class="dhs-l">विद्यार्थी</div></div>'+
-    '<div class="dhs"><div class="dhs-n">'+totalCopies+'</div><div class="dhs-l">पुस्तके</div></div>'+
-    '<div class="dhs"><div class="dhs-n">'+totalDone+'</div><div class="dhs-l">वाचलेली</div></div>'+
-    '<div class="dhs"><div class="dhs-n">'+books.length+'</div><div class="dhs-l">शीर्षके</div></div>'+
-    '</div></div></div>'+
-    '<div class="card" style="background:linear-gradient(135deg,#E6F5EC,#F3EDE4);"><div class="ct">📣 आवाहन</div>'+
-    '<p style="font-size:.81rem;line-height:1.6;">आपल्या देणगीने एक विद्यार्थ्याचे भविष्य उजळेल! आता शाळेला आणखी पुस्तके हवी आहेत.</p>'+
-    '<button class="btn bp" style="margin-top:9px;" data-action="emailcontact">📧 संपर्क</button></div>';
-}
-
-// ============================================================
-// LIBRARY - ADMIN
-// ============================================================
-function secLA(){
-  if(curRole!=='super'&&curRole!=='mukh')return noAccess();
-  var tcRows=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){
-    return '<tr><td><strong>'+tc.name+'</strong></td><td>'+tc.pw+'</td><td>'+tc.subjects.join(', ')+'</td><td>'+tc.classOf+'</td>'+
-      (curRole==='super'?'<td><button class="btn bo bsm" data-action="changetcpw" data-tcid="'+tc.id+'">🔑</button></td>':'')+
-      '</tr>';
-  }).join('');
-  return '<div class="card"><div class="ct">🔑 पासवर्ड व्यवस्थापन <span class="ctag">फक्त संस्थाचालक</span></div>'+
-    (curRole==='super'?'<div class="fg2">'+
-    '<div class="fg"><label>संस्थाचालक नवीन पासवर्ड</label><input type="password" id="pw-sup"></div>'+
-    '<div class="fg"><label>मुख्याध्यापक नवीन पासवर्ड</label><input type="password" id="pw-muk"></div>'+
-    '</div><button class="btn bp bsm" data-action="changepw">🔑 बदला</button><br><br>':'')+
-    '<div class="tw"><table><thead><tr><th>शिक्षक</th><th>पासवर्ड</th><th>विषय</th><th>वर्गशिक्षक</th>'+(curRole==='super'?'<th></th>':'')+'</tr></thead><tbody>'+tcRows+'</tbody></table></div></div>';
-}
-
-function changePW(){
-  var ps=(document.getElementById('pw-sup')||{}).value||'';
-  var pm=(document.getElementById('pw-muk')||{}).value||'';
-  if(ps.length>=4)PW.super=ps;
-  if(pm.length>=4)PW.mukh=pm;
-  toast('पासवर्ड बदलले! ✅');syncAll();
-}
-
-function changeTcPw(id){
-  var tc=TEACHERS.find(function(t){return t.id===id;});if(!tc)return;
-  document.getElementById('cm-t').textContent=tc.name+' — पासवर्ड बदल';
-  document.getElementById('cm-b').textContent='सध्याचा: '+tc.pw;
-  document.getElementById('cm-form').innerHTML='<div class="fg"><label>नवीन पासवर्ड</label><input type="text" id="new-pw" placeholder="किमान 6 अक्षरे"></div>';
-  document.getElementById('cm-ok').onclick=function(){
-    var np=(document.getElementById('new-pw')||{}).value||'';
-    if(np.length<4){toast('किमान 4 अक्षरे!','err');return;}
-    tc.pw=np;toast(tc.name+' पासवर्ड बदलला! ✅');syncAll();closeM('cm');showTab('la');
-  };
-  openM('cm');
-}
-
-// ============================================================
-// RESULTS - DASHBOARD
-// ============================================================
-function secRD(){
-  return '<div id="rd-content"><div style="padding:14px;text-align:center;color:var(--mt);">🔄 लोड...</div></div>';
-}
-
+// ---- RESULTS SECTIONS ----
+function secRD(){return '<div id="rd-content"><div style="padding:14px;text-align:center;color:var(--mt);">&#x1F504; \u0932\u094B\u0921...</div></div>';}
 function buildResDash(){
   var el=document.getElementById('rd-content');if(!el)return;
   var isA=(curRole==='super'||curRole==='mukh');
   if(isA){
-    var tcCards=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){
-      var done=0;var exp=0;
-      tc.classes.forEach(function(cls){
-        var stds2=getStds(cls);
-        var subjs2=getSubjs(cls).filter(function(s){return tc.subjects.indexOf(s)>=0;});
-        var exs=getExams(cls);
-        exp+=stds2.length*subjs2.length*exs.length;
-        subjs2.forEach(function(subj){exs.forEach(function(ex){var k=cls+'|'+subj+'|'+ex.key;if(marksData[k])done+=marksData[k].filter(function(e){return e.m!=='';}).length;});});
-      });
-      var pct=exp>0?Math.round(done/exp*100):0;
-      var color=pct>=80?'var(--g)':pct>=50?'var(--gold)':'var(--r)';
-      return '<div style="background:white;border-radius:10px;padding:12px;margin-bottom:8px;">'+
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'+
-        '<div style="font-size:.82rem;font-weight:700;">'+tc.name+'</div>'+
-        '<div style="font-size:1rem;font-weight:700;color:'+color+';">'+pct+'%</div></div>'+
-        '<div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+color+';"></div></div>'+
-        '<div style="display:flex;justify-content:space-between;font-size:.66rem;color:var(--mt);margin-top:3px;">'+
-        '<span>'+done+' केले</span><span>'+exp+' एकूण</span></div></div>';
-    }).join('');
-
-    var classToppers=CLASSES.map(function(c){
-      var stds2=getStds(c.id);if(!stds2.length)return null;
-      var ranked=stds2.map(function(s){
-        var r=calcStudentTotal(s.id,c.id);
-        return{name:s.name,pct:r.pct};
-      }).filter(function(x){return x.pct>0;}).sort(function(a,b){return b.pct-a.pct;});
-      return{cls:c.label,toppers:ranked.slice(0,3)};
-    }).filter(function(x){return x;});
-
-    var topperRows=classToppers.map(function(ct){
-      var medals=['🥇','🥈','🥉'];
-      var bdgs=ct.toppers.map(function(t,i){return medals[i]+' '+t.name.split(' ').pop()+' ('+t.pct+'%)';}).join(' | ');
-      return '<tr><td><strong>'+ct.cls+'</strong></td><td style="font-size:.74rem;">'+bdgs+'</td></tr>';
-    }).join('');
-
-    el.innerHTML=
-      '<div class="card"><div class="ct">⚙️ निकाल नियंत्रण</div>'+
-      '<div class="trow"><div><div style="font-weight:600;">🔒 गुण नोंदणी बंद/सुरू</div><div style="font-size:.72rem;color:var(--mt);">बंद केल्यानंतर शिक्षक गुण भरू शकणार नाही</div></div>'+
-      '<label class="tsw"><input type="checkbox" id="tg-lock" '+(settings.marksLocked?'checked':'')+' data-action="toggleLock"><span class="tsl"></span></label></div></div>'+
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'+
-      '<div class="card"><div class="ct">👨‍🏫 शिक्षक प्रगती 📊</div>'+tcCards+'</div>'+
-      '<div class="card"><div class="ct">🏆 वर्गप्रमुख विद्यार्थी</div>'+
-      '<div class="tw"><table><thead><tr><th>वर्ग</th><th>श्रेष्ठ विद्यार्थी</th></tr></thead><tbody>'+topperRows+'</tbody></table></div></div>'+
-      '</div>';
+    var tcCards=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){var done=0;var exp=0;tc.classes.forEach(function(cls){var stds2=getStds(cls);var subjs2=getSubjs(cls).filter(function(s){return tc.subjects.indexOf(s)>=0;});var exs=getExams(cls);exp+=stds2.length*subjs2.length*exs.length;subjs2.forEach(function(subj){exs.forEach(function(ex){var k=cls+'|'+subj+'|'+ex.key;if(marksData[k])done+=marksData[k].filter(function(e){return e.m!=='';}).length;});});});var pct=exp>0?Math.round(done/exp*100):0;var color=pct>=80?'var(--g)':pct>=50?'var(--gold)':'var(--r)';return '<div style="background:white;border-radius:10px;padding:12px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="font-size:.82rem;font-weight:700;">'+tc.name+'</div><div style="font-size:1rem;font-weight:700;color:'+color+';">'+pct+'%</div></div><div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+color+';"></div></div><div style="display:flex;justify-content:space-between;font-size:.66rem;color:var(--mt);margin-top:3px;"><span>'+done+' \u0915\u0947\u0932\u0947</span><span>'+exp+' \u090F\u0915\u0942\u0923</span></div></div>';}).join('');
+    el.innerHTML='<div class="card"><div class="ct">&#x2699;&#xFE0F; \u0928\u093F\u0915\u093E\u0932 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923</div><div class="trow"><div><div style="font-weight:600;">&#x1F512; \u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926/\u0938\u0941\u0930\u0942</div></div><label class="tsw"><input type="checkbox" id="tg-lock" '+(settings.marksLocked?'checked':'')+' data-action="toggleLock"><span class="tsl"></span></label></div></div><div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; \u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0917\u0924\u0940</div>'+tcCards+'</div>';
   }else if(curTc){
-    var myDone=0;var myExp=0;
-    curTc.classes.forEach(function(cls){
-      var stds2=getStds(cls);
-      var subjs2=getSubjs(cls).filter(function(s){return curTc.subjects.indexOf(s)>=0;});
-      var exs=getExams(cls);
-      myExp+=stds2.length*subjs2.length*exs.length;
-      subjs2.forEach(function(subj){exs.forEach(function(ex){var k=cls+'|'+subj+'|'+ex.key;if(marksData[k])myDone+=marksData[k].filter(function(e){return e.m!=='';}).length;});});
-    });
-    var myPct=myExp>0?Math.round(myDone/myExp*100):0;
-    var myColor=myPct>=80?'var(--g)':myPct>=50?'var(--gold)':'var(--r)';
-    el.innerHTML=
-      '<div class="sg">'+
-      '<div class="sc b"><div class="sn">'+curTc.subjects.length+'</div><div class="sl">विषय</div></div>'+
-      '<div class="sc"><div class="sn">'+curTc.classes.length+'</div><div class="sl">वर्ग</div></div>'+
-      (curTc.classOf?'<div class="sc g"><div class="sn">'+curTc.classOf+'</div><div class="sl">वर्गशिक्षक</div></div>':'')+
-      '</div>'+
-      '<div class="card"><div class="ct">📊 माझी गुण नोंदणी प्रगती</div>'+
-      '<div style="font-size:1.8rem;font-weight:700;color:'+myColor+';margin-bottom:6px;">'+myPct+'%</div>'+
-      '<div class="pbar"><div class="pfill" style="width:'+myPct+'%;background:'+myColor+';"></div></div>'+
-      '<div style="font-size:.74rem;color:var(--mt);margin-top:4px;">'+myDone+' / '+myExp+' नोंदी</div></div>'+
-      (settings.marksLocked?'<div class="alert aw"><div>🔒</div><div><strong>गुण नोंदणी बंद आहे</strong></div></div>':'');
+    var myDone=0;var myExp=0;curTc.classes.forEach(function(cls){var stds2=getStds(cls);var subjs2=getSubjs(cls).filter(function(s){return curTc.subjects.indexOf(s)>=0;});var exs=getExams(cls);myExp+=stds2.length*subjs2.length*exs.length;subjs2.forEach(function(subj){exs.forEach(function(ex){var k=cls+'|'+subj+'|'+ex.key;if(marksData[k])myDone+=marksData[k].filter(function(e){return e.m!=='';}).length;});});});var myPct=myExp>0?Math.round(myDone/myExp*100):0;var myColor=myPct>=80?'var(--g)':myPct>=50?'var(--gold)':'var(--r)';
+    el.innerHTML='<div class="sg"><div class="sc b"><div class="sn">'+curTc.subjects.length+'</div><div class="sl">\u0935\u093F\u0937\u092F</div></div><div class="sc"><div class="sn">'+curTc.classes.length+'</div><div class="sl">\u0935\u0930\u094D\u0917</div></div></div><div class="card"><div class="ct">&#x1F4CA; \u092E\u093E\u091D\u0940 \u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092A\u094D\u0930\u0917\u0924\u0940</div><div style="font-size:1.8rem;font-weight:700;color:'+myColor+';margin-bottom:6px;">'+myPct+'%</div><div class="pbar"><div class="pfill" style="width:'+myPct+'%;background:'+myColor+';"></div></div><div style="font-size:.74rem;color:var(--mt);margin-top:4px;">'+myDone+' / '+myExp+' \u0928\u094B\u0902\u0926\u0940</div></div>'+(settings.marksLocked?'<div class="alert aw"><div>&#x1F512;</div><div><strong>\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926 \u0906\u0939\u0947</strong></div></div>':'');
   }
 }
 
-// ============================================================
-// RESULTS - MARKS ENTRY
-// ============================================================
 function secRM(){
-  if(settings.marksLocked&&curRole==='shik'){
-    return '<div class="alert aw"><div>🔒</div><div><strong>गुण नोंदणी बंद आहे</strong><br>वरिष्ठांनी उघडणे आवश्यक</div></div>';
-  }
+  if(settings.marksLocked&&curRole==='shik')return '<div class="alert aw"><div>&#x1F512;</div><div><strong>\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926 \u0906\u0939\u0947</strong></div></div>';
   var isA=(curRole==='super'||curRole==='mukh');
   var availCls=isA?CLASSES:CLASSES.filter(function(c){return curTc&&curTc.classes.indexOf(c.id)>=0;});
   var clsOpts=availCls.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  return '<div class="card"><div class="ct">✏️ गुण नोंदणी</div>'+
-    '<div class="alert ai"><div>ℹ️</div><div>वर्ग व विषय निवडा. 5-8: FA+SA | 9-10: SA लेखी+तोंडी पद्धत</div></div>'+
-    '<div class="fg2">'+
-    '<div class="fg"><label>वर्ग</label><select id="m-cls"><option value="">निवडा</option>'+clsOpts+'</select></div>'+
-    '<div class="fg"><label>विषय</label><select id="m-subj"><option value="">निवडा</option></select></div>'+
-    '</div>'+
-    '<div id="mk-wrap"></div></div>';
+  return '<div class="card"><div class="ct">&#x270F;&#xFE0F; \u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940</div><div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>5-8\u0935\u0940: FA+SA | 9-10\u0935\u0940: SA \u0932\u0947\u0916\u0940+\u0924\u094B\u0902\u0921\u0940</div></div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="m-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div><div class="fg"><label>\u0935\u093F\u0937\u092F</label><select id="m-subj"><option value="">\u0928\u093F\u0935\u0921\u093E</option></select></div></div><div id="mk-wrap"></div></div>';
 }
-
-function onMCls(){
-  var cls=(document.getElementById('m-cls')||{}).value||'';
-  var sel=document.getElementById('m-subj');if(!sel)return;
-  var subjs=cls?getSubjs(cls):[];
-  if(curRole==='shik'&&curTc){subjs=subjs.filter(function(s){return curTc.subjects.indexOf(s)>=0;});}
-  sel.innerHTML='<option value="">निवडा</option>'+subjs.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');
-  document.getElementById('mk-wrap').innerHTML='';
-}
-
+function onMCls(){var cls=(document.getElementById('m-cls')||{}).value||'';var sel=document.getElementById('m-subj');if(!sel)return;var subjs=cls?getSubjs(cls):[];if(curRole==='shik'&&curTc)subjs=subjs.filter(function(s){return curTc.subjects.indexOf(s)>=0;});sel.innerHTML='<option value="">\u0928\u093F\u0935\u0921\u093E</option>'+subjs.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');document.getElementById('mk-wrap').innerHTML='';}
 function loadMkTable(){
-  var cls=(document.getElementById('m-cls')||{}).value||'';
-  var subj=(document.getElementById('m-subj')||{}).value||'';
+  var cls=(document.getElementById('m-cls')||{}).value||'';var subj=(document.getElementById('m-subj')||{}).value||'';
   var wrap=document.getElementById('mk-wrap');if(!wrap)return;
   if(!cls||!subj){wrap.innerHTML='';return;}
   var stds2=getStds(cls);
-  if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>🔍</div><div>विद्यार्थी नाहीत</div></div>';return;}
+  if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
   var exams=getExams(cls);
-  // Group headers
   var groups={};var groupKeys=[];
-  exams.forEach(function(e){
-    if(groupKeys.indexOf(e.group)<0)groupKeys.push(e.group);
-    groups[e.group]=(groups[e.group]||[]).concat([e]);
-  });
+  exams.forEach(function(e){if(groupKeys.indexOf(e.group)<0)groupKeys.push(e.group);groups[e.group]=(groups[e.group]||[]).concat([e]);});
   var thGroup=groupKeys.map(function(g){return '<th colspan="'+groups[g].length+'" style="text-align:center;background:var(--d);color:white;">'+g+'</th>';}).join('');
   var thExams=exams.map(function(e){return '<th style="text-align:center;">'+e.label+'<br><span style="font-weight:400;font-size:.62rem;">/'+e.max+'</span></th>';}).join('');
   var rows=stds2.map(function(s){
-    var cells=exams.map(function(e){
-      var v=getMk(s.id,cls,subj,e.key);
-      // FIX: add all needed data attributes for auto-save + validation
-      return '<td><input class="mi" type="number" min="0" max="'+e.max+'" value="'+v+'"'+
-        ' data-action="setmk" data-sid="'+s.id+'" data-cls="'+cls+'"'+
-        ' data-subj="'+subj+'" data-exam="'+e.key+'" data-max="'+e.max+'"></td>';
-    }).join('');
-    var t=calcSubjTotal(s.id,cls,subj);
-    var gr=t.total!==''?grade(t.pct,cls):'-';
-    return '<tr><td><strong>'+s.roll+'</strong></td><td>'+s.name+'</td>'+cells+
-      '<td id="tot-'+s.id+'" style="font-weight:700;">'+(t.total||'-')+'</td>'+
-      '<td><span class="bdg '+gradeColor(gr)+'" id="grd-'+s.id+'">'+gr+'</span></td></tr>';
+    var cells=exams.map(function(e){var v=getMk(s.id,cls,subj,e.key);return '<td><input class="mi" type="number" min="0" max="'+e.max+'" value="'+v+'" data-action="setmk" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+e.key+'" data-max="'+e.max+'"></td>';}).join('');
+    var t=calcSubjTotal(s.id,cls,subj);var gr=t.total!==''?grade(t.pct,cls):'-';
+    return '<tr><td><strong>'+s.roll+'</strong></td><td>'+s.name+'</td>'+cells+'<td id="tot-'+s.id+'" style="font-weight:700;">'+(t.total||'-')+'</td><td><span class="bdg '+gradeColor(gr)+'" id="grd-'+s.id+'">'+gr+'</span></td></tr>';
   }).join('');
-  wrap.innerHTML=
-    '<div class="tw"><table><thead>'+
-    '<tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr>'+
-    '<tr>'+thExams+'</tr>'+
-    '</thead><tbody>'+rows+'</tbody></table></div>'+
-    '<div style="margin-top:10px;display:flex;gap:8px;">'+
-    '<button class="btn bp" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">💾 सर्व सेव्ह करा</button>'+
-    '</div>';
+  wrap.innerHTML='<div class="tw"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thGroup+'<th rowspan="2">\u090F\u0915\u0942\u0923</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:10px;"><button class="btn bp" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; \u0938\u0930\u094D\u0935 \u0938\u0947\u0935\u094D\u0939 \u0915\u0930\u093E</button></div>';
 }
+function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
+function saveAllMk(cls,subj){var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
 
-// Update row total live as user types
-function updateRowTotal(sId,cls,subj){
-  var t=calcSubjTotal(sId,cls,subj);
-  var totEl=document.getElementById('tot-'+sId);
-  var grdEl=document.getElementById('grd-'+sId);
-  if(totEl)totEl.textContent=t.total!==''?t.total:'-';
-  if(grdEl){
-    var gr=t.total!==''?grade(t.pct,cls):'-';
-    grdEl.textContent=gr;
-    grdEl.className='bdg '+gradeColor(gr);
-  }
-}
-
-function saveAllMk(cls,subj){
-  var stds2=getStds(cls);
-  var exams=getExams(cls);
-  var count=0;
-  stds2.forEach(function(s){
-    exams.forEach(function(e){
-      var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');
-      if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}
-    });
-  });
-  toast('गुण सेव्ह झाले! ('+count+' नोंदी) ✅');
-  syncMks(cls,subj);
-}
-
-// ============================================================
-// RESULTS - DESCRIPTIVE
-// ============================================================
-function secRDesc(){
-  var isA=(curRole==='super'||curRole==='mukh');
-  var availCls=isA?CLASSES:CLASSES.filter(function(c){return curTc&&curTc.classes.indexOf(c.id)>=0;});
-  var clsOpts=availCls.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  return '<div class="card"><div class="ct">📝 वर्णनात्मक नोंदी</div>'+
-    '<div class="fg2">'+
-    '<div class="fg"><label>वर्ग</label><select id="d-cls"><option value="">निवडा</option>'+clsOpts+'</select></div>'+
-    '<div class="fg"><label>विषय</label><select id="d-subj"><option value="">निवडा</option></select></div>'+
-    '</div><div id="desc-wrap"></div></div>';
-}
-
-function onDCls(){
-  var cls=(document.getElementById('d-cls')||{}).value||'';
-  var sel=document.getElementById('d-subj');if(!sel)return;
-  var subjs=cls?getSubjs(cls):[];
-  if(curRole==='shik'&&curTc){subjs=subjs.filter(function(s){return curTc.subjects.indexOf(s)>=0;});}
-  sel.innerHTML='<option value="">निवडा</option>'+subjs.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');
-  document.getElementById('desc-wrap').innerHTML='';
-}
-
-function loadDescTable(){
-  var cls=(document.getElementById('d-cls')||{}).value||'';
-  var subj=(document.getElementById('d-subj')||{}).value||'';
-  var wrap=document.getElementById('desc-wrap');if(!wrap)return;
-  if(!cls||!subj){wrap.innerHTML='';return;}
-  var stds2=getStds(cls);
-  if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>⚠️</div><div>विद्यार्थी नाहीत</div></div>';return;}
-  var posOpts='<option value="">निवडा</option>'+DESC_POS.map(function(d){return '<option value="'+d+'">'+d+'</option>';}).join('');
-  var impOpts='<option value="">निवडा</option>'+DESC_IMP.map(function(d){return '<option value="'+d+'">'+d+'</option>';}).join('');
-  var rows=stds2.map(function(s){
-    var d=getDesc(s.id,cls,subj);
-    return '<tr><td><strong>'+s.roll+'</strong></td><td>'+s.name+'</td>'+
-      '<td><select id="dp-'+s.id+'" style="width:100%;padding:3px 5px;border:1.5px solid var(--bdr);border-radius:5px;font-family:inherit;font-size:.74rem;" data-action="setdesc" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'">'+posOpts+'</select></td>'+
-      '<td><select id="di-'+s.id+'" style="width:100%;padding:3px 5px;border:1.5px solid var(--bdr);border-radius:5px;font-family:inherit;font-size:.74rem;" data-action="setdesc" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'">'+impOpts+'</select></td>'+
-      '<td><input type="text" id="dc-'+s.id+'" value="'+(d.custom||'')+'" placeholder="कस्टम नोंद" style="width:100%;padding:3px 6px;border:1.5px solid var(--bdr);border-radius:5px;font-family:inherit;font-size:.74rem;"></td></tr>';
-  }).join('');
-  wrap.innerHTML='<div class="tw"><table><thead><tr><th>ह.क्र.</th><th>नाव</th><th>सकारात्मक नोंद</th><th>सुधारणात्मक</th><th>कस्टम</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
-    '<button class="btn bp" style="margin-top:9px;" data-action="savealldesc" data-cls="'+cls+'" data-subj="'+subj+'">💾 सर्व सेव्ह</button>';
-  setTimeout(function(){
-    stds2.forEach(function(s){
-      var d=getDesc(s.id,cls,subj);
-      var dp=document.getElementById('dp-'+s.id);var di=document.getElementById('di-'+s.id);
-      if(dp&&d.pos)dp.value=d.pos;
-      if(di&&d.imp)di.value=d.imp;
-    });
-  },80);
-}
-
-function saveAllDesc(cls,subj){
-  var stds2=getStds(cls);
-  stds2.forEach(function(s){
-    var dp=document.getElementById('dp-'+s.id);
-    var di=document.getElementById('di-'+s.id);
-    var dc=document.getElementById('dc-'+s.id);
-    setDesc(s.id,cls,subj,{pos:dp?dp.value:'',imp:di?di.value:'',custom:dc?dc.value:''});
-  });
-  toast('वर्णनात्मक नोंदी सेव्ह! ✅');
-}
-
-// ============================================================
-// RESULTS - PROGRESS (toppers)
-// ============================================================
 function secRProg(){
   var isA=(curRole==='super'||curRole==='mukh');
   var clsToShow=isA?CLASSES:(curTc?CLASSES.filter(function(c){return curTc.classes.indexOf(c.id)>=0;}):CLASSES);
   var sections=clsToShow.map(function(c){
     var stds2=getStds(c.id);if(!stds2.length)return'';
-    var ranked=stds2.map(function(s){
-      var r=calcStudentTotal(s.id,c.id);
-      return{name:s.name,roll:s.roll,pct:r.pct,hasData:r.hasData};
-    }).filter(function(x){return x.hasData;}).sort(function(a,b){return b.pct-a.pct;});
+    var ranked=stds2.map(function(s){var r=calcStudentTotal(s.id,c.id);return{name:s.name,roll:s.roll,pct:r.pct,hasData:r.hasData};}).filter(function(x){return x.hasData;}).sort(function(a,b){return b.pct-a.pct;});
     if(!ranked.length)return'';
-    var rows=ranked.map(function(s,i){
-      var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      var barColor=s.pct>=75?'var(--g)':s.pct>=50?'var(--gold)':'var(--r)';
-      var gr=grade(s.pct,c.id);
-      return '<tr><td>'+(i+1)+'</td><td>'+medal+' <strong>'+s.name+'</strong></td><td>'+s.roll+'</td><td>'+s.pct+'%</td>'+
-        '<td style="min-width:80px;"><div class="pbar"><div class="pfill" style="width:'+s.pct+'%;background:'+barColor+';"></div></div></td>'+
-        '<td><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td></tr>';
-    }).join('');
-    return '<div class="card"><div class="ct">🏆 '+c.label+' — वर्ग प्रगती</div>'+
-      '<div class="tw"><table><thead><tr><th>क्र.</th><th>नाव</th><th>ह.क्र.</th><th>प्रतिशत</th><th>प्रगती</th><th>श्रेणी</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    var rows=ranked.map(function(s,i){var medal=i===0?'&#x1F947;':i===1?'&#x1F948;':i===2?'&#x1F949;':'';var barColor=s.pct>=75?'var(--g)':s.pct>=50?'var(--gold)':'var(--r)';var gr=grade(s.pct,c.id);return '<tr><td>'+(i+1)+'</td><td>'+medal+' <strong>'+s.name+'</strong></td><td>'+s.roll+'</td><td>'+s.pct+'%</td><td style="min-width:80px;"><div class="pbar"><div class="pfill" style="width:'+s.pct+'%;background:'+barColor+';"></div></div></td><td><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td></tr>';}).join('');
+    return '<div class="card"><div class="ct">&#x1F3C6; '+c.label+' \u2014 \u0935\u0930\u094D\u0917 \u092A\u094D\u0930\u0917\u0924\u0940</div><div class="tw"><table><thead><tr><th>\u0915\u094D\u0930.</th><th>\u0928\u093E\u0935</th><th>\u0939.\u0915\u094D\u0930.</th><th>%</th><th>\u092A\u094D\u0930\u0917\u0924\u0940</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }).join('');
-  return sections||'<div class="alert ai"><div>ℹ️</div><div>डेटा उपलब्ध नाही</div></div>';
+  return sections||'<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>\u0921\u0947\u091F\u093E \u0928\u093E\u0939\u0940</div></div>';
 }
 
-// ============================================================
-// RESULTS - GOSAWARA (Class Summary)
-// ============================================================
 function secRGos(){
   if(curRole!=='super'&&curRole!=='mukh')return noAccess();
   var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  return '<div class="card"><div class="ct">📋 गोषवारा (वर्गनिहाय सारांश)</div>'+
-    '<div class="fg2"><div class="fg"><label>वर्ग</label><select id="gos-cls"><option value="">निवडा</option>'+clsOpts+'</select></div></div>'+
-    '<div id="gos-wrap"></div></div>';
+  return '<div class="card"><div class="ct">&#x1F4CB; \u0917\u094B\u0937\u0935\u093E\u0930\u093E (\u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F \u0938\u093E\u0930\u093E\u0902\u0936)</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="gos-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div></div><div id="gos-wrap"></div></div>';
 }
-
 function loadGosawara(){
-  var cls=(document.getElementById('gos-cls')||{}).value||'';
-  var wrap=document.getElementById('gos-wrap');if(!wrap)return;
+  var cls=(document.getElementById('gos-cls')||{}).value||'';var wrap=document.getElementById('gos-wrap');if(!wrap)return;
   if(!cls){wrap.innerHTML='';return;}
   var stds2=getStds(cls);
-  if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>⚠️</div><div>विद्यार्थी नाहीत</div></div>';return;}
-  var subjs=getSubjs(cls);
-  var isHigh=getCtype(cls)==='high';
-  // Grade ranges
-  var ranges=isHigh?[
-    {label:'A (75-100%)',fn:function(p){return p>=75;}},
-    {label:'B (60-74%)',fn:function(p){return p>=60&&p<75;}},
-    {label:'C (35-59%)',fn:function(p){return p>=35&&p<60;}},
-    {label:'D (<35%)',fn:function(p){return p<35;}},
-  ]:[
-    {label:'अ-1 (91-100)',fn:function(p){return p>=91;}},
-    {label:'अ-2 (81-90)',fn:function(p){return p>=81&&p<91;}},
-    {label:'ब-1 (71-80)',fn:function(p){return p>=71&&p<81;}},
-    {label:'ब-2 (61-70)',fn:function(p){return p>=61&&p<71;}},
-    {label:'क-1 (51-60)',fn:function(p){return p>=51&&p<61;}},
-    {label:'क-2 (41-50)',fn:function(p){return p>=41&&p<51;}},
-    {label:'ड (33-40)',fn:function(p){return p>=33&&p<41;}},
-    {label:'इ-1 (21-32)',fn:function(p){return p>=21&&p<33;}},
-    {label:'इ-2 (<21)',fn:function(p){return p<21;}},
-  ];
-  var thSubjs=subjs.map(function(s){return '<th style="font-size:.64rem;text-align:center;">'+s+'</th>';}).join('');
-  var bodyRows=ranges.map(function(rng){
-    var cells=subjs.map(function(subj){
-      var cnt=stds2.filter(function(s){
-        var t=calcSubjTotal(s.id,cls,subj);
-        return t.total!==''&&rng.fn(t.pct);
-      }).length;
-      return '<td style="text-align:center;">'+(cnt>0?cnt:'-')+'</td>';
-    }).join('');
-    return '<tr><td style="font-size:.72rem;font-weight:600;">'+rng.label+'</td>'+cells+'</tr>';
-  }).join('');
-  // Overall pass/fail
+  if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
+  var subjs=getSubjs(cls);var isHigh=getCtype(cls)==='high';
   var passed=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct>=33;}).length;
   var failed=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct<33;}).length;
   var noData=stds2.filter(function(s){return !calcStudentTotal(s.id,cls).hasData;}).length;
-  wrap.innerHTML=
-    '<div class="sg" style="margin-top:10px;">'+
-    '<div class="sc g"><div class="sn">'+stds2.length+'</div><div class="sl">एकूण पट</div></div>'+
-    '<div class="sc g"><div class="sn">'+passed+'</div><div class="sl">उत्तीर्ण</div></div>'+
-    '<div class="sc r"><div class="sn">'+failed+'</div><div class="sl">अनुत्तीर्ण</div></div>'+
-    '<div class="sc b"><div class="sn">'+noData+'</div><div class="sl">डेटा नाही</div></div>'+
-    '</div>'+
-    '<div class="tw"><table class="gos-tbl"><thead><tr><th>श्रेणी</th>'+thSubjs+'</tr></thead><tbody>'+bodyRows+'</tbody></table></div>';
+  var stats='<div class="sg" style="margin:10px 0;"><div class="sc b"><div class="sn">'+stds2.length+'</div><div class="sl">\u090F\u0915\u0942\u0923 \u092A\u091F</div></div><div class="sc g"><div class="sn">'+passed+'</div><div class="sl">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc r"><div class="sn">'+failed+'</div><div class="sl">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc gold"><div class="sn">'+noData+'</div><div class="sl">\u0917\u0941\u0923 \u0928\u093E\u0939\u0940\u0924</div></div></div>';
+  var table='';
+  if(isHigh){
+    var slabs=[{l:'90-100%',mn:90,mx:100},{l:'80-89%',mn:80,mx:89},{l:'70-79%',mn:70,mx:79},{l:'60-69%',mn:60,mx:69},{l:'50-59%',mn:50,mx:59},{l:'35-49%',mn:35,mx:49},{l:'0-34%',mn:0,mx:34}];
+    var thS=subjs.map(function(s){return '<th style="text-align:center;font-size:.63rem;">'+s+'</th>';}).join('');
+    var rows=slabs.map(function(sl){var cells=subjs.map(function(subj){var cnt=stds2.filter(function(s){var t=calcSubjTotal(s.id,cls,subj);return t.total!==''&&t.pct>=sl.mn&&t.pct<=sl.mx;}).length;return '<td style="text-align:center;">'+(cnt||'-')+'</td>';}).join('');var tot=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct>=sl.mn&&r.pct<=sl.mx;}).length;return '<tr><td style="font-weight:600;font-size:.74rem;">'+sl.l+'</td>'+cells+'<td style="text-align:center;font-weight:700;">'+(tot||'-')+'</td></tr>';}).join('');
+    table='<div class="tw"><table class="gos-tbl"><thead><tr><th>\u0936\u0947\u0915\u0921\u0947\u0935\u093E\u0930\u0940</th>'+thS+'<th>\u090F\u0915\u0942\u0923</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  }else{
+    var grades=['\u0905-1','\u0905-2','\u092C-1','\u092C-2','\u0915-1','\u0915-2','\u0921','\u0907-1','\u0907-2'];
+    var gFn=[function(p){return p>=91;},function(p){return p>=81&&p<91;},function(p){return p>=71&&p<81;},function(p){return p>=61&&p<71;},function(p){return p>=51&&p<61;},function(p){return p>=41&&p<51;},function(p){return p>=33&&p<41;},function(p){return p>=21&&p<33;},function(p){return p<21;}];
+    var thG='<th>\u0935\u093F\u0937\u092F</th>'+grades.map(function(g){return '<th style="text-align:center;font-size:.63rem;">'+g+'</th>';}).join('')+'<th>\u090F\u0915\u0942\u0923</th>';
+    var rows2=subjs.map(function(subj){var cells2=grades.map(function(g,i){var cnt=stds2.filter(function(s){var t=calcSubjTotal(s.id,cls,subj);return t.total!==''&&gFn[i](t.pct);}).length;return '<td style="text-align:center;">'+(cnt||'-')+'</td>';}).join('');var tot=stds2.filter(function(s){return calcSubjTotal(s.id,cls,subj).total!=='';}).length;return '<tr><td style="font-weight:600;font-size:.74rem;">'+subj+'</td>'+cells2+'<td style="text-align:center;font-weight:700;">'+tot+'</td></tr>';}).join('');
+    table='<div class="tw"><table class="gos-tbl"><thead><tr>'+thG+'</tr></thead><tbody>'+rows2+'</tbody></table></div>';
+  }
+  wrap.innerHTML=stats+table+'<button class="btn bp no-print" style="margin-top:10px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button>';
 }
 
-// ============================================================
-// RESULTS - RESULT BOOK
-// ============================================================
 function secRBook(){
   if(curRole!=='super'&&curRole!=='mukh')return noAccess();
   var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  return '<div class="card"><div class="ct">📃 निकाल पुस्तिका</div>'+
-    '<div class="fg2"><div class="fg"><label>वर्ग</label><select id="rb-cls"><option value="">निवडा</option>'+clsOpts+'</select></div></div>'+
-    '<div id="rb-wrap"></div></div>';
+  return '<div class="card"><div class="ct">&#x1F4C3; \u0928\u093F\u0915\u093E\u0932 \u092A\u0941\u0938\u094D\u0924\u093F\u0915\u093E</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="rb-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div></div><div id="rb-wrap"></div></div>';
 }
-
 function loadRBook(){
-  var cls=(document.getElementById('rb-cls')||{}).value||'';
-  var wrap=document.getElementById('rb-wrap');if(!wrap)return;
+  var cls=(document.getElementById('rb-cls')||{}).value||'';var wrap=document.getElementById('rb-wrap');if(!wrap)return;
   if(!cls){wrap.innerHTML='';return;}
-  var stds2=getStds(cls);
-  if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>⚠️</div><div>विद्यार्थी नाहीत</div></div>';return;}
-  var subjs=getSubjs(cls);
-  var exams=getExams(cls);
+  var stds2=getStds(cls);if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
+  var subjs=getSubjs(cls);var exams=getExams(cls);
   var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.64rem;">'+s+'</th>';}).join('');
   var thExams=subjs.map(function(){return exams.map(function(e){return '<th style="font-size:.6rem;text-align:center;">'+e.key.toUpperCase()+'</th>';}).join('');}).join('');
-  var rows=stds2.map(function(s){
-    var r=calcStudentTotal(s.id,cls);
-    var cells=subjs.map(function(subj){
-      return exams.map(function(exam){
-        var v=getMk(s.id,cls,subj,exam.key);
-        return '<td style="text-align:center;font-size:.72rem;">'+(v!==''?v:'-')+'</td>';
-      }).join('');
-    }).join('');
-    var gr=r.hasData?grade(r.pct,cls):'-';
-    var pf=r.pct>=33?'<span class="bdg bgg">उत्तीर्ण</span>':'<span class="bdg bgr">अनुत्तीर्ण</span>';
-    return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;">'+s.name+'</td>'+cells+
-      '<td style="font-weight:700;text-align:center;">'+r.pct+'%</td>'+
-      '<td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td>'+
-      '<td>'+pf+'</td></tr>';
-  }).join('');
-  wrap.innerHTML=
-    '<div class="alert ag"><div>✅</div><div>वर्ग '+cls+' — एकूण '+stds2.length+' विद्यार्थी</div></div>'+
-    '<div class="tw" style="font-size:.76rem;"><table>'+
-    '<thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">श्रेणी</th><th rowspan="2">निकाल</th></tr>'+
-    '<tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div>'+
-    '<button class="btn bp no-print" style="margin-top:10px;" data-action="print">🖨️ प्रिंट</button>';
+  var rows=stds2.map(function(s){var r=calcStudentTotal(s.id,cls);var cells=subjs.map(function(subj){return exams.map(function(exam){var v=getMk(s.id,cls,subj,exam.key);return '<td style="text-align:center;font-size:.72rem;">'+(v!==''?v:'-')+'</td>';}).join('');}).join('');var gr=r.hasData?grade(r.pct,cls):'-';var pf=r.pct>=33?'<span class="bdg bgg">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':'<span class="bdg bgr">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;">'+s.name+'</td>'+cells+'<td style="font-weight:700;text-align:center;">'+r.pct+'%</td><td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td><td>'+pf+'</td></tr>';}).join('');
+  wrap.innerHTML='<div class="tw" style="font-size:.76rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><button class="btn bp no-print" style="margin-top:10px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button>';
 }
 
-// ============================================================
-// RESULTS - PROGRESS CARD
-// ============================================================
 function secRCard(){
-  var isA=(curRole==='super'||curRole==='mukh');
-  var availCls=isA?CLASSES:CLASSES.filter(function(c){return curTc&&(curTc.classOf===c.id||curTc.classes.indexOf(c.id)>=0);});
+  var isA=(curRole==='super'||curRole==='mukh');var availCls=isA?CLASSES:CLASSES.filter(function(c){return curTc&&(curTc.classOf===c.id||curTc.classes.indexOf(c.id)>=0);});
   var clsOpts=availCls.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
-  return '<div class="card no-print"><div class="ct">📋 प्रगतीपत्रक / Progress Card</div>'+
-    '<div class="fg2">'+
-    '<div class="fg"><label>वर्ग</label><select id="pc-cls"><option value="">निवडा</option>'+clsOpts+'</select></div>'+
-    '<div class="fg"><label>विद्यार्थी</label><select id="pc-std"><option value="">निवडा</option></select></div>'+
-    '</div>'+
-    '<button class="btn bp" data-action="gencard">📋 तयार करा</button>'+
-    '</div><div id="pc-wrap"></div>';
+  return '<div class="card no-print"><div class="ct">&#x1F4CB; \u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="pc-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div><div class="fg"><label>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</label><select id="pc-std"><option value="">\u0928\u093F\u0935\u0921\u093E</option></select></div></div><button class="btn bp" data-action="gencard">&#x1F4CB; \u0924\u092F\u093E\u0930 \u0915\u0930\u093E</button></div><div id="pc-wrap"></div>';
 }
-
-function loadStdsForCard(){
-  var cls=(document.getElementById('pc-cls')||{}).value||'';
-  var sel=document.getElementById('pc-std');if(!sel)return;
-  sel.innerHTML='<option value="">निवडा</option>';
-  getStds(cls).forEach(function(s){var o=document.createElement('option');o.value=s.id;o.textContent=s.roll+' - '+s.name;sel.appendChild(o);});
-}
-
+function loadStdsForCard(){var cls=(document.getElementById('pc-cls')||{}).value||'';var sel=document.getElementById('pc-std');if(!sel)return;sel.innerHTML='<option value="">\u0928\u093F\u0935\u0921\u093E</option>';getStds(cls).forEach(function(s){var o=document.createElement('option');o.value=s.id;o.textContent=s.roll+' - '+s.name;sel.appendChild(o);});}
 function genCard(){
-  var cls=(document.getElementById('pc-cls')||{}).value||'';
-  var sId=parseInt((document.getElementById('pc-std')||{}).value)||0;
-  var wrap=document.getElementById('pc-wrap');if(!wrap)return;
-  if(!cls||!sId){toast('वर्ग व विद्यार्थी निवडा!','err');return;}
+  var cls=(document.getElementById('pc-cls')||{}).value||'';var sId=parseInt((document.getElementById('pc-std')||{}).value)||0;var wrap=document.getElementById('pc-wrap');if(!wrap)return;
+  if(!cls||!sId){toast('\u0935\u0930\u094D\u0917 \u0935 \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093F\u0935\u0921\u093E!','err');return;}
   var s=students.find(function(x){return x.id===sId;});if(!s)return;
-  var c=getCls(cls);
-  var subjs=getSubjs(cls);
-  var exams=getExams(cls);
+  var c=getCls(cls);var subjs=getSubjs(cls);var exams=getExams(cls);
   var grandTotal=0;var grandMax=0;
   var examHdrs=exams.map(function(e){return '<th>'+e.label+'<br>/'+e.max+'</th>';}).join('');
-  var markRows=subjs.map(function(subj){
-    var t=calcSubjTotal(sId,cls,subj);
-    grandTotal+=parseFloat(t.total)||0;grandMax+=t.max;
-    var cells=exams.map(function(e){var v=getMk(sId,cls,subj,e.key);return '<td>'+(v!==''?v:'-')+'</td>';}).join('');
-    var gr=t.total!==''?grade(t.pct,cls):'-';
-    return '<tr><td style="text-align:left;font-weight:600;">'+subj+'</td>'+cells+'<td><strong>'+(t.total||'-')+'</strong></td><td><strong>'+t.max+'</strong></td><td><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td></tr>';
-  }).join('');
-  var totalPct=grandMax>0?Math.round(grandTotal/grandMax*100):0;
-  var totalGr=totalPct>0?grade(totalPct,cls):'-';
-  var pf=totalPct>=33?'उत्तीर्ण':'अनुत्तीर्ण';
-  // Grade reference table based on class type
+  var markRows=subjs.map(function(subj){var t=calcSubjTotal(sId,cls,subj);grandTotal+=parseFloat(t.total)||0;grandMax+=t.max;var cells=exams.map(function(e){var v=getMk(sId,cls,subj,e.key);return '<td>'+(v!==''?v:'-')+'</td>';}).join('');var gr=t.total!==''?grade(t.pct,cls):'-';return '<tr><td style="text-align:left;font-weight:600;">'+subj+'</td>'+cells+'<td><strong>'+(t.total||'-')+'</strong></td><td><strong>'+t.max+'</strong></td><td><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td></tr>';}).join('');
+  var totalPct=grandMax>0?Math.round(grandTotal/grandMax*100):0;var totalGr=totalPct>0?grade(totalPct,cls):'-';var pf=totalPct>=33?'\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923':'\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923';
   var isHigh=getCtype(cls)==='high';
-  var gradeRef=isHigh?
-    '<table class="pcard-grade-tbl"><thead><tr><th>75-100%</th><th>60-74%</th><th>35-59%</th><th>0-34%</th></tr></thead><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>':
-    '<table class="pcard-grade-tbl"><thead><tr><th>91-100</th><th>81-90</th><th>71-80</th><th>61-70</th><th>51-60</th><th>41-50</th><th>33-40</th><th>21-32</th><th>≤20</th></tr></thead><tbody><tr><td>अ-1</td><td>अ-2</td><td>ब-1</td><td>ब-2</td><td>क-1</td><td>क-2</td><td>ड</td><td>इ-1</td><td>इ-2</td></tr></tbody></table>';
-  wrap.innerHTML=
-    '<div class="pcard-wrap" id="pcard-print">'+
-    '<div class="pcard-top">'+
-    '<div style="font-size:.7rem;">विद्या विनयन शोभते</div>'+
-    '<div class="pcard-school">समता जोगेश्वरी मंडळ, एरंडगाव चे</div>'+
-    '<div class="pcard-school">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
-    '<div style="font-size:.7rem;">ता. शेवगाव, जि. अहिल्यानगर</div>'+
-    '<div class="pcard-title">प्रगतीपत्रक सन 2025-2026</div>'+
-    '<div style="display:flex;justify-content:space-between;font-size:.75rem;margin-top:5px;">'+
-    '<span>हजेरी क्र.: <strong>'+s.roll+'</strong></span>'+
-    '<span>इयत्ता: <strong>'+c.label+'</strong></span>'+
-    '<span>माध्यम: <strong>'+(c.medium||'मराठी')+'</strong></span>'+
-    '</div></div>'+
-    '<div class="pcard-info">'+
-    '<div class="pcard-row"><span>विद्यार्थ्याचे नाव:</span><strong>'+s.name+'</strong></div>'+
-    '<div class="pcard-row"><span>जन्म दि.:</span><span>'+(s.dob?fmt(s.dob):'_____')+'</span></div>'+
-    '<div class="pcard-row"><span>आईचे नाव:</span><span>'+(s.mother||'_____')+'</span></div>'+
-    '<div class="pcard-row"><span>वडिलांचे नाव:</span><span>'+(s.father||'_____')+'</span></div>'+
-    '<div class="pcard-row"><span>नोंदणी क्र.:</span><span>'+(s.regNo||'_____')+'</span></div>'+
-    '<div class="pcard-row"><span>दूरध्वनी:</span><span>'+(s.phone||'_____')+'</span></div>'+
-    '</div>'+
-    '<div style="padding:6px 8px;border-bottom:1px solid #000;"><strong style="font-size:.78rem;">✰ गुणतक्ता / Marksheet</strong></div>'+
-    '<div style="overflow-x:auto;"><table class="pcard-marks"><thead><tr><th style="text-align:left;">विषय</th>'+examHdrs+'<th>एकूण</th><th>वरील</th><th>श्रेणी</th></tr></thead><tbody>'+
-    markRows+
-    '<tr style="background:#F8F8F8;font-weight:700;"><td>एकूण</td>'+exams.map(function(){return '<td>-</td>';}).join('')+'<td>'+Math.round(grandTotal)+'</td><td>'+grandMax+'</td><td><span class="bdg '+gradeColor(totalGr)+'">'+totalGr+'</span></td></tr>'+
-    '</tbody></table></div>'+
-    '<div style="padding:6px 8px;font-size:.76rem;">'+
-    '<strong>निकाल: <span style="color:'+(pf==='उत्तीर्ण'?'green':'red')+'">'+pf+'</span></strong> &nbsp; '+
-    'श्रेणी: <strong>'+totalGr+'</strong> &nbsp; '+
-    'प्रतिशत: <strong>'+totalPct+'%</strong></div>'+
-    gradeRef+
-    '<div class="pcard-rules">'+
-    '<strong>: शाळेचे नियम :</strong><br>'+
-    '1) विद्यार्थ्यांनी नियमितपणे शाळेत यावे. परवानगीशिवाय गैरहजर राहू नये.<br>'+
-    '2) विद्यार्थ्यांनी दररोज गणवेशात शाळेत यावे.<br>'+
-    '3) वर्गशिक्षकांनी सांगितलेला गृहपाठ व अभ्यास न चुकता करावा.<br>'+
-    '4) शाळेच्या शिस्तीला बाधक होत असल्यास उपाय योजना करण्याचा अधिकार शाळेस राहील.'+
-    '</div>'+
-    '<div class="pcard-signs">'+
-    '<div>वर्गशिक्षक<br>स्वाक्षरी<br>___________</div>'+
-    '<div>मुख्याध्यापक<br>स्वाक्षरी<br>___________</div>'+
-    '<div>पालक<br>स्वाक्षरी<br>___________</div>'+
-    '</div>'+
-    '<div style="padding:6px 8px;border-top:1px solid #000;font-size:.72rem;">'+
-    'विद्यार्थी वरच्या वर्गात जाण्यास पात्र. पुढील वर्षी इयत्ता ______ तुकडी ______ मध्ये बसेल.<br>'+
-    'तारीख ____/____/______ या दिवशी शाळा सुरू होईल.'+
-    '</div>'+
-    '</div>'+
-    '<button class="btn bp no-print" style="margin-top:12px;" data-action="print">🖨️ प्रिंट करा</button>';
+  var gradeRef=isHigh?'<table class="pcard-grade-tbl"><thead><tr><th>75-100%</th><th>60-74%</th><th>35-59%</th><th>0-34%</th></tr></thead><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>':'<table class="pcard-grade-tbl"><thead><tr><th>91-100</th><th>81-90</th><th>71-80</th><th>61-70</th><th>51-60</th><th>41-50</th><th>33-40</th><th>21-32</th><th>&#x2264;20</th></tr></thead><tbody><tr><td>\u0905-1</td><td>\u0905-2</td><td>\u092C-1</td><td>\u092C-2</td><td>\u0915-1</td><td>\u0915-2</td><td>\u0921</td><td>\u0907-1</td><td>\u0907-2</td></tr></tbody></table>';
+  wrap.innerHTML='<div class="pcard-wrap"><div class="pcard-top"><div style="font-size:.7rem;">\u0935\u093F\u0926\u094D\u092F\u093E \u0935\u093F\u0928\u092F\u0928 \u0936\u094B\u092D\u0924\u0947</div><div class="pcard-school">\u0938\u092E\u0924\u093E \u091C\u094B\u0917\u0947\u0936\u094D\u0935\u0930\u0940 \u092E\u0902\u0921\u0933, \u090F\u0930\u0902\u0921\u0917\u093E\u0935 \u091A\u0947</div><div class="pcard-school">\u090F\u0915\u0928\u093E\u0925 \u092E\u093E\u0927\u094D\u092F\u092E\u093F\u0915; \u0935\u093F\u0926\u094D\u092F\u093E\u0932\u092F;, \u090F\u0930\u0902\u0921\u0917\u093E\u0935</div><div style="font-size:.7rem;">\u0924\u093E;. \u0936\u0947\u0935\u0917\u093E\u0935, \u091C\u093F;. \u0905\u0939\u093F\u0932\u094D\u092F\u093E\u0928\u0917\u0930</div><div class="pcard-title">\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915 \u0938\u0928 2025-2026</div><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-top:5px;"><span>\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930.: <strong>'+s.roll+'</strong></span><span>\u0907\u092F\u0924\u094D\u0924\u093E: <strong>'+c.label+'</strong></span><span>\u092E\u093E\u0927\u094D\u092F\u092E: <strong>'+(c.medium||'\u092E\u0930\u093E\u0920\u0940')+'</strong></span></div></div><div class="pcard-info"><div class="pcard-row"><span>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u094D\u092F\u093E\u091A\u0947 \u0928\u093E\u0935:</span><strong>'+s.name+'</strong></div><div class="pcard-row"><span>\u091C\u0928\u094D\u092E \u0926\u093F.:</span><span>'+(s.dob?fmt(s.dob):'_____')+'</span></div><div class="pcard-row"><span>\u0906\u0908\u091A\u0947 \u0928\u093E\u0935:</span><span>'+(s.mother||'_____')+'</span></div><div class="pcard-row"><span>\u0935\u0921\u093F\u0932\u093E\u0902\u091A\u0947 \u0928\u093E\u0935:</span><span>'+(s.father||'_____')+'</span></div><div class="pcard-row"><span>\u0928\u094B\u0902\u0926\u0923\u0940 \u0915\u094D\u0930.:</span><span>'+(s.regNo||'_____')+'</span></div></div><div style="padding:6px 8px;border-bottom:1px solid #000;"><strong style="font-size:.78rem;">&#x2730; \u0917\u0941\u0923\u0924\u0915\u094D\u0924\u093E</strong></div><div style="overflow-x:auto;"><table class="pcard-marks"><thead><tr><th style="text-align:left;">\u0935\u093F\u0937\u092F</th>'+examHdrs+'<th>\u090F\u0915\u0942\u0923</th><th>\u0935\u0930\u0940\u0932</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr></thead><tbody>'+markRows+'<tr style="background:#F8F8F8;font-weight:700;"><td>\u090F\u0915\u0942\u0923</td>'+exams.map(function(){return '<td>-</td>';}).join('')+'<td>'+Math.round(grandTotal)+'</td><td>'+grandMax+'</td><td><span class="bdg '+gradeColor(totalGr)+'">'+totalGr+'</span></td></tr></tbody></table></div><div style="padding:6px 8px;font-size:.76rem;"><strong>\u0928\u093F\u0915\u093E\u0932: <span style="color:'+(pf==='\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923'?'green':'red')+'">'+pf+'</span></strong> &nbsp; \u0936\u094D\u0930\u0947\u0923\u0940: <strong>'+totalGr+'</strong> &nbsp; %: <strong>'+totalPct+'</strong></div>'+gradeRef+'<div class="pcard-signs"><div>\u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915<br>___________</div><div>\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915<br>___________</div><div>\u092A\u093E\u0932\u0915<br>___________</div></div></div><button class="btn bp no-print" style="margin-top:12px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
 }
 
-// ============================================================
-// RESULTS - ADMIN
-// ============================================================
 function secRAdm(){
   if(curRole!=='super'&&curRole!=='mukh')return noAccess();
-  var tcRows=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){
-    var done=0;var exp=0;
-    tc.classes.forEach(function(cls){
-      var stds2=getStds(cls);
-      var subjs2=getSubjs(cls).filter(function(s){return tc.subjects.indexOf(s)>=0;});
-      var exs=getExams(cls);
-      exp+=stds2.length*subjs2.length*exs.length;
-      subjs2.forEach(function(subj){exs.forEach(function(ex){var k=cls+'|'+subj+'|'+ex.key;if(marksData[k])done+=marksData[k].filter(function(e){return e.m!=='';}).length;});});
-    });
-    var pct=exp>0?Math.round(done/exp*100):0;
-    var color=pct>=80?'var(--g)':pct>=50?'var(--gold)':'var(--r)';
-    return '<tr><td><strong>'+tc.name+'</strong></td><td>'+tc.subjects.join(', ')+'</td><td>'+tc.classOf+'</td>'+
-      '<td><div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+color+';"></div></div>'+
-      '<div style="font-size:.64rem;margin-top:2px;">'+done+'/'+exp+' ('+pct+'%)</div></td>'+
-      (curRole==='super'?'<td><button class="btn bo bsm" data-action="changetcpw" data-tcid="'+tc.id+'">🔑</button></td>':'')+
-      '</tr>';
-  }).join('');
-  return '<div class="card"><div class="ct">🔒 निकाल नियंत्रण</div>'+
-    '<div class="trow"><div>'+
-    '<div style="font-weight:600;">🔒 गुण नोंदणी बंद/सुरू</div>'+
-    '<div style="font-size:.72rem;color:var(--mt);">बंद केल्यानंतर शिक्षक गुण भरू शकणार नाही</div>'+
-    '</div><label class="tsw"><input type="checkbox" id="tg-lk2" '+(settings.marksLocked?'checked':'')+' data-action="toggleLock"><span class="tsl"></span></label></div></div>'+
-    (curRole==='super'?'<div class="card"><div class="ct">🆙 सर्व विद्यार्थी पुढील वर्गात प्रमोट <span class="ctag">फक्त संस्थाचालक</span></div>'+
-    '<div class="alert aw"><div>⚠️</div><div>ही क्रिया उलटवता येणार नाही. काळजीपूर्वक वापरा.</div></div>'+
-    '<button class="btn bgold" data-action="promoteall">🆙 सर्व प्रमोट करा</button></div>':'')+
-    '<div class="card"><div class="ct">👨‍🏫 शिक्षक निकाल प्रगती</div>'+
-    '<div class="tw"><table><thead><tr><th>शिक्षक</th><th>विषय</th><th>वर्गशिक्षक</th><th>प्रगती</th>'+(curRole==='super'?'<th></th>':'')+'</tr></thead><tbody>'+tcRows+'</tbody></table></div></div>';
+  var tcRows=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){var done=0;var exp=0;tc.classes.forEach(function(cls){var stds2=getStds(cls);var subjs2=getSubjs(cls).filter(function(s){return tc.subjects.indexOf(s)>=0;});var exs=getExams(cls);exp+=stds2.length*subjs2.length*exs.length;subjs2.forEach(function(subj){exs.forEach(function(ex){var k=cls+'|'+subj+'|'+ex.key;if(marksData[k])done+=marksData[k].filter(function(e){return e.m!=='';}).length;});});});var pct=exp>0?Math.round(done/exp*100):0;var color=pct>=80?'var(--g)':pct>=50?'var(--gold)':'var(--r)';return '<tr><td><strong>'+tc.name+'</strong></td><td>'+tc.subjects.join(', ')+'</td><td>'+tc.classOf+'</td><td><div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+color+';"></div></div><div style="font-size:.64rem;margin-top:2px;">'+done+'/'+exp+' ('+pct+'%)</div></td>'+(curRole==='super'?'<td><button class="btn bo bsm" data-action="changetcpw" data-tcid="'+tc.id+'">&#x1F511;</button></td>':'')+'</tr>';}).join('');
+  return '<div class="card"><div class="ct">&#x1F512; \u0928\u093F\u0915\u093E\u0932 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923</div><div class="trow"><div><div style="font-weight:600;">\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926/\u0938\u0941\u0930\u0942</div></div><label class="tsw"><input type="checkbox" id="tg-lk2" '+(settings.marksLocked?'checked':'')+' data-action="toggleLock"><span class="tsl"></span></label></div></div>'+(curRole==='super'?'<div class="card"><div class="ct">&#x1F19A; \u0938\u0930\u094D\u0935 \u092A\u094D\u0930\u092E\u094B\u091F <span class="ctag">\u092B\u0915\u094D\u0924 \u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915</span></div><div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0939\u0940 \u0915\u094D\u0930\u093F\u092F\u093E \u0909\u0932\u091F\u0935\u0924\u093E \u092F\u0947\u0923\u093E\u0930 \u0928\u093E\u0939\u0940.</div></div><button class="btn bgold" data-action="promoteall">&#x1F19A; \u0938\u0930\u094D\u0935 \u092A\u094D\u0930\u092E\u094B\u091F \u0915\u0930\u093E</button></div>':'')+
+  '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; \u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0917\u0924\u0940</div><div class="tw"><table><thead><tr><th>\u0936\u093F\u0915\u094D\u0937\u0915</th><th>\u0935\u093F\u0937\u092F</th><th>\u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915</th><th>\u092A\u094D\u0930\u0917\u0924\u0940</th>'+(curRole==='super'?'<th></th>':'')+'</tr></thead><tbody>'+tcRows+'</tbody></table></div></div>';
 }
+function promoteAll(){if(!confirm('\u0938\u0930\u094D\u0935 \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u092A\u0941\u0922\u0940\u0932 \u0935\u0930\u094D\u0917\u093E\u0924? \u0928\u0915\u094D\u0915\u0940 \u0906\u0939\u0947 \u0915\u093E?'))return;var next={'10':null,'9':'10','8':'9','7a':'8','7b':'8','6a':'7a','6b':'7b','5a':'6a','5b':'6b'};students.filter(function(s){return s.status!=='removed';}).forEach(function(s){var nx=next[s.cls];if(nx){s.cls=nx;s.status='active';}else{s.status='removed';s.reason='10\u0935\u0940 \u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923';}});toast('\u0938\u0930\u094D\u0935 \u092A\u0941\u0922\u0947 \u0917\u0947\u0932\u0947! &#x2705;');syncAll();}
 
-function promoteAll(){
-  if(!confirm('सर्व विद्यार्थी पुढील वर्गात ठेवणार आहात. नक्की आहे का?'))return;
-  var next={'10':null,'9':'10','8':'9','7a':'8','7b':'8','6a':'7a','6b':'7b','5a':'6a','5b':'6b'};
-  students.filter(function(s){return s.status!=='removed';}).forEach(function(s){
-    var nx=next[s.cls];
-    if(nx){s.cls=nx;s.status='active';}
-    else{s.status='removed';s.reason='10वी उत्तीर्ण';}
-  });
-  toast('सर्व विद्यार्थी पुढील वर्गात गेले! ✅');syncAll();
-}
-
-// ============================================================
-// GOOGLE SHEETS SYNC
-// ============================================================
-function sheetPost(name,rows,cb){
-  var xhr=new XMLHttpRequest();
-  xhr.open('POST',SURL,true);
-  xhr.setRequestHeader('Content-Type','text/plain');
-  xhr.onreadystatechange=function(){if(xhr.readyState===4&&cb)cb();};
-  xhr.onerror=function(){syncStatus('err');};
-  xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));
-}
-function sheetGet(name,cb){
-  var xhr=new XMLHttpRequest();
-  xhr.open('GET',SURL+'?sheet='+encodeURIComponent(name),true);
-  xhr.onreadystatechange=function(){
-    if(xhr.readyState===4){
-      try{cb(JSON.parse(xhr.responseText).rows||[]);}catch(e){cb([]);}
-    }
-  };
-  xhr.onerror=function(){cb([]);};
-  xhr.send();
-}
-
-function syncAll(){
-  syncStatus('ing');
-  var bR=[['ID','Title','Author','Subject','Copies']];
-  books.forEach(function(b){bR.push([b.id,b.title,b.author||'',b.subject||'',b.copies]);});
-  var sR=[['ID','Name','Class','Roll','Status','Reason','Father','Mother','DOB','Phone','RegNo']];
-  students.forEach(function(s){sR.push([s.id,s.name,s.cls,s.roll||'',s.status,s.reason||'',s.father||'',s.mother||'',s.dob||'',s.phone||'',s.regNo||'']);});
-  var tR=[['ID','SName','Class','BTitle','Subj','IDate','RDate','Due','TId','TName','RetTName']];
-  transactions.forEach(function(t){tR.push([t.id,t.sName,t.cls,t.bTitle,t.subj||'',t.issueDate,t.retDate||'',t.due,t.tId||'',t.tName||'',t.retTName||'']);});
-  var pwR=[['key','value'],['super',PW.super],['mukh',PW.mukh]];
-  var tcR=[['ID','Name','PW','ClassOf','Subjects','Classes']];
-  TEACHERS.forEach(function(tc){tcR.push([tc.id,tc.name,tc.pw,tc.classOf||'',tc.subjects.join('|'),tc.classes.join('|')]);});
-  sheetPost('pustake',bR,function(){
-    sheetPost('vidyarthi',sR,function(){
-      sheetPost('vyavhar',tR,function(){
-        sheetPost('passwords',pwR,function(){
-          sheetPost('Shikshak',tcR,function(){syncStatus('ok');});
-        });
-      });
-    });
-  });
-}
-
-function syncMks(cls,subj){
-  syncStatus('ing');
-  var exams=getExams(cls);
-  var rows=[['sId','cls','subj'].concat(exams.map(function(e){return e.key;}))];
-  getStds(cls).forEach(function(s){
-    var row=[s.id,cls,subj];
-    exams.forEach(function(e){row.push(getMk(s.id,cls,subj,e.key));});
-    rows.push(row);
-  });
-  var shName='marks_'+cls+'_'+subj.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');
-  sheetPost(shName,rows,function(){syncStatus('ok');});
-}
-
-function syncSettings(){
-  sheetPost('settings',[['key','value'],['marksLocked',settings.marksLocked?'1':'0']],null);
-}
-
-// FIX: robust class parsing
-function parseClass(raw){
-  if(!raw)return'';
-  var s=String(raw).trim().toLowerCase();
-  if(s==='10')return'10';
-  if(s==='9')return'9';
-  if(s==='8')return'8';
-  if(s.indexOf('7')===0){if(s.indexOf('a')>=0||s.indexOf('अ')>=0)return'7a';if(s.indexOf('b')>=0||s.indexOf('ब')>=0)return'7b';return'7b';}
-  if(s.indexOf('6')===0){if(s.indexOf('a')>=0||s.indexOf('अ')>=0)return'6a';if(s.indexOf('b')>=0||s.indexOf('ब')>=0)return'6b';return'6b';}
-  if(s.indexOf('5')===0){if(s.indexOf('a')>=0||s.indexOf('अ')>=0)return'5a';if(s.indexOf('b')>=0||s.indexOf('ब')>=0)return'5b';return'5b';}
-  return s;
-}
-
-function loadAll(){
-  syncStatus('ing');
-  sheetGet('pustake',function(bR){
-    if(bR.length>1){
-      books=bR.slice(1).filter(function(r){return r[0];}).map(function(r){
-        return{id:parseInt(r[0])||1,title:String(r[1]||''),author:String(r[2]||''),subject:String(r[3]||'इतर'),copies:parseInt(r[4])||1};
-      });
-      nextBId=books.length?Math.max.apply(null,books.map(function(b){return b.id;}))+1:1;
-    }
-    // Load students — try 'Students' tab first (Kishor's format), fallback to 'vidyarthi'
-    sheetGet('Students',function(sR){
-      if(sR.length>1){parseAndLoadStudents(sR);}
-      else{sheetGet('vidyarthi',function(sR2){parseAndLoadStudents(sR2);});}
-      loadTransactionsAndSettings();
-    });
-  });
-}
+// ---- SYNC ----
+function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4&&cb)cb();};xhr.onerror=function(){syncStatus('err');};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
+function sheetGet(name,cb){var xhr=new XMLHttpRequest();xhr.open('GET',SURL+'?sheet='+encodeURIComponent(name),true);xhr.onreadystatechange=function(){if(xhr.readyState===4){try{cb(JSON.parse(xhr.responseText).rows||[]);}catch(e){cb([]);}}};xhr.onerror=function(){cb([]);};xhr.send();}
+function syncAll(){syncStatus('ing');var bR=[['ID','Title','Author','Subject','Copies']];books.forEach(function(b){bR.push([b.id,b.title,b.author||'',b.subject||'',b.copies]);});var sR=[['ID','Name','Class','Roll','Status','Reason','Father','Mother','DOB','Phone','RegNo']];students.forEach(function(s){sR.push([s.id,s.name,s.cls,s.roll||'',s.status,s.reason||'',s.father||'',s.mother||'',s.dob||'',s.phone||'',s.regNo||'']);});var tR=[['ID','SName','Class','BTitle','Subj','IDate','RDate','Due','TId','TName','RetTName']];transactions.forEach(function(t){tR.push([t.id,t.sName,t.cls,t.bTitle,t.subj||'',t.issueDate,t.retDate||'',t.due,t.tId||'',t.tName||'',t.retTName||'']);});var pwR=[['key','value'],['super',PW.super],['mukh',PW.mukh]];var tcR=[['ID','Name','PW','ClassOf','Subjects','Classes']];TEACHERS.forEach(function(tc){tcR.push([tc.id,tc.name,tc.pw,tc.classOf||'',tc.subjects.join('|'),tc.classes.join('|')]);});sheetPost('pustake',bR,function(){sheetPost('vidyarthi',sR,function(){sheetPost('vyavhar',tR,function(){sheetPost('passwords',pwR,function(){sheetPost('Shikshak',tcR,function(){syncStatus('ok');});});});});});}
+function syncMks(cls,subj){syncStatus('ing');var exams=getExams(cls);var rows=[['sId','cls','subj'].concat(exams.map(function(e){return e.key;}))];getStds(cls).forEach(function(s){var row=[s.id,cls,subj];exams.forEach(function(e){row.push(getMk(s.id,cls,subj,e.key));});rows.push(row);});var shName='marks_'+cls+'_'+subj.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');sheetPost(shName,rows,function(){syncStatus('ok');});}
+function syncSettings(){sheetPost('settings',[['key','value'],['marksLocked',settings.marksLocked?'1':'0']],null);}
 
 function parseAndLoadStudents(sR){
   if(sR.length<2)return;
   var header=sR[0].map(function(h){return String(h||'').trim();});
-  // Kishor format: इयत्ता | ह.क्र. | विद्यार्थाचे नाव | आईचे नाव | माध्यम | जन्म तारीख | नोंदणी क्रमांक
-  var isKishor=header[0]&&(header[0].indexOf('इयत्ता')>=0||header[0]==='इयत्ता');
+  var isKishor=header[0]&&header[0].indexOf('\u0907\u092F\u0924\u094D\u0924\u093E')>=0;
   var idC=1;
   if(isKishor){
-    students=sR.slice(1).filter(function(r){return r[0]||r[2];}).map(function(r){
-      return{
-        id:idC++,
-        name:String(r[2]||'').trim(),
-        cls:parseClass(r[0]),
-        roll:String(r[1]||'').trim(),
-        status:'active',reason:'',
-        mother:String(r[3]||''),
-        medium:String(r[4]||''),
-        dob:String(r[5]||''),
-        regNo:String(r[6]||''),
-        father:'',phone:''
-      };
-    });
+    students=sR.slice(1).filter(function(r){return r[0]||r[2];}).map(function(r){return{id:idC++,name:String(r[2]||'').trim(),cls:parseClass(r[0]),roll:String(r[1]||'').trim(),status:'active',reason:'',mother:String(r[3]||''),medium:String(r[4]||''),dob:String(r[5]||''),regNo:String(r[6]||''),father:'',phone:''};});
   }else{
-    // Standard format: ID|Name|Class|Roll|Status|Reason|Father|Mother|DOB|Phone|RegNo
-    students=sR.slice(1).filter(function(r){return r[0];}).map(function(r){
-      return{
-        id:parseInt(r[0])||idC++,
-        name:String(r[1]||''),
-        cls:parseClass(r[2]),
-        roll:String(r[3]||''),
-        status:String(r[4]||'active'),
-        reason:String(r[5]||''),
-        father:String(r[6]||''),
-        mother:String(r[7]||''),
-        dob:String(r[8]||''),
-        phone:String(r[9]||''),
-        regNo:String(r[10]||'')
-      };
-    });
+    students=sR.slice(1).filter(function(r){return r[0];}).map(function(r){return{id:parseInt(r[0])||idC++,name:String(r[1]||''),cls:parseClass(r[2]),roll:String(r[3]||''),status:String(r[4]||'active'),reason:String(r[5]||''),father:String(r[6]||''),mother:String(r[7]||''),dob:String(r[8]||''),phone:String(r[9]||''),regNo:String(r[10]||'')};});
   }
   nextSId=students.length+1;
 }
 
 function loadTransactionsAndSettings(){
   sheetGet('vyavhar',function(tR){
-    if(tR.length>1){
-      transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){
-        // FIX: use fmt-safe date parsing — strip ISO timezone artifacts
-        var iDate=String(r[5]||'').split('T')[0];
-        var rDate=r[6]?String(r[6]).split('T')[0]:null;
-        var due=String(r[7]||'').split('T')[0];
-        return{
-          id:parseInt(r[0])||1,sId:null,sName:String(r[1]||''),cls:String(r[2]||''),
-          bId:null,bTitle:String(r[3]||''),subj:String(r[4]||''),
-          issueDate:iDate,retDate:rDate||null,due:due,
-          tId:parseInt(r[8])||null,tName:r[9]||null,retTName:r[10]||null
-        };
-      });
-      nextTxId=transactions.length?Math.max.apply(null,transactions.map(function(t){return t.id;}))+1:1;
-    }
-    sheetGet('passwords',function(pwR){
-      if(pwR.length>1){pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});}
-      sheetGet('settings',function(sr){
-        if(sr.length>1){sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1');});}
-        syncStatus('ok');
-        toast('डेटा लोड झाला! ✅ ('+students.length+' विद्यार्थी)');
-      });
+    if(tR.length>1){transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){var iDate=String(r[5]||'').split('T')[0];var rDate=r[6]?String(r[6]).split('T')[0]:null;var due=String(r[7]||'').split('T')[0];return{id:parseInt(r[0])||1,sId:null,sName:String(r[1]||''),cls:String(r[2]||''),bId:null,bTitle:String(r[3]||''),subj:String(r[4]||''),issueDate:iDate,retDate:rDate||null,due:due,tId:parseInt(r[8])||null,tName:r[9]||null,retTName:r[10]||null};});nextTxId=transactions.length?Math.max.apply(null,transactions.map(function(t){return t.id;}))+1:1;}
+    sheetGet('passwords',function(pwR){if(pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
+    sheetGet('settings',function(sr){if(sr.length>1)sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1');});
+    syncStatus('ok');toast('\u0921\u0947\u091F\u093E \u0932\u094B\u0921 \u091D\u093E\u0932\u093E! &#x2705; ('+students.length+' \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940)');});});
+  });
+}
+
+function loadAll(){
+  syncStatus('ing');
+  sheetGet('pustake',function(bR){
+    if(bR.length>1){books=bR.slice(1).filter(function(r){return r[0];}).map(function(r){return{id:parseInt(r[0])||1,title:String(r[1]||''),author:String(r[2]||''),subject:String(r[3]||'\u0907\u0924\u0930'),copies:parseInt(r[4])||1};});nextBId=books.length?Math.max.apply(null,books.map(function(b){return b.id;}))+1:1;}
+    sheetGet('Students',function(sR){
+      if(sR.length>1){parseAndLoadStudents(sR);loadTransactionsAndSettings();}
+      else{sheetGet('vidyarthi',function(sR2){parseAndLoadStudents(sR2);loadTransactionsAndSettings();});}
     });
   });
 }
 
 function parseShikshakRows(rows){
   if(rows.length<2)return;
-  var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){
-    var subjs=String(r[4]||'').split('|').map(function(s){return s.trim();}).filter(Boolean);
-    var cls=String(r[5]||'').split('|').map(function(c){return c.trim().toLowerCase();}).filter(Boolean);
-    var classOf=String(r[3]||'').trim();
-    return{
-      id:parseInt(r[0])||0,name:String(r[1]||''),pw:String(r[2]||''),
-      classOf:classOf,subjects:subjs,classes:cls,
-      isMukh:(classOf===''&&subjs.length===0&&cls.length===0)
-    };
-  });
-  if(loaded.length>0){TEACHERS=loaded;}
+  var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){var subjs=String(r[4]||'').split('|').map(function(s){return s.trim();}).filter(Boolean);var cls=String(r[5]||'').split('|').map(function(c){return c.trim().toLowerCase();}).filter(Boolean);var classOf=String(r[3]||'').trim();return{id:parseInt(r[0])||0,name:String(r[1]||''),pw:String(r[2]||''),classOf:classOf,subjects:subjs,classes:cls,isMukh:(classOf===''&&subjs.length===0&&cls.length===0)};});
+  if(loaded.length>0)TEACHERS=loaded;
 }
+function loadShikshakFirst(){sheetGet('Shikshak',function(rows){parseShikshakRows(rows);loadAll();});}
 
-function loadShikshakFirst(){
-  sheetGet('Shikshak',function(rows){
-    parseShikshakRows(rows);
-    // Also update login teacher dropdown if visible
-    if(document.getElementById('tc-sel')&&document.getElementById('tc-sel').style.display!=='none'){
-      onRole();
-    }
-    loadAll();
-  });
-}
-
-// ============================================================
-// GLOBAL EVENT DELEGATION — single handler for ALL events
-// ============================================================
+// ---- EVENT DELEGATION ----
 document.addEventListener('DOMContentLoaded',function(){
-
-  // LOGIN
   document.getElementById('login-btn').addEventListener('click',doLogin);
   document.getElementById('l-pw').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
   document.getElementById('logout-btn').addEventListener('click',doLogout);
@@ -1649,88 +602,44 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('cm-cancel').addEventListener('click',function(){closeM('cm');});
   document.getElementById('mod-lib').addEventListener('click',function(){openMod('lib');});
   document.getElementById('mod-res').addEventListener('click',function(){openMod('res');});
-  document.getElementById('btn-mr').addEventListener('click',function(){setLang('mr');});
-  document.getElementById('btn-en').addEventListener('click',function(){setLang('en');});
 
-  // CHANGE event delegation — handles ALL dynamic dropdowns/inputs
   document.addEventListener('change',function(ev){
-    var t=ev.target;if(!t)return;
-    var id=t.id||'';
-    var act=t.getAttribute('data-action')||'';
-
-    if(id==='l-role'){onRole();}
-    else if(id==='m-cls'){onMCls();}
-    else if(id==='m-subj'){loadMkTable();}
-    else if(id==='d-cls'){onDCls();}
-    else if(id==='d-subj'){loadDescTable();}
-    else if(id==='i-cls'){loadStdByClass('i-cls','i-roll');refreshIssued();}
-    else if(id==='is-cls'){refreshIssued();}
-    else if(id==='rt-cls'){filterReturn();}
-    else if(id==='rb-cls'){loadRBook();}
-    else if(id==='pc-cls'){loadStdsForCard();}
-    else if(id==='gos-cls'){loadGosawara();}
+    var t=ev.target;if(!t)return;var id=t.id||'';var act=t.getAttribute('data-action')||'';
+    if(id==='l-role')onRole();
+    else if(id==='m-cls')onMCls();
+    else if(id==='m-subj')loadMkTable();
+    else if(id==='i-cls'){loadStdByClass();refreshIssued();}
+    else if(id==='is-cls')refreshIssued();
+    else if(id==='rt-cls')filterReturn();
+    else if(id==='rb-cls')loadRBook();
+    else if(id==='pc-cls')loadStdsForCard();
+    else if(id==='gos-cls')loadGosawara();
     else if(act==='setmk'){
-      var sid=parseInt(t.getAttribute('data-sid')||0);
-      var cls2=t.getAttribute('data-cls')||'';
-      var subj2=t.getAttribute('data-subj')||'';
-      var exam2=t.getAttribute('data-exam')||'';
-      var mx=parseFloat(t.getAttribute('data-max')||0);
-      var val=parseFloat(t.value)||0;
-      if(mx&&val>mx){t.value=mx;val=mx;t.classList.add('err');}
-      else{t.classList.remove('err');}
-      if(sid&&cls2&&subj2&&exam2){
-        setMk(sid,cls2,subj2,exam2,t.value);
-        updateRowTotal(sid,cls2,subj2);
-      }
-    }
-    else if(act==='toggleLock'){
-      settings.marksLocked=t.checked;
-      syncSettings();
-      toast(t.checked?'गुण नोंदणी बंद केली!':'गुण नोंदणी सुरू केली!');
-    }
+      var sid=parseInt(t.getAttribute('data-sid')||0);var cls2=t.getAttribute('data-cls')||'';var subj2=t.getAttribute('data-subj')||'';var exam2=t.getAttribute('data-exam')||'';var mx=parseFloat(t.getAttribute('data-max')||0);var val=parseFloat(t.value)||0;
+      if(mx&&val>mx){t.value=mx;t.classList.add('err');}else{t.classList.remove('err');}
+      if(sid&&cls2&&subj2&&exam2){setMk(sid,cls2,subj2,exam2,t.value);updateRowTotal(sid,cls2,subj2);}
+    }else if(act==='toggleLock'){settings.marksLocked=t.checked;syncSettings();toast(t.checked?'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926!':'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942!');}
   });
 
-  // INPUT event for text search boxes
-  document.addEventListener('input',function(ev){
-    var id=(ev.target||{}).id||'';
-    if(id==='rt-q')filterReturn();
-    else if(id==='is-q')refreshIssued();
-  });
+  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();});
 
-  // CLICK event delegation — ALL click actions via data-action
   document.addEventListener('click',function(ev){
     var el=ev.target;
     while(el&&el.tagName&&el.tagName!=='BODY'){
       var act=(el.getAttribute&&el.getAttribute('data-action'))||'';
       if(act){
-        // Tab navigation
-        if(act==='showtab'){showTab(el.getAttribute('data-tabid')||'');}
-        // Library
-        else if(act==='issuebook'){issueBook();}
-        else if(act==='returnbook'){returnBook(parseInt(el.getAttribute('data-txid')||0));}
-        else if(act==='addbook'){addBook();}
-        else if(act==='addstudent'){addStudent();}
-        else if(act==='stdaction'){stdAction(parseInt(el.getAttribute('data-sid')||0));}
-        // Results
-        else if(act==='saveallmk'){
-          var mc=el.getAttribute('data-cls')||'';
-          var ms=el.getAttribute('data-subj')||'';
-          if(!mc){mc=(document.getElementById('m-cls')||{}).value||'';}
-          if(!ms){ms=(document.getElementById('m-subj')||{}).value||'';}
-          if(mc&&ms)saveAllMk(mc,ms);
-        }
-        else if(act==='savealldesc'){
-          var dc=el.getAttribute('data-cls')||'';
-          var ds=el.getAttribute('data-subj')||'';
-          if(dc&&ds)saveAllDesc(dc,ds);
-        }
-        else if(act==='gencard'){genCard();}
-        // Admin
-        else if(act==='changepw'){changePW();}
-        else if(act==='changetcpw'){changeTcPw(parseInt(el.getAttribute('data-tcid')||0));}
-        else if(act==='promoteall'){promoteAll();}
-        // Misc
-        else if(act==='print'){window.print();}
+        if(act==='showtab')showTab(el.getAttribute('data-tabid')||'');
+        else if(act==='issuebook')issueBook();
+        else if(act==='returnbook')returnBook(parseInt(el.getAttribute('data-txid')||0));
+        else if(act==='addbook')addBook();
+        else if(act==='addstudent')addStudent();
+        else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
+        else if(act==='saveallmk'){var mc=el.getAttribute('data-cls')||'';var ms=el.getAttribute('data-subj')||'';if(!mc)mc=(document.getElementById('m-cls')||{}).value||'';if(!ms)ms=(document.getElementById('m-subj')||{}).value||'';if(mc&&ms)saveAllMk(mc,ms);}
+        else if(act==='gencard')genCard();
+        else if(act==='changepw')changePW();
+        else if(act==='changetcpw')changeTcPw(parseInt(el.getAttribute('data-tcid')||0));
+        else if(act==='promoteall')promoteAll();
+        else if(act==='print')window.print();
         else if(act==='emailcontact'){try{window.location.href='mailto:emvepatekar@gmail.com';}catch(e){}}
         break;
       }
