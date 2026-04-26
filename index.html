@@ -1,263 +1,458 @@
 <!DOCTYPE html>
 <html lang="mr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMVE School App</title>
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #1abc9c;
-            --bg-color: #f4f7f6;
-            --text-dark: #333;
-            --text-light: #fff;
-            --danger: #e74c3c;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-dark); }
-        
-        /* Header & Nav */
-        header { background: var(--primary); color: var(--text-light); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .user-info { font-size: 0.9em; }
-        nav { display: flex; gap: 10px; background: #34495e; padding: 10px 20px; flex-wrap: wrap; }
-        nav button { background: none; border: none; color: var(--text-light); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 1em; }
-        nav button:hover, nav button.active { background: var(--secondary); }
-        
-        /* Containers */
-        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background: var(--text-light); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; }
-        .hidden { display: none !important; }
-        
-        /* Cards & Forms */
-        .card { border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-        .card h3 { margin-bottom: 15px; border-bottom: 2px solid var(--secondary); padding-bottom: 5px; display: inline-block; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select { padding: 8px; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px; }
-        .btn { background: var(--secondary); color: var(--text-light); border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; }
-        .btn:hover { filter: brightness(0.9); }
-        .btn-danger { background: var(--danger); }
-        
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background-color: #f2f2f2; }
-        .marks-input { width: 60px; text-align: center; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EMVE - एकनाथ माध्यमिक विद्यालय</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0f2f5;--card:#fff;--pri:#1a5276;--pri2:#2980b9;--red:#e74c3c;--grn:#27ae60;--wrn:#f39c12;--txt:#2c3e50;--txt2:#7f8c8d;--bdr:#dce1e6;--sh:0 2px 8px rgba(0,0,0,.08);--r:8px;--nh:52px;--sw:210px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans Devanagari',sans-serif;background:var(--bg);color:var(--txt);font-size:14px}
+button,select,input{font-family:inherit;font-size:inherit}
+button{cursor:pointer;border:none;border-radius:var(--r);padding:8px 16px;transition:all .2s}
+input,select{border:1px solid var(--bdr);border-radius:var(--r);padding:8px 12px;outline:none}
+input:focus,select:focus{border-color:var(--pri2);box-shadow:0 0 0 2px rgba(41,128,185,.15)}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid var(--bdr);padding:5px 7px;text-align:center;font-size:13px}
+th{background:var(--pri);color:#fff;font-weight:600;position:sticky;top:0;z-index:2}
+.btn{background:var(--pri);color:#fff;font-weight:600}.btn:hover{background:var(--pri2)}
+.btn-d{background:var(--red);color:#fff}.btn-s{background:var(--grn);color:#fff}
+.btn-w{background:var(--wrn);color:#fff}.btn-sm{padding:4px 10px;font-size:12px}
+.hid{display:none!important}
+.toast{position:fixed;bottom:20px;right:20px;background:#333;color:#fff;padding:12px 20px;border-radius:var(--r);z-index:9999;animation:fi .3s}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-r{background:#fde8e8;color:var(--red)}.badge-g{background:#e8f8e8;color:var(--grn)}.badge-b{background:#e8f0f8;color:var(--pri2)}
+.mo{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center}
+.md{background:#fff;border-radius:12px;padding:24px;max-width:520px;width:92%;max-height:85vh;overflow-y:auto}
+.md h3{margin-bottom:14px}.fr{margin-bottom:10px}.fr label{display:block;font-weight:600;margin-bottom:3px;font-size:13px}
+.fr input,.fr select{width:100%}
+.sp{display:inline-block;width:20px;height:20px;border:3px solid var(--bdr);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-        /* Login Screen */
-        #login-screen { max-width: 400px; margin: 100px auto; text-align: center; }
-        #login-screen h2 { margin-bottom: 20px; }
-    </style>
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a5276,#2980b9)}
+.lb{background:#fff;border-radius:16px;padding:36px;width:350px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+.lb h1{color:var(--pri);font-size:20px;margin-bottom:2px}.lb h2{color:var(--txt2);font-size:13px;font-weight:400;margin-bottom:20px}
+.lb input{width:100%;margin-bottom:10px;padding:11px;font-size:14px}.lb button{width:100%;padding:11px;font-size:15px}
+.le{color:var(--red);font-size:13px;margin-top:6px;min-height:18px}
+
+#topNav{position:fixed;top:0;left:0;width:100%;height:var(--nh);background:var(--pri);color:#fff;display:flex;align-items:center;padding:0 14px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+#topNav .nt{font-size:15px;font-weight:700;flex:1}
+#topNav .nu{font-size:12px;margin-right:10px;opacity:.85}
+.si{font-size:16px;margin-right:10px;cursor:pointer}
+.hb{display:none;background:none;color:#fff;font-size:22px;margin-right:10px;padding:2px}
+
+#sidebar{position:fixed;top:var(--nh);left:0;width:var(--sw);height:calc(100vh - var(--nh));background:#fff;border-right:1px solid var(--bdr);overflow-y:auto;z-index:90}
+.ss{padding:10px 0;border-bottom:1px solid var(--bdr)}
+.st{padding:3px 14px;font-size:10px;text-transform:uppercase;color:var(--txt2);font-weight:700;letter-spacing:.5px}
+.si2{padding:9px 14px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;transition:background .15s}
+.si2:hover{background:var(--bg)}.si2.ac{background:#e8f4fd;color:var(--pri);font-weight:600;border-right:3px solid var(--pri)}
+
+#mainContent{margin-top:var(--nh);margin-left:var(--sw);padding:16px;min-height:calc(100vh - var(--nh))}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}.ph h2{font-size:18px}
+.cd{background:var(--card);border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.sc{background:var(--card);border-radius:var(--r);padding:14px;box-shadow:var(--sh);text-align:center}
+.sc .sn{font-size:26px;font-weight:700;color:var(--pri)}.sc .sl{font-size:11px;color:var(--txt2);margin-top:2px}
+.tw{overflow-x:auto;max-height:65vh;overflow-y:auto}
+
+@media(max-width:768px){
+  #sidebar{display:none}#sidebar.open{display:block;width:240px;box-shadow:4px 0 20px rgba(0,0,0,.2)}
+  #mainContent{margin-left:0;padding:10px}.sg{grid-template-columns:1fr 1fr}.hb{display:block!important}
+}
+@media print{
+  #topNav,#sidebar,.no-p{display:none!important}#mainContent{margin:0;padding:0}body{font-size:11px}
+  th{background:#333!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
 </head>
 <body>
 
-    <div id="login-screen" class="container">
-        <h2>EMVE School App - लॉगीन</h2>
-        <div class="form-group">
-            <input type="text" id="username" placeholder="युजरनेम (Username)" required>
-        </div>
-        <div class="form-group">
-            <input type="password" id="password" placeholder="पासवर्ड (Password)" required>
-        </div>
-        <button class="btn" onclick="appLogin()">लॉगीन करा</button>
-        <p style="margin-top:15px; font-size:0.8em; color:gray;">(Demo: admin / teacher / class_teacher)</p>
-    </div>
+<div id="loginScreen">
+  <div class="lb">
+    <h1>एकनाथ माध्यमिक विद्यालय</h1>
+    <h2>एरंडगाव, ता. सिल्लोड, जि. छत्रपती संभाजीनगर</h2>
+    <input type="text" id="loginUser" placeholder="वापरकर्ता नाव (उदा. ranasing)">
+    <input type="password" id="loginPass" placeholder="पासवर्ड (उदा. ranasing@2025)">
+    <button class="btn" data-action="doLogin">प्रवेश करा</button>
+    <div class="le" id="loginErr"></div>
+  </div>
+</div>
 
-    <div id="main-app" class="hidden">
-        <header>
-            <h2>EMVE School App</h2>
-            <div class="user-info">
-                <span id="user-display"></span> | 
-                <button class="btn btn-danger" style="padding: 4px 8px;" onclick="appLogout()">लॉगआउट</button>
-            </div>
-        </header>
+<div id="topNav" class="hid">
+  <button class="hb" data-action="toggleSB">&#9776;</button>
+  <div class="nt">EMVE शाळा व्यवस्थापन</div>
+  <span class="si" data-action="syncAll" title="Sync">&#x2601;</span>
+  <span class="nu" id="navUser"></span>
+  <button class="btn-sm btn-d" data-action="logout">बाहेर</button>
+</div>
 
-        <nav id="main-nav">
-            </nav>
+<div id="sidebar" class="hid">
+  <div class="ss" id="sL">
+    <div class="st">ग्रंथालय</div>
+    <div class="si2" data-page="libDash">डॅशबोर्ड</div>
+    <div class="si2" data-page="libIssue">पुस्तक द्या</div>
+    <div class="si2" data-page="libReturn">परत</div>
+    <div class="si2" data-page="libCat">ग्रंथसूची</div>
+    <div class="si2" data-page="libRpt">अहवाल</div>
+  </div>
+  <div class="ss" id="sR">
+    <div class="st">निकाल</div>
+    <div class="si2" data-page="resDash">डॅशबोर्ड</div>
+    <div class="si2" data-page="resMarks">गुण नोंदणी</div>
+    <div class="si2" data-page="resSheet">निकालपत्रक</div>
+    <div class="si2" data-page="resGosG">गोषवारा श्रेणी</div>
+    <div class="si2" data-page="resGosC">गोषवारा जातनिहाय</div>
+    <div class="si2" data-page="resGC">श्रेणी पत्रक</div>
+    <div class="si2" data-page="resProg">प्रगतीपत्रक</div>
+  </div>
+  <div class="ss hid" id="sA">
+    <div class="st">व्यवस्थापन</div>
+    <div class="si2" data-page="admSt">विद्यार्थी</div>
+    <div class="si2" data-page="admTch">शिक्षक</div>
+    <div class="si2" data-page="admPw">पासवर्ड</div>
+    <div class="si2" data-page="admLock">गुण नियंत्रण</div>
+    <div class="si2" data-page="admProm">प्रमोट</div>
+  </div>
+</div>
 
-        <div class="container">
-            
-            <section id="module-library" class="hidden tab-content">
-                <div class="card">
-                    <h3>ग्रंथालय व्यवस्थापन</h3>
-                    <button class="btn" onclick="alert('पुस्तक देण्याची प्रक्रिया (Issue)')">पुस्तक द्या</button>
-                    <button class="btn" onclick="alert('पुस्तक जमा करण्याची प्रक्रिया (Return)')">पुस्तक परत घ्या</button>
-                    <button class="btn" onclick="alert('ग्रंथसूची (Book Catalog)')">ग्रंथसूची</button>
-                    <button class="btn" onclick="alert('अहवाल (Reports)')">अहवाल</button>
-                </div>
-            </section>
+<div id="mainContent" class="hid"><div id="pc"></div></div>
 
-            <section id="module-results" class="hidden tab-content">
-                <div class="card" id="marks-entry-section">
-                    <h3>गुण नोंदणी (Marks Entry)</h3>
-                    <div class="form-group">
-                        <label>वर्ग निवडा:</label>
-                        <select id="class-selector" onchange="renderMarksTable()">
-                            <option value="">-- वर्ग निवडा --</option>
-                            <option value="5 वी">5 वी</option>
-                            <option value="7 वी">7 वी</option>
-                            <option value="9 वी">9 वी</option>
-                            <option value="10 वी">10 वी</option>
-                        </select>
-                    </div>
-                    <div id="marks-table-container"></div>
-                </div>
+<script>
+(function(){
+"use strict";
+var API="https://script.google.com/macros/s/AKfycbzDPkJF7VI53PYTE4T1PmAAlU4jFtzTN1zjRi8V9Wz1-SsQySly6NNfpO1-gmMc4SbOdA/exec";
+var SCH="\u090F\u0915\u0928\u093E\u0925 \u092E\u093E\u0927\u094D\u092F\u092E\u093F\u0915 \u0935\u093F\u0926\u094D\u092F\u093E\u0932\u092F, \u090F\u0930\u0902\u0921\u0917\u093E\u0935";
+var S5=["\u092E\u0930\u093E\u0920\u0940","\u0939\u093F\u0902\u0926\u0940","\u0907\u0902\u0917\u094D\u0930\u091C\u0940","\u0917\u0923\u093F\u0924","\u092A\u0930\u093F\u0938\u0930 \u0905\u092D\u094D\u092F\u093E\u0938","\u0915\u0932\u093E","\u0915\u093E\u0930\u094D\u092F\u093E\u0928\u0941\u092D\u0935","\u0936\u093E.\u0936\u093F\u0915\u094D\u0937\u0923"];
+var S68=["\u092E\u0930\u093E\u0920\u0940","\u0939\u093F\u0902\u0926\u0940","\u0907\u0902\u0917\u094D\u0930\u091C\u0940","\u0917\u0923\u093F\u0924","\u0935\u093F\u091C\u094D\u091E\u093E\u0928","\u0938\u092E\u093E\u091C \u0936\u093E\u0938\u094D\u0930","\u0915\u0932\u093E","\u0915\u093E\u0930\u094D\u092F\u093E\u0928\u0941\u092D\u0935","\u0936\u093E.\u0936\u093F\u0915\u094D\u0937\u0923"];
+var S910=["\u092E\u0930\u093E\u0920\u0940","\u0939\u093F\u0902\u0926\u0940","\u0907\u0902\u0917\u094D\u0930\u091C\u0940","\u0917\u0923\u093F\u0924","\u0935\u093F\u091C\u094D\u091E\u093E\u0928","\u0938\u092E\u093E\u091C \u0936\u093E\u0938\u094D\u0930"];
+var GC=[{c:"\u0905-1",n:91,x:100},{c:"\u0905-2",n:81,x:90},{c:"\u092C-1",n:71,x:80},{c:"\u092C-2",n:61,x:70},{c:"\u0915-1",n:51,x:60},{c:"\u0915-2",n:41,x:50},{c:"\u0921",n:33,x:40},{c:"\u0907-1",n:21,x:32},{c:"\u0907-2",n:0,x:20}];
+var GH=[{c:"A",n:75,x:100},{c:"B",n:60,x:74},{c:"C",n:35,x:59},{c:"D",n:0,x:34}];
+var CASTES=["S.C.","S.T.","N.T.","V.J.N.T.","S.B.C.","O.B.C.","OPEN","MINOR"];
+var CO=["10","9","8","7a","7b","6a","6b","5a","5b"];
+var CL={"10":"१० वी","9":"९ वी","8":"८ वी","7a":"७ वी अ","7b":"७ वी ब","6a":"६ वी अ","6b":"६ वी ब","5a":"५ वी अ","5b":"५ वी ब"};
 
-                <div class="card" id="reports-section">
-                    <h3>अहवाल (Reports)</h3>
-                    <button class="btn" onclick="alert('निकालपत्रक जनरेट होत आहे...')">निकालपत्रक</button>
-                    <button class="btn" onclick="alert('गोषवारा श्रेणी जनरेट होत आहे...')">गोषवारा श्रेणी</button>
-                    <button class="btn" onclick="alert('गोषवारा जातनिहाय जनरेट होत आहे...')">गोषवारा जातनिहाय</button>
-                    <button class="btn" onclick="alert('श्रेणी पत्रक डाऊनलोड...')">श्रेणी पत्रक</button>
-                    <button class="btn" onclick="alert('प्रगतीपत्रक डाऊनलोड...')">प्रगतीपत्रक</button>
-                </div>
-            </section>
+var U=null,students=[],teachers=[],books=[],txns=[],MD={},settings={marksLocked:false,marksEntryOpen:true},curPage="";
 
-            <section id="module-management" class="hidden tab-content">
-                <div class="card">
-                    <h3>संस्थाचालक / मुख्याध्यापक व्यवस्थापन</h3>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn" onclick="alert('विद्यार्थी जोडण्याची पद्धत')">विद्यार्थी जोडा/काढा</button>
-                        <button class="btn" onclick="alert('शिक्षक जोडण्याची पद्धत')">शिक्षक जोडा/काढा</button>
-                        <button class="btn" onclick="alert('पासवर्ड बदलण्याची सोय')">पासवर्ड व्यवस्थापन</button>
-                        <button class="btn" onclick="alert('सर्व गुण Lock झाले आहेत.')">गुण Lock करा</button>
-                        <button class="btn" onclick="alert('पुढील वर्गात प्रमोट केले.')">प्रमोट (Promote)</button>
-                    </div>
-                </div>
-            </section>
+function pC(raw){var o=String(raw).trim(),d=o.replace(/[^0-9]/g,""),a=o.indexOf("\u0905")>=0||/a/i.test(o);if(d==="10")return"10";if(d==="9")return"9";if(d==="8")return"8";if(d==="7")return a?"7a":"7b";if(d==="6")return a?"6a":"6b";if(d==="5")return a?"5a":"5b";return d||o.toLowerCase();}
+function cT(c){return parseInt(c)>=9?"high":"mid";}
+function gS(c){var d=parseInt(c);return d>=9?S910:d>=6?S68:S5;}
+function gG(p,c){var gs=cT(c)==="high"?GH:GC;var v=Math.round(p);for(var i=0;i<gs.length;i++)if(v>=gs[i].n&&v<=gs[i].x)return gs[i].c;return"-";}
+function fmt(v){if(!v)return"";var s=String(v);return s.indexOf("T")>0?s.split("T")[0]:s;}
+function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function $(id){return document.getElementById(id);}
 
-        </div>
-    </div>
+function aG(sh){return fetch(API+"?sheet="+encodeURIComponent(sh)).then(function(r){return r.json()}).then(function(d){return d.rows||[]});}
+function aP(sh,rows){return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({sheet:sh,action:"write",rows:rows})}).then(function(r){return r.json()});}
+function toast(m,d){var e=document.createElement("div");e.className="toast";e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},d||2500);}
 
-    <script>
-        // --- 1. Constants & State ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDPkJF7VI53PYTE4T1PmAAlU4jFtzTN1zjRi8V9Wz1-SsQySly6NNfpO1-gmMc4SbOdA/exec';
-        let currentUser = null;
+function loadAll(cb){
+  var n=0,t=5;function ck(){n++;if(n>=t&&cb)cb();}
+  aG("Shikshak").then(function(R){teachers=[];for(var i=1;i<R.length;i++){var r=R[i];if(!r[0])continue;teachers.push({id:String(r[0]),name:r[1]||"",pw:r[2]||"",classOf:r[3]||"",subjects:(r[4]||"").split("|").map(function(s){return s.trim()}).filter(Boolean),classes:(r[5]||"").split("|").map(function(s){return s.trim()}).filter(Boolean)});}ck();}).catch(ck);
+  aG("Students").then(function(R){students=[];for(var i=1;i<R.length;i++){var r=R[i];if(!r[2])continue;students.push({iy:pC(r[0]),hk:r[1]||"",nm:String(r[2]||"").trim(),mo:r[3]||"",md:r[4]||"",db:fmt(r[5]),rg:r[6]||"",gn:r[7]||"",cs:r[8]||""});}ck();}).catch(function(){aG("vidyarthi").then(function(R){students=[];for(var i=1;i<R.length;i++){var r=R[i];if(!r[2])continue;students.push({iy:pC(r[0]),hk:r[1]||"",nm:String(r[2]||"").trim(),mo:r[3]||"",md:r[4]||"",db:fmt(r[5]),rg:r[6]||"",gn:r[7]||"",cs:r[8]||""});}ck();}).catch(ck);});
+  aG("pustake").then(function(R){books=[];for(var i=1;i<R.length;i++){var r=R[i];if(!r[0])continue;books.push({id:String(r[0]),ti:r[1]||"",au:r[2]||"",ca:r[3]||"",qt:Number(r[4])||1});}ck();}).catch(ck);
+  aG("vyavhar").then(function(R){txns=[];for(var i=1;i<R.length;i++){var r=R[i];if(!r[0])continue;txns.push({bi:String(r[0]),bt:r[1]||"",sn:r[2]||"",sc:r[3]||"",id:fmt(r[4]),rd:fmt(r[5]),mv:r[6]||"",rt:r[7]||"",st:r[8]||"\u0926\u093F\u0932\u0947\u0932\u0947"});}ck();}).catch(ck);
+  aG("settings").then(function(R){if(R.length>1)for(var i=1;i<R.length;i++){if(R[i][0]==="marksLocked")settings.marksLocked=R[i][1]==="true"||R[i][1]===true;if(R[i][0]==="marksEntryOpen")settings.marksEntryOpen=R[i][1]==="true"||R[i][1]===true;}ck();}).catch(ck);
+}
 
-        // --- 2. Utility Functions ---
-        // Parse Class: Extracts digits from "10 वी", "9 वी" etc.
-        function parseClass(className) {
-            if (!className) return 0;
-            return parseInt(className.replace(/\D/g, ''), 10) || 0;
+function lM(c,s,cb){var k="marks_"+c+"_"+s;aG(k).then(function(R){MD[k]=R;if(cb)cb(R);}).catch(function(){MD[k]=[];if(cb)cb([]);});}
+function lAM(c,cb){var ss=gS(c),n=0;if(!ss.length){if(cb)cb();return;}ss.forEach(function(s){lM(c,s,function(){n++;if(n>=ss.length&&cb)cb();});});}
+function sM(c,s,rows,cb){var k="marks_"+c+"_"+s;aP(k,rows).then(function(){MD[k]=rows;if(cb)cb();}).catch(function(){toast("सेव्ह अयशस्वी!");});}
+function saveSt(cb){var R=[["\u0907\u092F\u0924\u094D\u0924\u093E","\u0939.\u0915\u094D\u0930.","\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u093E\u091A\u0947 \u0928\u093E\u0935","\u0906\u0908\u091A\u0947 \u0928\u093E\u0935","\u092E\u093E\u0927\u094D\u092F\u092E","\u091C\u0928\u094D\u092E \u0924\u093E\u0930\u0940\u0916","\u0928\u094B\u0902\u0926\u0923\u0940 \u0915\u094D\u0930\u092E\u093E\u0902\u0915","\u0932\u093F\u0902\u0917","\u091C\u093E\u0924"]];students.forEach(function(s){R.push([CL[s.iy]||s.iy,s.hk,s.nm,s.mo,s.md,s.db,s.rg,s.gn,s.cs]);});aP("Students",R).then(function(){if(cb)cb();}).catch(function(){toast("Save failed!");});}
+function saveTch(cb){var R=[["ID","Name","PW","ClassOf","Subjects","Classes"]];teachers.forEach(function(t){R.push([t.id,t.name,t.pw,t.classOf,t.subjects.join("|"),t.classes.join("|")]);});aP("Shikshak",R).then(function(){if(cb)cb();}).catch(function(){toast("Save failed!");});}
+function saveTx(cb){var R=[["BookID","BookTitle","StudentName","StudentClass","IssueDate","ReturnDate","Motivator","ReturnTeacher","Status"]];txns.forEach(function(t){R.push([t.bi,t.bt,t.sn,t.sc,t.id,t.rd,t.mv,t.rt,t.st]);});aP("vyavhar",R).then(function(){if(cb)cb();}).catch(function(){toast("Save failed!");});}
+function saveBk(cb){var R=[["ID","Title","Author","Category","Qty"]];books.forEach(function(b){R.push([b.id,b.ti,b.au,b.ca,b.qt]);});aP("pustake",R).then(function(){if(cb)cb();}).catch(function(){toast("Save failed!");});}
+function saveSett(cb){aP("settings",[["key","value"],["marksLocked",String(settings.marksLocked)],["marksEntryOpen",String(settings.marksEntryOpen)]]).then(function(){if(cb)cb();}).catch(function(){});}
+
+function doLogin(){
+  var un=$("loginUser").value.trim(),pw=$("loginPass").value.trim(),er=$("loginErr");
+  if(!un||!pw){er.textContent="\u0915\u0943\u092A\u092F\u093E \u0926\u094B\u0928\u094D\u0939\u0940 \u092D\u0930\u093E";return;}
+  er.innerHTML='<span class="sp"></span> \u0924\u092A\u093E\u0938\u0924 \u0906\u0939\u0947...';
+  aG("passwords").then(function(R){
+    var found=false;
+    for(var i=1;i<R.length;i++){
+      if(R[i][0]===un&&R[i][1]===pw){
+        found=true;
+        if(un==="samata")U={id:"admin",name:"\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915",role:"super",co:"",su:[],cl:CO.slice()};
+        else if(un==="katemadhav")U={id:"hm",name:"\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915",role:"hm",co:"",su:[],cl:CO.slice()};
+        break;
+      }
+    }
+    if(!found){
+      for(var j=0;j<teachers.length;j++){
+        var t=teachers[j],tid=t.pw.split("@")[0];
+        if((tid===un&&t.pw===pw)||(t.pw===pw&&t.pw.split("@")[0]===un)){
+          found=true;U={id:t.id,name:t.name,role:"teacher",co:t.classOf,su:t.subjects,cl:t.classes};break;
         }
+      }
+    }
+    if(!found){er.textContent="\u091A\u0941\u0915\u0940\u091A\u0947 \u0928\u093E\u0935/\u092A\u093E\u0938\u0935\u0930\u094D\u0921!";return;}
+    enterApp();
+  }).catch(function(){
+    for(var j=0;j<teachers.length;j++){var t=teachers[j];if(t.pw===pw||t.pw===un+"@"+pw.split("@").pop()){U={id:t.id,name:t.name,role:"teacher",co:t.classOf,su:t.subjects,cl:t.classes};enterApp();return;}}
+    er.textContent="\u0938\u0930\u094D\u0935\u094D\u0939\u0930 \u0924\u094D\u0930\u0941\u091F\u0940!";
+  });
+}
+function enterApp(){
+  $("loginScreen").classList.add("hid");$("topNav").classList.remove("hid");$("sidebar").classList.remove("hid");$("mainContent").classList.remove("hid");
+  $("navUser").textContent=U.name;
+  if(U.role==="super"||U.role==="hm")$("sA").classList.remove("hid");
+  sP("resDash");
+}
+function logout(){U=null;$("loginScreen").classList.remove("hid");$("topNav").classList.add("hid");$("sidebar").classList.add("hid");$("mainContent").classList.add("hid");$("loginUser").value="";$("loginPass").value="";$("loginErr").textContent="";}
 
-        // Generic API fetch simulation (Replace alert with real fetch)
-        async function fetchAppsScript(action, data = {}) {
-            console.log(`Calling App Script: Action=${action}`, data);
-            // Real implementation:
-            /*
-            let url = new URL(SCRIPT_URL);
-            url.searchParams.append('action', action);
-            Object.keys(data).forEach(key => url.searchParams.append(key, data[key]));
-            let response = await fetch(url);
-            return await response.json();
-            */
-        }
+function sP(p){
+  curPage=p;var items=document.querySelectorAll(".si2");for(var i=0;i<items.length;i++)items[i].classList.toggle("ac",items[i].getAttribute("data-page")===p);
+  var c=$("pc");c.innerHTML='<div style="text-align:center;padding:40px"><span class="sp"></span></div>';
+  var fn={libDash:rLD,libIssue:rLI,libReturn:rLR,libCat:rLC,libRpt:rLRp,resDash:rRD,resMarks:rRM,resSheet:rRS,resGosG:rRGG,resGosC:rRGC,resGC:rRGCard,resProg:rRP,admSt:rAS,admTch:rAT,admPw:rAPw,admLock:rAL,admProm:rAPm};
+  if(fn[p])fn[p](c);else c.innerHTML="<p>पेज नाही</p>";
+}
 
-        // --- 3. Authentication ---
-        function appLogin() {
-            const user = document.getElementById('username').value.trim().toLowerCase();
-            
-            // Mock Login Logic based on Summary
-            if (user === 'admin') {
-                currentUser = { name: "माधव काटे", role: "admin", label: "मुख्याध्यापक" };
-            } else if (user === 'class_teacher') {
-                currentUser = { name: "शिक्षक १", role: "class_teacher", label: "वर्गशिक्षक", assignedClass: "10 वी" };
-            } else if (user === 'teacher') {
-                currentUser = { name: "शिक्षक २", role: "subject_teacher", label: "विषय शिक्षक", assignedClass: "9 वी" };
-            } else {
-                alert("चुकीचे युजरनेम!");
-                return;
-            }
+function sOC(c){return students.filter(function(s){return s.iy===c;}).sort(function(a,b){return(Number(a.hk)||0)-(Number(b.hk)||0);});}
+function cAC(c){return U.role==="super"||U.role==="hm"||U.cl.indexOf(c)>=0;}
+function cEM(c,s){if(settings.marksLocked||!settings.marksEntryOpen)return false;return U.role==="super"||U.role==="hm"||(U.cl.indexOf(c)>=0&&U.su.indexOf(s)>=0);}
 
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('user-display').innerText = `${currentUser.name} (${currentUser.label})`;
-            
-            buildNavigation();
-        }
+function clsSel(id,ff){var o='<option value="">\u0935\u0930\u094D\u0917 \u0928\u093F\u0935\u0921\u093E</option>';CO.forEach(function(c){if(ff&&!ff(c))return;o+='<option value="'+c+'">'+(CL[c]||c)+'</option>';});return'<select id="'+id+'">'+o+'</select>';}
+function termSel(id){return'<select id="'+id+'"><option value="0">\u0938\u0924\u094D\u0930-1</option><option value="1">\u0938\u0924\u094D\u0930-2</option></select>';}
 
-        function appLogout() {
-            currentUser = null;
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        }
+function modal(title,body,onSave){var ov=document.createElement("div");ov.className="mo";ov.innerHTML='<div class="md"><h3>'+title+'</h3>'+body+'<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="mS">\u0938\u0947\u0935\u094D\u0939</button><button class="btn-sm" id="mC" style="background:var(--bdr);color:var(--txt)">\u0930\u0926\u094D\u0926</button></div></div>';document.body.appendChild(ov);ov.querySelector("#mC").addEventListener("click",function(){ov.remove();});ov.querySelector("#mS").addEventListener("click",function(){if(onSave)onSave(ov);});}
 
-        // --- 4. Navigation & Roles ---
-        function buildNavigation() {
-            const nav = document.getElementById('main-nav');
-            nav.innerHTML = ''; // Clear existing
+// ===== MODULE 1: ग्रंथालय =====
+function rLD(c){
+  var iss=txns.filter(function(t){return t.st==="\u0926\u093F\u0932\u0947\u0932\u0947";}),od=iss.filter(function(t){if(!t.id)return false;var d=new Date(t.id);d.setDate(d.getDate()+7);return d<new Date();});
+  var h='<div class="ph"><h2>\u0917\u094D\u0930\u0902\u0925\u093E\u0932\u092F \u0921\u0945\u0936\u092C\u094B\u0930\u094D\u0921</h2></div><div class="sg"><div class="sc"><div class="sn">'+books.length+'</div><div class="sl">\u090F\u0915\u0942\u0923 \u092A\u0941\u0938\u094D\u0924\u0915\u0947</div></div><div class="sc"><div class="sn">'+iss.length+'</div><div class="sl">\u0926\u093F\u0932\u0947\u0932\u0940</div></div><div class="sc"><div class="sn" style="color:var(--red)">'+od.length+'</div><div class="sl">\u092E\u0941\u0926\u0924 \u0909\u0932\u091F\u0932\u0947\u0932\u0940</div></div></div>';
+  if(od.length){h+='<div class="cd"><h3 style="color:var(--red)">\u092E\u0941\u0926\u0924 \u0909\u0932\u091F\u0932\u0947\u0932\u0940 \u092A\u0941\u0938\u094D\u0924\u0915\u0947</h3><div class="tw"><table><tr><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</th><th>\u0935\u0930\u094D\u0917</th><th>\u0926\u093F\u0928\u093E\u0902\u0915</th><th>\u0926\u093F\u0935\u0938</th></tr>';od.forEach(function(t){var days=Math.floor((new Date()-new Date(t.id))/864e5);h+='<tr><td>'+t.bt+'</td><td>'+t.sn+'</td><td>'+t.sc+'</td><td>'+t.id+'</td><td><span class="badge badge-r">'+days+' \u0926\u093F\u0935\u0938</span></td></tr>';});h+='</table></div></div>';}
+  c.innerHTML=h;
+}
+function rLI(c){
+  c.innerHTML='<div class="ph"><h2>\u092A\u0941\u0938\u094D\u0924\u0915 \u0926\u094D\u092F\u093E</h2></div><div class="cd"><div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("iC",cAC)+'</div><div class="fr"><label>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</label><select id="iS"><option>\u0906\u0927\u0940 \u0935\u0930\u094D\u0917</option></select></div><div class="fr"><label>\u092A\u0941\u0938\u094D\u0924\u0915</label><select id="iB"><option>\u0928\u093F\u0935\u0921\u093E</option>'+books.map(function(b){return'<option value="'+b.id+'">'+b.id+' - '+b.ti+'</option>';}).join("")+'</select></div><div class="fr"><label>\u092A\u094D\u0930\u0947\u0930\u0915 \u0936\u093F\u0915\u094D\u0937\u0915</label><select id="iM"><option>\u0928\u093F\u0935\u0921\u093E</option>'+teachers.map(function(t){return'<option>'+t.name+'</option>';}).join("")+'</select></div><button class="btn" data-action="doIssue">\u092A\u0941\u0938\u094D\u0924\u0915 \u0926\u094D\u092F\u093E</button></div>';
+}
+function rLR(c){
+  var iss=txns.filter(function(t){return t.st==="\u0926\u093F\u0932\u0947\u0932\u0947";});
+  var h='<div class="ph"><h2>\u092A\u0941\u0938\u094D\u0924\u0915 \u092A\u0930\u0924</h2></div><div class="cd"><div class="tw"><table><tr><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</th><th>\u0935\u0930\u094D\u0917</th><th>\u0926\u093F\u0928\u093E\u0902\u0915</th><th></th></tr>';
+  if(!iss.length)h+='<tr><td colspan="5">\u0915\u094B\u0923\u0924\u0947\u0939\u0940 \u0926\u093F\u0932\u0947\u0932\u0947 \u0928\u093E\u0939\u0940\u0924</td></tr>';
+  iss.forEach(function(t){var ix=txns.indexOf(t);h+='<tr><td>'+t.bt+'</td><td>'+t.sn+'</td><td>'+t.sc+'</td><td>'+t.id+'</td><td><button class="btn-sm btn-s" data-action="doReturn" data-idx="'+ix+'">\u092A\u0930\u0924</button></td></tr>';});
+  h+='</table></div></div>';c.innerHTML=h;
+}
+function rLC(c){
+  var h='<div class="ph"><h2>\u0917\u094D\u0930\u0902\u0925\u0938\u0942\u091A\u0940</h2><button class="btn" data-action="addBook">\u092A\u0941\u0938\u094D\u0924\u0915 \u091C\u094B\u0921\u093E</button></div><div class="cd"><div class="tw"><table><tr><th>\u0915\u094D\u0930.</th><th>\u0936\u0940\u0930\u094D\u0937\u0915</th><th>\u0932\u0947\u0916\u0915</th><th>\u092A\u094D\u0930\u0915\u093E\u0930</th><th>\u092A\u094D\u0930\u0924\u0940</th></tr>';
+  books.forEach(function(b){h+='<tr><td>'+b.id+'</td><td>'+b.ti+'</td><td>'+b.au+'</td><td>'+b.ca+'</td><td>'+b.qt+'</td></tr>';});
+  h+='</table></div></div>';c.innerHTML=h;
+}
+function rLRp(c){
+  var cc={};txns.forEach(function(t){var k=t.sc||"?";cc[k]=(cc[k]||0)+1;});
+  var h='<div class="ph"><h2>\u0905\u0939\u0935\u093E\u0932</h2></div><div class="cd"><h3>\u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F</h3><table><tr><th>\u0935\u0930\u094D\u0917</th><th>\u0935\u094D\u092F\u0935\u0939\u093E\u0930</th></tr>';
+  Object.keys(cc).forEach(function(k){h+='<tr><td>'+k+'</td><td>'+cc[k]+'</td></tr>';});
+  h+='</table></div>';c.innerHTML=h;
+}
 
-            // Everyone sees Library & Results
-            nav.innerHTML += `<button onclick="switchTab('module-library', this)">ग्रंथालय</button>`;
-            nav.innerHTML += `<button onclick="switchTab('module-results', this)">निकाल</button>`;
+// ===== MODULE 2: निकाल =====
+function rRD(c){
+  var cb={};students.forEach(function(s){cb[s.iy]=(cb[s.iy]||0)+1;});
+  var h='<div class="ph"><h2>\u0928\u093F\u0915\u093E\u0932 \u0921\u0945\u0936\u092C\u094B\u0930\u094D\u0921</h2></div><div class="sg"><div class="sc"><div class="sn">'+students.length+'</div><div class="sl">\u090F\u0915\u0942\u0923 \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</div></div><div class="sc"><div class="sn">'+CO.length+'</div><div class="sl">\u0935\u0930\u094D\u0917</div></div><div class="sc"><div class="sn">'+(settings.marksLocked?"\u092C\u0902\u0926":"\u0938\u0941\u0930\u0942")+'</div><div class="sl">\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940</div></div></div><div class="cd"><h3>\u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F</h3><table><tr><th>\u0935\u0930\u094D\u0917</th><th>\u0938\u0902\u0916\u094D\u092F\u093E</th></tr>';
+  CO.forEach(function(cl){if(!cAC(cl))return;h+='<tr><td>'+(CL[cl]||cl)+'</td><td>'+(cb[cl]||0)+'</td></tr>';});
+  h+='</table></div>';c.innerHTML=h;
+}
+function rRM(c){
+  c.innerHTML='<div class="ph"><h2>\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940</h2></div><div class="cd"><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("mC",cAC)+'</div><div class="fr"><label>\u0935\u093F\u0937\u092F</label><select id="mS"><option>\u0906\u0927\u0940 \u0935\u0930\u094D\u0917</option></select></div><div class="fr"><label>\u0938\u0924\u094D\u0930</label>'+termSel("mT")+'</div><div class="fr" style="align-self:flex-end"><button class="btn" data-action="loadMT">\u0932\u094B\u0921</button></div></div><div id="mTA"></div></div>';
+}
+function bMT(cls,subj,term){
+  var a=$("mTA");if(!a)return;a.innerHTML='<span class="sp"></span>';
+  var ss=sOC(cls);if(!ss.length){a.innerHTML="<p>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</p>";return;}
+  lM(cls,subj,function(sR){
+    var hi=cT(cls)==="high",ce=cEM(cls,subj),sm={};
+    if(sR&&sR.length>1)for(var i=1;i<sR.length;i++){var r=sR[i];if(Number(r[1])!==term)continue;var nm=String(r[0]||"").trim();sm[nm]=hi?{l:r[2]||"",a:r[3]||""}:{f:r[2]||"",s:r[3]||""};}
+    var h='<table id="mET"><tr><th>\u0939.\u0915\u094D\u0930.</th><th>\u0928\u093E\u0935</th>';
+    h+=hi?'<th>\u0932\u0947\u0916\u0940 /80</th><th>\u0905\u0902\u0924\u0930\u094D\u0917\u0924 /20</th>':'<th>FA /40</th><th>SA /60</th>';
+    h+='<th>\u090F\u0915\u0942\u0923</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr>';
+    var ds=ce?"":"disabled";
+    ss.forEach(function(st,ix){
+      var sv=sm[st.nm]||{};
+      if(hi){var l=sv.l||"",ag=sv.a||"",tt=(Number(l)||0)+(Number(ag)||0);h+='<tr><td>'+(st.hk||ix+1)+'</td><td style="text-align:left">'+st.nm+'</td><td><input type="number" min="0" max="80" value="'+l+'" data-f="l" data-n="'+st.nm+'" '+ds+' style="width:60px"></td><td><input type="number" min="0" max="20" value="'+ag+'" data-f="a" data-n="'+st.nm+'" '+ds+' style="width:60px"></td><td class="tc">'+tt+'</td><td class="gc">'+gG(tt,cls)+'</td></tr>';}
+      else{var f=sv.f||"",s=sv.s||"",tt=(Number(f)||0)+(Number(s)||0);h+='<tr><td>'+(st.hk||ix+1)+'</td><td style="text-align:left">'+st.nm+'</td><td><input type="number" min="0" max="40" value="'+f+'" data-f="f" data-n="'+st.nm+'" '+ds+' style="width:60px"></td><td><input type="number" min="0" max="60" value="'+s+'" data-f="s" data-n="'+st.nm+'" '+ds+' style="width:60px"></td><td class="tc">'+tt+'</td><td class="gc">'+gG(tt,cls)+'</td></tr>';}
+    });
+    h+='</table>';
+    if(ce)h+='<div style="margin-top:10px"><button class="btn" data-action="saveM" data-c="'+cls+'" data-s="'+subj+'" data-t="'+term+'">\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939 \u0915\u0930\u093E</button></div>';
+    else h+='<p style="color:var(--red);margin-top:6px">\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 '+(settings.marksLocked?"\u092C\u0902\u0926":"\u0924\u0941\u092E\u094D\u0939\u093E\u0932\u093E \u092A\u0930\u0935\u093E\u0928\u0917\u0940 \u0928\u093E\u0939\u0940")+'</p>';
+    a.innerHTML=h;
+  });
+}
+function doSaveM(cls,subj,term){
+  var tb=$("mET");if(!tb)return;var hi=cT(cls)==="high",k="marks_"+cls+"_"+subj,tn=Number(term);
+  var ex=MD[k]||[],oth=[];if(ex.length>1)for(var i=1;i<ex.length;i++)if(Number(ex[i][1])!==tn)oth.push(ex[i]);
+  var inps=tb.querySelectorAll("input[type=number]"),cm={};
+  for(var j=0;j<inps.length;j++){var ip=inps[j],nm=ip.getAttribute("data-n"),fd=ip.getAttribute("data-f");if(!cm[nm])cm[nm]={};cm[nm][fd]=ip.value;}
+  var nr=[["StudentName","Term",hi?"Lekhi":"FA",hi?"Antargat":"SA"]];oth.forEach(function(r){nr.push(r);});
+  Object.keys(cm).forEach(function(nm){var d=cm[nm];nr.push(hi?[nm,tn,d.l||"",d.a||""]:[nm,tn,d.f||"",d.s||""]);});
+  sM(cls,subj,nr,function(){toast("\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939 \u091D\u093E\u0932\u0947!");});
+}
 
-            // Only Admin sees Management
-            if (currentUser.role === 'admin') {
-                nav.innerHTML += `<button onclick="switchTab('module-management', this)">व्यवस्थापन</button>`;
-            }
+function rRS(c){c.innerHTML='<div class="ph"><h2>\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915</h2></div><div class="cd"><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("sC",cAC)+'</div><div class="fr"><label>\u0938\u0924\u094D\u0930</label>'+termSel("sT")+'</div><div class="fr" style="align-self:flex-end"><button class="btn" data-action="loadRS">\u0926\u093E\u0916\u0935\u093E</button></div></div><div id="rSA"></div></div>';}
+function bRS(cls,term){
+  var a=$("rSA");if(!a)return;a.innerHTML='<span class="sp"></span> \u0917\u0941\u0923 \u0932\u094B\u0921 \u0939\u094B\u0924 \u0906\u0939\u0947\u0924...';
+  lAM(cls,function(){
+    var ss=sOC(cls),sj=gS(cls),tn=Number(term),ml={};
+    sj.forEach(function(s){var k="marks_"+cls+"_"+s,R=MD[k]||[];for(var i=1;i<R.length;i++){var r=R[i];if(Number(r[1])!==tn)continue;var nm=String(r[0]||"").trim();if(!ml[nm])ml[nm]={};ml[nm][s]=(Number(r[2])||0)+(Number(r[3])||0);}});
+    var h='<div class="no-p" style="margin-bottom:6px"><button class="btn-sm btn" data-action="doPrint">\u092A\u094D\u0930\u093F\u0902\u091F</button></div><div id="pR"><h3 style="text-align:center">'+SCH+'</h3><p style="text-align:center">\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915 - '+(tn===0?"\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930":"\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930")+' | '+(CL[cls]||cls)+'</p><div class="tw"><table><tr><th>\u0905.\u0915\u094D\u0930.</th><th>\u0928\u093E\u0935</th><th>\u092E\u0941/\u092E\u0941\u0932\u0940</th><th>\u091C\u093E\u0924</th>';
+    sj.forEach(function(s){h+='<th>'+s+'</th>';});h+='<th>\u090F\u0915\u0942\u0923</th><th>\u0936\u0947\u0915\u0921\u093E</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr>';
+    var res=[];ss.forEach(function(st,ix){var mk=ml[st.nm]||{},gt=0;sj.forEach(function(s){gt+=(mk[s]||0);});var pc=sj.length?gt/(sj.length*100)*100:0;res.push({st:st,ix:ix,mk:mk,gt:gt,pc:pc});});
+    res.sort(function(a,b){return b.pc-a.pc;});res.forEach(function(r,ri){r.rk=ri+1;});
+    res.sort(function(a,b){return a.ix-b.ix;});
+    res.forEach(function(r){h+='<tr><td>'+(r.st.hk||r.ix+1)+'</td><td style="text-align:left">'+r.st.nm+'</td><td>'+(r.st.gn||"-")+'</td><td>'+(r.st.cs||"-")+'</td>';sj.forEach(function(s){h+='<td>'+(r.mk[s]||0)+'</td>';});h+='<td><b>'+r.gt+'</b></td><td>'+r.pc.toFixed(1)+'%</td><td>'+gG(r.pc,cls)+'</td></tr>';});
+    h+='</table></div></div>';a.innerHTML=h;
+  });
+}
 
-            // Role based UI setup inside Results Tab
-            const reportsSec = document.getElementById('reports-section');
-            if (currentUser.role === 'subject_teacher') {
-                reportsSec.style.display = 'none'; // Subject teachers don't see consolidated reports
-            } else {
-                reportsSec.style.display = 'block'; // Class teachers & Admins see reports
-            }
+function rRGG(c){c.innerHTML='<div class="ph"><h2>\u0917\u094B\u0937\u0935\u093E\u0930\u093E \u0936\u094D\u0930\u0947\u0923\u0940</h2></div><div class="cd"><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("gGC",cAC)+'</div><div class="fr"><label>\u0938\u0924\u094D\u0930</label>'+termSel("gGT")+'</div><div class="fr" style="align-self:flex-end"><button class="btn" data-action="loadGG">\u0926\u093E\u0916\u0935\u093E</button></div></div><div id="gGA"></div></div>';}
+function bGG(cls,term){
+  var a=$("gGA");if(!a)return;a.innerHTML='<span class="sp"></span>';
+  lAM(cls,function(){
+    var ss=sOC(cls),sj=gS(cls),hi=cT(cls)==="high",tn=Number(term),gs=hi?GH:GC;
+    var gc={};sj.forEach(function(s){gc[s]={};gs.forEach(function(g){gc[s][g.c]={b:0,g:0,t:0};});
+      var k="marks_"+cls+"_"+s,R=MD[k]||[];for(var i=1;i<R.length;i++){var r=R[i];if(Number(r[1])!==tn)continue;var nm=String(r[0]||"").trim(),tot=(Number(r[2])||0)+(Number(r[3])||0),gr=gG(tot,cls);var st=ss.find(function(x){return x.nm===nm;});if(!st||!gc[s][gr])continue;gc[s][gr].t++;if(st.gn==="\u092E\u0941\u0932\u0917\u093E")gc[s][gr].b++;else if(st.gn==="\u092E\u0941\u0932\u0917\u0940")gc[s][gr].g++;}
+    });
+    var boys=ss.filter(function(s){return s.gn==="\u092E\u0941\u0932\u0917\u093E";}).length,girls=ss.filter(function(s){return s.gn==="\u092E\u0941\u0932\u0917\u0940";}).length;
+    var h='<div class="no-p" style="margin-bottom:6px"><button class="btn-sm btn" data-action="doPrint">\u092A\u094D\u0930\u093F\u0902\u091F</button></div><div id="pR"><h3 style="text-align:center">'+SCH+'</h3><p style="text-align:center">\u0936\u094D\u0930\u0947\u0923\u0940\u0928\u093F\u0939\u093E\u092F \u0917\u094B\u0937\u0935\u093E\u0930\u093E | '+(CL[cls]||cls)+' | '+(tn===0?"\u0938\u0924\u094D\u0930-1":"\u0938\u0924\u094D\u0930-2")+'</p><p>\u092A\u091F: \u092E\u0941\u0932\u0947 '+boys+', \u092E\u0941\u0932\u0940 '+girls+', \u090F\u0915\u0942\u0923 '+ss.length+'</p><div class="tw"><table><tr><th>\u0905.</th><th>\u0935\u093F\u0937\u092F</th>';
+    gs.forEach(function(g){h+='<th colspan="3">'+g.c+' ('+g.n+'-'+g.x+')</th>';});
+    h+='</tr><tr><th></th><th></th>';gs.forEach(function(){h+='<th>\u092E\u0941</th><th>\u092E\u0941\u0932\u0940</th><th>\u090F\u0915\u0942\u0923</th>';});h+='</tr>';
+    sj.forEach(function(s,si){h+='<tr><td>'+(si+1)+'</td><td>'+s+'</td>';gs.forEach(function(g){var d=gc[s][g.c];h+='<td>'+d.b+'</td><td>'+d.g+'</td><td>'+d.t+'</td>';});h+='</tr>';});
+    h+='</table></div></div>';a.innerHTML=h;
+  });
+}
 
-            // Default click first tab
-            nav.children[0].click();
-        }
+function rRGC(c){c.innerHTML='<div class="ph"><h2>\u0917\u094B\u0937\u0935\u093E\u0930\u093E \u091C\u093E\u0924\u0928\u093F\u0939\u093E\u092F</h2></div><div class="cd"><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("gCC",cAC)+'</div><div class="fr"><label>\u0935\u093F\u0937\u092F</label><select id="gCS"><option>\u0906\u0927\u0940 \u0935\u0930\u094D\u0917</option></select></div><div class="fr"><label>\u0938\u0924\u094D\u0930</label>'+termSel("gCT")+'</div><div class="fr" style="align-self:flex-end"><button class="btn" data-action="loadGC">\u0926\u093E\u0916\u0935\u093E</button></div></div><div id="gCA"></div></div>';}
+function bGC(cls,subj,term){
+  var a=$("gCA");if(!a)return;a.innerHTML='<span class="sp"></span>';
+  lM(cls,subj,function(sR){
+    var ss=sOC(cls),hi=cT(cls)==="high",gs=hi?GH:GC,tn=Number(term);
+    var cg={};CASTES.forEach(function(c){cg[c]={};gs.forEach(function(g){cg[c][g.c]={b:0,g:0,t:0};});});
+    if(sR&&sR.length>1)for(var i=1;i<sR.length;i++){var r=sR[i];if(Number(r[1])!==tn)continue;var nm=String(r[0]||"").trim(),tot=(Number(r[2])||0)+(Number(r[3])||0),gr=gG(tot,cls);var st=ss.find(function(x){return x.nm===nm;});if(!st||!st.cs||!cg[st.cs]||!cg[st.cs][gr])continue;cg[st.cs][gr].t++;if(st.gn==="\u092E\u0941\u0932\u0917\u093E")cg[st.cs][gr].b++;else if(st.gn==="\u092E\u0941\u0932\u0917\u0940")cg[st.cs][gr].g++;}
+    var h='<div class="no-p" style="margin-bottom:6px"><button class="btn-sm btn" data-action="doPrint">\u092A\u094D\u0930\u093F\u0902\u091F</button></div><div id="pR"><h3 style="text-align:center">'+SCH+'</h3><p style="text-align:center">\u091C\u093E\u0924\u0928\u093F\u0939\u093E\u092F \u0917\u094B\u0937\u0935\u093E\u0930\u093E | '+(CL[cls]||cls)+' | '+subj+'</p><div class="tw"><table><tr><th>\u091C\u093E\u0924</th>';
+    gs.forEach(function(g){h+='<th colspan="3">'+g.c+'</th>';});h+='</tr><tr><th></th>';gs.forEach(function(){h+='<th>\u092E\u0941</th><th>\u092E\u0941\u0932\u0940</th><th>\u090F</th>';});h+='</tr>';
+    CASTES.forEach(function(c){h+='<tr><td>'+c+'</td>';gs.forEach(function(g){var d=cg[c][g.c];h+='<td>'+d.b+'</td><td>'+d.g+'</td><td>'+d.t+'</td>';});h+='</tr>';});
+    h+='</table></div></div>';a.innerHTML=h;
+  });
+}
 
-        function switchTab(tabId, btnElement) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            
-            document.querySelectorAll('#main-nav button').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-        }
+function rRGCard(c){c.innerHTML='<div class="ph"><h2>\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915</h2></div><div class="cd"><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("gcC",cAC)+'</div><div class="fr" style="align-self:flex-end"><button class="btn" data-action="loadGCd">\u0926\u093E\u0916\u0935\u093E</button></div></div><div id="gcA"></div></div>';}
+function bGCd(cls){
+  var a=$("gcA");if(!a)return;a.innerHTML='<span class="sp"></span>';
+  lAM(cls,function(){
+    var ss=sOC(cls),sj=gS(cls);
+    var h='<div class="no-p" style="margin-bottom:6px"><button class="btn-sm btn" data-action="doPrint">\u092A\u094D\u0930\u093F\u0902\u091F</button></div><div id="pR"><h3 style="text-align:center">'+SCH+'</h3><p style="text-align:center">\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915 | '+(CL[cls]||cls)+'</p><div class="tw"><table><tr><th>\u0905.</th><th>\u0928\u093E\u0935</th>';
+    sj.forEach(function(s){h+='<th colspan="2">'+s+'</th>';});h+='<th>\u090F\u0915\u0942\u0923</th><th>%</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr><tr><th></th><th></th>';sj.forEach(function(){h+='<th>\u0938-1</th><th>\u0938-2</th>';});h+='<th></th><th></th><th></th></tr>';
+    ss.forEach(function(st,ix){
+      h+='<tr><td>'+(st.hk||ix+1)+'</td><td style="text-align:left">'+st.nm+'</td>';
+      var gt=0;sj.forEach(function(s){var k="marks_"+cls+"_"+s,R=MD[k]||[],t1=0,t2=0;for(var i=1;i<R.length;i++){var r=R[i];if(String(r[0]||"").trim()!==st.nm)continue;var v=(Number(r[2])||0)+(Number(r[3])||0);if(Number(r[1])===0)t1=v;else t2=v;}h+='<td>'+t1+'</td><td>'+t2+'</td>';gt+=t1+t2;});
+      var pc=sj.length?gt/(sj.length*200)*100:0;h+='<td><b>'+gt+'</b></td><td>'+pc.toFixed(1)+'</td><td>'+gG(pc,cls)+'</td></tr>';
+    });
+    h+='</table></div></div>';a.innerHTML=h;
+  });
+}
 
-        // --- 5. Result Module (Dynamic Marking System) ---
-        function renderMarksTable() {
-            const cls = document.getElementById('class-selector').value;
-            const container = document.getElementById('marks-table-container');
-            if (!cls) { container.innerHTML = ''; return; }
+function rRP(c){c.innerHTML='<div class="ph"><h2>\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915</h2></div><div class="cd"><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("pC",cAC)+'</div><div class="fr"><label>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</label><select id="pS"><option>\u0906\u0927\u0940 \u0935\u0930\u094D\u0917</option></select></div><div class="fr" style="align-self:flex-end"><button class="btn" data-action="loadProg">\u0926\u093E\u0916\u0935\u093E</button></div></div><div id="pA"></div></div>';}
+function bProg(cls,sname){
+  var a=$("pA");if(!a)return;a.innerHTML='<span class="sp"></span>';
+  lAM(cls,function(){
+    var st=students.find(function(s){return s.iy===cls&&s.nm===sname;});if(!st){a.innerHTML="<p>\u0928\u093E\u0939\u0940</p>";return;}
+    var sj=gS(cls),hi=cT(cls)==="high";
+    var h='<div class="no-p" style="margin-bottom:6px"><button class="btn-sm btn" data-action="doPrint">\u092A\u094D\u0930\u093F\u0902\u091F</button></div><div id="pR" style="max-width:700px;margin:0 auto;border:2px solid #333;padding:16px"><h2 style="text-align:center;margin-bottom:2px;font-size:16px">'+SCH+'</h2><h3 style="text-align:center;margin-bottom:12px;font-size:14px">\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915</h3>';
+    h+='<table style="border:none;margin-bottom:12px"><tr style="border:none"><td style="border:none">\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940: <b>'+st.nm+'</b></td><td style="border:none;text-align:right">\u0907\u092F\u0924\u094D\u0924\u093E: <b>'+(CL[cls]||cls)+'</b></td></tr><tr style="border:none"><td style="border:none">\u0906\u0908: '+st.mo+'</td><td style="border:none">\u091C\u0928\u094D\u092E: '+st.db+'</td></tr><tr style="border:none"><td style="border:none">\u0928\u094B\u0902\u0926\u0923\u0940: '+st.rg+'</td><td style="border:none">\u092E\u093E\u0927\u094D\u092F\u092E: '+st.md+'</td></tr></table>';
+    h+='<table><tr><th>\u0905.</th><th>\u0935\u093F\u0937\u092F</th>';
+    if(hi)h+='<th colspan="2">\u0938\u0924\u094D\u0930-1</th><th colspan="2">\u0938\u0924\u094D\u0930-2</th><th>/200</th><th>\u0938\u0930\u093E\u0938\u0930\u0940</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr><tr><th></th><th></th><th>\u0932\u0947\u0916\u0940</th><th>\u0905\u0902\u0924</th><th>\u0932\u0947\u0916\u0940</th><th>\u0905\u0902\u0924</th><th></th><th></th><th></th>';
+    else h+='<th colspan="2">\u0938\u0924\u094D\u0930-1</th><th colspan="2">\u0938\u0924\u094D\u0930-2</th><th>/200</th><th>/100</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr><tr><th></th><th></th><th>FA</th><th>SA</th><th>FA</th><th>SA</th><th></th><th></th><th></th>';
+    h+='</tr>';
+    var gt=0;sj.forEach(function(s,si){var k="marks_"+cls+"_"+s,R=MD[k]||[],a1=0,b1=0,a2=0,b2=0;for(var i=1;i<R.length;i++){var r=R[i];if(String(r[0]||"").trim()!==st.nm)continue;if(Number(r[1])===0){a1=Number(r[2])||0;b1=Number(r[3])||0;}else{a2=Number(r[2])||0;b2=Number(r[3])||0;}}var tot=(a1+b1)+(a2+b2),avg=tot/2;gt+=tot;h+='<tr><td>'+(si+1)+'</td><td>'+s+'</td><td>'+a1+'</td><td>'+b1+'</td><td>'+a2+'</td><td>'+b2+'</td><td>'+tot+'</td><td>'+avg.toFixed(0)+'</td><td>'+gG(avg,cls)+'</td></tr>';});
+    var gp=sj.length?gt/(sj.length*200)*100:0;
+    h+='<tr><td colspan="6"><b>\u090F\u0915\u0942\u0923</b></td><td><b>'+gt+'</b></td><td><b>'+gp.toFixed(1)+'%</b></td><td><b>'+gG(gp,cls)+'</b></td></tr></table>';
+    h+='<div style="margin-top:24px;display:flex;justify-content:space-between;font-size:12px"><div>\u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915</div><div>\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915</div></div></div>';
+    a.innerHTML=h;
+  });
+}
 
-            const classNumber = parseClass(cls);
-            let html = `<h4>${cls} साठी गुण नोंदणी तक्ता</h4>`;
-            html += `<table><thead><tr>`;
-            html += `<th>ह.क्र.</th><th>विद्यार्थ्याचे नाव</th>`;
+// ===== MODULE 3: व्यवस्थापन =====
+function rAS(c){
+  var h='<div class="ph"><h2>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</h2><button class="btn" data-action="addSt">\u091C\u094B\u0921\u093E</button></div><div class="cd"><div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("asC")+'</div><div id="asT"></div></div>';
+  c.innerHTML=h;bAST("");
+}
+function bAST(cls){
+  var a=$("asT");if(!a)return;var ls=cls?sOC(cls):students;
+  var h='<div class="tw"><table><tr><th>\u0907\u092F\u0924\u094D\u0924\u093E</th><th>\u0939.\u0915\u094D\u0930.</th><th>\u0928\u093E\u0935</th><th>\u0906\u0908</th><th>\u0932\u093F\u0902\u0917</th><th>\u091C\u093E\u0924</th><th></th></tr>';
+  ls.forEach(function(s){var gi=students.indexOf(s);h+='<tr><td>'+(CL[s.iy]||s.iy)+'</td><td>'+s.hk+'</td><td style="text-align:left">'+s.nm+'</td><td>'+s.mo+'</td><td>'+s.gn+'</td><td>'+s.cs+'</td><td><button class="btn-sm btn" data-action="editSt" data-i="'+gi+'">\u0938\u0902\u092A\u093E</button> <button class="btn-sm btn-d" data-action="delSt" data-i="'+gi+'">\u0915\u093E\u0922\u093E</button></td></tr>';});
+  h+='</table></div>';a.innerHTML=h;
+}
+function rAT(c){
+  var h='<div class="ph"><h2>\u0936\u093F\u0915\u094D\u0937\u0915</h2><button class="btn" data-action="addTch">\u091C\u094B\u0921\u093E</button></div><div class="cd"><div class="tw"><table><tr><th>ID</th><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915</th><th>\u0935\u093F\u0937\u092F</th><th>\u0935\u0930\u094D\u0917</th><th></th></tr>';
+  teachers.forEach(function(t,i){h+='<tr><td>'+t.id+'</td><td>'+t.name+'</td><td>'+(CL[t.classOf]||t.classOf||"-")+'</td><td>'+t.subjects.join(", ")+'</td><td>'+t.classes.map(function(c){return CL[c]||c;}).join(", ")+'</td><td><button class="btn-sm btn" data-action="editTch" data-i="'+i+'">\u0938\u0902\u092A\u093E</button></td></tr>';});
+  h+='</table></div></div>';c.innerHTML=h;
+}
+function rAPw(c){
+  c.innerHTML='<div class="ph"><h2>\u092A\u093E\u0938\u0935\u0930\u094D\u0921</h2></div><div class="cd"><h3>\u0905\u0945\u0921\u092E\u093F\u0928</h3><div class="fr"><label>\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915</label><input id="pw1" value="samata@2025"></div><div class="fr"><label>\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915</label><input id="pw2" value="katemadhav@2025"></div><button class="btn" data-action="savePw">\u0938\u0947\u0935\u094D\u0939</button><h3 style="margin-top:16px">\u0936\u093F\u0915\u094D\u0937\u0915</h3><div class="tw"><table><tr><th>\u0928\u093E\u0935</th><th>\u092A\u093E\u0938\u0935\u0930\u094D\u0921</th></tr>'+teachers.map(function(t){return'<tr><td>'+t.name+'</td><td>'+t.pw+'</td></tr>';}).join("")+'</table></div></div>';
+}
+function rAL(c){
+  c.innerHTML='<div class="ph"><h2>\u0917\u0941\u0923 \u0928\u093F\u092F\u0902\u0924\u094D\u0930\u0923</h2></div><div class="cd"><div class="fr" style="display:flex;align-items:center;gap:10px"><label style="min-width:180px">\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0932\u0949\u0915</label><label><input type="checkbox" id="lkT" '+(settings.marksLocked?"checked":"")+'> '+(settings.marksLocked?"\u092C\u0902\u0926":"\u0938\u0941\u0930\u0942")+'</label></div><div class="fr" style="display:flex;align-items:center;gap:10px;margin-top:10px"><label style="min-width:180px">\u0917\u0941\u0923 \u092D\u0930\u0923\u0947</label><label><input type="checkbox" id="enT" '+(settings.marksEntryOpen?"checked":"")+'> '+(settings.marksEntryOpen?"\u0938\u0941\u0930\u0942":"\u092C\u0902\u0926")+'</label></div></div>';
+}
+function rAPm(c){
+  if(U.role!=="super"){c.innerHTML='<div class="cd"><p>\u092B\u0915\u094D\u0924 \u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915</p></div>';return;}
+  var bd={};students.forEach(function(s){bd[s.iy]=(bd[s.iy]||0)+1;});
+  var mp={"9":"10","8":"9","7a":"8","7b":"8","6a":"7a","6b":"7b","5a":"6a","5b":"6b"};
+  var h='<div class="ph"><h2>\u092A\u094D\u0930\u092E\u094B\u091F</h2></div><div class="cd"><p style="color:var(--red);font-weight:600;margin-bottom:10px">\u0938\u0942\u091A\u0928\u093E: \u0909\u0932\u091F \u0939\u094B\u0923\u093E\u0930 \u0928\u093E\u0939\u0940. 10\u0935\u0940 \u0915\u093E\u0922\u0932\u0947 \u091C\u093E\u0924\u0940\u0932.</p><table><tr><th>\u0935\u0930\u094D\u0917</th><th>\u0938\u0902\u0916\u094D\u092F\u093E</th><th>\u2192</th></tr>';
+  CO.forEach(function(cl){var nx=cl==="10"?"\u0915\u093E\u0922\u0932\u0947":(CL[mp[cl]]||mp[cl]||"?");h+='<tr><td>'+(CL[cl]||cl)+'</td><td>'+(bd[cl]||0)+'</td><td>'+nx+'</td></tr>';});
+  h+='</table><div style="margin-top:14px"><button class="btn btn-d" data-action="doProm">\u0938\u0930\u094D\u0935 \u092A\u094D\u0930\u092E\u094B\u091F</button></div></div>';c.innerHTML=h;
+}
 
-            // Logic: 5th-8th Formative/Summative, 9th-10th Written/Internal
-            if (classNumber <= 8) {
-                html += `<th>आकारिक (Formative)</th><th>संकलित (Summative)</th><th>एकूण</th>`;
-            } else {
-                html += `<th>लेखी (Written - 80)</th><th>अंतर्गत (Internal - 20)</th><th>एकूण</th>`;
-            }
-            html += `<th>कृती</th></tr></thead><tbody>`;
+// ===== EVENT DELEGATION =====
+document.addEventListener("click",function(e){
+  var b=e.target.closest("[data-action]");if(!b)return;var ac=b.getAttribute("data-action");
+  if(ac==="doLogin")doLogin();
+  else if(ac==="logout")logout();
+  else if(ac==="toggleSB")$("sidebar").classList.toggle("open");
+  else if(ac==="syncAll"){toast("\u0938\u093F\u0902\u0915...");loadAll(function(){toast("\u092A\u0942\u0930\u094D\u0923!");sP(curPage);});}
+  else if(ac==="doIssue"){
+    var bi=$("iB").value,sn=$("iS").value,mv=$("iM").value,cl=$("iC").value;
+    if(!bi||!sn||sn==="\u0906\u0927\u0940 \u0935\u0930\u094D\u0917"){toast("\u0938\u0930\u094D\u0935 \u092D\u0930\u093E");return;}
+    var bk=books.find(function(x){return x.id===bi;});
+    txns.push({bi:bi,bt:bk?bk.ti:"",sn:sn,sc:CL[cl]||cl,id:today(),rd:"",mv:mv,rt:"",st:"\u0926\u093F\u0932\u0947\u0932\u0947"});
+    saveTx(function(){toast("\u092A\u0941\u0938\u094D\u0924\u0915 \u0926\u093F\u0932\u0947!");});
+  }
+  else if(ac==="doReturn"){var ix=Number(b.getAttribute("data-idx"));txns[ix].rd=today();txns[ix].rt=U.name;txns[ix].st="\u092A\u0930\u0924";saveTx(function(){toast("\u092A\u0930\u0924!");sP("libReturn");});}
+  else if(ac==="addBook"){modal("\u092A\u0941\u0938\u094D\u0924\u0915 \u091C\u094B\u0921\u093E",'<div class="fr"><label>ID</label><input id="bI" value="'+(books.length+1)+'"></div><div class="fr"><label>\u0936\u0940\u0930\u094D\u0937\u0915</label><input id="bT"></div><div class="fr"><label>\u0932\u0947\u0916\u0915</label><input id="bA"></div><div class="fr"><label>\u092A\u094D\u0930\u0915\u093E\u0930</label><input id="bC"></div><div class="fr"><label>\u092A\u094D\u0930\u0924\u0940</label><input type="number" id="bQ" value="1"></div>',function(ov){books.push({id:$("bI").value,ti:$("bT").value,au:$("bA").value,ca:$("bC").value,qt:Number($("bQ").value)||1});saveBk(function(){toast("\u091C\u094B\u0921\u0932\u0947!");ov.remove();sP("libCat");});});}
+  else if(ac==="loadMT"){var c2=$("mC").value,s2=$("mS").value,t2=$("mT").value;if(!c2||!s2){toast("\u0935\u0930\u094D\u0917/\u0935\u093F\u0937\u092F \u0928\u093F\u0935\u0921\u093E");return;}bMT(c2,s2,Number(t2));}
+  else if(ac==="saveM"){doSaveM(b.getAttribute("data-c"),b.getAttribute("data-s"),b.getAttribute("data-t"));}
+  else if(ac==="loadRS"){var c2=$("sC").value,t2=$("sT").value;if(!c2){toast("\u0935\u0930\u094D\u0917 \u0928\u093F\u0935\u0921\u093E");return;}bRS(c2,t2);}
+  else if(ac==="loadGG"){var c2=$("gGC").value;if(!c2){toast("\u0935\u0930\u094D\u0917");return;}bGG(c2,$("gGT").value);}
+  else if(ac==="loadGC"){var c2=$("gCC").value,s2=$("gCS").value;if(!c2||!s2){toast("\u0935\u0930\u094D\u0917/\u0935\u093F\u0937\u092F");return;}bGC(c2,s2,$("gCT").value);}
+  else if(ac==="loadGCd"){var c2=$("gcC").value;if(!c2){toast("\u0935\u0930\u094D\u0917");return;}bGCd(c2);}
+  else if(ac==="loadProg"){var c2=$("pC").value,sn=$("pS").value;if(!c2||!sn||sn==="\u0906\u0927\u0940 \u0935\u0930\u094D\u0917"){toast("\u0935\u0930\u094D\u0917/\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940");return;}bProg(c2,sn);}
+  else if(ac==="doPrint"){var pr=$("pR");if(pr){var pw=window.open("","_blank");pw.document.write('<html><head><style>body{font-family:sans-serif;font-size:11px;padding:8px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #333;padding:3px 5px;text-align:center;font-size:10px}th{background:#333;color:#fff;-webkit-print-color-adjust:exact}h2,h3,p{margin:3px 0;text-align:center}</style></head><body>');pw.document.write(pr.innerHTML);pw.document.write('</body></html>');pw.document.close();pw.print();}}
+  else if(ac==="addSt"){modal("\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u091C\u094B\u0921\u093E",'<div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("nC")+'</div><div class="fr"><label>\u0939.\u0915\u094D\u0930.</label><input id="nH"></div><div class="fr"><label>\u0928\u093E\u0935</label><input id="nN"></div><div class="fr"><label>\u0906\u0908</label><input id="nM"></div><div class="fr"><label>\u092E\u093E\u0927\u094D\u092F\u092E</label><select id="nMd"><option>\u092E\u0930\u093E\u0920\u0940</option><option>Semi-English</option></select></div><div class="fr"><label>\u091C\u0928\u094D\u092E</label><input type="date" id="nD"></div><div class="fr"><label>\u0928\u094B\u0902\u0926\u0923\u0940</label><input id="nR"></div><div class="fr"><label>\u0932\u093F\u0902\u0917</label><select id="nG"><option>\u092E\u0941\u0932\u0917\u093E</option><option>\u092E\u0941\u0932\u0917\u0940</option></select></div><div class="fr"><label>\u091C\u093E\u0924</label><select id="nCs">'+CASTES.map(function(c){return'<option>'+c+'</option>';}).join("")+'</select></div>',function(ov){var cl=$("nC").value;if(!cl||!$("nN").value){toast("\u0935\u0930\u094D\u0917/\u0928\u093E\u0935 \u0906\u0935\u0936\u094D\u092F\u0915");return;}students.push({iy:cl,hk:$("nH").value,nm:$("nN").value,mo:$("nM").value,md:$("nMd").value,db:$("nD").value,rg:$("nR").value,gn:$("nG").value,cs:$("nCs").value});saveSt(function(){toast("\u091C\u094B\u0921\u0932\u093E!");ov.remove();sP("admSt");});});}
+  else if(ac==="editSt"){var ix=Number(b.getAttribute("data-i")),s=students[ix];modal("\u0938\u0902\u092A\u093E\u0926\u0928",'<div class="fr"><label>\u0935\u0930\u094D\u0917</label>'+clsSel("nC")+'</div><div class="fr"><label>\u0939.\u0915\u094D\u0930.</label><input id="nH" value="'+s.hk+'"></div><div class="fr"><label>\u0928\u093E\u0935</label><input id="nN" value="'+s.nm+'"></div><div class="fr"><label>\u0906\u0908</label><input id="nM" value="'+s.mo+'"></div><div class="fr"><label>\u0932\u093F\u0902\u0917</label><select id="nG"><option '+(s.gn==="\u092E\u0941\u0932\u0917\u093E"?"selected":"")+'>\u092E\u0941\u0932\u0917\u093E</option><option '+(s.gn==="\u092E\u0941\u0932\u0917\u0940"?"selected":"")+'>\u092E\u0941\u0932\u0917\u0940</option></select></div><div class="fr"><label>\u091C\u093E\u0924</label><select id="nCs">'+CASTES.map(function(c){return'<option '+(s.cs===c?"selected":"")+'>'+c+'</option>';}).join("")+'</select></div>',function(ov){var nc=$("nC").value;if(nc)students[ix].iy=nc;students[ix].hk=$("nH").value;students[ix].nm=$("nN").value;students[ix].mo=$("nM").value;students[ix].gn=$("nG").value;students[ix].cs=$("nCs").value;saveSt(function(){toast("\u0938\u0947\u0935\u094D\u0939!");ov.remove();sP("admSt");});});setTimeout(function(){$("nC").value=s.iy;},50);}
+  else if(ac==="delSt"){var ix=Number(b.getAttribute("data-i"));if(!confirm("\u0915\u093E\u0922\u093E\u092F\u091A\u0947? "+students[ix].nm))return;students.splice(ix,1);saveSt(function(){toast("\u0915\u093E\u0922\u0932\u093E!");sP("admSt");});}
+  else if(ac==="addTch"){modal("\u0936\u093F\u0915\u094D\u0937\u0915 \u091C\u094B\u0921\u093E",'<div class="fr"><label>\u0928\u093E\u0935</label><input id="tN"></div><div class="fr"><label>\u092A\u093E\u0938\u0935\u0930\u094D\u0921</label><input id="tP"></div><div class="fr"><label>\u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915</label>'+clsSel("tC")+'</div><div class="fr"><label>\u0935\u093F\u0937\u092F (| \u0935\u0947\u0917\u0933\u093E)</label><input id="tS"></div><div class="fr"><label>\u0935\u0930\u094D\u0917 (| \u0935\u0947\u0917\u0933\u093E)</label><input id="tCl"></div>',function(ov){if(!$("tN").value){toast("\u0928\u093E\u0935");return;}teachers.push({id:String(teachers.length+1),name:$("tN").value,pw:$("tP").value,classOf:$("tC").value,subjects:$("tS").value.split("|").map(function(s){return s.trim();}).filter(Boolean),classes:$("tCl").value.split("|").map(function(s){return s.trim();}).filter(Boolean)});saveTch(function(){toast("\u091C\u094B\u0921\u0932\u093E!");ov.remove();sP("admTch");});});}
+  else if(ac==="editTch"){var ix=Number(b.getAttribute("data-i")),t=teachers[ix];modal("\u0938\u0902\u092A\u093E\u0926\u0928",'<div class="fr"><label>\u0928\u093E\u0935</label><input id="tN" value="'+t.name+'"></div><div class="fr"><label>\u092A\u093E\u0938\u0935\u0930\u094D\u0921</label><input id="tP" value="'+t.pw+'"></div><div class="fr"><label>\u0935\u093F\u0937\u092F</label><input id="tS" value="'+t.subjects.join("|")+'"></div><div class="fr"><label>\u0935\u0930\u094D\u0917</label><input id="tCl" value="'+t.classes.join("|")+'"></div>',function(ov){teachers[ix].name=$("tN").value;teachers[ix].pw=$("tP").value;teachers[ix].subjects=$("tS").value.split("|").map(function(s){return s.trim();}).filter(Boolean);teachers[ix].classes=$("tCl").value.split("|").map(function(s){return s.trim();}).filter(Boolean);saveTch(function(){toast("\u0938\u0947\u0935\u094D\u0939!");ov.remove();sP("admTch");});});}
+  else if(ac==="savePw"){aP("passwords",[["user","pass"],["samata",$("pw1").value],["katemadhav",$("pw2").value]]).then(function(){toast("\u0938\u0947\u0935\u094D\u0939!");});}
+  else if(ac==="doProm"){if(!confirm("\u0938\u0930\u094D\u0935 \u092A\u094D\u0930\u092E\u094B\u091F? \u0909\u0932\u091F \u0939\u094B\u0923\u093E\u0930 \u0928\u093E\u0939\u0940!"))return;students=students.filter(function(s){return s.iy!=="10";});var mp2={"9":"10","8":"9","7a":"8","7b":"8","6a":"7a","6b":"7b","5a":"6a","5b":"6b"};students.forEach(function(s){if(mp2[s.iy])s.iy=mp2[s.iy];});saveSt(function(){toast("\u092A\u094D\u0930\u092E\u094B\u091F \u092A\u0942\u0930\u094D\u0923!");sP("admProm");});}
+});
 
-            // Dummy Data Row
-            const dummyStudents = [
-                { roll: 1, name: "समीर देशमुख" },
-                { roll: 2, name: "अमर पाटील" }
-            ];
+document.addEventListener("change",function(e){
+  var el=e.target,id=el.id;
+  if(id==="iC"){var ss=sOC(el.value);$("iS").innerHTML='<option>\u0928\u093F\u0935\u0921\u093E</option>'+ss.map(function(s){return'<option value="'+s.nm+'">'+s.hk+' - '+s.nm+'</option>';}).join("");}
+  if(id==="mC"){var sj=gS(el.value),ca=U.role==="super"||U.role==="hm";$("mS").innerHTML='<option value="">\u0928\u093F\u0935\u0921\u093E</option>'+sj.filter(function(s){return ca||U.su.indexOf(s)>=0;}).map(function(s){return'<option value="'+s+'">'+s+'</option>';}).join("");}
+  if(id==="gCC"){var sj=gS(el.value);$("gCS").innerHTML='<option value="">\u0928\u093F\u0935\u0921\u093E</option>'+sj.map(function(s){return'<option value="'+s+'">'+s+'</option>';}).join("");}
+  if(id==="pC"){var ss=sOC(el.value);$("pS").innerHTML='<option>\u0928\u093F\u0935\u0921\u093E</option>'+ss.map(function(s){return'<option value="'+s.nm+'">'+s.hk+' - '+s.nm+'</option>';}).join("");}
+  if(id==="asC")bAST(el.value);
+  if(el.type==="number"&&el.closest("#mET")){var tr=el.closest("tr"),inps=tr.querySelectorAll("input[type=number]"),tot=0;for(var i=0;i<inps.length;i++)tot+=Number(inps[i].value)||0;var tc=tr.querySelector(".tc"),gc2=tr.querySelector(".gc");if(tc)tc.textContent=tot;if(gc2){var mc=$("mC");gc2.textContent=gG(tot,mc?mc.value:"5a");}}
+  if(id==="lkT"){settings.marksLocked=el.checked;saveSett(function(){toast(settings.marksLocked?"\u092C\u0902\u0926!":"\u0938\u0941\u0930\u0942!");});}
+  if(id==="enT"){settings.marksEntryOpen=el.checked;saveSett(function(){toast(settings.marksEntryOpen?"\u0938\u0941\u0930\u0942!":"\u092C\u0902\u0926!");});}
+});
 
-            dummyStudents.forEach(stu => {
-                html += `<tr>
-                    <td>${stu.roll}</td>
-                    <td>${stu.name}</td>
-                    <td><input type="number" class="marks-input" max="100"></td>
-                    <td><input type="number" class="marks-input" max="100"></td>
-                    <td><strong>-</strong></td>
-                    <td><button class="btn" style="padding:4px 8px;">Save</button></td>
-                </tr>`;
-            });
+document.addEventListener("click",function(e){var it=e.target.closest("[data-page]");if(!it)return;sP(it.getAttribute("data-page"));$("sidebar").classList.remove("open");});
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&!$("loginScreen").classList.contains("hid"))doLogin();});
 
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-        }
-
-    </script>
+aG("Shikshak").then(function(R){teachers=[];for(var i=1;i<R.length;i++){var r=R[i];if(!r[0])continue;teachers.push({id:String(r[0]),name:r[1]||"",pw:r[2]||"",classOf:r[3]||"",subjects:(r[4]||"").split("|").map(function(s){return s.trim()}).filter(Boolean),classes:(r[5]||"").split("|").map(function(s){return s.trim()}).filter(Boolean)});}}).catch(function(){});
+loadAll();
+})();
+</script>
 </body>
 </html>
