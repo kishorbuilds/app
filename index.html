@@ -268,7 +268,7 @@ var FA5=[
 var SA5=[
   {key:'sa_tond',label:'तोंडी',max:10},
   {key:'sa_prat',label:'प्रात्यक्षिक',max:10},
-  {key:'sa_lekh',label:'लेखी',max:40},
+  {key:'sa_lekh',label:'लेखी',max:50},
 ];
 var books=[],transactions=[],students=[],marksData={},descData={};
 var nextBId=1,nextTxId=1,nextSId=1;
@@ -312,8 +312,8 @@ function getExams(clsId){return EXAM_STRUCT[getCtype(clsId)]||EXAM_STRUCT.mid;}
 function getStds(clsId){return students.filter(function(s){return s.cls===clsId&&s.status!=='removed';}).sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);});}
 function getMk(sId,cls,subj,exam){var k=cls+'|'+subj+'|'+exam;var d=marksData[k];if(!d)return'';var e=d.find(function(x){return x.sId===sId;});return e?e.m:'';}
 function setMk(sId,cls,subj,exam,val){var k=cls+'|'+subj+'|'+exam;if(!marksData[k])marksData[k]=[];var idx=-1;for(var i=0;i<marksData[k].length;i++){if(marksData[k][i].sId===sId){idx=i;break;}}if(idx>=0)marksData[k][idx].m=val;else marksData[k].push({sId:sId,m:val});}
-function calcSubjTotal(sId,cls,subj){var exams=getExams(cls);var total=0;var max=0;var hasAny=false;exams.forEach(function(e){var v=getMk(sId,cls,subj,e.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=e.max;});if(!hasAny)return{total:'',max:max,pct:0};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0};}
-function calcStudentTotal(sId,clsId){var subjs=getSubjs(clsId);var exams=getExams(clsId);var total=0;var max=0;var hasAny=false;subjs.forEach(function(subj){exams.forEach(function(exam){var v=getMk(sId,clsId,subj,exam.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=exam.max;});});if(!hasAny)return{total:0,max:max,pct:0,hasData:false};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0,hasData:true};}
+function calcSubjTotal(sId,cls,subj){if(getCtype(cls)!=='high'){var t1=calc5TotRow(sId,cls,subj,1);var t2=calc5TotRow(sId,cls,subj,2);var has=t1.hasData||t2.hasData;if(!has)return{total:'',max:200,pct:0};var tot=Math.round(((parseFloat(t1.total)||0)+(parseFloat(t2.total)||0))*10)/10;return{total:tot,max:200,pct:Math.round(tot/200*100)};}var exams=getExams(cls);var total=0;var max=0;var hasAny=false;exams.forEach(function(e){var v=getMk(sId,cls,subj,e.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=e.max;});if(!hasAny)return{total:'',max:max,pct:0};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0};}
+function calcStudentTotal(sId,clsId){if(getCtype(clsId)!=='high'){var subjs=getSubjs(clsId);var total=0;var hasAny=false;subjs.forEach(function(subj){var r=calcSubjTotal(sId,clsId,subj);if(r.total!==''){hasAny=true;total+=parseFloat(r.total)||0;}});var max=subjs.length*200;if(!hasAny)return{total:0,max:max,pct:0,hasData:false};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0,hasData:true};}var subjs=getSubjs(clsId);var exams=getExams(clsId);var total=0;var max=0;var hasAny=false;subjs.forEach(function(subj){exams.forEach(function(exam){var v=getMk(sId,clsId,subj,exam.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=exam.max;});});if(!hasAny)return{total:0,max:max,pct:0,hasData:false};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0,hasData:true};}
 var _toast=null;
 function toast(msg,t){var el=document.getElementById('toast');el.textContent=msg;el.className='show '+(t||'ok');if(_toast)clearTimeout(_toast);_toast=setTimeout(function(){el.className='';},3000);}
 function openM(id){document.getElementById(id).classList.add('op');}
@@ -356,6 +356,7 @@ function buildTabs(){
     {id:'rgos',i:'&#x1F4CB;',l:'\u0917\u094B\u0937\u0935\u093E\u0930\u093E',h:!isA},
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
     {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915'},
+    {id:'rnik',i:'&#x1F4CA;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='shik'&&curTc&&curTc.classOf)},
   ];
   var nav=document.getElementById('nav-tabs');nav.innerHTML='';
   var first=null;
@@ -382,7 +383,7 @@ function renderSec(id){
     else if(id==='lc')html=secLC();else if(id==='lrp')html=secLRP();
     else if(id==='rm')html=secRM();
     else if(id==='rprog')html=secRProg();else if(id==='rgos')html=secRGos();
-    else if(id==='rbook')html=secRBook();else if(id==='rcard')html=secRCard();
+    else if(id==='rbook')html=secRBook();else if(id==='rcard')html=secRCard();else if(id==='rnik')html=secRNikal();
     else if(id==='astd')html=secRStd();else if(id==='atch')html=secRTch();
     else if(id==='apw')html=secAPw();else if(id==='alck')html=secRAdm();else if(id==='apro')html=secAPro();
   }catch(e){html='<div class="alert aw"><div>&#x26A0;&#xFE0F; '+e.message+'</div></div>';}
@@ -390,6 +391,7 @@ function renderSec(id){
   if(id==='li'){loadStdByClass();refreshIssued();}
   if(id==='lr')filterReturn();
   if(id==='lrp')buildLibReport();
+  if(id==='rnik')loadAndRenderNikal();
 }
 
 // ---- LIBRARY SECTIONS ----
@@ -506,7 +508,7 @@ function secRM(){
 function onMCls(){
   var cls=(document.getElementById('m-cls')||{}).value||'';
   var sel=document.getElementById('m-subj');if(!sel)return;
-  var isPrimary=cls&&getCtype(cls)==='primary';
+  var isPrimary=cls&&getCtype(cls)!=='high';
   var tw=document.getElementById('m-term-wrap');if(tw)tw.style.display=isPrimary?'block':'none';
   var tm=document.getElementById('m-term');if(tm)tm.value='';
   var subjs=cls?getSubjs(cls):[];
@@ -520,7 +522,7 @@ function loadMkTable(){
   var term=(document.getElementById('m-term')||{}).value||'';
   var wrap=document.getElementById('mk-wrap');if(!wrap)return;
   if(!cls||!subj){wrap.innerHTML='';return;}
-  if(getCtype(cls)==='primary'){
+  if(getCtype(cls)!=='high'){
     if(!term){wrap.innerHTML='<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>सत्र निवडा</div></div>';return;}
     loadMkTable5(cls,subj,term);return;
   }
@@ -565,7 +567,8 @@ function loadMkTable5(cls,subj,term){
       faCells+'<td id="fa5-'+s.id+'" style="font-weight:700;text-align:center;color:var(--b);">'+(tot.fa!==''?tot.fa:'-')+'</td>'+
       saCells+'<td id="sa5-'+s.id+'" style="font-weight:700;text-align:center;color:var(--g);">'+(tot.sa!==''?tot.sa:'-')+'</td>'+
       '<td id="tot5-'+s.id+'" style="font-weight:700;text-align:center;">'+(tot.total!==''?tot.total:'-')+'</td>'+
-      '<td><span class="bdg '+gradeColor(gr)+'" id="grd5-'+s.id+'">'+gr+'</span></td></tr>';
+      '<td><span class="bdg '+gradeColor(gr)+'" id="grd5-'+s.id+'">'+gr+'</span></td>'+
+      '<td id="warn5-'+s.id+'-'+term+'" style="min-width:140px;vertical-align:middle;"></td></tr>';
   }).join('');
   wrap.innerHTML='<div class="tw"><table>'+
     '<thead><tr>'+
@@ -576,10 +579,29 @@ function loadMkTable5(cls,subj,term){
     '<th rowspan="2" style="text-align:center;background:#1A6E3C;color:white;font-size:.68rem;">एकूण<br>(ब)<br>/60</th>'+
     '<th rowspan="2" style="text-align:center;font-size:.68rem;">अ+ब<br>/100</th>'+
     '<th rowspan="2">श्रेणी</th>'+
+    '<th rowspan="2" style="min-width:140px;">⚠️ सूचना</th>'+
     '</tr><tr>'+faHdr+saHdr+'</tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:10px;"><button class="btn bp" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button></div>';
+  stds2.forEach(function(s){validate5Row(s.id,cls,subj,term);});
 }
+
+function validate5Row(sId,cls,subj,term){
+  var el=document.getElementById('warn5-'+sId+'-'+term);if(!el)return;
+  var pfx='t'+term+'_';var warns=[];
+  var faFilled=0,faSum=0;
+  FA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!==''){faFilled++;faSum+=parseFloat(v)||0;}});
+  if(faFilled>4)warns.push('4 पेक्षा जास्त कृती भरल्या आहेत, तपासा');
+  if(faSum>40)warns.push('FA एकूण 40 पेक्षा जास्त');
+  var tond=getMk(sId,cls,subj,pfx+'sa_tond');
+  var prat=getMk(sId,cls,subj,pfx+'sa_prat');
+  var saSum=0;
+  SA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!=='')saSum+=parseFloat(v)||0;});
+  if(tond!==''&&prat!=='')warns.push('तोंडी किंवा प्रात्यक्षिक एकच असावे');
+  if(saSum>60)warns.push('SA एकूण 60 पेक्षा जास्त');
+  el.innerHTML=warns.length?'<div style="color:var(--r);font-size:.62rem;line-height:1.6;">&#x26A0;&#xFE0F; '+warns.join('<br>&#x26A0;&#xFE0F; ')+'</div>':'';
+}
+
 function update5TotRow(sId,cls,subj,term){
   var tot=calc5TotRow(sId,cls,subj,term);
   var fa5=document.getElementById('fa5-'+sId);var sa5=document.getElementById('sa5-'+sId);
@@ -588,6 +610,7 @@ function update5TotRow(sId,cls,subj,term){
   if(sa5)sa5.textContent=tot.sa!==''?tot.sa:'-';
   if(tot5)tot5.textContent=tot.total!==''?tot.total:'-';
   if(grd5){var gr=tot.hasData?grade58(tot.pct100):'-';grd5.textContent=gr;grd5.className='bdg '+gradeColor(gr);}
+  validate5Row(sId,cls,subj,term);
 }
 function save5Marks(cls,subj,term){
   var pfx='t'+term+'_';var stds2=getStds(cls);var allFields=FA5.concat(SA5);
@@ -677,6 +700,124 @@ function genCard(){
   var isHigh=getCtype(cls)==='high';
   var gradeRef=isHigh?'<table class="pcard-grade-tbl"><thead><tr><th>75-100%</th><th>60-74%</th><th>35-59%</th><th>0-34%</th></tr></thead><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>':'<table class="pcard-grade-tbl"><thead><tr><th>91-100</th><th>81-90</th><th>71-80</th><th>61-70</th><th>51-60</th><th>41-50</th><th>33-40</th><th>21-32</th><th>&#x2264;20</th></tr></thead><tbody><tr><td>\u0905-1</td><td>\u0905-2</td><td>\u092C-1</td><td>\u092C-2</td><td>\u0915-1</td><td>\u0915-2</td><td>\u0921</td><td>\u0907-1</td><td>\u0907-2</td></tr></tbody></table>';
   wrap.innerHTML='<div class="pcard-wrap"><div class="pcard-top"><div style="font-size:.7rem;">\u0935\u093F\u0926\u094D\u092F\u093E \u0935\u093F\u0928\u092F\u0928 \u0936\u094B\u092D\u0924\u0947</div><div class="pcard-school">\u0938\u092E\u0924\u093E \u091C\u094B\u0917\u0947\u0936\u094D\u0935\u0930\u0940 \u092E\u0902\u0921\u0933, \u090F\u0930\u0902\u0921\u0917\u093E\u0935 \u091A\u0947</div><div class="pcard-school">\u090F\u0915\u0928\u093E\u0925 \u092E\u093E\u0927\u094D\u092F\u092E\u093F\u0915; \u0935\u093F\u0926\u094D\u092F\u093E\u0932\u092F;, \u090F\u0930\u0902\u0921\u0917\u093E\u0935</div><div style="font-size:.7rem;">\u0924\u093E;. \u0936\u0947\u0935\u0917\u093E\u0935, \u091C\u093F;. \u0905\u0939\u093F\u0932\u094D\u092F\u093E\u0928\u0917\u0930</div><div class="pcard-title">\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915 \u0938\u0928 2025-2026</div><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-top:5px;"><span>\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930.: <strong>'+s.roll+'</strong></span><span>\u0907\u092F\u0924\u094D\u0924\u093E: <strong>'+c.label+'</strong></span><span>\u092E\u093E\u0927\u094D\u092F\u092E: <strong>'+(c.medium||'\u092E\u0930\u093E\u0920\u0940')+'</strong></span></div></div><div class="pcard-info"><div class="pcard-row"><span>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u094D\u092F\u093E\u091A\u0947 \u0928\u093E\u0935:</span><strong>'+s.name+'</strong></div><div class="pcard-row"><span>\u091C\u0928\u094D\u092E \u0926\u093F.:</span><span>'+(s.dob?fmt(s.dob):'_____')+'</span></div><div class="pcard-row"><span>\u0906\u0908\u091A\u0947 \u0928\u093E\u0935:</span><span>'+(s.mother||'_____')+'</span></div><div class="pcard-row"><span>\u0935\u0921\u093F\u0932\u093E\u0902\u091A\u0947 \u0928\u093E\u0935:</span><span>'+(s.father||'_____')+'</span></div><div class="pcard-row"><span>\u0928\u094B\u0902\u0926\u0923\u0940 \u0915\u094D\u0930.:</span><span>'+(s.regNo||'_____')+'</span></div></div><div style="padding:6px 8px;border-bottom:1px solid #000;"><strong style="font-size:.78rem;">&#x2730; \u0917\u0941\u0923\u0924\u0915\u094D\u0924\u093E</strong></div><div style="overflow-x:auto;"><table class="pcard-marks"><thead><tr><th style="text-align:left;">\u0935\u093F\u0937\u092F</th>'+examHdrs+'<th>\u090F\u0915\u0942\u0923</th><th>\u0935\u0930\u0940\u0932</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr></thead><tbody>'+markRows+'<tr style="background:#F8F8F8;font-weight:700;"><td>\u090F\u0915\u0942\u0923</td>'+exams.map(function(){return '<td>-</td>';}).join('')+'<td>'+Math.round(grandTotal)+'</td><td>'+grandMax+'</td><td><span class="bdg '+gradeColor(totalGr)+'">'+totalGr+'</span></td></tr></tbody></table></div><div style="padding:6px 8px;font-size:.76rem;"><strong>\u0928\u093F\u0915\u093E\u0932: <span style="color:'+(pf==='\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923'?'green':'red')+'">'+pf+'</span></strong> &nbsp; \u0936\u094D\u0930\u0947\u0923\u0940: <strong>'+totalGr+'</strong> &nbsp; %: <strong>'+totalPct+'</strong></div>'+gradeRef+'<div class="pcard-signs"><div>\u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915<br>___________</div><div>\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915<br>___________</div><div>\u092A\u093E\u0932\u0915<br>___________</div></div></div><button class="btn bp no-print" style="margin-top:12px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
+}
+
+
+function secRNikal(){
+  if(curRole!=='shik'||!curTc||!curTc.classOf)return '<div class="alert aw"><div>&#x1F512;</div><div>\u092B\u0915\u094D\u0924 \u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915\u093E\u0902\u0938\u093E\u0920\u0940</div></div>';
+  var c=getCls(curTc.classOf);
+  return '<div class="card no-print" style="margin-bottom:9px;"><div class="ct">&#x1F4CA; \u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915 &mdash; '+(c?c.label:'')+'</div>'+
+    '<button class="btn bb bsm no-print" data-action="loadnikal">&#x2B07;&#xFE0F; Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E</button> '+
+    '<button class="btn bp bsm no-print" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button></div>'+
+    '<div id="nikal-root"><div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; \u0932\u094B\u0921 \u0939\u094B\u0924 \u0906\u0939\u0947...</div></div>';
+}
+
+function loadAndRenderNikal(){
+  var el=document.getElementById('nikal-root');if(!el)return;
+  if(!curTc||!curTc.classOf){el.innerHTML='<div class="alert aw">\u0935\u0930\u094D\u0917 \u0928\u093E\u0939\u0940</div>';return;}
+  el.innerHTML='<div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; Google Sheet \u092E\u0927\u0942\u0928 \u0921\u0947\u091F\u093E \u0906\u0923\u0924 \u0906\u0939\u0947...</div>';
+  var cls=curTc.classOf;var subjs=getSubjs(cls);var ct=getCtype(cls);var isPrimary=ct!=='high';
+  var pending=0;
+  function parseMkIntoCache(rows,subj){
+    if(!rows||rows.length<2)return;
+    var hdr=rows[0].map(function(h){return String(h||'').trim();});
+    var ks=hdr.slice(3);
+    rows.slice(1).forEach(function(row){
+      var sId=parseInt(row[0])||0;if(!sId)return;
+      ks.forEach(function(key,i){
+        if(!key)return;
+        var raw=row[3+i];var v=raw!==undefined&&raw!==null?String(raw):'';
+        if(v!==''&&v!=='undefined'&&v!=='null')setMk(sId,cls,subj,key,v);
+      });
+    });
+  }
+  function tryRender(){pending--;if(pending<=0)renderNikal(cls);}
+  if(isPrimary){
+    pending=subjs.length*2;
+    subjs.forEach(function(subj){
+      [1,2].forEach(function(term){
+        var shName='mk5_t'+term+'_'+cls+'_'+subj.replace(/[^a-zA-Z0-9]/g,'X');
+        sheetGet(shName,function(rows){parseMkIntoCache(rows,subj);tryRender();});
+      });
+    });
+  }else{
+    pending=subjs.length;
+    subjs.forEach(function(subj){
+      var shName='marks_'+cls+'_'+subj.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');
+      sheetGet(shName,function(rows){parseMkIntoCache(rows,subj);tryRender();});
+    });
+  }
+  if(pending===0)renderNikal(cls);
+}
+
+function renderNikal(cls){
+  var el=document.getElementById('nikal-root');if(!el)return;
+  var subjs=getSubjs(cls);var stds2=getStds(cls);var ct=getCtype(cls);
+  var isHigh=ct==='high';var isPrimary=!isHigh;
+  if(!stds2.length){el.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
+  function subjMax(){return isHigh?160:200;}
+  function getSubjResult(sId,subj){
+    var fa=0,sa=0,hasFa=false,hasSa=false;
+    if(isPrimary){
+      FA5.forEach(function(f){[1,2].forEach(function(t){var v=getMk(sId,cls,subj,'t'+t+'_'+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});});
+      SA5.forEach(function(f){[1,2].forEach(function(t){var v=getMk(sId,cls,subj,'t'+t+'_'+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});});
+    }else if(isHigh){
+      ['s1l','s1t'].forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
+      ['s2l','s2t'].forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
+    }else{
+      ['fa1','fa2'].forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
+      ['sa1','sa2'].forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
+    }
+    var has=hasFa||hasSa;
+    var tot=has?Math.round((fa+sa)*10)/10:'';
+    var pct=has?Math.round((fa+sa)/subjMax()*100):0;
+    return{fa:hasFa?Math.round(fa*10)/10:'',sa:hasSa?Math.round(sa*10)/10:'',tot:tot,pct:pct,has:has};
+  }
+  var stdData=stds2.map(function(s){
+    var results=subjs.map(function(subj){return getSubjResult(s.id,subj);});
+    var gTotal=0,hasAny=false;
+    results.forEach(function(r){if(r.has){hasAny=true;gTotal+=parseFloat(r.tot)||0;}});
+    var grandMax=subjs.length*subjMax();
+    var pct=hasAny&&grandMax>0?Math.round(gTotal/grandMax*100):0;
+    return{s:s,results:results,gTotal:hasAny?Math.round(gTotal*10)/10:'',pct:pct,hasAny:hasAny};
+  });
+  var hasDat=stdData.filter(function(d){return d.hasAny;}).sort(function(a,b){return b.pct-a.pct;});
+  var rankMap={};
+  hasDat.forEach(function(d,i){rankMap[d.s.id]=(i===0||d.pct!==hasDat[i-1].pct)?i+1:rankMap[hasDat[i-1].s.id];});
+  var col1=isHigh?'SA-1':'FA';var col2=isHigh?'SA-2':'SA';
+  var thSubjs=subjs.map(function(s){return '<th colspan="4" style="text-align:center;background:var(--d);color:#fff;font-size:.58rem;white-space:nowrap;padding:4px 3px;">'+s+'</th>';}).join('');
+  var thCols=subjs.map(function(){return '<th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">'+col1+'</th><th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">'+col2+'</th><th style="text-align:center;font-size:.55rem;background:#FFFDE7;padding:3px 2px;">\u090F\u0915\u0942\u0923</th><th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>';}).join('');
+  var rows=stdData.map(function(d){
+    var cells=d.results.map(function(r){
+      var gr=r.has?(isHigh?grade910(r.pct):grade58(r.pct)):'-';
+      return '<td style="text-align:center;font-size:.66rem;padding:3px 2px;">'+(r.fa!==''?r.fa:'-')+'</td>'+
+             '<td style="text-align:center;font-size:.66rem;padding:3px 2px;">'+(r.sa!==''?r.sa:'-')+'</td>'+
+             '<td style="text-align:center;font-size:.66rem;padding:3px 2px;font-weight:700;background:#FFFFF0;">'+(r.tot!==''?r.tot:'-')+'</td>'+
+             '<td style="text-align:center;padding:3px 2px;"><span class="bdg '+gradeColor(gr)+'" style="font-size:.55rem;padding:1px 4px;">'+gr+'</span></td>';
+    }).join('');
+    var totGr=d.hasAny?(isHigh?grade910(d.pct):grade58(d.pct)):'-';
+    return '<tr>'+
+      '<td style="text-align:center;font-size:.68rem;padding:4px 5px;"><strong>'+d.s.roll+'</strong></td>'+
+      '<td style="white-space:nowrap;font-size:.68rem;padding:4px 5px;">'+d.s.name+'</td>'+
+      cells+
+      '<td style="text-align:center;font-weight:700;font-size:.68rem;padding:4px 3px;background:#E8F5E9;">'+(d.gTotal!==''?d.gTotal:'-')+'</td>'+
+      '<td style="text-align:center;font-size:.68rem;padding:4px 3px;">'+(d.hasAny?d.pct+'%':'-')+'</td>'+
+      '<td style="text-align:center;padding:4px 3px;"><span class="bdg '+gradeColor(totGr)+'" style="font-size:.55rem;padding:1px 4px;">'+totGr+'</span></td>'+
+      '<td style="text-align:center;font-weight:700;font-size:.7rem;padding:4px 3px;color:var(--s);">'+(d.hasAny?(rankMap[d.s.id]||'-'):'-')+'</td>'+
+      '</tr>';
+  }).join('');
+  el.innerHTML='<div class="tw" style="margin-top:6px;"><table style="border-collapse:collapse;font-size:.68rem;">'+
+    '<thead>'+
+    '<tr><th rowspan="2" style="padding:5px 6px;text-align:center;min-width:32px;">\u0905.\u0915\u094D\u0930.</th>'+
+    '<th rowspan="2" style="padding:5px 6px;text-align:left;min-width:90px;">\u0928\u093E\u0935</th>'+
+    thSubjs+
+    '<th rowspan="2" style="text-align:center;min-width:40px;background:#E8F5E9;padding:5px 3px;">\u090F\u0915\u0942\u0923<br>\u0917\u0941\u0923</th>'+
+    '<th rowspan="2" style="text-align:center;min-width:38px;padding:5px 3px;">\u0936\u0947\u0915\u0921\u093E</th>'+
+    '<th rowspan="2" style="text-align:center;padding:5px 3px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>'+
+    '<th rowspan="2" style="text-align:center;padding:5px 3px;">\u0917\u0941\u0923\u093E-<br>\u0928\u0941\u0915\u094D\u0930\u092E</th>'+
+    '</tr><tr>'+thCols+'</tr></thead>'+
+    '<tbody>'+rows+'</tbody>'+
+    '</table></div>';
 }
 
 
@@ -908,6 +1049,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='changetcpw')changeTcPw(parseInt(el.getAttribute('data-tcid')||0));
         else if(act==='promoteall')promoteAll();
         else if(act==='print')window.print();
+        else if(act==='loadnikal')loadAndRenderNikal();
         else if(act==='emailcontact'){try{window.location.href='mailto:emvepatekar@gmail.com';}catch(e){}}
         break;
       }
