@@ -237,9 +237,9 @@ var TEACHERS=[
   {id:11,name:'\u0936\u094D\u0930\u0940. \u0928\u091C\u0928 \u0915\u0947. \u0935\u094D\u0939\u0940.',pw:'najan@2025',classOf:'',subjects:['\u0915\u094D\u0930\u0940\u0921\u093E','\u092D\u0942\u0917\u094B\u0932','\u0938\u092E\u093E\u091C \u0905\u092D\u094D\u092F\u093E\u0938'],classes:['10','9','8','7a','7b','6a','6b','5a','5b'],isMukh:false},
 ];
 var SUBJS={
-  primary:['\u092E\u0930\u093E\u0920\u0940','\u0939\u093F\u0902\u0926\u0940','\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u0917\u0923\u093F\u0924','\u092A\u0930\u093F\u0938\u0930 \u0905\u092D\u094D\u092F\u093E\u0938-1','\u092A\u0930\u093F\u0938\u0930 \u0905\u092D\u094D\u092F\u093E\u0938-2','\u0915\u0932\u093E','\u0915\u093E\u0930\u094D\u092F\u093E\u0928\u0941\u092D\u0935','\u0936\u093E.\u0936\u093F.\u0935 \u0906\u0930\u094B\u0917\u094D\u092F'],
-  mid:['\u092E\u0930\u093E\u0920\u0940','\u0939\u093F\u0902\u0926\u0940','\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u0917\u0923\u093F\u0924','\u0935\u093F\u091C\u094D\u091E\u093E\u0928','\u0907\u0924\u093F\u0939\u093E\u0938','\u092D\u0942\u0917\u094B\u0932','\u0928\u093E\u0917\u0930\u093F\u0915\u0936\u093E\u0938\u094D\u0924\u094D\u0930','\u0915\u0932\u093E','\u0915\u093E\u0930\u094D\u092F\u093E\u0928\u0941\u092D\u0935','\u0936\u093E.\u0936\u093F.\u0935 \u0906\u0930\u094B\u0917\u094D\u092F'],
-  high:['\u092E\u0930\u093E\u0920\u0940','\u0939\u093F\u0902\u0926\u0940','\u0907\u0902\u0917\u094D\u0930\u091C\u0940','\u0917\u0923\u093F\u0924','\u0935\u093F\u091C\u094D\u091E\u093E\u0928','\u0907\u0924\u093F\u0939\u093E\u0938','\u092D\u0942\u0917\u094B\u0932','\u0928\u093E\u0917\u0930\u093F\u0915\u0936\u093E\u0938\u094D\u0924\u094D\u0930'],
+  primary:['प्रथम भाषा','द्वितीय भाषा','तृतीय भाषा','गणित','सा.विज्ञान/परिसर अ.1','सामाजिक शास्त्रे/परिसर अ.2','कला','कार्यानुभव','शा.शिक्षण'],
+  mid:['प्रथम भाषा','द्वितीय भाषा','तृतीय भाषा','गणित','सा.विज्ञान/परिसर अ.1','सामाजिक शास्त्रे/परिसर अ.2','कला','कार्यानुभव','शा.शिक्षण'],
+  high:['प्रथम भाषा','द्वितीय भाषा','तृतीय भाषा','गणित','सा.विज्ञान/परिसर अ.1','सामाजिक शास्त्रे/परिसर अ.2'],
 };
 var EXAM_STRUCT={
   high:[
@@ -257,13 +257,13 @@ var EXAM_STRUCT={
 };
 EXAM_STRUCT.primary=EXAM_STRUCT.mid;
 var FA5=[
-  {key:'fa_tond',label:'तोंडी काम',max:3},
-  {key:'fa_prat',label:'प्रात्य./प्रयोग',max:3},
-  {key:'fa_upkr',label:'उपक्रम/कृती',max:4},
-  {key:'fa_prak',label:'प्रकल्प',max:5},
+  {key:'fa_tond',label:'तोंडी काम',max:10},
+  {key:'fa_prat',label:'प्रात्य./प्रयोग',max:10},
+  {key:'fa_upkr',label:'उपक्रम/कृती',max:10},
+  {key:'fa_prak',label:'प्रकल्प',max:10},
   {key:'fa_cha', label:'चाचणी',max:10},
   {key:'fa_swa', label:'स्वाध्याय',max:10},
-  {key:'fa_itar',label:'इतर',max:5},
+  {key:'fa_itar',label:'इतर',max:10},
 ];
 var SA5=[
   {key:'sa_tond',label:'तोंडी',max:10},
@@ -355,7 +355,7 @@ function buildTabs(){
     {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!isA},
     {id:'rgos',i:'&#x1F4CB;',l:'\u0917\u094B\u0937\u0935\u093E\u0930\u093E',h:!isA},
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
-    {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915'},
+    {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='super'||curRole==='mukh'||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rnik',i:'&#x1F4CA;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='shik'&&curTc&&curTc.classOf)},
   ];
   var nav=document.getElementById('nav-tabs');nav.innerHTML='';
@@ -511,8 +511,7 @@ function onMCls(){
   var isPrimary=cls&&getCtype(cls)!=='high';
   var tw=document.getElementById('m-term-wrap');if(tw)tw.style.display=isPrimary?'block':'none';
   var tm=document.getElementById('m-term');if(tm)tm.value='';
-  var subjs=cls?getSubjs(cls):[];
-  if(curRole==='shik'&&curTc)subjs=subjs.filter(function(s){return curTc.subjects.indexOf(s)>=0;});
+  var subjs=(curRole==='shik'&&curTc)?curTc.subjects:(cls?getSubjs(cls):[]);
   sel.innerHTML='<option value="">निवडा</option>'+subjs.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');
   document.getElementById('mk-wrap').innerHTML='';
 }
@@ -588,10 +587,10 @@ function loadMkTable5(cls,subj,term){
 
 function validate5Row(sId,cls,subj,term){
   var el=document.getElementById('warn5-'+sId+'-'+term);if(!el)return;
-  var pfx='t'+term+'_';var warns=[];
+  var pfx='t'+term+'_';var warns=[];var hasBlock=false;
   var faFilled=0,faSum=0;
-  FA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!==''){faFilled++;faSum+=parseFloat(v)||0;}});
-  if(faFilled>4)warns.push('4 पेक्षा जास्त कृती भरल्या आहेत, तपासा');
+  FA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);var num=parseFloat(v)||0;if(v!==''&&num>0){faFilled++;faSum+=num;}});
+  if(faFilled>=5){warns.push('⛔ 5 पेक्षा जास्त कृती भरल्या आहेत — फक्त 4 भरा');hasBlock=true;}
   if(faSum>40)warns.push('FA एकूण 40 पेक्षा जास्त');
   var tond=getMk(sId,cls,subj,pfx+'sa_tond');
   var prat=getMk(sId,cls,subj,pfx+'sa_prat');
@@ -599,7 +598,8 @@ function validate5Row(sId,cls,subj,term){
   SA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!=='')saSum+=parseFloat(v)||0;});
   if(tond!==''&&prat!=='')warns.push('तोंडी किंवा प्रात्यक्षिक एकच असावे');
   if(saSum>60)warns.push('SA एकूण 60 पेक्षा जास्त');
-  el.innerHTML=warns.length?'<div style="color:var(--r);font-size:.62rem;line-height:1.6;">&#x26A0;&#xFE0F; '+warns.join('<br>&#x26A0;&#xFE0F; ')+'</div>':'';
+  el.innerHTML=warns.length?'<div style="'+(hasBlock?'background:#FFF0F0;border:1.5px solid var(--r);border-radius:6px;padding:4px 7px;':'')+
+    'color:var(--r);font-size:.62rem;line-height:1.6;">'+warns.join('<br>')+'</div>':'';
 }
 
 function update5TotRow(sId,cls,subj,term){
@@ -614,6 +614,9 @@ function update5TotRow(sId,cls,subj,term){
 }
 function save5Marks(cls,subj,term){
   var pfx='t'+term+'_';var stds2=getStds(cls);var allFields=FA5.concat(SA5);
+  var blocked=false;
+  stds2.forEach(function(s){var cnt=0;FA5.forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp&&(parseFloat(inp.value)||0)>0)cnt++;});if(cnt>=5)blocked=true;});
+  if(blocked){toast('काही विद्यार्थ्यांचे FA 5+ entries आहेत — आधी 4 वर आणा!','err');return;}
   stds2.forEach(function(s){allFields.forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp)setMk(s.id,cls,subj,pfx+f.key,inp.value);});});
   toast('सत्र-'+term+' गुण सेव्ह! ✅');
   syncStatus('ing');
@@ -683,7 +686,9 @@ function loadRBook(){
 }
 
 function secRCard(){
-  var isA=(curRole==='super'||curRole==='mukh');var availCls=isA?CLASSES:CLASSES.filter(function(c){return curTc&&(curTc.classOf===c.id||curTc.classes.indexOf(c.id)>=0);});
+  var isA=(curRole==='super'||curRole==='mukh');var isClassTc=curRole==='shik'&&curTc&&curTc.classOf;
+  if(!isA&&!isClassTc)return noAccess();
+  var availCls=isA?CLASSES:CLASSES.filter(function(c){return c.id===curTc.classOf;});
   var clsOpts=availCls.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
   return '<div class="card no-print"><div class="ct">&#x1F4CB; \u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="pc-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div><div class="fg"><label>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</label><select id="pc-std"><option value="">\u0928\u093F\u0935\u0921\u093E</option></select></div></div><button class="btn bp" data-action="gencard">&#x1F4CB; \u0924\u092F\u093E\u0930 \u0915\u0930\u093E</button></div><div id="pc-wrap"></div>';
 }
@@ -707,14 +712,16 @@ function secRNikal(){
   if(curRole!=='shik'||!curTc||!curTc.classOf)return '<div class="alert aw"><div>&#x1F512;</div><div>\u092B\u0915\u094D\u0924 \u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915\u093E\u0902\u0938\u093E\u0920\u0940</div></div>';
   var c=getCls(curTc.classOf);
   return '<div class="card no-print" style="margin-bottom:9px;"><div class="ct">&#x1F4CA; \u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915 &mdash; '+(c?c.label:'')+'</div>'+
+    '<div class="fg2" style="margin-bottom:8px;"><div class="fg"><label>\u0938\u0924\u094D\u0930</label>'+
+    '<select id="nikal-term"><option value="1">\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930</option><option value="2">\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930</option></select></div></div>'+
     '<button class="btn bb bsm no-print" data-action="loadnikal">&#x2B07;&#xFE0F; Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E</button> '+
     '<button class="btn bp bsm no-print" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button></div>'+
-    '<div id="nikal-root"><div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; \u0932\u094B\u0921 \u0939\u094B\u0924 \u0906\u0939\u0947...</div></div>';
+    '<div id="nikal-root"><div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; \u0938\u0924\u094D\u0930 \u0928\u093F\u0935\u0921\u093E \u0935 Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E \u0915\u094D\u0932\u093F\u0915 \u0915\u0930\u093E</div></div>';
 }
-
 function loadAndRenderNikal(){
   var el=document.getElementById('nikal-root');if(!el)return;
   if(!curTc||!curTc.classOf){el.innerHTML='<div class="alert aw">\u0935\u0930\u094D\u0917 \u0928\u093E\u0939\u0940</div>';return;}
+  var selTerm=(document.getElementById('nikal-term')||{}).value||'1';
   el.innerHTML='<div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; Google Sheet \u092E\u0927\u0942\u0928 \u0921\u0947\u091F\u093E \u0906\u0923\u0924 \u0906\u0939\u0947...</div>';
   var cls=curTc.classOf;var subjs=getSubjs(cls);var ct=getCtype(cls);var isPrimary=ct!=='high';
   var pending=0;
@@ -731,7 +738,7 @@ function loadAndRenderNikal(){
       });
     });
   }
-  function tryRender(){pending--;if(pending<=0)renderNikal(cls);}
+  function tryRender(){pending--;if(pending<=0)renderNikal(cls,selTerm);}
   if(isPrimary){
     pending=subjs.length*2;
     subjs.forEach(function(subj){
@@ -747,26 +754,28 @@ function loadAndRenderNikal(){
       sheetGet(shName,function(rows){parseMkIntoCache(rows,subj);tryRender();});
     });
   }
-  if(pending===0)renderNikal(cls);
+  if(pending===0)renderNikal(cls,selTerm);
 }
 
-function renderNikal(cls){
+function renderNikal(cls,term){term=term||'1';
   var el=document.getElementById('nikal-root');if(!el)return;
   var subjs=getSubjs(cls);var stds2=getStds(cls);var ct=getCtype(cls);
   var isHigh=ct==='high';var isPrimary=!isHigh;
   if(!stds2.length){el.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
-  function subjMax(){return isHigh?160:200;}
+  function subjMax(){return isHigh?80:100;}
   function getSubjResult(sId,subj){
     var fa=0,sa=0,hasFa=false,hasSa=false;
     if(isPrimary){
-      FA5.forEach(function(f){[1,2].forEach(function(t){var v=getMk(sId,cls,subj,'t'+t+'_'+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});});
-      SA5.forEach(function(f){[1,2].forEach(function(t){var v=getMk(sId,cls,subj,'t'+t+'_'+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});});
+      FA5.forEach(function(f){var v=getMk(sId,cls,subj,'t'+term+'_'+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
+      SA5.forEach(function(f){var v=getMk(sId,cls,subj,'t'+term+'_'+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
     }else if(isHigh){
-      ['s1l','s1t'].forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
-      ['s2l','s2t'].forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
+      var hfaK=term==='1'?['s1l']:['s2l'];var hsaK=term==='1'?['s1t']:['s2t'];
+      hfaK.forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
+      hsaK.forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
     }else{
-      ['fa1','fa2'].forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
-      ['sa1','sa2'].forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
+      var faK=term==='1'?'fa1':'fa2';var saK=term==='1'?'sa1':'sa2';
+      var vf=getMk(sId,cls,subj,faK);if(vf!==''){hasFa=true;fa+=parseFloat(vf)||0;}
+      var vs=getMk(sId,cls,subj,saK);if(vs!==''){hasSa=true;sa+=parseFloat(vs)||0;}
     }
     var has=hasFa||hasSa;
     var tot=has?Math.round((fa+sa)*10)/10:'';
@@ -784,7 +793,8 @@ function renderNikal(cls){
   var hasDat=stdData.filter(function(d){return d.hasAny;}).sort(function(a,b){return b.pct-a.pct;});
   var rankMap={};
   hasDat.forEach(function(d,i){rankMap[d.s.id]=(i===0||d.pct!==hasDat[i-1].pct)?i+1:rankMap[hasDat[i-1].s.id];});
-  var col1=isHigh?'SA-1':'FA';var col2=isHigh?'SA-2':'SA';
+  var termLabel=term==='1'?'प्रथम सत्र':'द्वितीय सत्र';
+  var col1=isHigh?'लेखी':'FA';var col2=isHigh?'तोंडी':'SA';
   var thSubjs=subjs.map(function(s){return '<th colspan="4" style="text-align:center;background:var(--d);color:#fff;font-size:.58rem;white-space:nowrap;padding:4px 3px;">'+s+'</th>';}).join('');
   var thCols=subjs.map(function(){return '<th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">'+col1+'</th><th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">'+col2+'</th><th style="text-align:center;font-size:.55rem;background:#FFFDE7;padding:3px 2px;">\u090F\u0915\u0942\u0923</th><th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>';}).join('');
   var rows=stdData.map(function(d){
@@ -1008,6 +1018,7 @@ document.addEventListener('DOMContentLoaded',function(){
     else if(id==='rb-cls')loadRBook();
     else if(id==='pc-cls')loadStdsForCard();
     else if(id==='gos-cls')loadGosawara();
+    else if(id==='nikal-term'){if(curTc&&curTc.classOf)renderNikal(curTc.classOf,(document.getElementById('nikal-term')||{}).value||'1');}
     else if(act==='setmk'){
       var sid=parseInt(t.getAttribute('data-sid')||0);var cls2=t.getAttribute('data-cls')||'';var subj2=t.getAttribute('data-subj')||'';var exam2=t.getAttribute('data-exam')||'';var mx=parseFloat(t.getAttribute('data-max')||0);var val=parseFloat(t.value)||0;
       if(mx&&val>mx){t.value=mx;t.classList.add('err');}else{t.classList.remove('err');}
