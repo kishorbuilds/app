@@ -983,29 +983,70 @@ function setTTSlot(cls,day,period,tcId,subj){
     timetable[cls][day][period]={tcId:tid,tcName:tc?tc.name:'',subj:subj||''};
   }else{delete timetable[cls][day][period];}
 }
-// Try to match a raw sheet teacher name (string or number) to a TEACHERS entry ID.
+// Maps sheet English teacher names → keywords found in tc.pw (before @)
+var TC_NAME_MAP={
+  'Mr Ransing' :['ransing','ranasing'],
+  'Mr Gorde'   :['gorde'],
+  'Mr Kate'    :['kate'],
+  'Mr Dahiphale':['dahiphale','dahifale'],
+  'Mr Najan'   :['najan'],
+  'Mr Are'     :['are'],
+  'Mr Kadam'   :['kadam'],
+  'Mr Barkale' :['barkale'],
+  'Mr Bodkhe'  :['bodkhe','bodkhe'],
+  'Mr Ghuge'   :['ghuge'],
+  'Mrs Bhagwat':['bhagwat']
+};
+// Given a sheet teacher string → TEACHERS id.
+// Matches via TC_NAME_MAP: sheet name → keywords → tc.pw contains keyword.
 function findTcIdByName(raw){
   if(!raw)return 0;
   var n=parseInt(raw);if(n>0)return n;
-  var low=String(raw).toLowerCase();
-  var rawWords=low.split(/[\s.,]+/).filter(function(w){return w.length>2;});
-  var tc=TEACHERS.find(function(t){
-    var tLow=t.name.toLowerCase();
-    var tWords=tLow.split(/[\s.,]+/).filter(function(w){return w.length>2;});
-    return rawWords.some(function(rw){return tWords.some(function(tw){return tw===rw||tw.indexOf(rw)>=0||rw.indexOf(tw)>=0;});});
-  });
-  return tc?tc.id:0;
+  var rawLow=raw.toLowerCase().trim();
+  // Step 1: find the TC_NAME_MAP entry whose key matches rawTc
+  var kws=null;
+  for(var sn in TC_NAME_MAP){
+    if(sn.toLowerCase()===rawLow){kws=TC_NAME_MAP[sn];break;}
+  }
+  // Step 2: if not exact key, try keyword-in-rawTc (e.g. raw="Gorde" hits key "Mr Gorde")
+  if(!kws){
+    for(var sn2 in TC_NAME_MAP){
+      var k2=TC_NAME_MAP[sn2];
+      if(k2.some(function(k){return rawLow.indexOf(k)>=0;})){kws=k2;break;}
+    }
+  }
+  // Step 3: find teacher whose pw contains any matched keyword
+  if(kws){
+    var tc=TEACHERS.find(function(t){
+      var pw=(t.pw||'').toLowerCase();
+      return kws.some(function(k){return pw.indexOf(k)>=0;});
+    });
+    if(tc){console.log('[findTcIdByName] "'+raw+'" → tcId='+tc.id+' ('+tc.name+')');return tc.id;}
+  }
+  console.warn('[findTcIdByName] No match for "'+raw+'" — add to TC_NAME_MAP');
+  return 0;
 }
-// Returns true if a slot's teacher matches a given teacher (by ID first, then partial name).
+// Given a TEACHER → their expected sheet name from TC_NAME_MAP (matched via tc.pw).
+function getTcSheetName(tc){
+  if(!tc)return '';
+  var pw=(tc.pw||'').toLowerCase();
+  for(var sn in TC_NAME_MAP){
+    if(TC_NAME_MAP[sn].some(function(k){return pw.indexOf(k)>=0;}))return sn;
+  }
+  return '';
+}
+// Returns true if a slot's teacher matches tc (ID first, then TC_NAME_MAP sheet name, then pw-keyword fallback).
 function slotMatchesTc(sl,tc){
   if(!sl||!tc)return false;
   if(sl.tcId&&sl.tcId===tc.id)return true;
   if(!sl.tcName)return false;
-  var raw=sl.tcName.toLowerCase();
-  var tLow=tc.name.toLowerCase();
-  var rawWords=raw.split(/[\s.,]+/).filter(function(w){return w.length>2;});
-  var tWords=tLow.split(/[\s.,]+/).filter(function(w){return w.length>2;});
-  return rawWords.some(function(rw){return tWords.some(function(tw){return tw===rw||tw.indexOf(rw)>=0||rw.indexOf(tw)>=0;});});
+  var expected=getTcSheetName(tc);
+  if(expected&&sl.tcName.toLowerCase().trim()===expected.toLowerCase().trim())return true;
+  if(expected)console.log('[slotMatchesTc] No match — sl.tcName="'+sl.tcName+'" expected="'+expected+'" pw="'+tc.pw+'"');
+  // Fallback: raw keyword match via pw
+  var pw=(tc.pw||'').toLowerCase();
+  var rawLow=sl.tcName.toLowerCase();
+  return rawLow.split(/[\s.,]+/).some(function(w){return w.length>2&&pw.indexOf(w)>=0;});
 }
 function detectConflict(cls,day,period,tcId){
   if(!tcId)return null;
