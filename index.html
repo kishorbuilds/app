@@ -1035,18 +1035,28 @@ function getTcSheetName(tc){
   }
   return '';
 }
-// Returns true if a slot's teacher matches tc (ID first, then TC_NAME_MAP sheet name, then pw-keyword fallback).
+// Returns true if a slot's teacher name matches tc via TC_NAME_MAP keywords.
+// No tcId used — sheet stores names, not IDs.
 function slotMatchesTc(sl,tc){
-  if(!sl||!tc)return false;
-  if(sl.tcId&&sl.tcId===tc.id)return true;
-  if(!sl.tcName)return false;
-  var expected=getTcSheetName(tc);
-  if(expected&&sl.tcName.toLowerCase().trim()===expected.toLowerCase().trim())return true;
-  if(expected)console.log('[slotMatchesTc] No match — sl.tcName="'+sl.tcName+'" expected="'+expected+'" pw="'+tc.pw+'"');
-  // Fallback: raw keyword match via pw
-  var pw=(tc.pw||'').toLowerCase();
-  var rawLow=sl.tcName.toLowerCase();
-  return rawLow.split(/[\s.,]+/).some(function(w){return w.length>2&&pw.indexOf(w)>=0;});
+  if(!sl||!tc||!sl.tcName)return false;
+  var rawLow=sl.tcName.toLowerCase().trim();
+  // Find TC_NAME_MAP entry matching this slot's teacher name
+  var kws=null;
+  for(var sn in TC_NAME_MAP){
+    if(sn.toLowerCase()===rawLow){kws=TC_NAME_MAP[sn];break;}
+  }
+  if(!kws){
+    for(var sn2 in TC_NAME_MAP){
+      if(TC_NAME_MAP[sn2].some(function(k){return rawLow.indexOf(k)>=0;})){kws=TC_NAME_MAP[sn2];break;}
+    }
+  }
+  if(!kws){console.warn('[slotMatchesTc] No TC_NAME_MAP entry for "'+sl.tcName+'"');return false;}
+  // Check keywords against tc.name and tc.pw
+  var nameLow=(tc.name||'').toLowerCase();
+  var pwLow=(tc.pw||'').toLowerCase();
+  var matched=kws.some(function(k){return nameLow.indexOf(k)>=0||pwLow.indexOf(k)>=0;});
+  if(!matched)console.log('[slotMatchesTc] kws='+JSON.stringify(kws)+' not in name="'+nameLow+'" pw="'+pwLow+'"');
+  return matched;
 }
 function detectConflict(cls,day,period,tcId){
   if(!tcId)return null;
@@ -1192,13 +1202,13 @@ function saveTimetable(){
 }
 function syncTimetableSheet(){
   syncStatus('ing');
-  var rows=[['cls','day','period','teacher','subj']];
+  var rows=[['day','cls','period','subj','teacher']];
   CLASSES.forEach(function(c){DAYS.forEach(function(day){PERIODS.forEach(function(p){
     var sl=getTTSlot(c.id,day,p);
     if(!sl)return;
     var tcName=sl.tcName||'';
-    if(!tcName&&sl.tcId){var tc=TEACHERS.find(function(t){return t.id===sl.tcId;});tcName=tc?tc.name:'';}
-    if(tcName)rows.push([c.id,day,p,tcName,sl.subj]);
+    if(!tcName&&sl.tcId){var tc=TEACHERS.find(function(t){return t.id===sl.tcId;});tcName=tc?getTcSheetName(tc)||tc.name:'';}
+    if(tcName)rows.push([day,c.id,p,sl.subj,tcName]);
   });});});
   console.log('[syncTimetableSheet] Posting',rows.length-1,'slots to TIMETABLE sheet');
   sheetPost('TIMETABLE',rows,function(){syncStatus('ok');});
@@ -1210,19 +1220,19 @@ function parseTimetableRows(rows){
   timetable={};
   if(!rows||rows.length<2){console.warn('[parseTimetableRows] No data rows — timetable empty');return;}
   rows.slice(1).forEach(function(r){
-    var cls=String(r[0]||'').trim();
-    var day=String(r[1]||'').trim();
-    var p=String(r[2]||'').trim();
-    var rawTc=String(r[3]||'').trim();
-    var subj=String(r[4]||'').trim();
-    if(!cls||!day||!p||!rawTc){
+    // Sheet columns: Day | Class | Period | Subject | Teacher
+    var day =String(r[0]||'').trim();
+    var cls =String(r[1]||'').trim();
+    var p   =String(r[2]||'').trim();
+    var subj=String(r[3]||'').trim();
+    var rawTc=String(r[4]||'').trim();
+    if(!day||!cls||!p||!rawTc){
       console.warn('[parseTimetableRows] Skipping incomplete row:',JSON.stringify(r));return;
     }
-    var tcId=findTcIdByName(rawTc);
-    console.log('[parseTimetableRows] row cls='+cls+' day='+day+' p='+p+' rawTc="'+rawTc+'" → tcId='+tcId+' subj="'+subj+'"');
+    console.log('[parseTimetableRows] day='+day+' cls='+cls+' p='+p+' subj="'+subj+'" teacher="'+rawTc+'"');
     if(!timetable[cls])timetable[cls]={};
     if(!timetable[cls][day])timetable[cls][day]={};
-    timetable[cls][day][p]={tcId:tcId,tcName:rawTc,subj:subj};
+    timetable[cls][day][p]={tcId:0,tcName:rawTc,subj:subj};
   });
   console.log('[parseTimetableRows] done. classes with data:',Object.keys(timetable));
 }
