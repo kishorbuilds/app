@@ -1102,20 +1102,38 @@ function syncTimetableSheet(){
   CLASSES.forEach(function(c){DAYS.forEach(function(day){PERIODS.forEach(function(p){
     var sl=getTTSlot(c.id,day,p);if(sl&&sl.tcId)rows.push([c.id,day,p,sl.tcId,sl.subj]);
   });});});
-  sheetPost('timetable',rows,function(){syncStatus('ok');});
+  sheetPost('TIMETABLE',rows,function(){syncStatus('ok');});
 }
 function parseTimetableRows(rows){
-  timetable={};if(!rows||rows.length<2)return;
+  console.log('[parseTimetableRows] rows received:',rows?rows.length:0);
+  if(rows&&rows.length>0)console.log('[parseTimetableRows] header row:',JSON.stringify(rows[0]));
+  if(rows&&rows.length>1)console.log('[parseTimetableRows] first data row:',JSON.stringify(rows[1]));
+  timetable={};if(!rows||rows.length<2){console.warn('[parseTimetableRows] No data rows — timetable empty');return;}
   rows.slice(1).forEach(function(r){
     var cls=String(r[0]||'').trim();var day=String(r[1]||'').trim();var p=String(r[2]||'').trim();
     var tcId=parseInt(r[3])||0;var subj=String(r[4]||'').trim();
     if(cls&&day&&p&&tcId)setTTSlot(cls,day,p,tcId,subj);
   });
+  console.log('[parseTimetableRows] timetable loaded, classes with data:',Object.keys(timetable));
 }
 
 // ---- SYNC ----
 function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4&&cb)cb();};xhr.onerror=function(){syncStatus('err');};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
-function sheetGet(name,cb){var xhr=new XMLHttpRequest();xhr.open('GET',SURL+'?sheet='+encodeURIComponent(name),true);xhr.onreadystatechange=function(){if(xhr.readyState===4){try{cb(JSON.parse(xhr.responseText).rows||[]);}catch(e){cb([]);}}};xhr.onerror=function(){cb([]);};xhr.send();}
+function sheetGet(name,cb){
+  var url=SURL+'?sheet='+encodeURIComponent(name);
+  console.log('[sheetGet] GET →',url);
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET',url,true);
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState===4){
+      console.log('[sheetGet] Response for "'+name+'" status='+xhr.status+' body='+xhr.responseText.slice(0,300));
+      try{cb(JSON.parse(xhr.responseText).rows||[]);}
+      catch(e){console.error('[sheetGet] Parse error for "'+name+'":',e.message,'raw:',xhr.responseText.slice(0,200));cb([]);}
+    }
+  };
+  xhr.onerror=function(){console.error('[sheetGet] Network error for "'+name+'"');cb([]);};
+  xhr.send();
+}
 function syncAll(){syncStatus('ing');var bR=[['ID','Title','Author','Subject','Copies']];books.forEach(function(b){bR.push([b.id,b.title,b.author||'',b.subject||'',b.copies]);});var sR=[['ID','Name','Class','Roll','Status','Reason','Father','Mother','DOB','Phone','RegNo']];students.forEach(function(s){sR.push([s.id,s.name,s.cls,s.roll||'',s.status,s.reason||'',s.father||'',s.mother||'',s.dob||'',s.phone||'',s.regNo||'']);});var tR=[['ID','SName','Class','BTitle','Subj','IDate','RDate','Due','TId','TName','RetTName']];transactions.forEach(function(t){tR.push([t.id,t.sName,t.cls,t.bTitle,t.subj||'',t.issueDate,t.retDate||'',t.due,t.tId||'',t.tName||'',t.retTName||'']);});var pwR=[['key','value'],['super',PW.super],['mukh',PW.mukh]];var tcR=[['ID','Name','PW','ClassOf','Subjects','Classes']];TEACHERS.forEach(function(tc){tcR.push([tc.id,tc.name,tc.pw,tc.classOf||'',tc.subjects.join('|'),tc.classes.join('|')]);});sheetPost('pustake',bR,function(){sheetPost('vidyarthi',sR,function(){sheetPost('vyavhar',tR,function(){sheetPost('passwords',pwR,function(){sheetPost('Shikshak',tcR,function(){syncStatus('ok');});});});});});}
 function syncMks(cls,subj){syncStatus('ing');var exams=getExams(cls);var rows=[['sId','cls','subj'].concat(exams.map(function(e){return e.key;}))];getStds(cls).forEach(function(s){var row=[s.id,cls,subj];exams.forEach(function(e){row.push(getMk(s.id,cls,subj,e.key));});rows.push(row);});var shName='marks_'+cls+'_'+subj.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');sheetPost(shName,rows,function(){syncStatus('ok');});}
 function syncSettings(){sheetPost('settings',[['key','value'],['marksLocked',settings.marksLocked?'1':'0']],null);}
@@ -1138,7 +1156,7 @@ function loadTransactionsAndSettings(){
     if(tR.length>1){transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){var iDate=String(r[5]||'').split('T')[0];var rDate=r[6]?String(r[6]).split('T')[0]:null;var due=String(r[7]||'').split('T')[0];return{id:parseInt(r[0])||1,sId:null,sName:String(r[1]||''),cls:String(r[2]||''),bId:null,bTitle:String(r[3]||''),subj:String(r[4]||''),issueDate:iDate,retDate:rDate||null,due:due,tId:parseInt(r[8])||null,tName:r[9]||null,retTName:r[10]||null};});nextTxId=transactions.length?Math.max.apply(null,transactions.map(function(t){return t.id;}))+1:1;}
     sheetGet('passwords',function(pwR){if(pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
     sheetGet('settings',function(sr){if(sr.length>1)sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1');});
-    sheetGet('timetable',function(ttR){parseTimetableRows(ttR);});
+    sheetGet('TIMETABLE',function(ttR){parseTimetableRows(ttR);});
     syncStatus('ok');toast('\u0921\u0947\u091F\u093E \u0932\u094B\u0921 \u091D\u093E\u0932\u093E! &#x2705; ('+students.length+' \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940)');});});
   });
 }
