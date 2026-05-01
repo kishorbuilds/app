@@ -1067,10 +1067,32 @@ function detectConflict(cls,day,period,tcId){
 
 function secTTCls(){
   var isShik=curRole==='shik'&&curTc;
-  var availCls=isShik?CLASSES.filter(function(c){
-    return DAYS.some(function(day){return PERIODS.some(function(p){return slotMatchesTc(getTTSlot(c.id,day,p),curTc);});});
-  }):CLASSES;
-  console.log('[secTTCls] shik='+isShik+' curTc='+(curTc?curTc.name:'none')+' availCls:',availCls.map(function(c){return c.id;}));
+  var availCls=CLASSES;
+  if(isShik){
+    console.log('curTc.name=',curTc.name,'curTc.pw=',curTc.pw,'curTc.id=',curTc.id);
+    // Find which TC_NAME_MAP key matches this teacher via keywords in name or pw
+    var nameLow=(curTc.name||'').toLowerCase();
+    var pwLow=(curTc.pw||'').toLowerCase();
+    var mySheetName='';
+    for(var sn in TC_NAME_MAP){
+      if(TC_NAME_MAP[sn].some(function(k){return nameLow.indexOf(k)>=0||pwLow.indexOf(k)>=0;})){
+        mySheetName=sn;break;
+      }
+    }
+    console.log('[secTTCls] mySheetName="'+mySheetName+'" for curTc.pw="'+pwLow+'"');
+    if(mySheetName){
+      var snLow=mySheetName.toLowerCase();
+      availCls=CLASSES.filter(function(c){
+        return DAYS.some(function(day){
+          return PERIODS.some(function(p){
+            var sl=getTTSlot(c.id,day,p);
+            return sl&&sl.tcName&&sl.tcName.toLowerCase()===snLow;
+          });
+        });
+      });
+    }
+    console.log('[secTTCls] availCls:',availCls.map(function(c){return c.id;}));
+  }
   if(isShik&&availCls.length===0){
     return '<div class="card"><div class="ct">&#x1F4DA; वर्गनिहाय वेळापत्रक</div>'+
       '<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>तुम्हाला अद्याप कोणत्याही वर्गाचे वेळापत्रक नियुक्त केलेले नाही.</div></div></div>';
@@ -1115,7 +1137,17 @@ function renderTTTc(){
   else{tcId=parseInt((document.getElementById('tt-tc-sel')||{}).value)||0;tc=TEACHERS.find(function(t){return t.id===tcId;})||null;}
   var wrap=document.getElementById('tt-tc-wrap');if(!wrap)return;
   if(!tcId||!tc){wrap.innerHTML='';return;}
-  console.log('[renderTTTc] Rendering for tcId='+tcId+' name="'+tc.name+'"');
+  console.log('[renderTTTc] Rendering for tcId='+tcId+' name="'+tc.name+'" pw="'+(tc.pw||'')+'"');
+  var nameLow=(tc.name||'').toLowerCase();
+  var pwLow=(tc.pw||'').toLowerCase();
+  var mySheetName='';
+  for(var sn in TC_NAME_MAP){
+    if(TC_NAME_MAP[sn].some(function(k){return nameLow.indexOf(k)>=0||pwLow.indexOf(k)>=0;})){
+      mySheetName=sn;break;
+    }
+  }
+  var snLow=mySheetName.toLowerCase();
+  console.log('[renderTTTc] mySheetName="'+mySheetName+'" snLow="'+snLow+'"');
   var cols='90px '+PERIODS.map(function(){return '1fr';}).join(' ');
   var hdr='<div class="tt-hdr">दिवस</div>'+PERIODS.map(function(p){return '<div class="tt-hdr">तास '+p+'</div>';}).join('');
   var body=DAYS.map(function(day){
@@ -1123,7 +1155,7 @@ function renderTTTc(){
       var found=null;
       CLASSES.forEach(function(c){
         var sl=getTTSlot(c.id,day,p);
-        if(sl&&slotMatchesTc(sl,tc))found={cls:c.label,subj:sl.subj,tcName:sl.tcName};
+        if(sl&&sl.tcName&&mySheetName&&sl.tcName.toLowerCase()===snLow)found={cls:c.label,subj:sl.subj,tcName:sl.tcName};
       });
       if(found){
         console.log('[renderTTTc] Match: day='+day+' p='+p+' cls='+found.cls+' tcName="'+found.tcName+'"');
