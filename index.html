@@ -974,14 +974,52 @@ function promoteAll(){if(!confirm('\u0938\u0930\u094D\u0935 \u0935\u093F\u0926\u
 
 // ---- TIMETABLE ----
 function getTTSlot(cls,day,period){return(timetable[cls]&&timetable[cls][day])?timetable[cls][day][period]||null:null;}
-function setTTSlot(cls,day,period,tcId,subj){if(!timetable[cls])timetable[cls]={};if(!timetable[cls][day])timetable[cls][day]={};if(tcId){timetable[cls][day][period]={tcId:parseInt(tcId),subj:subj||''};}else{delete timetable[cls][day][period];}}
-function detectConflict(cls,day,period,tcId){if(!tcId)return null;var tid=parseInt(tcId);var conf=null;CLASSES.forEach(function(c){if(c.id===cls)return;var sl=getTTSlot(c.id,day,period);if(sl&&sl.tcId===tid)conf=c.label;});return conf;}
+function setTTSlot(cls,day,period,tcId,subj){
+  if(!timetable[cls])timetable[cls]={};
+  if(!timetable[cls][day])timetable[cls][day]={};
+  if(tcId){
+    var tid=parseInt(tcId);
+    var tc=TEACHERS.find(function(t){return t.id===tid;});
+    timetable[cls][day][period]={tcId:tid,tcName:tc?tc.name:'',subj:subj||''};
+  }else{delete timetable[cls][day][period];}
+}
+// Try to match a raw sheet teacher name (string or number) to a TEACHERS entry ID.
+function findTcIdByName(raw){
+  if(!raw)return 0;
+  var n=parseInt(raw);if(n>0)return n;
+  var low=String(raw).toLowerCase();
+  var rawWords=low.split(/[\s.,]+/).filter(function(w){return w.length>2;});
+  var tc=TEACHERS.find(function(t){
+    var tLow=t.name.toLowerCase();
+    var tWords=tLow.split(/[\s.,]+/).filter(function(w){return w.length>2;});
+    return rawWords.some(function(rw){return tWords.some(function(tw){return tw===rw||tw.indexOf(rw)>=0||rw.indexOf(tw)>=0;});});
+  });
+  return tc?tc.id:0;
+}
+// Returns true if a slot's teacher matches a given teacher (by ID first, then partial name).
+function slotMatchesTc(sl,tc){
+  if(!sl||!tc)return false;
+  if(sl.tcId&&sl.tcId===tc.id)return true;
+  if(!sl.tcName)return false;
+  var raw=sl.tcName.toLowerCase();
+  var tLow=tc.name.toLowerCase();
+  var rawWords=raw.split(/[\s.,]+/).filter(function(w){return w.length>2;});
+  var tWords=tLow.split(/[\s.,]+/).filter(function(w){return w.length>2;});
+  return rawWords.some(function(rw){return tWords.some(function(tw){return tw===rw||tw.indexOf(rw)>=0||rw.indexOf(tw)>=0;});});
+}
+function detectConflict(cls,day,period,tcId){
+  if(!tcId)return null;
+  var tid=parseInt(tcId);var conf=null;
+  CLASSES.forEach(function(c){if(c.id===cls)return;var sl=getTTSlot(c.id,day,period);if(sl&&sl.tcId===tid)conf=c.label;});
+  return conf;
+}
 
 function secTTCls(){
   var isShik=curRole==='shik'&&curTc;
   var availCls=isShik?CLASSES.filter(function(c){
-    return DAYS.some(function(day){return PERIODS.some(function(p){var sl=getTTSlot(c.id,day,p);return sl&&sl.tcId===curTc.id;});});
+    return DAYS.some(function(day){return PERIODS.some(function(p){return slotMatchesTc(getTTSlot(c.id,day,p),curTc);});});
   }):CLASSES;
+  console.log('[secTTCls] shik='+isShik+' curTc='+(curTc?curTc.name:'none')+' availCls:',availCls.map(function(c){return c.id;}));
   if(isShik&&availCls.length===0){
     return '<div class="card"><div class="ct">&#x1F4DA; वर्गनिहाय वेळापत्रक</div>'+
       '<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>तुम्हाला अद्याप कोणत्याही वर्गाचे वेळापत्रक नियुक्त केलेले नाही.</div></div></div>';
@@ -1001,8 +1039,11 @@ function renderTTCls(){
   var body=DAYS.map(function(day){
     var cells=PERIODS.map(function(p){
       var sl=getTTSlot(cls,day,p);
-      if(sl){var tc=TEACHERS.find(function(t){return t.id===sl.tcId;});var tName=tc?tc.name.split(' ').slice(-1)[0]:'?';
-        return '<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.7rem;font-weight:700;">'+tName+'</div><div style="font-size:.62rem;color:var(--mt);">'+sl.subj+'</div></div></div>';}
+      if(sl){
+        var tc=TEACHERS.find(function(t){return t.id===sl.tcId;});
+        var tName=tc?tc.name.split(' ').slice(-1)[0]:(sl.tcName||'?');
+        return '<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.7rem;font-weight:700;">'+tName+'</div><div style="font-size:.62rem;color:var(--mt);">'+sl.subj+'</div></div></div>';
+      }
       return '<div class="tt-cell"><span class="tt-empty">&mdash;</span></div>';
     }).join('');
     return '<div class="tt-cell tt-period">'+day+'</div>'+cells;
@@ -1018,17 +1059,25 @@ function secTTTc(){
   return '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; शिक्षकनिहाय वेळापत्रक</div>'+tcTop+'<div id="tt-tc-wrap"></div></div>';
 }
 function renderTTTc(){
-  var tcId=0;
-  if(curRole==='shik'&&curTc)tcId=curTc.id;
-  else tcId=parseInt((document.getElementById('tt-tc-sel')||{}).value)||0;
+  var tcId=0,tc=null;
+  if(curRole==='shik'&&curTc){tcId=curTc.id;tc=curTc;}
+  else{tcId=parseInt((document.getElementById('tt-tc-sel')||{}).value)||0;tc=TEACHERS.find(function(t){return t.id===tcId;})||null;}
   var wrap=document.getElementById('tt-tc-wrap');if(!wrap)return;
-  if(!tcId){wrap.innerHTML='';return;}
+  if(!tcId||!tc){wrap.innerHTML='';return;}
+  console.log('[renderTTTc] Rendering for tcId='+tcId+' name="'+tc.name+'"');
   var cols='90px '+PERIODS.map(function(){return '1fr';}).join(' ');
   var hdr='<div class="tt-hdr">दिवस</div>'+PERIODS.map(function(p){return '<div class="tt-hdr">तास '+p+'</div>';}).join('');
   var body=DAYS.map(function(day){
     var cells=PERIODS.map(function(p){
-      var found=null;CLASSES.forEach(function(c){var sl=getTTSlot(c.id,day,p);if(sl&&sl.tcId===tcId)found={cls:c.label,subj:sl.subj};});
-      if(found)return '<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.7rem;font-weight:700;color:var(--b);">'+found.cls+'</div><div style="font-size:.62rem;color:var(--mt);">'+found.subj+'</div></div></div>';
+      var found=null;
+      CLASSES.forEach(function(c){
+        var sl=getTTSlot(c.id,day,p);
+        if(sl&&slotMatchesTc(sl,tc))found={cls:c.label,subj:sl.subj,tcName:sl.tcName};
+      });
+      if(found){
+        console.log('[renderTTTc] Match: day='+day+' p='+p+' cls='+found.cls+' tcName="'+found.tcName+'"');
+        return '<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.7rem;font-weight:700;color:var(--b);">'+found.cls+'</div><div style="font-size:.62rem;color:var(--mt);">'+found.subj+'</div></div></div>';
+      }
       return '<div class="tt-cell"><span class="tt-empty">&mdash;</span></div>';
     }).join('');
     return '<div class="tt-cell tt-period">'+day+'</div>'+cells;
@@ -1073,7 +1122,11 @@ function renderTTAdm(){
     var sl=getTTSlot(cls,day,p);if(!sl)return;
     var tcS=document.querySelector('[data-ttcls="'+cls+'"][data-ttdi="'+di+'"][data-ttp="'+p+'"][data-tttype="tc"]');
     var sjS=document.querySelector('[data-ttcls="'+cls+'"][data-ttdi="'+di+'"][data-ttp="'+p+'"][data-tttype="subj"]');
-    if(tcS)tcS.value=sl.tcId||'';if(sjS)sjS.value=sl.subj||'';
+    if(tcS){
+      var resolvedId=sl.tcId||findTcIdByName(sl.tcName||'');
+      tcS.value=resolvedId||'';
+    }
+    if(sjS)sjS.value=sl.subj||'';
   });});
 }
 function saveTimetable(){
@@ -1098,23 +1151,39 @@ function saveTimetable(){
 }
 function syncTimetableSheet(){
   syncStatus('ing');
-  var rows=[['cls','day','period','tcId','subj']];
+  var rows=[['cls','day','period','teacher','subj']];
   CLASSES.forEach(function(c){DAYS.forEach(function(day){PERIODS.forEach(function(p){
-    var sl=getTTSlot(c.id,day,p);if(sl&&sl.tcId)rows.push([c.id,day,p,sl.tcId,sl.subj]);
+    var sl=getTTSlot(c.id,day,p);
+    if(!sl)return;
+    var tcName=sl.tcName||'';
+    if(!tcName&&sl.tcId){var tc=TEACHERS.find(function(t){return t.id===sl.tcId;});tcName=tc?tc.name:'';}
+    if(tcName)rows.push([c.id,day,p,tcName,sl.subj]);
   });});});
+  console.log('[syncTimetableSheet] Posting',rows.length-1,'slots to TIMETABLE sheet');
   sheetPost('TIMETABLE',rows,function(){syncStatus('ok');});
 }
 function parseTimetableRows(rows){
   console.log('[parseTimetableRows] rows received:',rows?rows.length:0);
   if(rows&&rows.length>0)console.log('[parseTimetableRows] header row:',JSON.stringify(rows[0]));
   if(rows&&rows.length>1)console.log('[parseTimetableRows] first data row:',JSON.stringify(rows[1]));
-  timetable={};if(!rows||rows.length<2){console.warn('[parseTimetableRows] No data rows — timetable empty');return;}
+  timetable={};
+  if(!rows||rows.length<2){console.warn('[parseTimetableRows] No data rows — timetable empty');return;}
   rows.slice(1).forEach(function(r){
-    var cls=String(r[0]||'').trim();var day=String(r[1]||'').trim();var p=String(r[2]||'').trim();
-    var tcId=parseInt(r[3])||0;var subj=String(r[4]||'').trim();
-    if(cls&&day&&p&&tcId)setTTSlot(cls,day,p,tcId,subj);
+    var cls=String(r[0]||'').trim();
+    var day=String(r[1]||'').trim();
+    var p=String(r[2]||'').trim();
+    var rawTc=String(r[3]||'').trim();
+    var subj=String(r[4]||'').trim();
+    if(!cls||!day||!p||!rawTc){
+      console.warn('[parseTimetableRows] Skipping incomplete row:',JSON.stringify(r));return;
+    }
+    var tcId=findTcIdByName(rawTc);
+    console.log('[parseTimetableRows] row cls='+cls+' day='+day+' p='+p+' rawTc="'+rawTc+'" → tcId='+tcId+' subj="'+subj+'"');
+    if(!timetable[cls])timetable[cls]={};
+    if(!timetable[cls][day])timetable[cls][day]={};
+    timetable[cls][day][p]={tcId:tcId,tcName:rawTc,subj:subj};
   });
-  console.log('[parseTimetableRows] timetable loaded, classes with data:',Object.keys(timetable));
+  console.log('[parseTimetableRows] done. classes with data:',Object.keys(timetable));
 }
 
 // ---- SYNC ----
