@@ -124,6 +124,15 @@ input:checked+.tsl:before{transform:translateX(22px);}
 .gos-tbl{width:100%;border-collapse:collapse;font-size:.72rem;}
 .gos-tbl th,.gos-tbl td{border:1px solid #999;padding:4px 6px;text-align:center;}
 .gos-tbl th{background:var(--d);color:#fff;}
+.tt-grid{display:grid;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin-top:6px;}
+.tt-hdr{background:var(--d);color:#fff;padding:5px 6px;font-size:.66rem;font-weight:700;text-align:center;}
+.tt-cell{padding:4px 5px;border-bottom:1px solid var(--bdr);border-right:1px solid var(--bdr);font-size:.72rem;min-height:48px;vertical-align:top;}
+.tt-period{background:var(--bg)!important;color:var(--d)!important;font-weight:700;font-size:.66rem;display:flex;align-items:center;justify-content:center;}
+.tt-sel{width:100%;padding:2px 4px;border:1px solid var(--bdr);border-radius:4px;font-size:.67rem;font-family:inherit;background:#fff;margin-bottom:2px;}
+.tt-filled{background:#E6F5EC!important;}
+.tt-conflict{background:#FFF0F0!important;border-color:var(--r)!important;}
+.tt-view-cell{padding:3px 5px;border-radius:5px;border-left:3px solid var(--s);background:rgba(200,80,10,.07);}
+.tt-empty{color:var(--mt);font-style:italic;}
 @media(max-width:600px){.hi{padding:7px 10px;}.hmain{font-size:.78rem;}main{padding:10px 8px;}.modules{max-width:100%;}.dhstats{grid-template-columns:repeat(2,1fr);}.fg2{grid-template-columns:1fr;}}
 @media(min-width:1024px){.sg{grid-template-columns:repeat(6,1fr);}}
 @media print{header,nav,.btn,.bbtn,#toast,.sbtn,.no-print{display:none!important;}body{background:#fff;}.pcard-wrap{box-shadow:none!important;}main{padding:0!important;}.card{box-shadow:none;border:1px solid #ddd;}}
@@ -187,6 +196,7 @@ input:checked+.tsl:before{transform:translateX(22px);}
     <div class="mcard lib" id="mod-lib" data-action="openmod" data-mod="lib"><div class="micon">&#x1F4D6;</div><div class="mtit">&#x0917;&#x094D;&#x0930;&#x0902;&#x0925;&#x093E;&#x0932;&#x092F;</div><div class="mdesc">&#x0921;&#x0949;. &#x090F;.&#x092A;&#x0940;.&#x091C;&#x0947;. &#x0917;&#x094D;&#x0930;&#x0902;&#x0925;&#x093E;&#x0932;&#x092F;</div></div>
     <div class="mcard res" id="mod-res" data-action="openmod" data-mod="res"><div class="micon">&#x1F4CA;</div><div class="mtit">&#x0928;&#x093F;&#x0915;&#x093E;&#x0932;</div><div class="mdesc">&#x0917;&#x0941;&#x0923; &#x0928;&#x094B;&#x0902;&#x0926;&#x0923;&#x0940;, &#x092A;&#x094D;&#x0930;&#x0917;&#x0924;&#x0940;&#x092A;&#x0924;&#x094D;&#x0930;</div></div>
     <div class="mcard adm" id="mod-adm" data-action="openmod" data-mod="adm" style="border-top-color:var(--pur);display:none;"><div class="micon">&#x2699;&#xFE0F;</div><div class="mtit">&#x0935;&#x094D;&#x092F;&#x0935;&#x0938;&#x094D;&#x0925;&#x093E;&#x092A;&#x0928;</div><div class="mdesc">&#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0930;&#x094D;&#x0925;&#x0940;, &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0915;, &#x092A;&#x094D;&#x0930;&#x092E;&#x094B;&#x091F;</div></div>
+    <div class="mcard" id="mod-tt" data-action="openmod" data-mod="tt" style="border-top-color:var(--gold);"><div class="micon">&#x1F4C5;</div><div class="mtit">वेळापत्रक</div><div class="mdesc">तास नियोजन</div></div>
   </div>
 </main>
 </div>
@@ -208,7 +218,7 @@ input:checked+.tsl:before{transform:translateX(22px);}
   </div>
 </div>
 <script>
-var SURL='https://script.google.com/macros/s/AKfycbzDPkJF7VI53PYTE4T1PmAAlU4jFtzTN1zjRi8V9Wz1-SsQySly6NNfpO1-gmMc4SbOdA/exec';
+var SURL='https://script.google.com/macros/s/AKfycbyOBWkKwGYS69xLSJ8gkxC03t1UgcqiNfaD7WUg5EGa8zFm4rgKopGJcBzpXfp9eSsqyQ/exec';
 var curRole=null,curUser=null,curTc=null,curMod=null,curTab=null;
 var PW={super:'samata@2025',mukh:'katemadhav@2025'};
 var settings={marksLocked:false};
@@ -271,6 +281,9 @@ var SA5=[
   {key:'sa_lekh',label:'लेखी',max:50},
 ];
 var books=[],transactions=[],students=[],marksData={},descData={};
+var timetable={};
+var DAYS=['सोमवार','मंगळवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
+var PERIODS=['1','2','3','4','5','6','7','8'];
 var nextBId=1,nextTxId=1,nextSId=1;
 
 // ---- UTILS ----
@@ -350,6 +363,10 @@ function buildTabs(){
     {id:'lr',i:'&#x1F4E5;',l:'\u092A\u0930\u0924'},
     {id:'lc',i:'&#x1F4D6;',l:'\u0917\u094D\u0930\u0902\u0925\u0938\u0942\u091A\u0940'},
     {id:'lrp',i:'&#x1F4CA;',l:'\u0905\u0939\u0935\u093E\u0932'},
+  ]:curMod==='tt'?[
+    {id:'ttcls',i:'&#x1F4DA;',l:'\u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F'},
+    {id:'tttc',i:'&#x1F468;&#x200D;&#x1F3EB;',l:'\u0936\u093F\u0915\u094D\u0937\u0915\u0928\u093F\u0939\u093E\u092F'},
+    {id:'ttadm',i:'&#x2699;&#xFE0F;',l:'\u0938\u0902\u092A\u093E\u0926\u0928',h:!(curRole==='super'||curRole==='mukh')},
   ]:[
     {id:'rm',i:'&#x270F;&#xFE0F;',l:'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940'},
     {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!isA},
@@ -386,12 +403,16 @@ function renderSec(id){
     else if(id==='rbook')html=secRBook();else if(id==='rcard')html=secRCard();else if(id==='rnik')html=secRNikal();
     else if(id==='astd')html=secRStd();else if(id==='atch')html=secRTch();
     else if(id==='apw')html=secAPw();else if(id==='alck')html=secRAdm();else if(id==='apro')html=secAPro();
+    else if(id==='ttcls')html=secTTCls();else if(id==='tttc')html=secTTTc();else if(id==='ttadm')html=secTTAdm();
   }catch(e){html='<div class="alert aw"><div>&#x26A0;&#xFE0F; '+e.message+'</div></div>';}
   el.innerHTML=html;
   if(id==='li'){loadStdByClass();refreshIssued();}
   if(id==='lr')filterReturn();
   if(id==='lrp')buildLibReport();
   if(id==='rnik')loadAndRenderNikal();
+  if(id==='ttcls')renderTTCls();
+  if(id==='tttc'){if(curRole==='shik'&&curTc)renderTTTc();}
+  if(id==='ttadm')renderTTAdm();
 }
 
 // ---- LIBRARY SECTIONS ----
@@ -951,6 +972,147 @@ function secRAdm(){
 
 function promoteAll(){if(!confirm('\u0938\u0930\u094D\u0935 \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u092A\u0941\u0922\u0940\u0932 \u0935\u0930\u094D\u0917\u093E\u0924? \u0928\u0915\u094D\u0915\u0940 \u0906\u0939\u0947 \u0915\u093E?'))return;var next={'10':null,'9':'10','8':'9','7a':'8','7b':'8','6a':'7a','6b':'7b','5a':'6a','5b':'6b'};students.filter(function(s){return s.status!=='removed';}).forEach(function(s){var nx=next[s.cls];if(nx){s.cls=nx;s.status='active';}else{s.status='removed';s.reason='10\u0935\u0940 \u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923';}});toast('\u0938\u0930\u094D\u0935 \u092A\u0941\u0922\u0947 \u0917\u0947\u0932\u0947! &#x2705;');syncAll();}
 
+// ---- TIMETABLE ----
+function getTTSlot(cls,day,period){return(timetable[cls]&&timetable[cls][day])?timetable[cls][day][period]||null:null;}
+function setTTSlot(cls,day,period,tcId,subj){if(!timetable[cls])timetable[cls]={};if(!timetable[cls][day])timetable[cls][day]={};if(tcId){timetable[cls][day][period]={tcId:parseInt(tcId),subj:subj||''};}else{delete timetable[cls][day][period];}}
+function detectConflict(cls,day,period,tcId){if(!tcId)return null;var tid=parseInt(tcId);var conf=null;CLASSES.forEach(function(c){if(c.id===cls)return;var sl=getTTSlot(c.id,day,period);if(sl&&sl.tcId===tid)conf=c.label;});return conf;}
+
+function secTTCls(){
+  var isShik=curRole==='shik'&&curTc;
+  var availCls=isShik?CLASSES.filter(function(c){
+    return DAYS.some(function(day){return PERIODS.some(function(p){var sl=getTTSlot(c.id,day,p);return sl&&sl.tcId===curTc.id;});});
+  }):CLASSES;
+  if(isShik&&availCls.length===0){
+    return '<div class="card"><div class="ct">&#x1F4DA; वर्गनिहाय वेळापत्रक</div>'+
+      '<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>तुम्हाला अद्याप कोणत्याही वर्गाचे वेळापत्रक नियुक्त केलेले नाही.</div></div></div>';
+  }
+  var clsOpts=availCls.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
+  return '<div class="card"><div class="ct">&#x1F4DA; वर्गनिहाय वेळापत्रक</div>'+
+    '<div class="fg2"><div class="fg"><label>वर्ग</label>'+
+    '<select id="tt-cls-sel"><option value="">निवडा</option>'+clsOpts+'</select></div></div>'+
+    '<div id="tt-cls-wrap"></div></div>';
+}
+function renderTTCls(){
+  var cls=(document.getElementById('tt-cls-sel')||{}).value||'';
+  var wrap=document.getElementById('tt-cls-wrap');if(!wrap)return;
+  if(!cls){wrap.innerHTML='';return;}
+  var cols='90px '+PERIODS.map(function(){return '1fr';}).join(' ');
+  var hdr='<div class="tt-hdr">दिवस</div>'+PERIODS.map(function(p){return '<div class="tt-hdr">तास '+p+'</div>';}).join('');
+  var body=DAYS.map(function(day){
+    var cells=PERIODS.map(function(p){
+      var sl=getTTSlot(cls,day,p);
+      if(sl){var tc=TEACHERS.find(function(t){return t.id===sl.tcId;});var tName=tc?tc.name.split(' ').slice(-1)[0]:'?';
+        return '<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.7rem;font-weight:700;">'+tName+'</div><div style="font-size:.62rem;color:var(--mt);">'+sl.subj+'</div></div></div>';}
+      return '<div class="tt-cell"><span class="tt-empty">&mdash;</span></div>';
+    }).join('');
+    return '<div class="tt-cell tt-period">'+day+'</div>'+cells;
+  }).join('');
+  wrap.innerHTML='<div class="tw"><div class="tt-grid" style="display:grid;grid-template-columns:'+cols+';">'+hdr+body+'</div></div>';
+}
+
+function secTTTc(){
+  var isShik=curRole==='shik'&&curTc;
+  var tcTop=isShik?'<div style="padding:4px 0 10px;font-size:.82rem;font-weight:700;color:var(--d);">'+curTc.name+'</div>':
+    '<div class="fg2"><div class="fg"><label>शिक्षक</label><select id="tt-tc-sel"><option value="">निवडा</option>'+
+    TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('')+'</select></div></div>';
+  return '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; शिक्षकनिहाय वेळापत्रक</div>'+tcTop+'<div id="tt-tc-wrap"></div></div>';
+}
+function renderTTTc(){
+  var tcId=0;
+  if(curRole==='shik'&&curTc)tcId=curTc.id;
+  else tcId=parseInt((document.getElementById('tt-tc-sel')||{}).value)||0;
+  var wrap=document.getElementById('tt-tc-wrap');if(!wrap)return;
+  if(!tcId){wrap.innerHTML='';return;}
+  var cols='90px '+PERIODS.map(function(){return '1fr';}).join(' ');
+  var hdr='<div class="tt-hdr">दिवस</div>'+PERIODS.map(function(p){return '<div class="tt-hdr">तास '+p+'</div>';}).join('');
+  var body=DAYS.map(function(day){
+    var cells=PERIODS.map(function(p){
+      var found=null;CLASSES.forEach(function(c){var sl=getTTSlot(c.id,day,p);if(sl&&sl.tcId===tcId)found={cls:c.label,subj:sl.subj};});
+      if(found)return '<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.7rem;font-weight:700;color:var(--b);">'+found.cls+'</div><div style="font-size:.62rem;color:var(--mt);">'+found.subj+'</div></div></div>';
+      return '<div class="tt-cell"><span class="tt-empty">&mdash;</span></div>';
+    }).join('');
+    return '<div class="tt-cell tt-period">'+day+'</div>'+cells;
+  }).join('');
+  wrap.innerHTML='<div class="tw"><div class="tt-grid" style="display:grid;grid-template-columns:'+cols+';">'+hdr+body+'</div></div>';
+}
+
+function secTTAdm(){
+  if(curRole!=='super'&&curRole!=='mukh')return noAccess();
+  var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
+  return '<div class="card"><div class="ct">&#x2699;&#xFE0F; वेळापत्रक संपादन <span class="ctag">फक्त प्रशासन</span></div>'+
+    '<div class="fg2"><div class="fg"><label>वर्ग</label><select id="ttadm-cls"><option value="">निवडा</option>'+clsOpts+'</select></div></div>'+
+    '<div id="tt-conflict-banner"></div><div id="ttadm-wrap"></div>'+
+    '<div id="ttadm-btns" style="display:none;margin-top:10px;">'+
+    '<button class="btn bp" data-action="savett">&#x1F4BE; वेळापत्रक सेव्ह करा</button></div></div>';
+}
+function renderTTAdm(){
+  var cls=(document.getElementById('ttadm-cls')||{}).value||'';
+  var wrap=document.getElementById('ttadm-wrap');if(!wrap)return;
+  var btns=document.getElementById('ttadm-btns');
+  if(!cls){wrap.innerHTML='';if(btns)btns.style.display='none';return;}
+  if(btns)btns.style.display='block';
+  var tcOpts='<option value="">&mdash;</option>'+
+    TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');
+  var subjOpts='<option value="">&mdash;</option>'+getSubjs(cls).map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');
+  var cols='90px '+PERIODS.map(function(){return 'minmax(130px,1fr)';}).join(' ');
+  var hdr='<div class="tt-hdr">दिवस</div>'+PERIODS.map(function(p){return '<div class="tt-hdr">तास '+p+'</div>';}).join('');
+  var body=DAYS.map(function(day,di){
+    var cells=PERIODS.map(function(p){
+      var sl=getTTSlot(cls,day,p);var conf=sl?detectConflict(cls,day,p,sl.tcId):null;
+      var cCls='tt-cell'+(conf?' tt-conflict':sl&&sl.tcId?' tt-filled':'');
+      return '<div class="'+cCls+'">'+
+        '<select class="tt-sel" data-ttcls="'+cls+'" data-ttdi="'+di+'" data-ttp="'+p+'" data-tttype="tc">'+tcOpts+'</select>'+
+        '<select class="tt-sel" data-ttcls="'+cls+'" data-ttdi="'+di+'" data-ttp="'+p+'" data-tttype="subj">'+subjOpts+'</select>'+
+        (conf?'<div class="tt-conf-msg" style="color:var(--r);font-size:.6rem;margin-top:1px;">&#x26A0; '+conf+'</div>':'<div class="tt-conf-msg"></div>')+
+        '</div>';
+    }).join('');
+    return '<div class="tt-cell tt-period">'+day+'</div>'+cells;
+  }).join('');
+  wrap.innerHTML='<div class="tw"><div class="tt-grid" style="display:grid;grid-template-columns:'+cols+';">'+hdr+body+'</div></div>';
+  DAYS.forEach(function(day,di){PERIODS.forEach(function(p){
+    var sl=getTTSlot(cls,day,p);if(!sl)return;
+    var tcS=document.querySelector('[data-ttcls="'+cls+'"][data-ttdi="'+di+'"][data-ttp="'+p+'"][data-tttype="tc"]');
+    var sjS=document.querySelector('[data-ttcls="'+cls+'"][data-ttdi="'+di+'"][data-ttp="'+p+'"][data-tttype="subj"]');
+    if(tcS)tcS.value=sl.tcId||'';if(sjS)sjS.value=sl.subj||'';
+  });});
+}
+function saveTimetable(){
+  var cls=(document.getElementById('ttadm-cls')||{}).value||'';if(!cls){toast('वर्ग निवडा!','err');return;}
+  if(!timetable[cls])timetable[cls]={};
+  var conflicts=[];
+  DAYS.forEach(function(day,di){PERIODS.forEach(function(p){
+    var tcS=document.querySelector('[data-ttcls="'+cls+'"][data-ttdi="'+di+'"][data-ttp="'+p+'"][data-tttype="tc"]');
+    var sjS=document.querySelector('[data-ttcls="'+cls+'"][data-ttdi="'+di+'"][data-ttp="'+p+'"][data-tttype="subj"]');
+    var tcId=tcS?parseInt(tcS.value)||0:0;var subj=sjS?sjS.value||'':'';
+    setTTSlot(cls,day,p,tcId,subj);
+    if(tcId){var cf=detectConflict(cls,day,p,tcId);if(cf)conflicts.push(day+' तास '+p+' → '+cf);}
+  });});
+  if(conflicts.length){
+    var banner=document.getElementById('tt-conflict-banner');
+    if(banner)banner.innerHTML='<div class="alert aw" style="margin-bottom:10px;"><div>&#x26A0;&#xFE0F;</div><div><strong>शिक्षक संघर्ष आढळला:</strong><br>'+conflicts.join('<br>')+'<br><small style="color:var(--mt);">हे शिक्षक त्याच वेळी दुसऱ्या वर्गात आहेत — कृपया बदला.</small></div></div>';
+    DAYS.forEach(function(day,di){PERIODS.forEach(function(p){var sl=getTTSlot(cls,day,p);if(sl&&detectConflict(cls,day,p,sl.tcId)){delete timetable[cls][day][p];}});});
+    toast('संघर्ष आढळला — सेव्ह नाही!','err');renderTTAdm();return;
+  }
+  var banner=document.getElementById('tt-conflict-banner');if(banner)banner.innerHTML='';
+  syncTimetableSheet();toast('वेळापत्रक सेव्ह! &#x2705;');renderTTAdm();
+}
+function syncTimetableSheet(){
+  syncStatus('ing');
+  var rows=[['cls','day','period','tcId','subj']];
+  CLASSES.forEach(function(c){DAYS.forEach(function(day){PERIODS.forEach(function(p){
+    var sl=getTTSlot(c.id,day,p);if(sl&&sl.tcId)rows.push([c.id,day,p,sl.tcId,sl.subj]);
+  });});});
+  sheetPost('timetable',rows,function(){syncStatus('ok');});
+}
+function parseTimetableRows(rows){
+  timetable={};if(!rows||rows.length<2)return;
+  rows.slice(1).forEach(function(r){
+    var cls=String(r[0]||'').trim();var day=String(r[1]||'').trim();var p=String(r[2]||'').trim();
+    var tcId=parseInt(r[3])||0;var subj=String(r[4]||'').trim();
+    if(cls&&day&&p&&tcId)setTTSlot(cls,day,p,tcId,subj);
+  });
+}
+
 // ---- SYNC ----
 function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4&&cb)cb();};xhr.onerror=function(){syncStatus('err');};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
 function sheetGet(name,cb){var xhr=new XMLHttpRequest();xhr.open('GET',SURL+'?sheet='+encodeURIComponent(name),true);xhr.onreadystatechange=function(){if(xhr.readyState===4){try{cb(JSON.parse(xhr.responseText).rows||[]);}catch(e){cb([]);}}};xhr.onerror=function(){cb([]);};xhr.send();}
@@ -976,6 +1138,7 @@ function loadTransactionsAndSettings(){
     if(tR.length>1){transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){var iDate=String(r[5]||'').split('T')[0];var rDate=r[6]?String(r[6]).split('T')[0]:null;var due=String(r[7]||'').split('T')[0];return{id:parseInt(r[0])||1,sId:null,sName:String(r[1]||''),cls:String(r[2]||''),bId:null,bTitle:String(r[3]||''),subj:String(r[4]||''),issueDate:iDate,retDate:rDate||null,due:due,tId:parseInt(r[8])||null,tName:r[9]||null,retTName:r[10]||null};});nextTxId=transactions.length?Math.max.apply(null,transactions.map(function(t){return t.id;}))+1:1;}
     sheetGet('passwords',function(pwR){if(pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
     sheetGet('settings',function(sr){if(sr.length>1)sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1');});
+    sheetGet('timetable',function(ttR){parseTimetableRows(ttR);});
     syncStatus('ok');toast('\u0921\u0947\u091F\u093E \u0932\u094B\u0921 \u091D\u093E\u0932\u093E! &#x2705; ('+students.length+' \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940)');});});
   });
 }
@@ -1019,6 +1182,22 @@ document.addEventListener('DOMContentLoaded',function(){
     else if(id==='pc-cls')loadStdsForCard();
     else if(id==='gos-cls')loadGosawara();
     else if(id==='nikal-term'){if(curTc&&curTc.classOf)renderNikal(curTc.classOf,(document.getElementById('nikal-term')||{}).value||'1');}
+    else if(id==='tt-cls-sel')renderTTCls();
+    else if(id==='tt-tc-sel')renderTTTc();
+    else if(id==='ttadm-cls')renderTTAdm();
+    else if(t.getAttribute('data-tttype')==='tc'){
+      var ttcls=t.getAttribute('data-ttcls')||'';
+      var ttdi=parseInt(t.getAttribute('data-ttdi')||'0');
+      var ttday=DAYS[ttdi]||'';var ttp=t.getAttribute('data-ttp')||'';
+      var tcIdLive=parseInt(t.value)||0;
+      var cell=t.parentElement;
+      if(cell){
+        var cfLive=tcIdLive?detectConflict(ttcls,ttday,ttp,tcIdLive):null;
+        cell.className='tt-cell'+(cfLive?' tt-conflict':tcIdLive?' tt-filled':'');
+        var confMsg=cell.querySelector('.tt-conf-msg');
+        if(confMsg)confMsg.innerHTML=cfLive?'&#x26A0; '+cfLive:'';
+      }
+    }
     else if(act==='setmk'){
       var sid=parseInt(t.getAttribute('data-sid')||0);var cls2=t.getAttribute('data-cls')||'';var subj2=t.getAttribute('data-subj')||'';var exam2=t.getAttribute('data-exam')||'';var mx=parseFloat(t.getAttribute('data-max')||0);var val=parseFloat(t.value)||0;
       if(mx&&val>mx){t.value=mx;t.classList.add('err');}else{t.classList.remove('err');}
@@ -1061,6 +1240,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='promoteall')promoteAll();
         else if(act==='print')window.print();
         else if(act==='loadnikal')loadAndRenderNikal();
+        else if(act==='savett')saveTimetable();
         else if(act==='emailcontact'){try{window.location.href='mailto:emvepatekar@gmail.com';}catch(e){}}
         break;
       }
