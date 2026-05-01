@@ -1081,17 +1081,20 @@ function secTTCls(){
     }
     console.log('[secTTCls] mySheetName="'+mySheetName+'" for curTc.pw="'+pwLow+'"');
     if(mySheetName){
-      var snLow=mySheetName.toLowerCase();
-      availCls=CLASSES.filter(function(c){
-        return DAYS.some(function(day){
-          return PERIODS.some(function(p){
-            var sl=getTTSlot(c.id,day,p);
-            return sl&&sl.tcName&&sl.tcName.toLowerCase()===snLow;
+      var availClsIds=[];
+      Object.keys(timetable).forEach(function(clsKey){
+        var clsDays=timetable[clsKey];
+        Object.keys(clsDays).forEach(function(day){
+          var daySlots=clsDays[day];
+          Object.keys(daySlots).forEach(function(p){
+            var sl=daySlots[p];
+            if(sl&&sl.tcName===mySheetName&&availClsIds.indexOf(clsKey)===-1)availClsIds.push(clsKey);
           });
         });
       });
+      availCls=CLASSES.filter(function(c){return availClsIds.indexOf(c.id)>=0;});
+      console.log('[secTTCls] availCls built:',availClsIds,'matching against mySheetName="'+mySheetName+'"');
     }
-    console.log('[secTTCls] availCls:',availCls.map(function(c){return c.id;}));
   }
   if(isShik&&availCls.length===0){
     return '<div class="card"><div class="ct">&#x1F4DA; वर्गनिहाय वेळापत्रक</div>'+
