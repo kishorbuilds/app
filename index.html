@@ -363,8 +363,6 @@ function renderNoticeBoard(){
   var db = document.getElementById('dashboard-widgets');
   if(!db) return;
 
-  var isA = (curRole==='super'||curRole==='mukh');
-
   // 1. Tasika Samayojan Widget (Top Priority - Full Width)
   var todaySubs = substitutions.filter(function(s){return s.date===today();});
   var subRows = '';
@@ -375,20 +373,11 @@ function renderNoticeBoard(){
       return '<div class="notice-row"><div><strong>वर्ग '+s.cls+'</strong> ('+s.subj+') - तास '+s.period+'</div><div style="text-align:right;"><span style="color:var(--g);font-weight:700;">'+s.subTcName+'</span> <span style="font-size:.65rem;color:var(--mt);">('+s.absTcName+')</span></div></div>';
     }).join('');
   }
-  var subW = '<div class="card" style="border-top:4px solid var(--gold);"><div class="ct">🔄 आजचे तासिका समायोजन <span class="ctag">'+todaySubs.length+'</span></div>'+subRows+'</div>';
+  
+  // फक्त तासिका समायोजन डॅशबोर्डवर राहील, बाकी सर्व कचरा काढला आहे.
+  var subW = '<div class="card" style="border-top:4px solid var(--gold); margin-bottom: 0;"><div class="ct">🔄 आजचे तासिका समायोजन <span class="ctag">'+todaySubs.length+'</span></div>'+subRows+'</div>';
 
-  // 2. Department Grid (Results & Library)
-  var marksStatus = settings.marksLocked ? '<span class="bdg bgr">बंद</span>' : '<span class="bdg bgg">सुरू</span>';
-  var resW = '<div class="card" style="border-top:4px solid var(--pur);"><div class="ct">📊 निकाल व परीक्षा विभाग</div>' +
-             '<div class="notice-row"><span>गुण नोंदणी पोर्टल:</span>'+marksStatus+'</div></div>';
-
-  var issB = transactions.filter(function(t){return !t.retDate;}).length;
-  var overB = transactions.filter(function(t){return !t.retDate&&dL(t.due)>0;}).length;
-  var libW = '<div class="card" style="border-top:4px solid var(--g);"><div class="ct">📚 ग्रंथालय विभाग</div>' +
-             '<div class="notice-row"><span>सध्या वाचकांकडे:</span><strong>'+issB+'</strong></div>'+
-             '<div class="notice-row"><span>थकीत पुस्तके:</span><strong style="color:var(--r);">'+overB+'</strong></div></div>';
-
-  db.innerHTML = subW + '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 13px;">' + resW + libW + '</div>';
+  db.innerHTML = subW;
 }
 
 function showHome(){
