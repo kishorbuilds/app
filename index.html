@@ -1004,13 +1004,15 @@ function getMyTTName(tc){
   if(!tc)return '';
   var pw=(tc.pw||'').toLowerCase();
   var keyword=pw.split('@')[0];
+  var mySheetName='';
   for(var sn in TC_NAME_MAP){
-    if(TC_NAME_MAP[sn].indexOf(keyword)>=0)return sn.replace(/['"]/g,'').trim();
+    if(TC_NAME_MAP[sn].indexOf(keyword)>=0){mySheetName=sn;break;}
   }
-  for(var sn2 in TC_NAME_MAP){
-    if(TC_NAME_MAP[sn2].some(function(k){return pw.indexOf(k)>=0;}))return sn2.replace(/['"]/g,'').trim();
-  }
-  return '';
+  if(!mySheetName){for(var sn2 in TC_NAME_MAP){
+    if(TC_NAME_MAP[sn2].some(function(k){return pw.indexOf(k)>=0;})){mySheetName=sn2;break;}
+  }}
+  mySheetName=mySheetName.replace(/"/g,'').trim();
+  return mySheetName;
 }
 function detectConflict(cls,day,period,tcId){
   if(!tcId)return null;
