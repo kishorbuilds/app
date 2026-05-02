@@ -984,22 +984,6 @@ function setTTSlot(cls,day,period,tcId,subj){
     timetable[cls][day][period]={tcId:tid,tcName:tc?tc.name:'',subj:subj||''};
   }else{delete timetable[cls][day][period];}
 }
-// Maps sheet English teacher names → keywords found in tc.pw (before @)
-var TC_NAME_MAP={
-  'Mr Ransing' :['ransing','ranasing'],
-  'Mr Gorde'   :['gorde'],
-  'Mr Kate'    :['kate'],
-  'Mr Dahiphale':['dahiphale','dahifale'],
-  'Mr Najan'   :['najan'],
-  'Mr Are'     :['are'],
-  'Mr Kadam'   :['kadam'],
-  'Mr Barkale' :['barkale'],
-  'Mr Bodkhe'  :['bodkhe','bodkhe'],
-  'Mr Ghuge'   :['ghuge'],
-  'Mrs Bhagwat':['bhagwat']
-};
-// Extract word before @ from tc.pw (e.g. "gorde@2025" → "gorde"),
-// then find the TC_NAME_MAP key whose keywords array contains that word.
 function getMyTTName(tc){
   if(!tc||!tc.pw)return '';
   var userPw=tc.pw.toLowerCase();
@@ -1145,7 +1129,7 @@ function renderTTAdm(){
     var sjS=document.querySelector('[data-ttcls="'+cls+'"][data-ttdi="'+di+'"][data-ttp="'+p+'"][data-tttype="subj"]');
     if(tcS){
       var resolvedId=sl.tcId;
-      if(!resolvedId&&sl.tcName){var kws2=TC_NAME_MAP[sl.tcName];if(kws2){var tcf=TEACHERS.find(function(t){var pw=(t.pw||'').toLowerCase();return kws2.some(function(k){return pw.indexOf(k)>=0;});});if(tcf)resolvedId=tcf.id;}}
+      if(!resolvedId&&sl.tcName){var tcf=TEACHERS.find(function(t){return(t.ttName||'').trim()===sl.tcName.trim();});if(tcf)resolvedId=tcf.id;}
       tcS.value=resolvedId||'';
     }
     if(sjS)sjS.value=sl.subj||'';
@@ -1192,9 +1176,11 @@ function parseTimetableRows(rows){
   if(!rows||rows.length<2){console.warn('[parseTimetableRows] No data rows — timetable empty');return;}
   rows.slice(1).forEach(function(r){
     // Sheet columns: Day | Class | Period | Subject | Teacher
-    var day =String(r[0]||'').trim();
-    var cls =String(r[1]).trim();
-    var p   =String(r[2]).trim();
+    var dayMap={'Mon':'सोमवार','Tue':'मंगळवार','Wed':'बुधवार','Thu':'गुरुवार','Fri':'शुक्रवार','Sat':'शनिवार'};
+    var pMap={'P1':'1','P2':'2','P3':'3','P4':'4','P5':'5','P6':'6','P7':'7','P8':'8'};
+    var day=dayMap[String(r[0]||'').trim()]||String(r[0]||'').trim();
+    var cls=String(r[1]).trim();
+    var p=pMap[String(r[2]||'').trim()]||String(r[2]||'').trim();
     var subj=String(r[3]||'').trim();
     var rawTc=String(r[4]||'').replace(/\\/g,'').replace(/['"]/g,'').trim();
     if(!day||!cls||!p||!rawTc){console.warn('[parseTimetableRows] Skipping incomplete row:',JSON.stringify(r));return;}
