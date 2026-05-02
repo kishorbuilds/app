@@ -1184,15 +1184,11 @@ function assignTTSub(cls,day,p,subj){
   var rows=[['ID','Date','AbsentTcId','AbsentTcName','SubTcId','SubTcName','Class','Period','Subject']];
   substitutions.forEach(function(s){rows.push([s.id,s.date,s.absTcId,s.absTcName,s.subTcId,s.subTcName,s.cls,s.period,s.subj]);});
   rows.push([rec.id,rec.date,rec.absTcId,rec.absTcName,rec.subTcId,rec.subTcName,rec.cls,rec.period,rec.subj]);
-  sheetPost('SubLog',rows,function(res){
-    if(res&&res.success){
-      substitutions.push(rec);
-      toast('पर्यायी तास नोंदवला! &#x2705;');
-    }else{
-      toast('सर्व्हर एरर — पुन्हा प्रयत्न करा!','err');
-    }
-    renderTTSub();
-  });
+  fetch(SURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'write',sheet:'SubLog',rows:rows})})
+    .catch(function(){toast('&#x274C; एरर: पुन्हा प्रयत्न करा','err');});
+  substitutions.push(rec);
+  toast('पर्यायी तास नोंदवला! &#x2705;');
+  renderTTSub();
 }
 function secSubLog(){
   if(curRole!=='super'&&curRole!=='mukh')return noAccess();
@@ -1308,7 +1304,7 @@ function parseTimetableRows(rows){
 }
 
 // ---- SYNC ----
-function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}if(cb)cb(res);}};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
+function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4){var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}if(cb)cb(res);}};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
 function sheetGet(name,cb){
   var url=SURL+'?sheet='+encodeURIComponent(name);
   console.log('[sheetGet] GET →',url);
