@@ -1002,17 +1002,7 @@ var TC_NAME_MAP={
 // then find the TC_NAME_MAP key whose keywords array contains that word.
 function getMyTTName(tc){
   if(!tc)return '';
-  var pw=(tc.pw||'').toLowerCase();
-  var keyword=pw.split('@')[0];
-  var mySheetName='';
-  for(var sn in TC_NAME_MAP){
-    if(TC_NAME_MAP[sn].indexOf(keyword)>=0){mySheetName=sn;break;}
-  }
-  if(!mySheetName){for(var sn2 in TC_NAME_MAP){
-    if(TC_NAME_MAP[sn2].some(function(k){return pw.indexOf(k)>=0;})){mySheetName=sn2;break;}
-  }}
-  mySheetName=mySheetName.replace(/\\/g,'').replace(/"/g,'').trim();
-  return mySheetName;
+  return (tc.ttName||'').trim();
 }
 function detectConflict(cls,day,period,tcId){
   if(!tcId)return null;
@@ -1272,7 +1262,7 @@ function loadAll(){
 
 function parseShikshakRows(rows){
   if(rows.length<2)return;
-  var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){var subjs=String(r[4]||'').split('|').map(function(s){return s.trim();}).filter(Boolean);var cls=String(r[5]||'').split('|').map(function(c){return c.trim().toLowerCase();}).filter(Boolean);var classOf=String(r[3]||'').trim();return{id:parseInt(r[0])||0,name:String(r[1]||''),pw:String(r[2]||''),classOf:classOf,subjects:subjs,classes:cls,isMukh:(classOf===''&&subjs.length===0&&cls.length===0)};});
+  var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){var subjs=String(r[4]||'').split('|').map(function(s){return s.trim();}).filter(Boolean);var cls=String(r[5]||'').split('|').map(function(c){return c.trim().toLowerCase();}).filter(Boolean);var classOf=String(r[3]||'').trim();return{id:parseInt(r[0])||0,name:String(r[1]||''),pw:String(r[2]||''),classOf:classOf,subjects:subjs,classes:cls,isMukh:(classOf===''&&subjs.length===0&&cls.length===0),ttName:(r[6]||'').trim()};});
   if(loaded.length>0)TEACHERS=loaded;
 }
 function loadShikshakFirst(){sheetGet('Shikshak',function(rows){parseShikshakRows(rows);loadAll();});}
