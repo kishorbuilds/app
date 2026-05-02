@@ -1151,13 +1151,16 @@ function renderTTSub(){
     wrap.innerHTML='<div class="alert ai"><div>&#x2705;</div><div>या दिवशी यांचे कोणतेही तास नाहीत.</div></div>';
     return;
   }
+  var dt=(document.getElementById('ttsub-date')||{}).value||today();
   var rows=slotsToFill.map(function(slot){
+    var existingSub=substitutions.find(function(s){return s.date===dt&&s.absTcId===tcId&&s.cls===slot.cls&&s.period===slot.period;});
+    if(existingSub){
+      return '<tr><td>तास '+slot.period+'</td><td><strong>वर्ग '+slot.cls+'</strong></td><td>'+slot.subj+'</td>'+
+        '<td colspan="2"><span style="color:var(--g);font-weight:700;">&#x2705; '+existingSub.subTcName+'</span></td></tr>';
+    }
     var freeTcs=TEACHERS.filter(function(t){
       if(t.isMukh||t.id===tcId)return false;
-      var alreadySub=substitutions.some(function(s){
-        var dt=(document.getElementById('ttsub-date')||{}).value||today();
-        return s.date===dt&&s.subTcId===t.id&&s.period===slot.period&&s.cls!==slot.cls;
-      });
+      var alreadySub=substitutions.some(function(s){return s.date===dt&&s.subTcId===t.id&&s.period===slot.period;});
       return !alreadySub&&!detectConflict(slot.cls,day,slot.period,t.id);
     });
     var freeOpts='<option value="">-- रिकामे शिक्षक निवडा --</option>'+
@@ -1178,12 +1181,18 @@ function assignTTSub(cls,day,p,subj){
   var subTc=TEACHERS.find(function(t){return t.id===subTcId;});
   var newId=(substitutions.length?Math.max.apply(null,substitutions.map(function(s){return s.id;}))+1:1);
   var rec={id:newId,date:dt,absTcId:absTcId,absTcName:absTc?absTc.name:'',subTcId:subTcId,subTcName:subTc?subTc.name:'',cls:cls,period:p,subj:subj};
-  substitutions.push(rec);
   var rows=[['ID','Date','AbsentTcId','AbsentTcName','SubTcId','SubTcName','Class','Period','Subject']];
   substitutions.forEach(function(s){rows.push([s.id,s.date,s.absTcId,s.absTcName,s.subTcId,s.subTcName,s.cls,s.period,s.subj]);});
-  sheetPost('SubLog',rows,function(){toast('पर्यायी तास नोंदवला! &#x2705;');});
-  toast('पर्यायी तास दिला! &#x2705;');
-  renderTTSub();
+  rows.push([rec.id,rec.date,rec.absTcId,rec.absTcName,rec.subTcId,rec.subTcName,rec.cls,rec.period,rec.subj]);
+  sheetPost('SubLog',rows,function(res){
+    if(res&&res.success){
+      substitutions.push(rec);
+      toast('पर्यायी तास नोंदवला! &#x2705;');
+    }else{
+      toast('सर्व्हर एरर — पुन्हा प्रयत्न करा!','err');
+    }
+    renderTTSub();
+  });
 }
 function secSubLog(){
   if(curRole!=='super'&&curRole!=='mukh')return noAccess();
@@ -1299,7 +1308,7 @@ function parseTimetableRows(rows){
 }
 
 // ---- SYNC ----
-function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4&&cb)cb();};xhr.onerror=function(){syncStatus('err');};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
+function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','application/json');xhr.onreadystatechange=function(){if(xhr.readyState===4){var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}if(cb)cb(res);}};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
 function sheetGet(name,cb){
   var url=SURL+'?sheet='+encodeURIComponent(name);
   console.log('[sheetGet] GET →',url);
