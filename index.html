@@ -1250,7 +1250,11 @@ function loadTransactionsAndSettings(){
     if(tR.length>1){transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){var iDate=String(r[5]||'').split('T')[0];var rDate=r[6]?String(r[6]).split('T')[0]:null;var due=String(r[7]||'').split('T')[0];return{id:parseInt(r[0])||1,sId:null,sName:String(r[1]||''),cls:String(r[2]||''),bId:null,bTitle:String(r[3]||''),subj:String(r[4]||''),issueDate:iDate,retDate:rDate||null,due:due,tId:parseInt(r[8])||null,tName:r[9]||null,retTName:r[10]||null};});nextTxId=transactions.length?Math.max.apply(null,transactions.map(function(t){return t.id;}))+1:1;}
     sheetGet('passwords',function(pwR){if(pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
     sheetGet('settings',function(sr){if(sr.length>1)sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1');});
-    sheetGet('TIMETABLE',function(ttR){parseTimetableRows(ttR);});
+    sheetGet('TIMETABLE',function(ttR){
+      parseTimetableRows(ttR);
+      if(curTab==='ttcls')renderSec('ttcls');
+      if(curTab==='tttc')renderSec('tttc');
+    });
     syncStatus('ok');toast('\u0921\u0947\u091F\u093E \u0932\u094B\u0921 \u091D\u093E\u0932\u093E! &#x2705; ('+students.length+' \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940)');});});
   });
 }
