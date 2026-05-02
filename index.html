@@ -1184,10 +1184,19 @@ function assignTTSub(cls,day,p,subj){
   var subTc=TEACHERS.find(function(t){return t.id===subTcId;});
   var newId=(substitutions.length?Math.max.apply(null,substitutions.map(function(s){return s.id;}))+1:1);
   var rec={id:newId,date:dt,absTcId:absTcId,absTcName:absTc?absTc.name:'',subTcId:subTcId,subTcName:subTc?subTc.name:'',cls:cls,period:p,subj:subj};
-  var rows=[['ID','Date','AbsentTcId','AbsentTcName','SubTcId','SubTcName','Class','Period','Subject']];
-  substitutions.forEach(function(s){rows.push([s.id,s.date,s.absTcId,s.absTcName,s.subTcId,s.subTcName,s.cls,s.period,s.subj]);});
-  rows.push([rec.id,rec.date,rec.absTcId,rec.absTcName,rec.subTcId,rec.subTcName,rec.cls,rec.period,rec.subj]);
-  fetch(SURL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'write',sheet:'SubLog',rows:rows})})
+  // Send exact capitalized keys matching Apps Script doPost expectations
+  var subData={
+    'ID':newId,
+    'Date':dt,
+    'AbsentTcId':absTcId,
+    'AbsentTcName':absTc?absTc.name:'',
+    'SubTcId':subTcId,
+    'SubTcName':subTc?subTc.name:'',
+    'Class':cls,
+    'Period':p,
+    'Subject':subj
+  };
+  fetch(SURL,{method:'POST',mode:'no-cors',body:JSON.stringify(subData)})
     .catch(function(){toast('&#x274C; एरर: पुन्हा प्रयत्न करा','err');});
   substitutions.push(rec);
   toast('पर्यायी तास नोंदवला! &#x2705;');
