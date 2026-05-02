@@ -1005,11 +1005,10 @@ function getMyTTName(tc){
   var pw=(tc.pw||'').toLowerCase();
   var keyword=pw.split('@')[0];
   for(var sn in TC_NAME_MAP){
-    if(TC_NAME_MAP[sn].indexOf(keyword)>=0)return sn;
+    if(TC_NAME_MAP[sn].indexOf(keyword)>=0)return sn.replace(/['"]/g,'').trim();
   }
-  // fallback: any keyword appears anywhere in pw
   for(var sn2 in TC_NAME_MAP){
-    if(TC_NAME_MAP[sn2].some(function(k){return pw.indexOf(k)>=0;}))return sn2;
+    if(TC_NAME_MAP[sn2].some(function(k){return pw.indexOf(k)>=0;}))return sn2.replace(/['"]/g,'').trim();
   }
   return '';
 }
@@ -1196,10 +1195,10 @@ function parseTimetableRows(rows){
   rows.slice(1).forEach(function(r){
     // Sheet columns: Day | Class | Period | Subject | Teacher
     var day =String(r[0]||'').trim();
-    var cls =String(r[1]||'').trim();
-    var p   =String(r[2]||'').trim();
+    var cls =String(r[1]).trim();
+    var p   =String(r[2]).trim();
     var subj=String(r[3]||'').trim();
-    var rawTc=String(r[4]||'').trim();
+    var rawTc=String(r[4]||'').replace(/['"]/g,'').trim();
     if(!day||!cls||!p||!rawTc){console.warn('[parseTimetableRows] Skipping incomplete row:',JSON.stringify(r));return;}
     if(!timetable[cls])timetable[cls]={};
     if(!timetable[cls][day])timetable[cls][day]={};
@@ -1207,6 +1206,7 @@ function parseTimetableRows(rows){
     ttData.push({day:day,cls:cls,period:p,subject:subj,teacher:rawTc});
   });
   console.log('[parseTimetableRows] done. classes:',Object.keys(timetable),'ttData rows:',ttData.length);
+  if(ttData.length>0)console.log('[parseTimetableRows] sample slot:',JSON.stringify(ttData[0]));
 }
 
 // ---- SYNC ----
