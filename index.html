@@ -1011,7 +1011,7 @@ function getMyTTName(tc){
   if(!mySheetName){for(var sn2 in TC_NAME_MAP){
     if(TC_NAME_MAP[sn2].some(function(k){return pw.indexOf(k)>=0;})){mySheetName=sn2;break;}
   }}
-  mySheetName=mySheetName.replace(/"/g,'').trim();
+  mySheetName=mySheetName.replace(/\\/g,'').replace(/"/g,'').trim();
   return mySheetName;
 }
 function detectConflict(cls,day,period,tcId){
@@ -1200,7 +1200,7 @@ function parseTimetableRows(rows){
     var cls =String(r[1]).trim();
     var p   =String(r[2]).trim();
     var subj=String(r[3]||'').trim();
-    var rawTc=String(r[4]||'').replace(/['"]/g,'').trim();
+    var rawTc=String(r[4]||'').replace(/\\/g,'').replace(/['"]/g,'').trim();
     if(!day||!cls||!p||!rawTc){console.warn('[parseTimetableRows] Skipping incomplete row:',JSON.stringify(r));return;}
     if(!timetable[cls])timetable[cls]={};
     if(!timetable[cls][day])timetable[cls][day]={};
