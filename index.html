@@ -301,8 +301,8 @@ var nextBId=1,nextTxId=1,nextSId=1;
 
 // ---- UTILS ----
 function today(){return new Date().toISOString().split('T')[0];}
-function formatDateIndian(s){if(!s)return '';var p=String(s).split('-');if(p.length!==3)return s;return p[2].length===4?s:p[2]+'-'+p[1]+'-'+p[0];}
-function normalizeDate(s){if(!s)return '';var p=String(s).split('-');if(p.length!==3)return s;return p[2].length===4?p[2]+'-'+p[1]+'-'+p[0]:s;}
+function formatDateIndian(s){if(!s)return '';var d=String(s).split('T')[0];var p=d.split('-');if(p.length!==3)return d;return p[0].length===4?p[2]+'-'+p[1]+'-'+p[0]:d;}
+function normalizeDate(s){if(!s)return '';var d=String(s).split('T')[0];var p=d.split('-');if(p.length!==3)return d;return p[2].length===4?p[2]+'-'+p[1]+'-'+p[0]:d;}
 function addDays(d,n){var dt=new Date(d);dt.setDate(dt.getDate()+n);return dt.toISOString().split('T')[0];}
 function dL(due){if(!due)return 0;var d=new Date(String(due).split('T')[0]),n=new Date(today());return Math.floor((n-d)/86400000);}
 function fmt(d){
@@ -1358,10 +1358,14 @@ function parseTimetableRows(rows){
     var dayMap={'Mon':'सोमवार','Tue':'मंगळवार','Wed':'बुधवार','Thu':'गुरुवार','Fri':'शुक्रवार','Sat':'शनिवार'};
     var pMap={'P1':'1','P2':'2','P3':'3','P4':'4','P5':'5','P6':'6','P7':'7','P8':'8'};
     var day=dayMap[String(r[0]||'').trim()]||String(r[0]||'').trim();
-    var cls=String(r[1]).trim();
+    
+    var clsRaw=String(r[1]||'').trim();
+    var cls=parseClass(clsRaw) || clsRaw; // <-- FIX: वर्ग नावे '10 वी' वरून '10' अशी मॅच करण्यासाठी
+    
     var p=pMap[String(r[2]||'').trim()]||String(r[2]||'').trim();
     var subj=String(r[3]||'').trim();
     var rawTc=String(r[4]||'').replace(/\\/g,'').replace(/['"]/g,'').trim();
+    
     if(!day||!cls||!p||!rawTc)return;
     if(!timetable[cls])timetable[cls]={};
     if(!timetable[cls][day])timetable[cls][day]={};
