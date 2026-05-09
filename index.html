@@ -1541,8 +1541,46 @@ document.addEventListener('DOMContentLoaded',function(){
     }else if(act==='toggleLock'){settings.marksLocked=t.checked;syncSettings();toast(t.checked?'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926!':'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942!');}
   });
 
-  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();});
-
-  document.addEventListener('click',function(ev){
+ document.addEventListener('click',function(ev){
     var el=ev.target;
-    while(el&&el.tagName&&el.tagName!=='BODY
+    while(el&&el.tagName&&el.tagName!=='BODY'){
+      var act=(el.getAttribute&&el.getAttribute('data-action'))||'';
+      if(act){
+        if(act==='login')doLogin();
+        else if(act==='logout')doLogout();
+        else if(act==='goback'){curMod=null;showHome();}
+        else if(act==='closemodal')closeM('cm');
+        else if(act==='openmod')openMod(el.getAttribute('data-mod')||'');
+        else if(act==='showtab')showTab(el.getAttribute('data-tabid')||'');
+        else if(act==='issuebook')issueBook();
+        else if(act==='returnbook')returnBook(parseInt(el.getAttribute('data-txid')||0));
+        else if(act==='addbook')addBook();
+        else if(act==='addstudent')addStudent();
+        else if(act==='addteacher')addTeacher();
+        else if(act==='removestd')removeStd(parseInt(el.getAttribute('data-sid')||0));
+        else if(act==='removeteacher')removeTeacher(parseInt(el.getAttribute('data-tcid')||0));
+        else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
+        else if(act==='saveallmk'){var mc=el.getAttribute('data-cls')||'';var ms=el.getAttribute('data-subj')||'';if(!mc)mc=(document.getElementById('m-cls')||{}).value||'';if(!ms)ms=(document.getElementById('m-subj')||{}).value||'';if(mc&&ms)saveAllMk(mc,ms);}
+        else if(act==='save5mk'){var mc5=el.getAttribute('data-cls')||'';var ms5=el.getAttribute('data-subj')||'';var mt5=el.getAttribute('data-term')||'';if(mc5&&ms5&&mt5)save5Marks(mc5,ms5,mt5);}
+        else if(act==='gencard')genCard();
+        else if(act==='changepw')changePW();
+        else if(act==='changetcpw')changeTcPw(parseInt(el.getAttribute('data-tcid')||0));
+        else if(act==='promoteall')promoteAll();
+        else if(act==='print')window.print();
+        else if(act==='loadnikal')loadAndRenderNikal();
+        else if(act==='savett')saveTimetable();
+        else if(act==='assignttsub')assignTTSub(el.getAttribute('data-cls'),el.getAttribute('data-day'),el.getAttribute('data-p'),el.getAttribute('data-subj'));
+        else if(act==='filtersublog')renderSubLog();
+        else if(act==='printsublog')printSubLog();
+        else if(act==='savenotice')saveNotice();
+        else if(act==='delnotice')delNotice(parseInt(el.getAttribute('data-nid')||0));
+        else if(act==='emailcontact'){try{window.location.href='mailto:emvepatekar@gmail.com';}catch(e){}}
+        break;
+      }
+      el=el.parentNode;
+    }
+  });
+});
+</script>
+</body>
+</html>
