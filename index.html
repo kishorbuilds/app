@@ -1541,7 +1541,9 @@ document.addEventListener('DOMContentLoaded',function(){
     }else if(act==='toggleLock'){settings.marksLocked=t.checked;syncSettings();toast(t.checked?'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926!':'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942!');}
   });
 
- document.addEventListener('click',function(ev){
+  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();});
+
+  document.addEventListener('click',function(ev){
     var el=ev.target;
     while(el&&el.tagName&&el.tagName!=='BODY'){
       var act=(el.getAttribute&&el.getAttribute('data-action'))||'';
