@@ -70,6 +70,8 @@ main{max-width:1400px;margin:0 auto;padding:16px;}
 .btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.15);}
 .btn:active{transform:scale(0.98);}
 .bp{background:var(--s);color:#fff;}.bs{background:var(--g);color:#fff;}.bd{background:var(--r);color:#fff;}.bb{background:var(--b);color:#fff;}.bo{background:#fff;color:var(--s);border:1.5px solid var(--s);}.bsm{padding:6px 12px;font-size:.75rem;}.bgold{background:var(--gold);color:#fff;}
+
+/* SCROLL FIXES */
 .tw{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;border-radius:8px;padding-bottom:5px;}
 table{width:100%;border-collapse:collapse;min-width:max-content;}
 th{background:#F8FAFC;padding:10px 12px;text-align:left;font-size:.7rem;font-weight:800;color:var(--mt);text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid var(--bdr);}
@@ -88,17 +90,67 @@ tr:hover td{background:#F8FAFC;}
 .mi{width:56px;padding:5px;border:1.5px solid var(--bdr);border-radius:8px;font-family:inherit;font-size:.8rem;font-weight:600;text-align:center;background:#F8FAFC;}
 .mi:focus{outline:none;border-color:var(--s);background:#fff;}
 .mi.err{border-color:var(--r);background:#FFF0F0;}
-.trow{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#F8FAFC;border:1px solid var(--bdr);border-radius:12px
+.trow{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#F8FAFC;border:1px solid var(--bdr);border-radius:12px;margin-bottom:10px;}
+.tsw{position:relative;width:48px;height:26px;flex-shrink:0;}
+.tsw input{opacity:0;width:0;height:0;}
+.tsl{position:absolute;cursor:pointer;inset:0;background:#CFD8DC;border-radius:26px;transition:.3s;}
+.tsl:before{content:"";position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 2px 4px rgba(0,0,0,.2);}
+input:checked+.tsl{background:var(--g);}
+input:checked+.tsl:before{transform:translateX(22px);}
+.mov{position:fixed;inset:0;background:rgba(26,28,46,.7);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
+.mov.op{display:flex;}
+.mbox{background:var(--card);border-radius:20px;padding:24px;max-width:480px;width:100%;box-shadow:0 12px 48px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;}
+.mbox h3{font-size:1.1rem;margin-bottom:12px;color:var(--d);font-weight:800;}
+.mfoot{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;}
+#toast{position:fixed;bottom:24px;right:20px;background:var(--d);color:#fff;padding:12px 20px;border-radius:12px;font-size:.85rem;font-weight:600;box-shadow:var(--shl);transform:translateY(100px);opacity:0;transition:all .3s cubic-bezier(0.68, -0.55, 0.265, 1.55);z-index:999;max-width:300px;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.ok{background:var(--g);}
+#toast.err{background:var(--r);}
+.dhero{background:linear-gradient(135deg,var(--d) 0%,var(--d2) 50%,#2A1060 100%);border-radius:18px;padding:28px 24px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:var(--shl);}
+.dh-bg{position:absolute;right:-20px;top:-20px;font-size:140px;opacity:.05;transform:rotate(-10deg);}
+.dh-rel{position:relative;z-index:1;}
+.pcard-wrap{border:2px solid #000;font-family:Arial,sans-serif;font-size:.82rem;line-height:1.5;}
+.pcard-top{text-align:center;border-bottom:2px solid #000;padding:10px;}
+.pcard-school{font-size:1.05rem;font-weight:900;}
+.pcard-title{font-size:1.2rem;font-weight:700;margin:5px 0;}
+.pcard-info{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:8px;border-bottom:1px solid #000;font-size:.76rem;}
+.pcard-row{display:flex;gap:4px;padding:1px 0;border-bottom:1px dotted #ddd;}
+.pcard-marks{width:100%;border-collapse:collapse;margin-top:8px;font-size:.74rem;}
+.pcard-marks th,.pcard-marks td{border:1px solid #000;padding:4px 5px;text-align:center;}
+.pcard-marks th{background:#F0F0F0;font-size:.68rem;}
+.pcard-grade-tbl{width:100%;border-collapse:collapse;margin-top:6px;font-size:.7rem;}
+.pcard-grade-tbl th,.pcard-grade-tbl td{border:1px solid #000;padding:3px 5px;text-align:center;}
+.pcard-signs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:8px;border-top:1px solid #000;font-size:.72rem;text-align:center;margin-top:4px;}
+.gos-tbl{width:100%;border-collapse:collapse;font-size:.72rem;}
+.gos-tbl th,.gos-tbl td{border:1px solid #999;padding:4px 6px;text-align:center;}
+.gos-tbl th{background:var(--d);color:#fff;}
+
+/* TIMETABLE GRID MOBILE SCROLL FIX */
+.tt-grid{display:grid;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin-top:8px;min-width:max-content;background:#fff;}
+.tt-hdr{background:var(--d);color:#fff;padding:8px 10px;font-size:.7rem;font-weight:700;text-align:center;}
+.tt-cell{padding:6px 8px;border-bottom:1px solid var(--bdr);border-right:1px solid var(--bdr);font-size:.78rem;min-height:56px;vertical-align:top;}
+.tt-period{background:#F8FAFC!important;color:var(--d)!important;font-weight:800;font-size:.75rem;display:flex;align-items:center;justify-content:center;border-right:2px solid var(--bdr);}
+.tt-sel{width:100%;padding:4px 6px;border:1.5px solid var(--bdr);border-radius:6px;font-size:.75rem;font-weight:600;font-family:inherit;background:#fff;margin-bottom:4px;}
+.tt-filled{background:#F4FBEB!important;}
+.tt-conflict{background:#FEF2F2!important;border-color:var(--r)!important;}
+.tt-view-cell{padding:6px 8px;border-radius:8px;border-left:4px solid var(--s);background:#FFF8F4;}
+.tt-empty{color:var(--mt);font-style:italic;font-size:.7rem;}
+.notice-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bdr);font-size:.85rem;}
+.notice-row:last-child{border-bottom:none;}
+
+@media(max-width:600px){.hi{padding:8px 12px;}.hmain{font-size:.85rem;}main{padding:12px;} .modules{grid-template-columns:1fr;gap:12px;} .dhero{padding:20px 16px;} .lbox{padding:24px 20px;} .fg2{grid-template-columns:1fr;} body{overflow-x:hidden;}}
+@media print{header,nav,.btn,.bbtn,#toast,.sbtn,.no-print{display:none!important;}body{background:#fff;} .card{box-shadow:none;border:1px solid #000;border-radius:0;padding:0;margin-bottom:20px;} .pcard-wrap{box-shadow:none!important;}main{padding:0!important;} .tw{overflow-x:visible;}}
+</style>
 </head>
 <body>
 <div id="login-screen">
   <div style="width:100%;max-width:400px;padding:13px;">
     <div class="lbox">
-      <div style="text-align:center;margin-bottom:18px;">
+      <div style="text-align:center;margin-bottom:24px;">
         <div class="lemb">&#x1F4DA;</div>
         <div class="lsub">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
         <div class="lschool">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;, &#x090F;&#x0930;&#x0902;&#x0921;&#x0917;&#x093E;&#x0935;</div>
-        <div class="lsub">&#x0924;&#x093E;. &#x0936;&#x0947;&#x0935;&#x0917;&#x093E;&#x0935;, &#x091C;&#x093F;. &#x0905;&#x0939;&#x093F;&#x0932;&#x094D;&#x092F;&#x093E;&#x0928;&#x0917;&#x0930;</div>
+        <div class="lsub" style="margin-top:2px;">&#x0924;&#x093E;. &#x0936;&#x0947;&#x0935;&#x0917;&#x093E;&#x0935;, &#x091C;&#x093F;. &#x0905;&#x0939;&#x093F;&#x0932;&#x094D;&#x092F;&#x093E;&#x0928;&#x0917;&#x0930;</div>
         <span class="llib">&#x1F393; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0923;&#x093E;&#x0924;&#x0942;&#x0928; &#x0938;&#x092E;&#x0943;&#x0926;&#x094D;&#x0927;&#x0940;</span>
       </div>
       <div class="lf">
@@ -109,11 +161,11 @@ tr:hover td{background:#F8FAFC;}
           <option value="mukh">&#x1F7E2; &#x092E;&#x0941;&#x0916;&#x094D;&#x092F;&#x093E;&#x0927;&#x094D;&#x092F;&#x093E;&#x092A;&#x0915;</option>
           <option value="shik">&#x1F535; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0915;</option>
         </select>
-        <div id="tc-sel" style="display:none;">
+        <div id="tc-sel" style="display:none;margin-top:12px;">
           <label>&#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0915; &#x0928;&#x093F;&#x0935;&#x0921;&#x093E;</label>
           <select id="l-tc"><option value="">&#x2014; &#x0928;&#x093F;&#x0935;&#x0921;&#x093E; &#x2014;</option></select>
         </div>
-        <label>&#x092A;&#x093E;&#x0938;&#x0935;&#x0930;&#x094D;&#x0921;</label>
+        <label style="margin-top:12px;">&#x092A;&#x093E;&#x0938;&#x0935;&#x0930;&#x094D;&#x0921;</label>
         <input type="password" id="l-pw" data-action="login-key" placeholder="&#x092A;&#x093E;&#x0938;&#x0935;&#x0930;&#x094D;&#x0921; &#x091F;&#x093E;&#x0915;&#x093E;...">
         <button class="lbtn" id="login-btn" data-action="login">&#x1F510; &#x092A;&#x094D;&#x0930;&#x0935;&#x0947;&#x0936; &#x0915;&#x0930;&#x093E;</button>
       </div>
@@ -127,8 +179,7 @@ tr:hover td{background:#F8FAFC;}
       <div class="hico">&#x1F4DA;</div>
       <div class="hinfo">
         <div class="htop">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
-        <div class="hmain">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;, &#x090F;&#x0930;&#x0902;&#x0921;&#x0917;&#x093E;&#x0935;</div>
-        <div class="hsub">&#x0924;&#x093E;. &#x0936;&#x0947;&#x0935;&#x0917;&#x093E;&#x0935;, &#x091C;&#x093F;. &#x0905;&#x0939;&#x093F;&#x0932;&#x094D;&#x092F;&#x093E;&#x0928;&#x0917;&#x0930;</div>
+        <div class="hmain">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;</div>
       </div>
     </div>
     <div class="hr">
@@ -143,22 +194,21 @@ tr:hover td{background:#F8FAFC;}
   <div class="dhero">
     <div class="dh-bg">&#x1F4DA;</div>
     <div class="dh-rel">
-      <div style="font-size:.62rem;opacity:.55;text-transform:uppercase;letter-spacing:.06em;">Digital Dashboard</div>
-      <div style="font-size:1.05rem;font-weight:700;margin:4px 0 2px;" id="dash-greeting">स्वागत आहे!</div>
-      <div style="font-size:.74rem;opacity:.7;" id="dash-date"></div>
+      <div style="font-size:.65rem;opacity:.7;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Digital Dashboard</div>
+      <div style="font-size:1.4rem;font-weight:800;margin:6px 0 4px;" id="dash-greeting">स्वागत आहे!</div>
+      <div style="font-size:.85rem;opacity:.8;font-weight:500;" id="dash-date"></div>
     </div>
   </div>
   
   <div id="dashboard-widgets">
-    <!-- Structured Dashboard will render here -->
-  </div>
+    </div>
 
-  <div class="modules" style="margin-top:16px;">
-    <div class="mcard notice" id="mod-notice" data-action="openmod" data-mod="notice" style="border-top-color:var(--b);"><div class="micon">📢</div><div class="mtit">सूचना फलक</div><div class="mdesc">शालेय सूचना व परिपत्रके</div></div>
-    <div class="mcard lib" id="mod-lib" data-action="openmod" data-mod="lib"><div class="micon">&#x1F4D6;</div><div class="mtit">ग्रंथालय</div><div class="mdesc">डॉ. ए.पी.जे. ग्रंथालय</div></div>
-    <div class="mcard res" id="mod-res" data-action="openmod" data-mod="res"><div class="micon">&#x1F4CA;</div><div class="mtit">निकाल</div><div class="mdesc">गुण नोंदणी, प्रगतिपत्र</div></div>
+  <div class="modules" style="margin-top:20px;">
+    <div class="mcard notice" id="mod-notice" data-action="openmod" data-mod="notice" style="border-top-color:var(--b);"><div class="micon">📢</div><div class="mtit">सूचना फलक</div><div class="mdesc">शालेय परिपत्रके</div></div>
+    <div class="mcard lib" id="mod-lib" data-action="openmod" data-mod="lib"><div class="micon">&#x1F4D6;</div><div class="mtit">ग्रंथालय</div><div class="mdesc">पुस्तके व नोंदी</div></div>
+    <div class="mcard res" id="mod-res" data-action="openmod" data-mod="res"><div class="micon">&#x1F4CA;</div><div class="mtit">निकाल</div><div class="mdesc">गुण व प्रगतिपत्रक</div></div>
     <div class="mcard" id="mod-tt" data-action="openmod" data-mod="tt" style="border-top-color:var(--gold);"><div class="micon">&#x1F4C5;</div><div class="mtit">वेळापत्रक</div><div class="mdesc">तासिका समायोजन</div></div>
-    <div class="mcard adm" id="mod-adm" data-action="openmod" data-mod="adm" style="border-top-color:var(--pur);display:none;"><div class="micon">&#x2699;&#xFE0F;</div><div class="mtit">व्यवस्थापन</div><div class="mdesc">विद्यार्थी, शिक्षक, प्रमोट</div></div>
+    <div class="mcard adm" id="mod-adm" data-action="openmod" data-mod="adm" style="border-top-color:var(--pur);display:none;"><div class="micon">&#x2699;&#xFE0F;</div><div class="mtit">व्यवस्थापन</div><div class="mdesc">विद्यार्थी, शिक्षक</div></div>
   </div>
 </main>
 </div>
@@ -174,9 +224,9 @@ tr:hover td{background:#F8FAFC;}
 <div class="mov" id="cm">
   <div class="mbox">
     <h3 id="cm-t"></h3>
-    <div id="cm-b" style="font-size:.82rem;color:var(--mt);margin-bottom:8px;"></div>
+    <div id="cm-b" style="font-size:.85rem;color:var(--mt);margin-bottom:12px;font-weight:500;"></div>
     <div id="cm-form"></div>
-    <div class="mfoot"><button class="btn bo bsm" id="cm-cancel" data-action="closemodal">&#x0930;&#x0926;&#x094D;&#x0926;</button><button class="btn bp bsm" id="cm-ok">&#x0920;&#x0940;&#x0915;</button></div>
+    <div class="mfoot"><button class="btn bo" id="cm-cancel" data-action="closemodal">&#x0930;&#x0926;&#x094D;&#x0926;</button><button class="btn bp" id="cm-ok">&#x0920;&#x0940;&#x0915;</button></div>
   </div>
 </div>
 <script>
@@ -297,7 +347,7 @@ var _toast=null;
 function toast(msg,t){var el=document.getElementById('toast');el.textContent=msg;el.className='show '+(t||'ok');if(_toast)clearTimeout(_toast);_toast=setTimeout(function(){el.className='';},3000);}
 function openM(id){document.getElementById(id).classList.add('op');}
 function closeM(id){document.getElementById(id).classList.remove('op');}
-function syncStatus(s){var el=document.getElementById('sync');if(!el)return;if(s==='ok'){el.textContent='☁️ Saved';el.style.color='#23A058';}else if(s==='ing'){el.textContent='⏳...';el.style.color='#B8860A';}else{el.textContent='📵 Offline';el.style.color='var(--r)';}}
+function syncStatus(s){var el=document.getElementById('sync');if(!el)return;if(s==='ok'){el.textContent='☁️ Saved';el.style.color='#23A058';}else if(s==='ing'){el.textContent='⏳...';el.style.color='#F57F17';}else{el.textContent='📵 Offline';el.style.color='var(--r)';}}
 function noAccess(){return '<div class="alert aw"><div>&#x1F512;</div><div>\u0905\u0927\u093F\u0915\u093E\u0930 \u0928\u093E\u0939\u0940</div></div>';}
 
 // ---- LOGIN ----
@@ -315,18 +365,16 @@ function renderNoticeBoard(){
   var db = document.getElementById('dashboard-widgets');
   if(!db) return;
 
-  // 1. Tasika Samayojan Widget (Top Priority - Full Width)
   var todaySubs = substitutions.filter(function(s){return s.date===today();});
   var subRows = '';
   if(todaySubs.length === 0){
-    subRows = '<div style="padding:10px 0;font-size:.75rem;color:var(--mt);text-align:center;">आज कोणतेही तासिका समायोजन नाही.</div>';
+    subRows = '<div style="padding:16px 0;font-size:.8rem;color:var(--mt);text-align:center;font-weight:500;">आज कोणतेही तासिका समायोजन नाही.</div>';
   } else {
     subRows = todaySubs.map(function(s){
-      return '<div class="notice-row"><div><strong>वर्ग '+s.cls+'</strong> ('+s.subj+') - तास '+s.period+'</div><div style="text-align:right;"><span style="color:var(--g);font-weight:700;">'+s.subTcName+'</span> <span style="font-size:.65rem;color:var(--mt);">('+s.absTcName+')</span></div></div>';
+      return '<div class="notice-row"><div><strong>वर्ग '+s.cls+'</strong> ('+s.subj+') - तास '+s.period+'</div><div style="text-align:right;"><span style="color:var(--g);font-weight:800;">'+s.subTcName+'</span> <span style="font-size:.7rem;color:var(--mt);">('+s.absTcName+')</span></div></div>';
     }).join('');
   }
   
-  // फक्त तासिका समायोजन डॅशबोर्डवर राहील, बाकी सर्व कचरा काढला आहे.
   var subW = '<div class="card" style="border-top:4px solid var(--gold); margin-bottom: 0;"><div class="ct">🔄 आजचे तासिका समायोजन <span class="ctag">'+todaySubs.length+'</span></div>'+subRows+'</div>';
 
   db.innerHTML = subW;
@@ -388,7 +436,7 @@ function buildTabs(){
   if(first)showTab(first);
 }
 
-function showTab(id){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});var tb=document.getElementById('tab-'+id);if(tb)tb.classList.add('on');curTab=id;var el=document.getElementById('mod-secs');if(!el)return;el.innerHTML='<div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; \u0932\u094B\u0921...</div>';setTimeout(function(){renderSec(id);},60);}
+function showTab(id){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});var tb=document.getElementById('tab-'+id);if(tb)tb.classList.add('on');curTab=id;var el=document.getElementById('mod-secs');if(!el)return;el.innerHTML='<div style="padding:24px;text-align:center;color:var(--mt);font-weight:600;">&#x23F3; \u0932\u094B\u0921...</div>';setTimeout(function(){renderSec(id);},60);}
 
 function renderSec(id){
   var el=document.getElementById('mod-secs');if(!el)return;
@@ -460,14 +508,14 @@ function secLD(){
   var over=transactions.filter(function(t){return !t.retDate&&dL(t.due)>0;});
   var actS=students.filter(function(s){return s.status!=='removed';}).length;
   var ret=transactions.filter(function(t){return t.retDate;}).length;
-  var colors=['#C8500A','#1A4A98','#1A6E3C','#5A2898','#B8860A','#B02020'];
+  var colors=['#F57F17','#1976D2','#1A6E3C','#6A1B9A','#E87030','#D32F2F'];
   var tcStats=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){return{name:tc.name.split(' ').slice(-1)[0],cnt:transactions.filter(function(t){return t.tId===tc.id;}).length};}).sort(function(a,b){return b.cnt-a.cnt;}).slice(0,6);
   var maxT=Math.max.apply(null,[1].concat(tcStats.map(function(t){return t.cnt;})));
-  var tcBars=tcStats.map(function(t,i){var h=Math.max(Math.round(t.cnt/maxT*70),3);return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:90%;height:'+h+'px;background:'+colors[i%6]+';border-radius:3px 3px 0 0;" title="'+t.cnt+'"></div><div style="font-size:.56rem;color:var(--mt);margin-top:2px;overflow:hidden;max-width:48px;white-space:nowrap;text-overflow:ellipsis;">'+t.name+'</div></div>';}).join('');
-  var overRows=over.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--mt);padding:14px;">&#x2705; \u0915\u094B\u0923\u0924\u0940\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':over.map(function(tx){return '<tr><td>'+tx.sName+'</td><td>'+tx.cls+'</td><td>'+tx.bTitle+'</td><td><span class="bdg bgr">+'+dL(tx.due)+' \u0926\u093F.</span></td></tr>';}).join('');
+  var tcBars=tcStats.map(function(t,i){var h=Math.max(Math.round(t.cnt/maxT*70),3);return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:90%;height:'+h+'px;background:'+colors[i%6]+';border-radius:4px 4px 0 0;" title="'+t.cnt+'"></div><div style="font-size:.6rem;color:var(--mt);margin-top:4px;overflow:hidden;max-width:48px;white-space:nowrap;text-overflow:ellipsis;font-weight:600;">'+t.name+'</div></div>';}).join('');
+  var overRows=over.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--mt);padding:14px;font-weight:500;">&#x2705; \u0915\u094B\u0923\u0924\u0940\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':over.map(function(tx){return '<tr><td>'+tx.sName+'</td><td>'+tx.cls+'</td><td>'+tx.bTitle+'</td><td><span class="bdg bgr">+'+dL(tx.due)+' \u0926\u093F.</span></td></tr>';}).join('');
   return '<div class="sg"><div class="sc"><div class="sn">'+total+'</div><div class="sl">\u0938\u0930\u094D\u0935 \u092A\u0941\u0938\u094D\u0924\u0915\u0947</div></div><div class="sc g"><div class="sn">'+(total-issd)+'</div><div class="sl">\u0909\u092A\u0932\u092C\u094D\u0927</div></div><div class="sc r"><div class="sn">'+over.length+'</div><div class="sl">\u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0940</div></div><div class="sc b"><div class="sn">'+actS+'</div><div class="sl">\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</div></div><div class="sc p"><div class="sn">'+transactions.filter(function(t){return t.tId;}).length+'</div><div class="sl">\u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0947\u0930\u093F\u0924</div></div><div class="sc gold"><div class="sn">'+ret+'</div><div class="sl">\u0935\u093E\u091A\u0932\u0947\u0932\u0940</div></div></div>'+(over.length>0?'<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div><strong style="color:var(--r)">\u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0947\u0932\u0940: '+over.length+'</strong></div></div>':'')+
-  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;"><div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; \u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0947\u0930\u0923\u093E</div><div style="display:flex;align-items:flex-end;gap:3px;height:80px;">'+tcBars+'</div></div><div class="card"><div class="ct">&#x1F4CA; \u0906\u0915\u0921\u0947\u0935\u093E\u0930\u0940</div><div style="font-size:.78rem;"><div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);"><span>\u090F\u0915\u0942\u0923 \u0935\u094D\u092F\u0935\u0939\u093E\u0930</span><strong>'+transactions.length+'</strong></div><div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);"><span>\u0935\u093E\u091A\u0932\u0947\u0932\u0940</span><strong>'+ret+'</strong></div><div style="display:flex;justify-content:space-between;padding:5px 0;"><span>\u0938\u0927\u094D\u092F\u093E \u092C\u093E\u0939\u0947\u0930</span><strong>'+issd+'</strong></div></div></div></div>'+
-  '<div class="card"><div class="ct">&#x23F0; \u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0947\u0932\u0940</div><div class="tw"><table><thead><tr><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0925\u0915\u0940\u0924</th></tr></thead><tbody>'+overRows+'</tbody></table></div></div>';
+  '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;"><div class="card" style="margin-bottom:0;"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; \u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0947\u0930\u0923\u093E</div><div style="display:flex;align-items:flex-end;gap:4px;height:80px;">'+tcBars+'</div></div><div class="card" style="margin-bottom:0;"><div class="ct">&#x1F4CA; \u0906\u0915\u0921\u0947\u0935\u093E\u0930\u0940</div><div style="font-size:.85rem;"><div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr);"><span>\u090F\u0915\u0942\u0923 \u0935\u094D\u092F\u0935\u0939\u093E\u0930</span><strong>'+transactions.length+'</strong></div><div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr);"><span>\u0935\u093E\u091A\u0932\u0947\u0932\u0940</span><strong>'+ret+'</strong></div><div style="display:flex;justify-content:space-between;padding:8px 0;"><span>\u0938\u0927\u094D\u092F\u093E \u092C\u093E\u0939\u0947\u0930</span><strong>'+issd+'</strong></div></div></div></div>'+
+  '<div class="card" style="margin-top:16px;"><div class="ct">&#x23F0; \u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0947\u0932\u0940</div><div class="tw"><table><thead><tr><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0925\u0915\u0940\u0924</th></tr></thead><tbody>'+overRows+'</tbody></table></div></div>';
 }
 
 function secLI(){
@@ -477,26 +525,26 @@ function secLI(){
   return '<div class="card"><div class="ct">&#x1F4E4; \u092A\u0941\u0938\u094D\u0924\u0915 \u0926\u0947\u0923\u0947</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="i-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div><div class="fg"><label>\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930.</label><select id="i-roll"><option value="">\u0928\u093F\u0935\u0921\u093E</option></select></div><div class="fg"><label>\u092A\u0941\u0938\u094D\u0924\u0915</label><select id="i-bk">'+bkOpts+'</select></div><div class="fg"><label>\u0924\u093E\u0930\u0940\u0916</label><input type="date" id="i-dt" value="'+today()+'"></div><div class="fg"><label>\u092A\u094D\u0930\u0947\u0930\u0915 \u0936\u093F\u0915\u094D\u0937\u0915 <span style="color:var(--r)">*</span></label><select id="i-tc">'+tcOpts+'</select></div></div><div class="alert ai"><div>&#x1F4C5;</div><div>\u092E\u0941\u0926\u0924: <strong>7 \u0926\u093F\u0935\u0938</strong></div></div><button class="btn bp" data-action="issuebook">&#x1F4E4; \u092A\u0941\u0938\u094D\u0924\u0915 \u0926\u094D\u092F\u093E</button></div><div class="card"><div class="ct">&#x1F4CB; \u0938\u0927\u094D\u092F\u093E \u0926\u093F\u0932\u0947\u0932\u0940</div><div class="sb"><input type="text" id="is-q" placeholder="\u0936\u094B\u0927\u093E..."><select id="is-cls"><option value="">\u0938\u0930\u094D\u0935 \u0935\u0930\u094D\u0917</option>'+clsOpts+'</select></div><div class="tw"><table><thead><tr><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0926\u093F\u0932\u0947</th><th>\u092E\u0941\u0926\u0924</th>'+(curRole!=='shik'?'<th>\u0936\u093F\u0915\u094D\u0937\u0915</th>':'')+'<th>\u0938\u094D\u0925\u093F\u0924\u0940</th></tr></thead><tbody id="is-body"></tbody></table></div></div>';
 }
 function loadStdByClass(){var cls=(document.getElementById('i-cls')||{}).value||'';var sel=document.getElementById('i-roll');if(!sel)return;sel.innerHTML='<option value="">\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930. \u0928\u093F\u0935\u0921\u093E</option>';students.filter(function(s){return s.status!=='removed'&&(!cls||s.cls===cls);}).sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);}).forEach(function(s){var o=document.createElement('option');o.value=s.id;o.textContent=s.roll+' - '+s.name;sel.appendChild(o);});}
-function refreshIssued(){var q=((document.getElementById('is-q')||{}).value||'').toLowerCase();var cf=(document.getElementById('is-cls')||{}).value||'';var body=document.getElementById('is-body');if(!body)return;var isA=curRole!=='shik';var rows=transactions.filter(function(t){return !t.retDate&&(t.sName.toLowerCase().indexOf(q)>=0||t.bTitle.toLowerCase().indexOf(q)>=0)&&(!cf||t.cls===cf);});body.innerHTML=rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--mt);padding:14px;">\u0915\u094B\u0923\u0924\u0947\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':rows.map(function(t){var late=dL(t.due);var badge=late>0?'<span class="bdg bgr">\u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0940</span>':'<span class="bdg bgb">\u0935\u0947\u0933\u0947\u0924</span>';return '<tr><td>'+t.sName+'</td><td>'+t.cls+'</td><td>'+t.bTitle+'</td><td>'+fmt(t.issueDate)+'</td><td>'+fmt(t.due)+'</td>'+(isA?'<td>'+(t.tName||'-')+'</td>':'')+'<td>'+badge+'</td></tr>';}).join('');}
+function refreshIssued(){var q=((document.getElementById('is-q')||{}).value||'').toLowerCase();var cf=(document.getElementById('is-cls')||{}).value||'';var body=document.getElementById('is-body');if(!body)return;var isA=curRole!=='shik';var rows=transactions.filter(function(t){return !t.retDate&&(t.sName.toLowerCase().indexOf(q)>=0||t.bTitle.toLowerCase().indexOf(q)>=0)&&(!cf||t.cls===cf);});body.innerHTML=rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--mt);padding:14px;font-weight:500;">\u0915\u094B\u0923\u0924\u0947\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':rows.map(function(t){var late=dL(t.due);var badge=late>0?'<span class="bdg bgr">\u092E\u0941\u0926\u0924 \u0938\u0902\u092A\u0932\u0940</span>':'<span class="bdg bgb">\u0935\u0947\u0933\u0947\u0924</span>';return '<tr><td>'+t.sName+'</td><td>'+t.cls+'</td><td>'+t.bTitle+'</td><td>'+fmt(t.issueDate)+'</td><td>'+fmt(t.due)+'</td>'+(isA?'<td>'+(t.tName||'-')+'</td>':'')+'<td>'+badge+'</td></tr>';}).join('');}
 function issueBook(){var sId=parseInt((document.getElementById('i-roll')||{}).value)||0;var bId=parseInt((document.getElementById('i-bk')||{}).value)||0;var dt=(document.getElementById('i-dt')||{}).value||today();var tId=parseInt((document.getElementById('i-tc')||{}).value)||0;if(!sId){toast('\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093F\u0935\u0921\u093E!','err');return;}if(!bId){toast('\u092A\u0941\u0938\u094D\u0924\u0915 \u0928\u093F\u0935\u0921\u093E!','err');return;}if(!tId){toast('\u092A\u094D\u0930\u0947\u0930\u0915 \u0936\u093F\u0915\u094D\u0937\u0915 \u0905\u0928\u093F\u0935\u093E\u0930\u094D\u092F!','err');return;}if(avail(bId)<1){toast('\u092A\u0941\u0938\u094D\u0924\u0915 \u0909\u092A\u0932\u092C\u094D\u0927 \u0928\u093E\u0939\u0940!','err');return;}var s=students.find(function(x){return x.id===sId;});var b=books.find(function(x){return x.id===bId;});var tc=TEACHERS.find(function(x){return x.id===tId;});transactions.push({id:nextTxId++,sId:sId,sName:s.name,cls:s.cls,bId:bId,bTitle:b.title,subj:b.subject||'',issueDate:dt,retDate:null,due:addDays(dt,7),tId:tId,tName:tc?tc.name:null});toast(b.title+' \u2192 '+s.name+' \u0932\u093E \u0926\u093F\u0932\u0947! &#x2705;');syncAll();refreshIssued();}
 
 function secLR(){var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');return '<div class="card"><div class="ct">&#x1F4E5; \u092A\u0941\u0938\u094D\u0924\u0915 \u092A\u0930\u0924 \u0918\u0947\u0923\u0947</div><div class="sb"><select id="rt-cls"><option value="">\u0938\u0930\u094D\u0935 \u0935\u0930\u094D\u0917</option>'+clsOpts+'</select><input type="text" id="rt-q" placeholder="\u0936\u094B\u0927\u093E..."></div><div class="tw"><table><thead><tr><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u092A\u0941\u0938\u094D\u0924\u0915</th><th>\u0926\u093F\u0932\u0947</th><th>\u0938\u094D\u0925\u093F\u0924\u0940</th><th>\u092A\u0930\u0924 \u0936\u093F\u0915\u094D\u0937\u0915 <span style="color:var(--r)">*</span></th><th>\u0915\u0943\u0924\u0940</th></tr></thead><tbody id="rt-body"></tbody></table></div></div>';}
-function filterReturn(){var q=((document.getElementById('rt-q')||{}).value||'').toLowerCase();var cf=(document.getElementById('rt-cls')||{}).value||'';var body=document.getElementById('rt-body');if(!body)return;var tcOpts=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');var rows=transactions.filter(function(t){return !t.retDate&&(t.sName.toLowerCase().indexOf(q)>=0||t.bTitle.toLowerCase().indexOf(q)>=0)&&(!cf||t.cls===cf);});body.innerHTML=rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--mt);padding:14px;">\u092A\u0930\u0924 \u0915\u0930\u093E\u092F\u091A\u0947 \u0915\u093E\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':rows.map(function(t){var late=dL(t.due);var badge=late>0?'<span class="bdg bgr">+'+late+' \u0926\u093F\u0935\u0938</span>':'<span class="bdg bgb">\u0935\u0947\u0933\u0947\u0924</span>';return '<tr><td>'+t.sName+'</td><td>'+t.cls+'</td><td>'+t.bTitle+'</td><td>'+fmt(t.issueDate)+'</td><td>'+badge+'</td><td><select id="rtc-'+t.id+'" style="padding:3px 6px;border:1.5px solid var(--bdr);border-radius:6px;font-family:inherit;font-size:.76rem;"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+tcOpts+'</select></td><td><button class="btn bs bsm" data-action="returnbook" data-txid="'+t.id+'">\u092A\u0930\u0924</button></td></tr>';}).join('');}
+function filterReturn(){var q=((document.getElementById('rt-q')||{}).value||'').toLowerCase();var cf=(document.getElementById('rt-cls')||{}).value||'';var body=document.getElementById('rt-body');if(!body)return;var tcOpts=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');var rows=transactions.filter(function(t){return !t.retDate&&(t.sName.toLowerCase().indexOf(q)>=0||t.bTitle.toLowerCase().indexOf(q)>=0)&&(!cf||t.cls===cf);});body.innerHTML=rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--mt);padding:14px;font-weight:500;">\u092A\u0930\u0924 \u0915\u0930\u093E\u092F\u091A\u0947 \u0915\u093E\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':rows.map(function(t){var late=dL(t.due);var badge=late>0?'<span class="bdg bgr">+'+late+' \u0926\u093F\u0935\u0938</span>':'<span class="bdg bgb">\u0935\u0947\u0933\u0947\u0924</span>';return '<tr><td>'+t.sName+'</td><td>'+t.cls+'</td><td>'+t.bTitle+'</td><td>'+fmt(t.issueDate)+'</td><td>'+badge+'</td><td><select id="rtc-'+t.id+'" style="padding:5px 8px;border:1.5px solid var(--bdr);border-radius:8px;font-family:inherit;font-size:.8rem;"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+tcOpts+'</select></td><td><button class="btn bs bsm" data-action="returnbook" data-txid="'+t.id+'">\u092A\u0930\u0924</button></td></tr>';}).join('');}
 function returnBook(txId){var tId=parseInt((document.getElementById('rtc-'+txId)||{}).value)||0;if(!tId){toast('\u092A\u0930\u0924 \u0936\u093F\u0915\u094D\u0937\u0915 \u0905\u0928\u093F\u0935\u093E\u0930\u094D\u092F!','err');return;}var tx=transactions.find(function(t){return t.id===txId;});if(!tx)return;var tc=TEACHERS.find(function(t){return t.id===tId;});tx.retDate=today();tx.retTId=tId;tx.retTName=tc?tc.name:null;toast(tx.bTitle+' \u092A\u0930\u0924 \u092E\u093F\u0933\u093E\u0932\u0947! &#x2705;');syncAll();filterReturn();}
 
-function secLC(){var rows=books.map(function(b,i){var av=avail(b.id);return '<tr><td>'+(i+1)+'</td><td><strong>'+b.title+'</strong></td><td>'+(b.author||'-')+'</td><td>'+(b.subject||'\u0907\u0924\u0930')+'</td><td>'+b.copies+'</td><td>'+av+'</td><td>'+(av>0?'<span class="bdg bgg">\u0909\u092A\u0932\u092C\u094D\u0927</span>':'<span class="bdg bgr">\u0928\u093E\u0939\u0940</span>')+'</td></tr>';}).join('');return '<div class="card"><div class="ct">&#x1F4D6; \u0917\u094D\u0930\u0902\u0925\u0938\u0942\u091A\u0940</div><details style="margin-bottom:11px;"><summary style="cursor:pointer;font-weight:600;color:var(--s);padding:5px 0;">&#x2795; \u0928\u0935\u0940\u0928 \u092A\u0941\u0938\u094D\u0924\u0915 \u091C\u094B\u0921\u093E</summary><div style="margin-top:9px;"><div class="fg2"><div class="fg"><label>\u0928\u093E\u0935</label><input type="text" id="b-t" placeholder="\u092A\u0941\u0938\u094D\u0924\u0915\u093E\u091A\u0947 \u0928\u093E\u0935"></div><div class="fg"><label>\u0932\u0947\u0916\u0915</label><input type="text" id="b-a"></div><div class="fg"><label>\u0935\u093F\u0937\u092F/\u092A\u094D\u0930\u0915\u093E\u0930</label><input type="text" id="b-s" placeholder="\u0915\u093E\u0926\u0902\u092C\u0930\u0940, \u0935\u093F\u091C\u094D\u091E\u093E\u0928..."></div><div class="fg"><label>\u092A\u094D\u0930\u0924\u0940</label><input type="number" id="b-c" value="1" min="1"></div></div><button class="btn bs bsm" data-action="addbook">&#x2705; \u091C\u094B\u0921\u093E</button></div></details><div class="tw"><table><thead><tr><th>#</th><th>\u0928\u093E\u0935</th><th>\u0932\u0947\u0916\u0915</th><th>\u0935\u093F\u0937\u092F</th><th>\u090F\u0915\u0942\u0923</th><th>\u0909\u092A\u0932\u092C\u094D\u0927</th><th>\u0938\u094D\u0925\u093F\u0924\u0940</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';}
+function secLC(){var rows=books.map(function(b,i){var av=avail(b.id);return '<tr><td>'+(i+1)+'</td><td><strong>'+b.title+'</strong></td><td>'+(b.author||'-')+'</td><td>'+(b.subject||'\u0907\u0924\u0930')+'</td><td>'+b.copies+'</td><td>'+av+'</td><td>'+(av>0?'<span class="bdg bgg">\u0909\u092A\u0932\u092C\u094D\u0927</span>':'<span class="bdg bgr">\u0928\u093E\u0939\u0940</span>')+'</td></tr>';}).join('');return '<div class="card"><div class="ct">&#x1F4D6; \u0917\u094D\u0930\u0902\u0925\u0938\u0942\u091A\u0940</div><details style="margin-bottom:14px;"><summary style="cursor:pointer;font-weight:700;color:var(--b);padding:8px 0;">&#x2795; \u0928\u0935\u0940\u0928 \u092A\u0941\u0938\u094D\u0924\u0915 \u091C\u094B\u0921\u093E</summary><div style="margin-top:12px;padding:12px;background:#F8FAFC;border-radius:12px;border:1px solid var(--bdr);"><div class="fg2"><div class="fg"><label>\u0928\u093E\u0935</label><input type="text" id="b-t" placeholder="\u092A\u0941\u0938\u094D\u0924\u0915\u093E\u091A\u0947 \u0928\u093E\u0935"></div><div class="fg"><label>\u0932\u0947\u0916\u0915</label><input type="text" id="b-a"></div><div class="fg"><label>\u0935\u093F\u0937\u092F/\u092A\u094D\u0930\u0915\u093E\u0930</label><input type="text" id="b-s" placeholder="\u0915\u093E\u0926\u0902\u092C\u0930\u0940, \u0935\u093F\u091C\u094D\u091E\u093E\u0928..."></div><div class="fg"><label>\u092A\u094D\u0930\u0924\u0940</label><input type="number" id="b-c" value="1" min="1"></div></div><button class="btn bs bsm" data-action="addbook">&#x2705; \u091C\u094B\u0921\u093E</button></div></details><div class="tw"><table><thead><tr><th>#</th><th>\u0928\u093E\u0935</th><th>\u0932\u0947\u0916\u0915</th><th>\u0935\u093F\u0937\u092F</th><th>\u090F\u0915\u0942\u0923</th><th>\u0909\u092A\u0932\u092C\u094D\u0927</th><th>\u0938\u094D\u0925\u093F\u0924\u0940</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';}
 function addBook(){var t=(document.getElementById('b-t')||{}).value||'';if(!t){toast('\u0928\u093E\u0935 \u091F\u093E\u0915\u093E!','err');return;}books.push({id:nextBId++,title:t,author:(document.getElementById('b-a')||{}).value||'',subject:(document.getElementById('b-s')||{}).value||'\u0907\u0924\u0930',copies:parseInt((document.getElementById('b-c')||{}).value)||1});toast(t+' \u091C\u094B\u0921\u0932\u0947! &#x2705;');syncAll();showTab('lc');}
 
-function secLS(){var isA=(curRole==='super'||curRole==='mukh');var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');var rows=students.filter(function(s){return s.status!=='removed';}).map(function(s){var cnt=transactions.filter(function(t){return t.sId===s.id;}).length;var curr=transactions.filter(function(t){return t.sId===s.id&&!t.retDate;}).length;return '<tr><td>'+s.roll+'</td><td>'+s.name+'</td><td>'+s.cls+'</td><td><span class="bdg bgg">\u0938\u0915\u094D\u0930\u093F\u092F</span></td><td>'+cnt+'</td><td>'+(curr>0?'<span class="bdg bgy">'+curr+'</span>':'-')+'</td>'+(isA?'<td><button class="btn bo bsm" data-action="stdaction" data-sid="'+s.id+'">&#x1F527;</button></td>':'<td></td>')+'</tr>';}).join('');return '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F393; \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u092F\u093E\u0926\u0940</div>'+(isA?'<details style="margin-bottom:11px;"><summary style="cursor:pointer;font-weight:600;color:var(--s);padding:5px 0;">&#x2795; \u0928\u0935\u0940\u0928 \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</summary><div style="margin-top:9px;"><div class="fg2"><div class="fg"><label>\u0928\u093E\u0935</label><input type="text" id="st-n"></div><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="st-c"><option value="">--</option>'+clsOpts+'</select></div><div class="fg"><label>\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930.</label><input type="text" id="st-r"></div></div><button class="btn bs bsm" data-action="addstudent">&#x2705; \u0926\u093E\u0916\u0932</button></div></details>':'')+
+function secLS(){var isA=(curRole==='super'||curRole==='mukh');var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');var rows=students.filter(function(s){return s.status!=='removed';}).map(function(s){var cnt=transactions.filter(function(t){return t.sId===s.id;}).length;var curr=transactions.filter(function(t){return t.sId===s.id&&!t.retDate;}).length;return '<tr><td>'+s.roll+'</td><td>'+s.name+'</td><td>'+s.cls+'</td><td><span class="bdg bgg">\u0938\u0915\u094D\u0930\u093F\u092F</span></td><td>'+cnt+'</td><td>'+(curr>0?'<span class="bdg bgy">'+curr+'</span>':'-')+'</td>'+(isA?'<td><button class="btn bo bsm" data-action="stdaction" data-sid="'+s.id+'">&#x1F527;</button></td>':'<td></td>')+'</tr>';}).join('');return '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F393; \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u092F\u093E\u0926\u0940</div>'+(isA?'<details style="margin-bottom:14px;"><summary style="cursor:pointer;font-weight:700;color:var(--b);padding:8px 0;">&#x2795; \u0928\u0935\u0940\u0928 \u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</summary><div style="margin-top:12px;padding:12px;background:#F8FAFC;border-radius:12px;border:1px solid var(--bdr);"><div class="fg2"><div class="fg"><label>\u0928\u093E\u0935</label><input type="text" id="st-n"></div><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="st-c"><option value="">--</option>'+clsOpts+'</select></div><div class="fg"><label>\u0939\u091C\u0947\u0930\u0940 \u0915\u094D\u0930.</label><input type="text" id="st-r"></div></div><button class="btn bs bsm" data-action="addstudent">&#x2705; \u0926\u093E\u0916\u0932</button></div></details>':'')+
 '<div class="tw"><table><thead><tr><th>\u0939.\u0915\u094D\u0930.</th><th>\u0928\u093E\u0935</th><th>\u0935\u0930\u094D\u0917</th><th>\u0938\u094D\u0925\u093F\u0924\u0940</th><th>\u0935\u093E\u091A\u0932\u0947\u0932\u0940</th><th>\u0938\u0927\u094D\u092F\u093E</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';}
 function addStudent(){var n=(document.getElementById('st-n')||{}).value||'';var c=(document.getElementById('st-c')||{}).value||'';var r=(document.getElementById('st-r')||{}).value||'';if(!n||!c){toast('\u0928\u093E\u0935 \u0935 \u0935\u0930\u094D\u0917 \u0906\u0935\u0936\u094D\u092F\u0915!','err');return;}students.push({id:nextSId++,name:n,cls:c,roll:r,status:'active',reason:''});toast(n+' \u0926\u093E\u0916\u0932 \u0915\u0947\u0932\u0947!');syncAll();showTab('astd');}
-function stdAction(sId){var s=students.find(function(x){return x.id===sId;});if(!s)return;document.getElementById('cm-t').textContent=s.name;document.getElementById('cm-b').textContent='\u0935\u0930\u094D\u0917: '+s.cls;document.getElementById('cm-form').innerHTML='<div class="fg"><label>\u0915\u094D\u0930\u093F\u092F\u093E</label><select id="sa-act"><option value="tc">TC \u0926\u094D\u092F\u093E</option><option value="fail">\u0928\u093E\u092A\u093E\u0938</option><option value="remove">\u0936\u093E\u0933\u0947\u0924\u0942\u0928 \u0915\u093E\u0922\u093E</option><option value="active">\u092A\u0941\u0928\u094D\u0939\u093E \u0938\u0915\u094D\u0930\u093F\u092F</option></select></div><div class="fg" style="margin-top:8px;"><label>\u0915\u093E\u0930\u0923 <span style="color:var(--r)">*</span></label><input type="text" id="sa-reason" placeholder="\u0915\u093E\u0930\u0923 \u0928\u092E\u0942\u0926 \u0915\u0930\u093E"></div>';document.getElementById('cm-ok').onclick=function(){var act=(document.getElementById('sa-act')||{}).value||'';var reason=(document.getElementById('sa-reason')||{}).value||'';if(!reason){toast('\u0915\u093E\u0930\u0923 \u0906\u0935\u0936\u094D\u092F\u0915!','err');return;}s.status=act;s.reason=reason;toast(s.name+' - '+act+'!');syncAll();closeM('cm');showTab('ls');};openM('cm');}
+function stdAction(sId){var s=students.find(function(x){return x.id===sId;});if(!s)return;document.getElementById('cm-t').textContent=s.name;document.getElementById('cm-b').textContent='\u0935\u0930\u094D\u0917: '+s.cls;document.getElementById('cm-form').innerHTML='<div class="fg"><label>\u0915\u094D\u0930\u093F\u092F\u093E</label><select id="sa-act"><option value="tc">TC \u0926\u094D\u092F\u093E</option><option value="fail">\u0928\u093E\u092A\u093E\u0938</option><option value="remove">\u0936\u093E\u0933\u0947\u0924\u0942\u0928 \u0915\u093E\u0922\u093E</option><option value="active">\u092A\u0941\u0928\u094D\u0939\u093E \u0938\u0915\u094D\u0930\u093F\u092F</option></select></div><div class="fg" style="margin-top:12px;"><label>\u0915\u093E\u0930\u0923 <span style="color:var(--r)">*</span></label><input type="text" id="sa-reason" placeholder="\u0915\u093E\u0930\u0923 \u0928\u092E\u0942\u0926 \u0915\u0930\u093E"></div>';document.getElementById('cm-ok').onclick=function(){var act=(document.getElementById('sa-act')||{}).value||'';var reason=(document.getElementById('sa-reason')||{}).value||'';if(!reason){toast('\u0915\u093E\u0930\u0923 \u0906\u0935\u0936\u094D\u092F\u0915!','err');return;}s.status=act;s.reason=reason;toast(s.name+' - '+act+'!');syncAll();closeM('cm');showTab('ls');};openM('cm');}
 
-function secLRP(){return '<div id="lrp-content"><div style="padding:14px;text-align:center;color:var(--mt);">&#x1F504; \u0932\u094B\u0921...</div></div>';}
+function secLRP(){return '<div id="lrp-content"><div style="padding:24px;text-align:center;color:var(--mt);font-weight:600;">&#x1F504; \u0932\u094B\u0921...</div></div>';}
 function buildLibReport(){var el=document.getElementById('lrp-content');if(!el)return;var tcStats=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){var given=transactions.filter(function(tx){return tx.tId===tc.id;}).length;var ret2=transactions.filter(function(tx){return tx.tId===tc.id&&tx.retDate;}).length;var seen={};transactions.filter(function(tx){return tx.tId===tc.id;}).forEach(function(tx){seen[tx.sName]=1;});return{name:tc.name,given:given,ret:ret2,stds:Object.keys(seen).length};}).sort(function(a,b){return b.given-a.given;});var maxG=Math.max.apply(null,[1].concat(tcStats.map(function(t){return t.given;})));var tcRows=tcStats.map(function(tc){var pct=Math.round(tc.given/maxG*100);return '<tr><td><strong>'+tc.name+'</strong></td><td>'+tc.given+'</td><td>'+tc.ret+'</td><td>'+tc.stds+'</td><td><div class="pbar"><div class="pfill" style="width:'+pct+'%;background:var(--s);"></div></div></td></tr>';}).join('');var clsRows=CLASSES.map(function(c){var stds2=getStds(c.id);var readers=stds2.filter(function(s){return transactions.some(function(t){return t.sId===s.id&&t.retDate;});});var nonR=stds2.filter(function(s){return !transactions.some(function(t){return t.sId===s.id;});});return '<tr><td><strong>'+c.label+'</strong></td><td>'+stds2.length+'</td><td><span class="bdg bgg">'+readers.length+'</span></td><td><span class="bdg bgr">'+nonR.length+'</span></td></tr>';}).join('');el.innerHTML='<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; \u0936\u093F\u0915\u094D\u0937\u0915 \u092A\u094D\u0930\u0947\u0930\u0923\u093E</div><div class="tw"><table><thead><tr><th>\u0936\u093F\u0915\u094D\u0937\u0915</th><th>\u092A\u0941\u0938\u094D\u0924\u0915\u0947</th><th>\u092A\u0930\u0924</th><th>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</th><th>\u092A\u094D\u0930\u0917\u0924\u0940</th></tr></thead><tbody>'+tcRows+'</tbody></table></div></div><div class="card"><div class="ct">&#x1F3EB; \u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F \u0935\u093E\u091A\u0928</div><div class="tw"><table><thead><tr><th>\u0935\u0930\u094D\u0917</th><th>\u090F\u0915\u0942\u0923</th><th>\u0935\u093E\u091A\u0915</th><th>\u0935\u093E\u091A\u0928 \u0928\u093E\u0939\u0940</th></tr></thead><tbody>'+clsRows+'</tbody></table></div></div>';}
 
 // ---- RESULTS SECTIONS ----
-function secRD(){return '<div id="rd-content"><div style="padding:14px;text-align:center;color:var(--mt);">&#x1F504; \u0932\u094B\u0921...</div></div>';}
+function secRD(){return '<div id="rd-content"><div style="padding:24px;text-align:center;color:var(--mt);font-weight:600;">&#x1F504; \u0932\u094B\u0921...</div></div>';}
 
 function secRM(){
   if(settings.marksLocked&&curRole==='shik')return '<div class="alert aw"><div>&#x1F512;</div><div><strong>गुण नोंदणी बंद आहे</strong></div></div>';
@@ -536,14 +584,14 @@ function loadMkTable(){
   var exams=getExams(cls);
   var groups={};var groupKeys=[];
   exams.forEach(function(e){if(groupKeys.indexOf(e.group)<0)groupKeys.push(e.group);groups[e.group]=(groups[e.group]||[]).concat([e]);});
-  var thGroup=groupKeys.map(function(g){return '<th colspan="'+groups[g].length+'" style="text-align:center;background:var(--d);color:white;">'+g+'</th>';}).join('');
-  var thExams=exams.map(function(e){return '<th style="text-align:center;">'+e.label+'<br><span style="font-weight:400;font-size:.62rem;">/'+e.max+'</span></th>';}).join('');
+  var thGroup=groupKeys.map(function(g){return '<th colspan="'+groups[g].length+'" style="text-align:center;background:var(--d);color:white;padding:8px;">'+g+'</th>';}).join('');
+  var thExams=exams.map(function(e){return '<th style="text-align:center;">'+e.label+'<br><span style="font-weight:500;font-size:.65rem;">/'+e.max+'</span></th>';}).join('');
   var rows=stds2.map(function(s){
     var cells=exams.map(function(e){var v=getMk(s.id,cls,subj,e.key);return '<td><input class="mi" type="number" min="0" max="'+e.max+'" value="'+v+'" data-action="setmk" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+e.key+'" data-max="'+e.max+'"></td>';}).join('');
     var t=calcSubjTotal(s.id,cls,subj);var gr=t.total!==''?grade(t.pct,cls):'-';
-    return '<tr><td><strong>'+s.roll+'</strong></td><td>'+s.name+'</td>'+cells+'<td id="tot-'+s.id+'" style="font-weight:700;">'+(t.total||'-')+'</td><td><span class="bdg '+gradeColor(gr)+'" id="grd-'+s.id+'">'+gr+'</span></td></tr>';
+    return '<tr><td><strong>'+s.roll+'</strong></td><td>'+s.name+'</td>'+cells+'<td id="tot-'+s.id+'" style="font-weight:800;">'+(t.total||'-')+'</td><td><span class="bdg '+gradeColor(gr)+'" id="grd-'+s.id+'">'+gr+'</span></td></tr>';
   }).join('');
-  wrap.innerHTML='<div class="tw"><table><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:10px;"><button class="btn bp" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button></div>';
+  wrap.innerHTML='<div class="tw"><table><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:16px;"><button class="btn bp" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button></div>';
 }
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
 function saveAllMk(cls,subj){var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
@@ -561,33 +609,33 @@ function loadMkTable5(cls,subj,term){
   var pfx='t'+term+'_';
   var stds2=getStds(cls);var wrap=document.getElementById('mk-wrap');
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
-  var faHdr=FA5.map(function(f){return '<th style="text-align:center;font-size:.6rem;min-width:40px;">'+f.label+'<br>/'+f.max+'</th>';}).join('');
-  var saHdr=SA5.map(function(f){return '<th style="text-align:center;font-size:.6rem;min-width:40px;">'+f.label+'<br>/'+f.max+'</th>';}).join('');
+  var faHdr=FA5.map(function(f){return '<th style="text-align:center;font-size:.65rem;min-width:40px;font-weight:600;">'+f.label+'<br>/'+f.max+'</th>';}).join('');
+  var saHdr=SA5.map(function(f){return '<th style="text-align:center;font-size:.65rem;min-width:40px;font-weight:600;">'+f.label+'<br>/'+f.max+'</th>';}).join('');
   var rows=stds2.map(function(s){
     var faCells=FA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
     var saCells=SA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
     var tot=calc5TotRow(s.id,cls,subj,term);
     var gr=tot.hasData?grade58(tot.pct100):'-';
-    return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-size:.76rem;">'+s.name+'</td>'+
-      faCells+'<td id="fa5-'+s.id+'" style="font-weight:700;text-align:center;color:var(--b);">'+(tot.fa!==''?tot.fa:'-')+'</td>'+
-      saCells+'<td id="sa5-'+s.id+'" style="font-weight:700;text-align:center;color:var(--g);">'+(tot.sa!==''?tot.sa:'-')+'</td>'+
-      '<td id="tot5-'+s.id+'" style="font-weight:700;text-align:center;">'+(tot.total!==''?tot.total:'-')+'</td>'+
+    return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-size:.8rem;font-weight:500;">'+s.name+'</td>'+
+      faCells+'<td id="fa5-'+s.id+'" style="font-weight:800;text-align:center;color:var(--b);">'+(tot.fa!==''?tot.fa:'-')+'</td>'+
+      saCells+'<td id="sa5-'+s.id+'" style="font-weight:800;text-align:center;color:var(--g);">'+(tot.sa!==''?tot.sa:'-')+'</td>'+
+      '<td id="tot5-'+s.id+'" style="font-weight:800;text-align:center;">'+(tot.total!==''?tot.total:'-')+'</td>'+
       '<td><span class="bdg '+gradeColor(gr)+'" id="grd5-'+s.id+'">'+gr+'</span></td>'+
       '<td id="warn5-'+s.id+'-'+term+'" style="min-width:140px;vertical-align:middle;"></td></tr>';
   }).join('');
   wrap.innerHTML='<div class="tw"><table>'+
     '<thead><tr>'+
     '<th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+
-    '<th colspan="'+FA5.length+'" style="text-align:center;background:#1A4A98;color:white;font-size:.7rem;">अ - आकारिक मूल्यमापन (FA) /40</th>'+
-    '<th rowspan="2" style="text-align:center;background:#1A4A98;color:white;font-size:.68rem;">एकूण<br>(अ)<br>/40</th>'+
-    '<th colspan="'+SA5.length+'" style="text-align:center;background:#1A6E3C;color:white;font-size:.7rem;">ब - संकलित मूल्यमापन (SA) /60</th>'+
-    '<th rowspan="2" style="text-align:center;background:#1A6E3C;color:white;font-size:.68rem;">एकूण<br>(ब)<br>/60</th>'+
-    '<th rowspan="2" style="text-align:center;font-size:.68rem;">अ+ब<br>/100</th>'+
+    '<th colspan="'+FA5.length+'" style="text-align:center;background:#1976D2;color:white;font-size:.75rem;padding:8px;">अ - आकारिक मूल्यमापन (FA) /40</th>'+
+    '<th rowspan="2" style="text-align:center;background:#1976D2;color:white;font-size:.7rem;padding:8px;">एकूण<br>(अ)<br>/40</th>'+
+    '<th colspan="'+SA5.length+'" style="text-align:center;background:#1A6E3C;color:white;font-size:.75rem;padding:8px;">ब - संकलित मूल्यमापन (SA) /60</th>'+
+    '<th rowspan="2" style="text-align:center;background:#1A6E3C;color:white;font-size:.7rem;padding:8px;">एकूण<br>(ब)<br>/60</th>'+
+    '<th rowspan="2" style="text-align:center;font-size:.7rem;padding:8px;">अ+ब<br>/100</th>'+
     '<th rowspan="2">श्रेणी</th>'+
     '<th rowspan="2" style="min-width:140px;">⚠️ सूचना</th>'+
     '</tr><tr>'+faHdr+saHdr+'</tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div>'+
-    '<div style="margin-top:10px;"><button class="btn bp" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button></div>';
+    '<div style="margin-top:16px;"><button class="btn bp" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button></div>';
   stds2.forEach(function(s){validate5Row(s.id,cls,subj,term);});
 }
 
@@ -604,8 +652,8 @@ function validate5Row(sId,cls,subj,term){
   SA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!=='')saSum+=parseFloat(v)||0;});
   if(tond!==''&&prat!=='')warns.push('तोंडी किंवा प्रात्यक्षिक एकच असावे');
   if(saSum>60)warns.push('SA एकूण 60 पेक्षा जास्त');
-  el.innerHTML=warns.length?'<div style="'+(hasBlock?'background:#FFF0F0;border:1.5px solid var(--r);border-radius:6px;padding:4px 7px;':'')+
-    'color:var(--r);font-size:.62rem;line-height:1.6;">'+warns.join('<br>')+'</div>':'';
+  el.innerHTML=warns.length?'<div style="'+(hasBlock?'background:#FFF0F0;border:1.5px solid var(--r);border-radius:8px;padding:6px 10px;':'')+
+    'color:var(--r);font-size:.65rem;font-weight:600;line-height:1.6;">'+warns.join('<br>')+'</div>':'';
 }
 
 function update5TotRow(sId,cls,subj,term){
@@ -638,7 +686,7 @@ function secRProg(){
     var stds2=getStds(c.id);if(!stds2.length)return'';
     var ranked=stds2.map(function(s){var r=calcStudentTotal(s.id,c.id);return{name:s.name,roll:s.roll,pct:r.pct,hasData:r.hasData};}).filter(function(x){return x.hasData;}).sort(function(a,b){return b.pct-a.pct;});
     if(!ranked.length)return'';
-    var rows=ranked.map(function(s,i){var medal=i===0?'&#x1F947;':i===1?'&#x1F948;':i===2?'&#x1F949;':'';var barColor=s.pct>=75?'var(--g)':s.pct>=50?'var(--gold)':'var(--r)';var gr=grade(s.pct,c.id);return '<tr><td>'+(i+1)+'</td><td>'+medal+' <strong>'+s.name+'</strong></td><td>'+s.roll+'</td><td>'+s.pct+'%</td><td style="min-width:80px;"><div class="pbar"><div class="pfill" style="width:'+s.pct+'%;background:'+barColor+';"></div></div></td><td><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td></tr>';}).join('');
+    var rows=ranked.map(function(s,i){var medal=i===0?'&#x1F947;':i===1?'&#x1F948;':i===2?'&#x1F949;':'';var barColor=s.pct>=75?'var(--g)':s.pct>=50?'var(--gold)':'var(--r)';var gr=grade(s.pct,c.id);return '<tr><td>'+(i+1)+'</td><td>'+medal+' <strong>'+s.name+'</strong></td><td>'+s.roll+'</td><td><strong style="font-size:.9rem;">'+s.pct+'%</strong></td><td style="min-width:100px;"><div class="pbar"><div class="pfill" style="width:'+s.pct+'%;background:'+barColor+';"></div></div></td><td><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td></tr>';}).join('');
     return '<div class="card"><div class="ct">&#x1F3C6; '+c.label+' \u2014 \u0935\u0930\u094D\u0917 \u092A\u094D\u0930\u0917\u0924\u0940</div><div class="tw"><table><thead><tr><th>\u0915\u094D\u0930.</th><th>\u0928\u093E\u0935</th><th>\u0939.\u0915\u094D\u0930.</th><th>%</th><th>\u092A\u094D\u0930\u0917\u0924\u0940</th><th>\u0936\u094D\u0930\u0947\u0923\u0940</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
   }).join('');
   return sections||'<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>\u0921\u0947\u091F\u093E \u0928\u093E\u0939\u0940</div></div>';
@@ -658,21 +706,21 @@ function loadGosawara(){
   var passed=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct>=33;}).length;
   var failed=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct<33;}).length;
   var noData=stds2.filter(function(s){return !calcStudentTotal(s.id,cls).hasData;}).length;
-  var stats='<div class="sg" style="margin:10px 0;"><div class="sc b"><div class="sn">'+stds2.length+'</div><div class="sl">\u090F\u0915\u0942\u0923 \u092A\u091F</div></div><div class="sc g"><div class="sn">'+passed+'</div><div class="sl">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc r"><div class="sn">'+failed+'</div><div class="sl">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc gold"><div class="sn">'+noData+'</div><div class="sl">\u0917\u0941\u0923 \u0928\u093E\u0939\u0940\u0924</div></div></div>';
+  var stats='<div class="sg" style="margin:16px 0;"><div class="sc b"><div class="sn">'+stds2.length+'</div><div class="sl">\u090F\u0915\u0942\u0923 \u092A\u091F</div></div><div class="sc g"><div class="sn">'+passed+'</div><div class="sl">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc r"><div class="sn">'+failed+'</div><div class="sl">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc gold"><div class="sn">'+noData+'</div><div class="sl">\u0917\u0941\u0923 \u0928\u093E\u0939\u0940\u0924</div></div></div>';
   var table='';
   if(isHigh){
     var slabs=[{l:'90-100%',mn:90,mx:100},{l:'80-89%',mn:80,mx:89},{l:'70-79%',mn:70,mx:79},{l:'60-69%',mn:60,mx:69},{l:'50-59%',mn:50,mx:59},{l:'35-49%',mn:35,mx:49},{l:'0-34%',mn:0,mx:34}];
-    var thS=subjs.map(function(s){return '<th style="text-align:center;font-size:.63rem;">'+s+'</th>';}).join('');
-    var rows=slabs.map(function(sl){var cells=subjs.map(function(subj){var cnt=stds2.filter(function(s){var t=calcSubjTotal(s.id,cls,subj);return t.total!==''&&t.pct>=sl.mn&&t.pct<=sl.mx;}).length;return '<td style="text-align:center;">'+(cnt||'-')+'</td>';}).join('');var tot=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct>=sl.mn&&r.pct<=sl.mx;}).length;return '<tr><td style="font-weight:600;font-size:.74rem;">'+sl.l+'</td>'+cells+'<td style="text-align:center;font-weight:700;">'+(tot||'-')+'</td></tr>';}).join('');
+    var thS=subjs.map(function(s){return '<th style="text-align:center;font-size:.65rem;font-weight:600;">'+s+'</th>';}).join('');
+    var rows=slabs.map(function(sl){var cells=subjs.map(function(subj){var cnt=stds2.filter(function(s){var t=calcSubjTotal(s.id,cls,subj);return t.total!==''&&t.pct>=sl.mn&&t.pct<=sl.mx;}).length;return '<td style="text-align:center;">'+(cnt||'-')+'</td>';}).join('');var tot=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct>=sl.mn&&r.pct<=sl.mx;}).length;return '<tr><td style="font-weight:700;font-size:.78rem;">'+sl.l+'</td>'+cells+'<td style="text-align:center;font-weight:800;">'+(tot||'-')+'</td></tr>';}).join('');
     table='<div class="tw"><table class="gos-tbl"><thead><tr><th>\u0936\u0947\u0915\u0921\u0947\u0935\u093E\u0930\u0940</th>'+thS+'<th>\u090F\u0915\u0942\u0923</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
   }else{
     var grades=['\u0905-1','\u0905-2','\u092C-1','\u092C-2','\u0915-1','\u0915-2','\u0921','\u0907-1','\u0907-2'];
     var gFn=[function(p){return p>=91;},function(p){return p>=81&&p<91;},function(p){return p>=71&&p<81;},function(p){return p>=61&&p<71;},function(p){return p>=51&&p<61;},function(p){return p>=41&&p<51;},function(p){return p>=33&&p<41;},function(p){return p>=21&&p<33;},function(p){return p<21;}];
-    var thG='<th>\u0935\u093F\u0937\u092F</th>'+grades.map(function(g){return '<th style="text-align:center;font-size:.63rem;">'+g+'</th>';}).join('')+'<th>\u090F\u0915\u0942\u0923</th>';
-    var rows2=subjs.map(function(subj){var cells2=grades.map(function(g,i){var cnt=stds2.filter(function(s){var t=calcSubjTotal(s.id,cls,subj);return t.total!==''&&gFn[i](t.pct);}).length;return '<td style="text-align:center;">'+(cnt||'-')+'</td>';}).join('');var tot=stds2.filter(function(s){return calcSubjTotal(s.id,cls,subj).total!=='';}).length;return '<tr><td style="font-weight:600;font-size:.74rem;">'+subj+'</td>'+cells2+'<td style="text-align:center;font-weight:700;">'+tot+'</td></tr>';}).join('');
+    var thG='<th>\u0935\u093F\u0937\u092F</th>'+grades.map(function(g){return '<th style="text-align:center;font-size:.65rem;font-weight:600;">'+g+'</th>';}).join('')+'<th>\u090F\u0915\u0942\u0923</th>';
+    var rows2=subjs.map(function(subj){var cells2=grades.map(function(g,i){var cnt=stds2.filter(function(s){var t=calcSubjTotal(s.id,cls,subj);return t.total!==''&&gFn[i](t.pct);}).length;return '<td style="text-align:center;">'+(cnt||'-')+'</td>';}).join('');var tot=stds2.filter(function(s){return calcSubjTotal(s.id,cls,subj).total!=='';}).length;return '<tr><td style="font-weight:700;font-size:.78rem;">'+subj+'</td>'+cells2+'<td style="text-align:center;font-weight:800;">'+tot+'</td></tr>';}).join('');
     table='<div class="tw"><table class="gos-tbl"><thead><tr>'+thG+'</tr></thead><tbody>'+rows2+'</tbody></table></div>';
   }
-  wrap.innerHTML=stats+table+'<button class="btn bp no-print" style="margin-top:10px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button>';
+  wrap.innerHTML=stats+table+'<button class="btn bp no-print" style="margin-top:16px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button>';
 }
 
 function secRBook(){
@@ -685,10 +733,10 @@ function loadRBook(){
   if(!cls){wrap.innerHTML='';return;}
   var stds2=getStds(cls);if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
   var subjs=getSubjs(cls);var exams=getExams(cls);
-  var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.64rem;">'+s+'</th>';}).join('');
-  var thExams=subjs.map(function(){return exams.map(function(e){return '<th style="font-size:.6rem;text-align:center;">'+e.key.toUpperCase()+'</th>';}).join('');}).join('');
-  var rows=stds2.map(function(s){var r=calcStudentTotal(s.id,cls);var cells=subjs.map(function(subj){return exams.map(function(exam){var v=getMk(s.id,cls,subj,exam.key);return '<td style="text-align:center;font-size:.72rem;">'+(v!==''?v:'-')+'</td>';}).join('');}).join('');var gr=r.hasData?grade(r.pct,cls):'-';var pf=r.pct>=33?'<span class="bdg bgg">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':'<span class="bdg bgr">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;">'+s.name+'</td>'+cells+'<td style="font-weight:700;text-align:center;">'+r.pct+'%</td><td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td><td>'+pf+'</td></tr>';}).join('');
-  wrap.innerHTML='<div class="tw" style="font-size:.76rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><button class="btn bp no-print" style="margin-top:10px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button>';
+  var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.65rem;padding:8px;">'+s+'</th>';}).join('');
+  var thExams=subjs.map(function(){return exams.map(function(e){return '<th style="font-size:.6rem;text-align:center;font-weight:600;">'+e.key.toUpperCase()+'</th>';}).join('');}).join('');
+  var rows=stds2.map(function(s){var r=calcStudentTotal(s.id,cls);var cells=subjs.map(function(subj){return exams.map(function(exam){var v=getMk(s.id,cls,subj,exam.key);return '<td style="text-align:center;font-size:.78rem;">'+(v!==''?v:'-')+'</td>';}).join('');}).join('');var gr=r.hasData?grade(r.pct,cls):'-';var pf=r.pct>=33?'<span class="bdg bgg">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':'<span class="bdg bgr">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-weight:500;">'+s.name+'</td>'+cells+'<td style="font-weight:800;text-align:center;font-size:.9rem;">'+r.pct+'%</td><td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td><td>'+pf+'</td></tr>';}).join('');
+  wrap.innerHTML='<div class="tw" style="font-size:.8rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><button class="btn bp no-print" style="margin-top:16px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button>';
 }
 
 function secRCard(){
@@ -716,18 +764,18 @@ function genCard(){
 function secRNikal(){
   if(curRole!=='shik'||!curTc||!curTc.classOf)return '<div class="alert aw"><div>&#x1F512;</div><div>\u092B\u0915\u094D\u0924 \u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915\u093E\u0902\u0938\u093E\u0920\u0940</div></div>';
   var c=getCls(curTc.classOf);
-  return '<div class="card no-print" style="margin-bottom:9px;"><div class="ct">&#x1F4CA; \u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915 &mdash; '+(c?c.label:'')+'</div>'+
-    '<div class="fg2" style="margin-bottom:8px;"><div class="fg"><label>\u0938\u0924\u094D\u0930</label>'+
+  return '<div class="card no-print" style="margin-bottom:16px;"><div class="ct">&#x1F4CA; \u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915 &mdash; '+(c?c.label:'')+'</div>'+
+    '<div class="fg2" style="margin-bottom:12px;"><div class="fg"><label>\u0938\u0924\u094D\u0930</label>'+
     '<select id="nikal-term"><option value="1">\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930</option><option value="2">\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930</option></select></div></div>'+
     '<button class="btn bb bsm no-print" data-action="loadnikal">&#x2B07;&#xFE0F; Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E</button> '+
     '<button class="btn bp bsm no-print" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button></div>'+
-    '<div id="nikal-root"><div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; \u0938\u0924\u094D\u0930 \u0928\u093F\u0935\u0921\u093E \u0935 Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E \u0915\u094D\u0932\u093F\u0915 \u0915\u0930\u093E</div></div>';
+    '<div id="nikal-root"><div style="padding:24px;text-align:center;color:var(--mt);font-weight:600;">&#x23F3; \u0938\u0924\u094D\u0930 \u0928\u093F\u0935\u0921\u093E \u0935 Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E \u0915\u094D\u0932\u093F\u0915 \u0915\u0930\u093E</div></div>';
 }
 function loadAndRenderNikal(){
   var el=document.getElementById('nikal-root');if(!el)return;
   if(!curTc||!curTc.classOf){el.innerHTML='<div class="alert aw">\u0935\u0930\u094D\u0917 \u0928\u093E\u0939\u0940</div>';return;}
   var selTerm=(document.getElementById('nikal-term')||{}).value||'1';
-  el.innerHTML='<div style="padding:18px;text-align:center;color:var(--mt);">&#x23F3; Google Sheet \u092E\u0927\u0942\u0928 \u0921\u0947\u091F\u093E \u0906\u0923\u0924 \u0906\u0939\u0947...</div>';
+  el.innerHTML='<div style="padding:24px;text-align:center;color:var(--mt);font-weight:600;">&#x23F3; Google Sheet \u092E\u0927\u0942\u0928 \u0921\u0947\u091F\u093E \u0906\u0923\u0924 \u0906\u0939\u0947...</div>';
   var cls=curTc.classOf;var subjs=getSubjs(cls);var ct=getCtype(cls);var isPrimary=ct!=='high';
   var pending=0;
   function parseMkIntoCache(rows,subj){
@@ -800,36 +848,36 @@ function renderNikal(cls,term){term=term||'1';
   hasDat.forEach(function(d,i){rankMap[d.s.id]=(i===0||d.pct!==hasDat[i-1].pct)?i+1:rankMap[hasDat[i-1].s.id];});
   var termLabel=term==='1'?'प्रथम सत्र':'द्वितीय सत्र';
   var col1=isHigh?'लेखी':'FA';var col2=isHigh?'तोंडी':'SA';
-  var thSubjs=subjs.map(function(s){return '<th colspan="4" style="text-align:center;background:var(--d);color:#fff;font-size:.58rem;white-space:nowrap;padding:4px 3px;">'+s+'</th>';}).join('');
-  var thCols=subjs.map(function(){return '<th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">'+col1+'</th><th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">'+col2+'</th><th style="text-align:center;font-size:.55rem;background:#FFFDE7;padding:3px 2px;">\u090F\u0915\u0942\u0923</th><th style="text-align:center;font-size:.55rem;background:#E8EAF0;padding:3px 2px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>';}).join('');
+  var thSubjs=subjs.map(function(s){return '<th colspan="4" style="text-align:center;background:var(--d);color:#fff;font-size:.65rem;white-space:nowrap;padding:6px 4px;">'+s+'</th>';}).join('');
+  var thCols=subjs.map(function(){return '<th style="text-align:center;font-size:.6rem;background:#E8EAF0;padding:4px 2px;">'+col1+'</th><th style="text-align:center;font-size:.6rem;background:#E8EAF0;padding:4px 2px;">'+col2+'</th><th style="text-align:center;font-size:.6rem;background:#FFFDE7;padding:4px 2px;">\u090F\u0915\u0942\u0923</th><th style="text-align:center;font-size:.6rem;background:#E8EAF0;padding:4px 2px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>';}).join('');
   var rows=stdData.map(function(d){
     var cells=d.results.map(function(r){
       var gr=r.has?(isHigh?grade910(r.pct):grade58(r.pct)):'-';
-      return '<td style="text-align:center;font-size:.66rem;padding:3px 2px;">'+(r.fa!==''?r.fa:'-')+'</td>'+
-             '<td style="text-align:center;font-size:.66rem;padding:3px 2px;">'+(r.sa!==''?r.sa:'-')+'</td>'+
-             '<td style="text-align:center;font-size:.66rem;padding:3px 2px;font-weight:700;background:#FFFFF0;">'+(r.tot!==''?r.tot:'-')+'</td>'+
-             '<td style="text-align:center;padding:3px 2px;"><span class="bdg '+gradeColor(gr)+'" style="font-size:.55rem;padding:1px 4px;">'+gr+'</span></td>';
+      return '<td style="text-align:center;font-size:.7rem;padding:4px 2px;">'+(r.fa!==''?r.fa:'-')+'</td>'+
+             '<td style="text-align:center;font-size:.7rem;padding:4px 2px;">'+(r.sa!==''?r.sa:'-')+'</td>'+
+             '<td style="text-align:center;font-size:.7rem;padding:4px 2px;font-weight:700;background:#FFFFF0;">'+(r.tot!==''?r.tot:'-')+'</td>'+
+             '<td style="text-align:center;padding:4px 2px;"><span class="bdg '+gradeColor(gr)+'" style="font-size:.6rem;padding:2px 5px;">'+gr+'</span></td>';
     }).join('');
     var totGr=d.hasAny?(isHigh?grade910(d.pct):grade58(d.pct)):'-';
     return '<tr>'+
-      '<td style="text-align:center;font-size:.68rem;padding:4px 5px;"><strong>'+d.s.roll+'</strong></td>'+
-      '<td style="white-space:nowrap;font-size:.68rem;padding:4px 5px;">'+d.s.name+'</td>'+
+      '<td style="text-align:center;font-size:.75rem;padding:6px 5px;"><strong>'+d.s.roll+'</strong></td>'+
+      '<td style="white-space:nowrap;font-size:.75rem;padding:6px 5px;">'+d.s.name+'</td>'+
       cells+
-      '<td style="text-align:center;font-weight:700;font-size:.68rem;padding:4px 3px;background:#E8F5E9;">'+(d.gTotal!==''?d.gTotal:'-')+'</td>'+
-      '<td style="text-align:center;font-size:.68rem;padding:4px 3px;">'+(d.hasAny?d.pct+'%':'-')+'</td>'+
-      '<td style="text-align:center;padding:4px 3px;"><span class="bdg '+gradeColor(totGr)+'" style="font-size:.55rem;padding:1px 4px;">'+totGr+'</span></td>'+
-      '<td style="text-align:center;font-weight:700;font-size:.7rem;padding:4px 3px;color:var(--s);">'+(d.hasAny?(rankMap[d.s.id]||'-'):'-')+'</td>'+
+      '<td style="text-align:center;font-weight:800;font-size:.75rem;padding:6px 4px;background:#E8F5E9;">'+(d.gTotal!==''?d.gTotal:'-')+'</td>'+
+      '<td style="text-align:center;font-size:.75rem;font-weight:600;padding:6px 4px;">'+(d.hasAny?d.pct+'%':'-')+'</td>'+
+      '<td style="text-align:center;padding:6px 4px;"><span class="bdg '+gradeColor(totGr)+'" style="font-size:.65rem;padding:2px 6px;">'+totGr+'</span></td>'+
+      '<td style="text-align:center;font-weight:800;font-size:.8rem;padding:6px 4px;color:var(--s);">'+(d.hasAny?(rankMap[d.s.id]||'-'):'-')+'</td>'+
       '</tr>';
   }).join('');
-  el.innerHTML='<div class="tw" style="margin-top:6px;"><table style="border-collapse:collapse;font-size:.68rem;">'+
+  el.innerHTML='<div class="tw" style="margin-top:10px;"><table style="border-collapse:collapse;font-size:.75rem;">'+
     '<thead>'+
-    '<tr><th rowspan="2" style="padding:5px 6px;text-align:center;min-width:32px;">\u0905.\u0915\u094D\u0930.</th>'+
-    '<th rowspan="2" style="padding:5px 6px;text-align:left;min-width:90px;">\u0928\u093E\u0935</th>'+
+    '<tr><th rowspan="2" style="padding:8px 6px;text-align:center;min-width:40px;">\u0905.\u0915\u094D\u0930.</th>'+
+    '<th rowspan="2" style="padding:8px 6px;text-align:left;min-width:110px;">\u0928\u093E\u0935</th>'+
     thSubjs+
-    '<th rowspan="2" style="text-align:center;min-width:40px;background:#E8F5E9;padding:5px 3px;">\u090F\u0915\u0942\u0923<br>\u0917\u0941\u0923</th>'+
-    '<th rowspan="2" style="text-align:center;min-width:38px;padding:5px 3px;">\u0936\u0947\u0915\u0921\u093E</th>'+
-    '<th rowspan="2" style="text-align:center;padding:5px 3px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>'+
-    '<th rowspan="2" style="text-align:center;padding:5px 3px;">\u0917\u0941\u0923\u093E-<br>\u0928\u0941\u0915\u094D\u0930\u092E</th>'+
+    '<th rowspan="2" style="text-align:center;min-width:45px;background:#E8F5E9;padding:8px 4px;">\u090F\u0915\u0942\u0923<br>\u0917\u0941\u0923</th>'+
+    '<th rowspan="2" style="text-align:center;min-width:45px;padding:8px 4px;">\u0936\u0947\u0915\u0921\u093E</th>'+
+    '<th rowspan="2" style="text-align:center;padding:8px 4px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>'+
+    '<th rowspan="2" style="text-align:center;padding:8px 4px;">\u0917\u0941\u0923\u093E-<br>\u0928\u0941\u0915\u094D\u0930\u092E</th>'+
     '</tr><tr>'+thCols+'</tr></thead>'+
     '<tbody>'+rows+'</tbody>'+
     '</table></div>';
@@ -845,8 +893,8 @@ function secRStd(){
       '<button class="btn bd bsm" data-action="removestd" data-sid="'+s.id+'">🗑️</button></td></tr>';
   }).join('');
   return '<div class="card"><div class="ct">👨‍🎓 विद्यार्थी व्यवस्थापन</div>'+
-    '<details style="margin-bottom:11px;"><summary style="cursor:pointer;font-weight:600;color:var(--s);padding:5px 0;">➕ नवीन विद्यार्थी दाखल</summary>'+
-    '<div style="margin-top:9px;"><div class="fg2">'+
+    '<details style="margin-bottom:14px;"><summary style="cursor:pointer;font-weight:700;color:var(--b);padding:8px 0;">➕ नवीन विद्यार्थी दाखल</summary>'+
+    '<div style="margin-top:12px;padding:12px;background:#F8FAFC;border-radius:12px;border:1px solid var(--bdr);"><div class="fg2">'+
     '<div class="fg"><label>नाव</label><input type="text" id="st-n" placeholder="विद्यार्थ्याचे नाव"></div>'+
     '<div class="fg"><label>वर्ग</label><select id="st-c"><option value="">--</option>'+clsOpts+'</select></div>'+
     '<div class="fg"><label>हजेरी क्र.</label><input type="text" id="st-r" placeholder="1"></div>'+
@@ -865,8 +913,8 @@ function secRTch(){
       '<td><button class="btn bo bsm" data-action="changetcpw" data-tcid="'+tc.id+'">'+(curRole==='super'?'✏️ संपादन':'🔑 PW')+'</button>'+( curRole==='super' ? ' <button class="btn bd bsm" data-action="removeteacher" data-tcid="'+tc.id+'">🗑️</button>' : '' )+'</td></tr>';
   }).join('');
   return '<div class="card"><div class="ct">👨‍🏫 शिक्षक व्यवस्थापन</div>'+
-    (curRole==='super'?'<details style="margin-bottom:11px;"><summary style="cursor:pointer;font-weight:600;color:var(--s);padding:5px 0;">➕ नवीन शिक्षक जोडा</summary>'+
-    '<div style="margin-top:9px;"><div class="fg2">'+
+    (curRole==='super'?'<details style="margin-bottom:14px;"><summary style="cursor:pointer;font-weight:700;color:var(--b);padding:8px 0;">➕ नवीन शिक्षक जोडा</summary>'+
+    '<div style="margin-top:12px;padding:12px;background:#F8FAFC;border-radius:12px;border:1px solid var(--bdr);"><div class="fg2">'+
     '<div class="fg"><label>नाव</label><input type="text" id="tc-n" placeholder="शिक्षकाचे नाव"></div>'+
     '<div class="fg"><label>पासवर्ड</label><input type="text" id="tc-pw" placeholder="password@2025"></div>'+
     '<div class="fg"><label>वर्गशिक्षक (वर्ग)</label><select id="tc-co"><option value="">--</option>'+clsOpts+'</select></div>'+
@@ -941,11 +989,11 @@ function secRAdm(){
     var pct=exp>0?Math.round(done/exp*100):0;var color=pct>=80?'var(--g)':pct>=50?'var(--gold)':'var(--r)';
     return '<tr><td><strong>'+tc.name+'</strong></td><td>'+tc.subjects.join(', ')+'</td><td>'+tc.classOf+'</td>'+
       '<td><div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+color+';"></div></div>'+
-      '<div style="font-size:.64rem;margin-top:2px;">'+done+'/'+exp+' ('+pct+'%)</div></td></tr>';
+      '<div style="font-size:.64rem;margin-top:4px;font-weight:600;">'+done+'/'+exp+' ('+pct+'%)</div></td></tr>';
   }).join('');
   return '<div class="card"><div class="ct">🔒 गुण नोंदणी नियंत्रण</div>'+
-    '<div class="trow"><div><div style="font-weight:600;">गुण नोंदणी बंद/सुरू</div>'+
-    '<div style="font-size:.72rem;color:var(--mt);">बंद केल्यानंतर शिक्षक गुण भरू शकणार नाही</div></div>'+
+    '<div class="trow"><div><div style="font-weight:700;">गुण नोंदणी बंद/सुरू</div>'+
+    '<div style="font-size:.75rem;color:var(--mt);">बंद केल्यानंतर शिक्षक गुण भरू शकणार नाही</div></div>'+
     '<label class="tsw"><input type="checkbox" id="tg-lk2" '+(settings.marksLocked?'checked':'')+' data-action="toggleLock"><span class="tsl"></span></label></div></div>'+
     '<div class="card"><div class="ct">👨‍🏫 शिक्षक गुण प्रगती</div>'+
     '<div class="tw"><table><thead><tr><th>शिक्षक</th><th>विषय</th><th>वर्गशिक्षक</th><th>प्रगती</th></tr></thead>'+
@@ -1016,7 +1064,7 @@ function renderTTCls(){
   var cls=(document.getElementById('tt-cls-sel')||{}).value||'';
   var wrap=document.getElementById('tt-cls-wrap');if(!wrap)return;
   if(!cls){wrap.innerHTML='';return;}
-  var cols='90px '+PERIODS.map(function(){return '1fr';}).join(' ');
+  var cols='90px '+PERIODS.map(function(){return 'minmax(110px, 1fr)';}).join(' ');
   var hdr='<div class="tt-hdr">दिवस</div>'+PERIODS.map(function(p){return '<div class="tt-hdr">तास '+p+'</div>';}).join('');
   var body=DAYS.map(function(day){
     var cells=PERIODS.map(function(p){
@@ -1024,7 +1072,7 @@ function renderTTCls(){
       if(sl){
         var tc=TEACHERS.find(function(t){return t.id===sl.tcId;});
         var tName=tc?tc.name.split(' ').slice(-1)[0]:(sl.tcName||'?');
-        return '<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.7rem;font-weight:700;">'+tName+'</div><div style="font-size:.62rem;color:var(--mt);">'+sl.subj+'</div></div></div>';
+        return '<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.75rem;font-weight:800;">'+tName+'</div><div style="font-size:.65rem;color:var(--mt);font-weight:500;margin-top:2px;">'+sl.subj+'</div></div></div>';
       }
       return '<div class="tt-cell"><span class="tt-empty">&mdash;</span></div>';
     }).join('');
@@ -1035,11 +1083,10 @@ function renderTTCls(){
 
 function secTTTc(){
   var isShik=curRole==='shik'&&curTc;
-  var tcTop=isShik?'<div style="padding:4px 0 10px;font-size:.82rem;font-weight:700;color:var(--d);">'+curTc.name+'</div>':
+  var tcTop=isShik?'<div style="padding:4px 0 16px;font-size:.9rem;font-weight:800;color:var(--d);">'+curTc.name+'</div>':
     '<div class="fg2"><div class="fg"><label>शिक्षक</label><select id="tt-tc-sel"><option value="">निवडा</option>'+
     TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('')+'</select></div></div>';
   
-  // Date picker to see substitutions for a specific date
   var dateFilter = '<div class="fg2"><div class="fg"><label>तारीख (समायोजन पाहण्यासाठी)</label><input type="date" id="tt-tc-date" value="'+today()+'"></div></div>';
 
   return '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; शिक्षकनिहाय वेळापत्रक</div>'+tcTop+dateFilter+'<div id="tt-tc-wrap"></div></div>';
@@ -1054,7 +1101,7 @@ function renderTTTc(){
   var mySheetName=getMyTTName(tc);
   if(!mySheetName){wrap.innerHTML='<div class="alert ai" style="margin-top:8px;"><div>&#x2139;&#xFE0F;</div><div>या शिक्षकाचे वेळापत्रक आढळले नाही.</div></div>';return;}
   var mySlots=ttData.filter(function(slot){return slot.teacher===mySheetName;});
-  var cols='90px '+PERIODS.map(function(){return '1fr';}).join(' ');
+  var cols='90px '+PERIODS.map(function(){return 'minmax(110px, 1fr)';}).join(' ');
   var hdr='<div class="tt-hdr">दिवस</div>'+PERIODS.map(function(p){return '<div class="tt-hdr">तास '+p+'</div>';}).join('');
   
   var viewDate = (document.getElementById('tt-tc-date')||{}).value || today();
@@ -1075,15 +1122,15 @@ function renderTTTc(){
         }
       }
       if(subRec){
-        return '<div class="tt-cell" style="background:#FFF9C4;border-left:3px solid var(--gold);"><div class="tt-view-cell">'+
-          '<div style="font-size:.65rem;font-weight:700;color:var(--gold);">&#x1F514; समायोजित तास</div>'+
-          '<div style="font-size:.7rem;font-weight:700;color:var(--b);">'+subRec.cls+'</div>'+
-          '<div style="font-size:.62rem;color:var(--mt);">'+subRec.subj+'</div></div></div>';
+        return '<div class="tt-cell" style="background:#FFFDE7;border-left:4px solid var(--gold);"><div class="tt-view-cell" style="background:transparent;">'+
+          '<div style="font-size:.65rem;font-weight:800;color:var(--gold);">&#x1F514; समायोजित तास</div>'+
+          '<div style="font-size:.75rem;font-weight:800;color:var(--b);margin-top:2px;">'+subRec.cls+'</div>'+
+          '<div style="font-size:.65rem;color:var(--mt);font-weight:500;">'+subRec.subj+'</div></div></div>';
       }
       if(slot){
         return '<div class="tt-cell tt-filled"><div class="tt-view-cell">'+
-          '<div style="font-size:.7rem;font-weight:700;color:var(--b);">'+slot.cls+'</div>'+
-          '<div style="font-size:.62rem;color:var(--mt);">'+slot.subject+'</div></div></div>';
+          '<div style="font-size:.75rem;font-weight:800;color:var(--b);">'+slot.cls+'</div>'+
+          '<div style="font-size:.65rem;color:var(--mt);font-weight:500;margin-top:2px;">'+slot.subject+'</div></div></div>';
       }
       return '<div class="tt-cell"><span class="tt-empty">&mdash;</span></div>';
     }).join('');
@@ -1101,7 +1148,7 @@ function secTTSub(){
     '<div class="fg"><label>तारीख</label><input type="date" id="ttsub-date" value="'+today()+'"></div>'+
     '<div class="fg"><label>गैरहजर शिक्षक</label><select id="ttsub-tc">'+tcOpts+'</select></div>'+
     '<div class="fg"><label>दिवस</label><select id="ttsub-day">'+dayOpts+'</select></div></div>'+
-    '<div id="ttsub-wrap" style="margin-top:10px;"></div></div>';
+    '<div id="ttsub-wrap" style="margin-top:16px;"></div></div>';
 }
 
 function renderTTSub(){
@@ -1127,7 +1174,7 @@ function renderTTSub(){
     var existingSub=substitutions.find(function(s){return s.date===dt&&s.absTcId===tcId&&s.cls===slot.cls&&s.period===slot.period;});
     if(existingSub){
       return '<tr><td>तास '+slot.period+'</td><td><strong>वर्ग '+slot.cls+'</strong></td><td>'+slot.subj+'</td>'+
-        '<td colspan="2"><span style="color:var(--g);font-weight:700;">&#x2705; '+existingSub.subTcName+'</span></td></tr>';
+        '<td colspan="2"><span style="color:var(--g);font-weight:800;">&#x2705; '+existingSub.subTcName+'</span></td></tr>';
     }
     var freeTcs=TEACHERS.filter(function(t){
       if(t.isMukh||t.id===tcId)return false;
@@ -1137,7 +1184,7 @@ function renderTTSub(){
     var freeOpts='<option value="">-- रिकामे शिक्षक निवडा --</option>'+
       freeTcs.map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');
     return '<tr><td>तास '+slot.period+'</td><td><strong>वर्ग '+slot.cls+'</strong></td><td>'+slot.subj+'</td>'+
-      '<td><select class="tt-sel" id="sub-'+slot.cls+'-'+slot.period+'">'+freeOpts+'</select></td>'+
+      '<td><select class="tt-sel" style="padding:6px 8px;border-radius:8px;" id="sub-'+slot.cls+'-'+slot.period+'">'+freeOpts+'</select></td>'+
       '<td><button class="btn bp bsm" data-action="assignttsub" data-cls="'+slot.cls+'" data-p="'+slot.period+'" data-subj="'+slot.subj+'" data-day="'+day+'">&#x2705; द्या</button></td></tr>';
   }).join('');
   wrap.innerHTML='<div class="tw"><table><thead><tr><th>तास</th><th>वर्ग</th><th>विषय</th><th>समायोजित शिक्षक (Free)</th><th>कृती</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
@@ -1187,9 +1234,9 @@ function secSubLog(){
     '<div class="fg2">'+
     '<div class="fg"><label>पासून</label><input type="date" id="slg-from" value="'+(firstDate||today())+'"></div>'+
     '<div class="fg"><label>पर्यंत</label><input type="date" id="slg-to" value="'+today()+'"></div>'+
-    '<div class="fg" style="display:flex;align-items:flex-end;gap:6px;">'+
-    '<button class="btn bp bsm" data-action="filtersublog">&#x1F50D; फिल्टर</button>'+
-    '<button class="btn bo bsm no-print" data-action="printsublog">&#x1F5A8;&#xFE0F; प्रिंट</button></div>'+
+    '<div class="fg" style="display:flex;align-items:flex-end;gap:8px;">'+
+    '<button class="btn bp" style="padding:10px 16px;" data-action="filtersublog">&#x1F50D; फिल्टर</button>'+
+    '<button class="btn bo no-print" style="padding:10px 16px;" data-action="printsublog">&#x1F5A8;&#xFE0F; प्रिंट</button></div>'+
     '</div>'+
     '<div id="slg-wrap"></div></div>';
 }
@@ -1201,7 +1248,7 @@ function renderSubLog(){
   var filtered=substitutions.filter(function(s){return(!from||s.date>=from)&&s.date<=to;}).slice().reverse();
   if(filtered.length===0){wrap.innerHTML='<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>या कालावधीत कोणतीही नोंद नाही.</div></div>';return;}
   var rows=filtered.map(function(s){
-    return '<tr><td>'+formatDateIndian(s.date)+'</td><td>'+s.absTcName+'</td><td>'+s.subTcName+'</td><td>'+s.cls+'</td><td>'+s.period+'</td><td>'+s.subj+'</td></tr>';
+    return '<tr><td>'+formatDateIndian(s.date)+'</td><td style="font-weight:600;">'+s.absTcName+'</td><td style="font-weight:600;color:var(--g);">'+s.subTcName+'</td><td><strong>'+s.cls+'</strong></td><td>'+s.period+'</td><td>'+s.subj+'</td></tr>';
   }).join('');
   wrap.innerHTML='<div class="tw"><table id="slg-table"><thead><tr><th>तारीख</th><th>गैरहजर शिक्षक</th><th>समायोजित शिक्षक</th><th>वर्ग</th><th>तास</th><th>विषय</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
@@ -1216,12 +1263,12 @@ function printSubLog(){
   }).join('');
   var win=window.open('','_blank');
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>तासिका समायोजन अहवाल</title>'+
-    '<style>body{font-family:Arial,sans-serif;padding:20px;}h2{text-align:center;}table{width:100%;border-collapse:collapse;font-size:13px;}th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;}th{background:#eee;font-weight:700;}tr:nth-child(even){background:#f9f9f9;}@media print{button{display:none;}}</style>'+
+    '<style>body{font-family:-apple-system,Arial,sans-serif;padding:24px;}h2{text-align:center;}table{width:100%;border-collapse:collapse;font-size:14px;margin-top:20px;}th,td{border:1px solid #ccc;padding:8px 10px;text-align:left;}th{background:#f4f4f4;font-weight:700;}tr:nth-child(even){background:#fafafa;}@media print{button{display:none;}}</style>'+
     '</head><body>'+
     '<h2>मासिक तासिका समायोजन अहवाल</h2>'+
-    '<p style="text-align:center;font-size:13px;">कालावधी: <strong>'+(from?formatDateIndian(from):'—')+'</strong> ते <strong>'+formatDateIndian(to)+'</strong> &nbsp;|&nbsp; एकूण नोंदी: <strong>'+filtered.length+'</strong></p>'+
+    '<p style="text-align:center;font-size:14px;">कालावधी: <strong>'+(from?formatDateIndian(from):'—')+'</strong> ते <strong>'+formatDateIndian(to)+'</strong> &nbsp;|&nbsp; एकूण नोंदी: <strong>'+filtered.length+'</strong></p>'+
     '<table><thead><tr><th>#</th><th>तारीख</th><th>गैरहजर शिक्षक</th><th>समायोजित शिक्षक</th><th>वर्ग</th><th>तास</th><th>विषय</th></tr></thead><tbody>'+rows+'</tbody></table>'+
-    '<br><button onclick="window.print()">🖨️ प्रिंट करा</button>'+
+    '<br><button onclick="window.print()" style="padding:10px 20px;font-size:16px;cursor:pointer;">🖨️ प्रिंट करा</button>'+
     '</body></html>');
   win.document.close();
 }
@@ -1232,7 +1279,7 @@ function secTTAdm(){
   return '<div class="card"><div class="ct">&#x2699;&#xFE0F; वेळापत्रक संपादन <span class="ctag">फक्त प्रशासन</span></div>'+
     '<div class="fg2"><div class="fg"><label>वर्ग</label><select id="ttadm-cls"><option value="">निवडा</option>'+clsOpts+'</select></div></div>'+
     '<div id="tt-conflict-banner"></div><div id="ttadm-wrap"></div>'+
-    '<div id="ttadm-btns" style="display:none;margin-top:10px;">'+
+    '<div id="ttadm-btns" style="display:none;margin-top:16px;">'+
     '<button class="btn bp" data-action="savett">&#x1F4BE; वेळापत्रक सेव्ह करा</button></div></div>';
 }
 function renderTTAdm(){
@@ -1244,16 +1291,16 @@ function renderTTAdm(){
   var tcOpts='<option value="">&mdash;</option>'+
     TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('');
   var subjOpts='<option value="">&mdash;</option>'+getSubjs(cls).map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');
-  var cols='90px '+PERIODS.map(function(){return 'minmax(130px,1fr)';}).join(' ');
+  var cols='90px '+PERIODS.map(function(){return 'minmax(140px,1fr)';}).join(' ');
   var hdr='<div class="tt-hdr">दिवस</div>'+PERIODS.map(function(p){return '<div class="tt-hdr">तास '+p+'</div>';}).join('');
   var body=DAYS.map(function(day,di){
     var cells=PERIODS.map(function(p){
       var sl=getTTSlot(cls,day,p);var conf=sl?detectConflict(cls,day,p,sl.tcId):null;
       var cCls='tt-cell'+(conf?' tt-conflict':sl&&sl.tcId?' tt-filled':'');
       return '<div class="'+cCls+'">'+
-        '<select class="tt-sel" data-ttcls="'+cls+'" data-ttdi="'+di+'" data-ttp="'+p+'" data-tttype="tc">'+tcOpts+'</select>'+
-        '<select class="tt-sel" data-ttcls="'+cls+'" data-ttdi="'+di+'" data-ttp="'+p+'" data-tttype="subj">'+subjOpts+'</select>'+
-        (conf?'<div class="tt-conf-msg" style="color:var(--r);font-size:.6rem;margin-top:1px;">&#x26A0; '+conf+'</div>':'<div class="tt-conf-msg"></div>')+
+        '<select class="tt-sel" style="padding:6px;border-radius:6px;" data-ttcls="'+cls+'" data-ttdi="'+di+'" data-ttp="'+p+'" data-tttype="tc">'+tcOpts+'</select>'+
+        '<select class="tt-sel" style="padding:6px;border-radius:6px;margin-top:4px;" data-ttcls="'+cls+'" data-ttdi="'+di+'" data-ttp="'+p+'" data-tttype="subj">'+subjOpts+'</select>'+
+        (conf?'<div class="tt-conf-msg" style="color:var(--r);font-size:.65rem;margin-top:4px;font-weight:600;">&#x26A0; '+conf+'</div>':'<div class="tt-conf-msg"></div>')+
         '</div>';
     }).join('');
     return '<div class="tt-cell tt-period">'+day+'</div>'+cells;
@@ -1284,7 +1331,7 @@ function saveTimetable(){
   });});
   if(conflicts.length){
     var banner=document.getElementById('tt-conflict-banner');
-    if(banner)banner.innerHTML='<div class="alert aw" style="margin-bottom:10px;"><div>&#x26A0;&#xFE0F;</div><div><strong>शिक्षक संघर्ष आढळला:</strong><br>'+conflicts.join('<br>')+'<br><small style="color:var(--mt);">हे शिक्षक त्याच वेळी दुसऱ्या वर्गात आहेत — कृपया बदला.</small></div></div>';
+    if(banner)banner.innerHTML='<div class="alert aw" style="margin-bottom:14px;"><div>&#x26A0;&#xFE0F;</div><div><strong>शिक्षक संघर्ष आढळला:</strong><br>'+conflicts.join('<br>')+'<br><small style="color:var(--mt);">हे शिक्षक त्याच वेळी दुसऱ्या वर्गात आहेत — कृपया बदला.</small></div></div>';
     DAYS.forEach(function(day,di){PERIODS.forEach(function(p){var sl=getTTSlot(cls,day,p);if(sl&&detectConflict(cls,day,p,sl.tcId)){delete timetable[cls][day][p];}});});
     toast('संघर्ष आढळला — सेव्ह नाही!','err');renderTTAdm();return;
   }
@@ -1310,14 +1357,11 @@ function parseTimetableRows(rows){
     var dayMap={'Mon':'सोमवार','Tue':'मंगळवार','Wed':'बुधवार','Thu':'गुरुवार','Fri':'शुक्रवार','Sat':'शनिवार'};
     var pMap={'P1':'1','P2':'2','P3':'3','P4':'4','P5':'5','P6':'6','P7':'7','P8':'8'};
     var day=dayMap[String(r[0]||'').trim()]||String(r[0]||'').trim();
-    
     var clsRaw=String(r[1]||'').trim();
-    var cls=parseClass(clsRaw) || clsRaw; // <-- FIX: वर्ग नावे '10 वी' वरून '10' अशी मॅच करण्यासाठी
-    
+    var cls=parseClass(clsRaw) || clsRaw;
     var p=pMap[String(r[2]||'').trim()]||String(r[2]||'').trim();
     var subj=String(r[3]||'').trim();
     var rawTc=String(r[4]||'').replace(/\\/g,'').replace(/['"]/g,'').trim();
-    
     if(!day||!cls||!p||!rawTc)return;
     if(!timetable[cls])timetable[cls]={};
     if(!timetable[cls][day])timetable[cls][day]={};
@@ -1329,7 +1373,6 @@ function parseTimetableRows(rows){
 // ---- SYNC ----
 function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4){var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}if(cb)cb(res);}};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
 function sheetGet(name,cb){
-  // Cache-Busting: प्रत्येक वेळी नवीन डेटा आणण्यासाठी वेळेचा स्टॅम्प लावला आहे
   var url=SURL+'?sheet='+encodeURIComponent(name)+'&t='+new Date().getTime();
   var xhr=new XMLHttpRequest();
   xhr.open('GET',url,true);
@@ -1342,14 +1385,12 @@ function sheetGet(name,cb){
   xhr.onerror=function(){cb([]);};
   xhr.send();
 }
-
 function syncAll(){
   syncStatus('ing');
   var bR=[['ID','Title','Author','Subject','Copies']];books.forEach(function(b){bR.push([b.id,b.title,b.author||'',b.subject||'',b.copies]);});
   var sR=[['ID','Name','Class','Roll','Status','Reason','Father','Mother','DOB','Phone','RegNo']];students.forEach(function(s){sR.push([s.id,s.name,s.cls,s.roll||'',s.status,s.reason||'',s.father||'',s.mother||'',s.dob||'',s.phone||'',s.regNo||'']);});
   var tR=[['ID','SName','Class','BTitle','Subj','IDate','RDate','Due','TId','TName','RetTName']];transactions.forEach(function(t){tR.push([t.id,t.sName,t.cls,t.bTitle,t.subj||'',t.issueDate,t.retDate||'',t.due,t.tId||'',t.tName||'',t.retTName||'']);});
   var pwR=[['key','value'],['super',PW.super],['mukh',PW.mukh]];
-  // Fixed: इथे आता 7वा रकाना 'TTName' सेव्ह होईल, ज्यामुळे वेळापत्रक पुसले जाणार नाही
   var tcR=[['ID','Name','PW','ClassOf','Subjects','Classes','TTName']];TEACHERS.forEach(function(tc){tcR.push([tc.id,tc.name,tc.pw,tc.classOf||'',tc.subjects.join('|'),tc.classes.join('|'),tc.ttName||'']);});
   var ntR=[['ID','Date','Title','Message','Author']];notices.forEach(function(n){ntR.push([n.id, n.date, n.title, n.msg, n.author]);});
   
@@ -1367,6 +1408,7 @@ function syncAll(){
     });
   });
 }
+
 function syncMks(cls,subj){
   syncStatus('ing');
   var exams=getExams(cls);
@@ -1420,7 +1462,6 @@ function loadTransactionsAndSettings(){
           syncStatus('ok');
           toast('\u0921\u0947\u091F\u093E \u0932\u094B\u0921 \u091D\u093E\u0932\u093E! &#x2705;');
           
-          // Auto-refresh Dashboard and active sections
           renderNoticeBoard();
           if(curTab==='tttc') renderSec('tttc');
           if(curTab==='ntview') renderNtView();
@@ -1504,44 +1545,4 @@ document.addEventListener('DOMContentLoaded',function(){
 
   document.addEventListener('click',function(ev){
     var el=ev.target;
-    while(el&&el.tagName&&el.tagName!=='BODY'){
-      var act=(el.getAttribute&&el.getAttribute('data-action'))||'';
-      if(act){
-        if(act==='login')doLogin();
-        else if(act==='logout')doLogout();
-        else if(act==='goback'){curMod=null;showHome();}
-        else if(act==='closemodal')closeM('cm');
-        else if(act==='openmod')openMod(el.getAttribute('data-mod')||'');
-        else if(act==='showtab')showTab(el.getAttribute('data-tabid')||'');
-        else if(act==='issuebook')issueBook();
-        else if(act==='returnbook')returnBook(parseInt(el.getAttribute('data-txid')||0));
-        else if(act==='addbook')addBook();
-        else if(act==='addstudent')addStudent();
-        else if(act==='addteacher')addTeacher();
-        else if(act==='removestd')removeStd(parseInt(el.getAttribute('data-sid')||0));
-        else if(act==='removeteacher')removeTeacher(parseInt(el.getAttribute('data-tcid')||0));
-        else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
-        else if(act==='saveallmk'){var mc=el.getAttribute('data-cls')||'';var ms=el.getAttribute('data-subj')||'';if(!mc)mc=(document.getElementById('m-cls')||{}).value||'';if(!ms)ms=(document.getElementById('m-subj')||{}).value||'';if(mc&&ms)saveAllMk(mc,ms);}
-        else if(act==='save5mk'){var mc5=el.getAttribute('data-cls')||'';var ms5=el.getAttribute('data-subj')||'';var mt5=el.getAttribute('data-term')||'';if(mc5&&ms5&&mt5)save5Marks(mc5,ms5,mt5);}
-        else if(act==='gencard')genCard();
-        else if(act==='changepw')changePW();
-        else if(act==='changetcpw')changeTcPw(parseInt(el.getAttribute('data-tcid')||0));
-        else if(act==='promoteall')promoteAll();
-        else if(act==='print')window.print();
-        else if(act==='loadnikal')loadAndRenderNikal();
-        else if(act==='savett')saveTimetable();
-        else if(act==='assignttsub')assignTTSub(el.getAttribute('data-cls'),el.getAttribute('data-day'),el.getAttribute('data-p'),el.getAttribute('data-subj'));
-        else if(act==='filtersublog')renderSubLog();
-        else if(act==='printsublog')printSubLog();
-        else if(act==='savenotice')saveNotice();
-        else if(act==='delnotice')delNotice(parseInt(el.getAttribute('data-nid')||0));
-        else if(act==='emailcontact'){try{window.location.href='mailto:emvepatekar@gmail.com';}catch(e){}}
-        break;
-      }
-      el=el.parentNode;
-    }
-  });
-});
-</script>
-</body>
-</html>
+    while(el&&el.tagName&&el.tagName!=='BODY
