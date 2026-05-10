@@ -153,13 +153,25 @@ tr:hover td{background:#f1f5f9;}
   body{overflow-x:hidden;}
 }
 #print-area { display: none; }
-@media print{
-  @page { size: A4; margin: 5mm; }
-  body, html { background: #fff !important; color: #000 !important; font-family: 'Times New Roman', serif !important; height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
-  #app, #login-screen, header, nav, main, .no-print, .btn, .ctag, .sc::before, .dhero, #toast, .mov { display: none !important; }
-  #print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; box-sizing: border-box; }
-  .pcard-wrap { border: 2px solid #000; padding: 15px; background: #fff; page-break-inside: avoid; margin: 0 auto; width: 100%; }
-  .bona-wrap { border: 3px double #000; padding: 15mm; font-size: 19px; line-height: 2.2; page-break-inside: avoid; margin: 0 auto; width: 100%; }
+@media print {
+  /* प्रिंट करताना सर्व काही लपवा */
+  body, #app, header, nav, main, .no-print, #login-screen { 
+    display: none !important; 
+  }
+  /* फक्त प्रिंट होणारा भाग दाखवा */
+  #pc-wrap, #bn-wrap, #print-area { 
+    display: block !important; 
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    width: 100%;
+  }
+  /* कार्डची बॉर्डर आणि मांडणी स्पष्ट दिसण्यासाठी */
+  .pcard-wrap { 
+    border: 2px solid #000 !important; 
+    padding: 20px !important;
+    margin: 0 !important;
+  }
 }
 </style>
 </head>
@@ -1790,6 +1802,55 @@ document.addEventListener('DOMContentLoaded',function(){
     }
   });
 });
+  // नवीन आणि सुधारित बोनाफाईड फंक्शन (Latest Version)
+function genBona() {
+  var cls = (document.getElementById('bn-cls') || {}).value || '';
+  var sId = parseInt((document.getElementById('bn-std') || {}).value) || 0;
+  var reason = (document.getElementById('bn-reason') || {}).value || '';
+  var wrap = document.getElementById('bn-wrap');
+  if (!wrap) return;
+
+  if (!cls || !sId) { toast('वर्ग व विद्यार्थी निवडा!', 'err'); return; }
+  if (!reason) { toast('बोनाफाईड देण्याचे कारण टाका!', 'err'); return; }
+
+  var s = students.find(function(x) { return x.id === sId; });
+  if (!s) return;
+  var c = getCls(cls);
+  var dt = today();
+
+  var rec = { id: Date.now(), date: dt, sId: s.id, sName: s.name, cls: c.label, reason: reason, issuedBy: curUser };
+  bonafides.push(rec);
+
+  // Google Sheet ला डेटा पाठवणे
+  syncStatus('ing');
+  sheetPost('BonafideLog', [['ID', 'Date', 'StudentName', 'Class', 'Reason', 'IssuedBy'], 
+    [rec.id, rec.date, rec.sName, rec.cls, rec.reason, rec.issuedBy]], function() {
+    syncStatus('ok');
+  });
+
+  // प्रमाणपत्र डिझाइन (मराठीत)
+  wrap.innerHTML = '<div class="pcard-wrap">' +
+    '<div style="text-align:center; border-bottom:3px solid #000; padding-bottom:10px;">' +
+    '<h2 style="color:#B02020; margin-bottom:5px;">समता जोगेश्वरी मंडळ, एरंडगाव</h2>' +
+    '<h1 style="color:#1A4A98; margin-bottom:5px;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</h1>' +
+    '<h3>ता. शेवगाव, जि. अहिल्यानगर</h3>' +
+    '<h2 style="margin-top:15px; border:2px solid #000; display:inline-block; padding:5px 15px;">बोनाफाईड प्रमाणपत्र (Bonafide Certificate)</h2>' +
+    '</div>' +
+    '<div style="display:flex; justify-content:space-between; margin:20px 0;">' +
+    '<span>दिनांक: ' + formatDateIndian(dt) + '</span>' +
+    '<span>दाखल क्र. (Reg No): ' + (s.regNo || '_______') + '</span>' +
+  '</div>' +
+    '<p style="line-height:2.5; font-size:19px; text-align:justify;">' +
+    'दाखल्यावरून असे प्रमाणित करण्यात येते की, कुमार/कुमारी <b>' + s.name + '</b> ' +
+    'हा/ही या विद्यालयाचा/ची बोनाफाईड विद्यार्थी असून तो/ती शैक्षणिक वर्ष २०२५-२६ मध्ये ' +
+    'इयत्ता <b>' + c.label + '</b> मध्ये शिकत आहे/होता. ' +
+    'त्याची/तिची जन्मतारीख जनरल रजिस्टरप्रमाणे <b>' + (s.dob ? fmt(s.dob) : '___________') + '</b> अशी आहे. ' +
+    '<br><br>सदर प्रमाणपत्र त्याच्या/तिच्या <b>' + reason + '</b> या कामासाठी देण्यात येत आहे.</p>' +
+    '<div style="display:flex; justify-content:space-between; margin-top:80px; text-align:center;">' +
+    '<div><b>लिपिक (Clerk)</b></div><div><b>मुख्याध्यापक (Headmaster)</b></div>' +
+    '</div></div>' +
+    '<button class="btn bp no-print" style="margin-top:20px;" onclick="window.print()">🖨️ प्रिंट करा</button>';
+}
 </script>
 </body>
 </html>
