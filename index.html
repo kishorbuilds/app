@@ -153,12 +153,13 @@ tr:hover td{background:#f1f5f9;}
   body{overflow-x:hidden;}
 }
 @media print{
-  header,nav,.btn,.bbtn,#toast,.sbtn,.no-print{display:none!important;}
-  body{background:#fff;}
-  .card{box-shadow:none;border:1px solid #000;border-radius:0;padding:0;margin-bottom:20px;background:#fff;}
-  .pcard-wrap{box-shadow:none!important;background:#fff;}
-  main{padding:0!important;}
-  .tw{overflow-x:visible;}
+  @page { margin: 1cm; }
+  body, html { background: #fff !important; color: #000 !important; height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+  header, nav, .btn, .bbtn, #toast, .sbtn, .no-print, .dhero { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #000; border-radius: 0; padding: 15px; margin-bottom: 20px; background: #fff; page-break-inside: avoid; }
+  .pcard-wrap { box-shadow: none !important; background: #fff; page-break-inside: avoid; }
+  main { padding: 0 !important; }
+  .tw { overflow-x: visible; }
 }
 </style>
 </head>
@@ -167,8 +168,7 @@ tr:hover td{background:#f1f5f9;}
   <div style="width:100%;max-width:420px;padding:16px;">
     <div class="lbox">
       <div style="text-align:center;margin-bottom:30px;">
-        <div class="lemb">&#x1F4DA;</div>
-        <div class="lsub">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
+<div class="lemb"><img src="Saraswati Logo.jpg" style="width:100%;height:100%;object-fit:contain;" alt="Logo"></div>        <div class="lsub">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
         <div class="lschool">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;, &#x090F;&#x0930;&#x0902;&#x0921;&#x0917;&#x093E;&#x0935;</div>
         <div class="lsub" style="margin-top:4px;">&#x0924;&#x093E;. &#x0936;&#x0947;&#x0935;&#x0917;&#x093E;&#x0935;, &#x091C;&#x093F;. &#x0905;&#x0939;&#x093F;&#x0932;&#x094D;&#x092F;&#x093E;&#x0928;&#x0917;&#x0930;</div>
         <span class="llib">&#x1F393; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0923;&#x093E;&#x0924;&#x0942;&#x0928; &#x0938;&#x092E;&#x0943;&#x0926;&#x094D;&#x0927;&#x0940;</span>
@@ -197,8 +197,7 @@ tr:hover td{background:#f1f5f9;}
 <header>
   <div class="hi">
     <div class="hl">
-      <div class="hico">&#x1F4DA;</div>
-      <div class="hinfo">
+<div class="hico"><img src="Saraswati Logo.jpg" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" alt="Logo"></div>      <div class="hinfo">
         <div class="htop">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
         <div class="hmain">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;</div>
       </div>
