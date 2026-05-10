@@ -18,8 +18,7 @@ body{
 }
 #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);padding:16px;}
 .lbox{background:var(--card);border-radius:24px;padding:40px 24px;width:100%;max-width:400px;box-shadow:var(--shl);}
-.lemb{width:85px;height:85px;background:transparent;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;}
-.lemb img {width:100%;height:100%;object-fit:contain;}
+.lemb{width:85px;height:85px;background:transparent;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
 .lschool{font-size:1.3rem;font-weight:900;color:var(--d);line-height:1.4;margin:6px 0;}
 .lsub{font-size:.9rem;color:var(--mt);font-weight:600;}
 .llib{font-size:.9rem;font-weight:800;color:var(--s);background:#fffbeb;padding:8px 16px;border-radius:10px;border-left:4px solid var(--s);display:inline-block;margin-top:12px;}
@@ -28,40 +27,34 @@ body{
 .lf select:focus,.lf input:focus{outline:none;border-color:var(--s);background:#FFF;box-shadow:0 0 0 4px rgba(217,119,6,.15);}
 .lbtn{width:100%;padding:16px;background:linear-gradient(135deg,var(--s),var(--s2));color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:1.15rem;font-weight:800;cursor:pointer;margin-top:28px;box-shadow:0 6px 20px rgba(217,119,6,.3);transition:transform .1s;}
 .lbtn:active{transform:scale(0.98);}
-
 #app{display:none;}
 header{background:linear-gradient(90deg, #1e293b 0%, #3b82f6 100%);color:#fff;position:sticky;top:0;z-index:200;box-shadow:0 4px 15px rgba(0,0,0,.15);}
-.hi{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:1400px;margin:0 auto;gap:12px;}
+.hi{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:1400px;margin:0 auto;gap:10px;}
 .hl{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}
 .hico{width:50px;height:50px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.hico img {width:100%;height:100%;object-fit:contain;border-radius:8px;}
 .hinfo{min-width:0;}
-.htop{font-size:.7rem;opacity:.9;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:3px;}
+.htop{font-size:.7rem;opacity:.9;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;}
 .hmain{font-size:1.25rem;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 4px rgba(0,0,0,0.2);}
 .hr{display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .ubdg{background:rgba(255,255,255,.2);border-radius:24px;padding:6px 14px;font-size:.9rem;display:flex;align-items:center;gap:8px;white-space:nowrap;font-weight:700;}
 .sbtn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:800;transition:background .2s;}
 .sbtn:hover{background:rgba(255,255,255,.3);}
-
 .modules{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:800px;margin:30px auto;padding:0 20px;}
 .mcard{background:rgba(255, 255, 255, 0.95);backdrop-filter: blur(10px);border-radius:24px;padding:32px 20px;text-align:center;cursor:pointer;box-shadow:var(--sh);transition:all .3s ease;border:1px solid rgba(255,255,255,0.5);}
 .mcard:hover{transform:translateY(-6px);box-shadow:var(--shl);}
 .micon{font-size:3rem;margin-bottom:16px;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1));}
 .mtit{font-size:1.2rem;font-weight:900;color:var(--d);}
 .mdesc{font-size:.9rem;color:var(--mt);margin-top:6px;font-weight:600;}
-
 nav{background:rgba(255, 255, 255, 0.95);backdrop-filter: blur(10px);border-bottom:1px solid var(--bdr);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 nav::-webkit-scrollbar{display:none;}
 .ni{display:flex;max-width:1400px;margin:0 auto;padding:0 10px;}
 .tab{padding:16px 20px;cursor:pointer;white-space:nowrap;font-size:1rem;font-weight:800;color:var(--mt);border-bottom:4px solid transparent;transition:all .2s;display:flex;align-items:center;gap:8px;}
 .tab:hover{color:var(--b);}.tab.on{color:var(--b);border-bottom-color:var(--b);}
-
 main{max-width:1400px;margin:0 auto;padding:20px;}
 .card{background:rgba(255, 255, 255, 0.95);backdrop-filter:blur(10px);border-radius:24px;padding:28px;box-shadow:var(--sh);margin-bottom:24px;border:1px solid rgba(255,255,255,0.5);}
 .ct{font-size:1.2rem;font-weight:900;color:var(--d);margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--bdr);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .ctag{font-size:.8rem;background:var(--bg);color:var(--mt);padding:6px 12px;border-radius:12px;margin-left:auto;font-weight:800;}
 .bbtn{margin-bottom:20px;padding:12px 20px;background:#fff;border:2px solid var(--bdr);border-radius:14px;cursor:pointer;font-family:inherit;font-size:1rem;font-weight:800;display:inline-flex;align-items:center;gap:8px;color:var(--mt);box-shadow:0 4px 6px rgba(0,0,0,.02);}
-
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;margin-bottom:24px;}
 .sc{background:#FFF;border-radius:20px;padding:20px 14px;text-align:center;border:1px solid var(--bdr);box-shadow:var(--sh);position:relative;overflow:hidden;}
 .sc::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;}
@@ -81,45 +74,24 @@ main{max-width:1400px;margin:0 auto;padding:20px;}
 .bb{background:var(--d);color:#fff;}
 .bo{background:#fff;color:var(--b);border:2px solid var(--b);}
 .bsm{padding:10px 18px;font-size:.9rem;}
-
 .tw{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:12px;border-radius:12px;box-shadow:0 0 0 1px var(--bdr);}
 table{width:100%;border-collapse:collapse;min-width:max-content;background:var(--card);}
 th{background:#f8fafc;padding:14px 16px;text-align:left;font-size:.85rem;font-weight:800;color:var(--mt);text-transform:uppercase;letter-spacing:0.5px;border-bottom:3px solid var(--bdr);}
 td{padding:14px 16px;border-bottom:1px solid var(--bdr);font-size:.95rem;vertical-align:middle;font-weight:600;color:var(--d2);}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#f1f5f9;}
-
 .bdg{display:inline-flex;align-items:center;padding:6px 12px;border-radius:24px;font-size:.8rem;font-weight:800;white-space:nowrap;}
 .bgg{background:#dcfce7;color:var(--g);}.bgr{background:#fee2e2;color:var(--r);}.bgy{background:#fef3c7;color:var(--gold);}.bgb{background:#dbeafe;color:var(--b);}.bgp{background:#f3e8ff;color:var(--pur);}
-
-.alert{border-radius:16px;padding:16px 24px;margin-bottom:24px;display:flex;align-items:flex-start;gap:14px;font-size:.95rem;font-weight:700;}
-.aw{background:#fff7ed;border:2px solid #fdba74;color:#9a3412;}.ai{background:#eff6ff;border:2px solid #bfdbfe;color:#1e40af;}.ag{background:#f0fdf4;border:2px solid #bbf7d0;color:#166534;}
-
-.pbar{background:#e2e8f0;border-radius:20px;height:12px;overflow:hidden;min-width:80px;}
-.pfill{height:100%;border-radius:20px;transition:width 1s ease;}
-
 .mi{width:64px;padding:6px;border:2px solid var(--bdr);border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:700;text-align:center;background:#f8fafc;}
 .mi:focus{outline:none;border-color:var(--s);background:#fff;}
-.mi.err{border-color:var(--r);background:#fef2f2;}
-
-.trow{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#f8fafc;border:2px solid var(--bdr);border-radius:16px;margin-bottom:14px;}
-.tsw{position:relative;width:54px;height:30px;flex-shrink:0;}
-.tsw input{opacity:0;width:0;height:0;}
-.tsl{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:30px;transition:.3s;}
-.tsl:before{content:"";position:absolute;width:22px;height:22px;left:4px;bottom:4px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 2px 6px rgba(0,0,0,.2);}
-input:checked+.tsl{background:var(--g);}
-input:checked+.tsl:before{transform:translateX(24px);}
-
 .mov{position:fixed;inset:0;background:rgba(15,23,42,.8);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
 .mov.op{display:flex;}
 .mbox{background:var(--card);border-radius:24px;padding:30px;max-width:500px;width:100%;box-shadow:0 16px 40px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto;}
 .mbox h3{font-size:1.3rem;margin-bottom:16px;color:var(--d);font-weight:900;}
 .mfoot{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;}
-
 #toast{position:fixed;bottom:30px;right:24px;background:var(--d);color:#fff;padding:16px 28px;border-radius:16px;font-size:1rem;font-weight:800;box-shadow:var(--shl);transform:translateY(150px);opacity:0;transition:all .4s cubic-bezier(0.68, -0.55, 0.265, 1.55);z-index:999;}
 #toast.show{transform:translateY(0);opacity:1;}
 #toast.ok{background:var(--g);}.toast.err{background:var(--r);}
-
 .dhero{background:linear-gradient(135deg, #1e293b 0%, #4338ca 100%);border-radius:24px;padding:36px 30px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--shl);}
 .dh-bg{position:absolute;right:-20px;top:-30px;font-size:160px;opacity:.05;transform:rotate(-15deg);}
 
@@ -176,10 +148,10 @@ input:checked+.tsl:before{transform:translateX(24px);}
   .bona-body { text-align: justify; text-justify: inter-word; font-size: 18px; }
 }
 
-/* Mobile Adjustments */
+/* Mobile Adjustments Fixes */
 @media(max-width:600px){
   .hi{padding:12px 16px; align-items:flex-start;}
-  .hmain{font-size:1.1rem; white-space:normal; overflow:visible; text-overflow:clip; line-height:1.2;}
+  .hmain{font-size:1.15rem; white-space:normal; overflow:visible; text-overflow:clip; line-height:1.2;}
   .htop{font-size:.65rem; margin-bottom:2px;}
   .hr { align-items:flex-start; margin-top:2px; }
   main{padding:12px;}
@@ -212,7 +184,7 @@ input:checked+.tsl:before{transform:translateX(24px);}
   <div style="width:100%;max-width:420px;padding:16px;">
     <div class="lbox">
       <div style="text-align:center;margin-bottom:30px;">
-        <div class="lemb"><img src="Saraswati Logo.jpg" onerror="this.style.display='none'"></div>
+        <div class="lemb"><img src="Saraswati Logo.jpg" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"></div>
         <div class="lsub">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
         <div class="lschool">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;, &#x090F;&#x0930;&#x0902;&#x0921;&#x0917;&#x093E;&#x0935;</div>
         <div class="lsub" style="margin-top:4px;">&#x0924;&#x093E;. &#x0936;&#x0947;&#x0935;&#x0917;&#x093E;&#x0935;, &#x091C;&#x093F;. &#x0905;&#x0939;&#x093F;&#x0932;&#x094D;&#x092F;&#x093E;&#x0928;&#x0917;&#x0930;</div>
@@ -249,7 +221,7 @@ input:checked+.tsl:before{transform:translateX(24px);}
 <header>
   <div class="hi">
     <div class="hl">
-      <div class="hico"><img src="Saraswati Logo.jpg" onerror="this.style.display='none'"></div>
+      <div class="hico"><img src="Saraswati Logo.jpg" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" onerror="this.style.display='none'"></div>
       <div class="hinfo">
         <div class="htop">&#x0938;&#x092E;&#x0924;&#x093E; &#x091C;&#x094B;&#x0917;&#x0947;&#x0936;&#x094D;&#x0935;&#x0930;&#x0940; &#x092E;&#x0902;&#x0921;&#x0933;&#x093E;&#x091A;&#x0947;</div>
         <div class="hmain">&#x090F;&#x0915;&#x0928;&#x093E;&#x0925; &#x092E;&#x093E;&#x0927;&#x094D;&#x092F;&#x092E;&#x093F;&#x0915; &#x0935;&#x093F;&#x0926;&#x094D;&#x092F;&#x093E;&#x0932;&#x092F;</div>
@@ -409,7 +381,7 @@ function doLogin(){
   }
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  setupHeader();showHome();
+  setupHeader();showHome();loadShikshakFirst();
 }
 function loginErr(msg){var p=document.getElementById('l-pw');p.style.borderColor='var(--r)';p.value='';p.placeholder=msg;setTimeout(function(){p.style.borderColor='';p.placeholder='\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091F\u093E\u0915\u093E...';},2500);}
 function doLogout(){curRole=null;curUser=null;curTc=null;curMod=null;document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='none';document.getElementById('l-pw').value='';}
@@ -505,7 +477,19 @@ function loadMkTable(){var cls=(document.getElementById('m-cls')||{}).value;var 
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
 function saveAllMk(cls,subj){var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
 function calc5TotRow(sId,cls,subj,term){var pfx='t'+term+'_';var fa=0,sa=0,hasFa=false,hasSa=false;FA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});SA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});var hasData=hasFa||hasSa;var total=hasData?Math.round((fa+sa)*10)/10:'';return{fa:hasFa?Math.round(fa*10)/10:'',sa:hasSa?Math.round(sa*10)/10:'',total:total,pct100:hasData?Math.round(fa+sa):0,hasData:hasData};}
-function loadMkTable5(cls,subj,term){var pfx='t'+term+'_';var stds2=getStds(cls);var wrap=document.getElementById('mk-wrap');if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}var faHdr=FA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bfdbfe;">/'+f.max+'</span></th>';}).join('');var saHdr=SA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bbf7d0;">/'+f.max+'</span></th>';}).join('');var rows=stds2.map(function(s){var faCells=FA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');var saCells=SA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');var tot=calc5TotRow(s.id,cls,subj,term);var gr=tot.hasData?grade58(tot.pct100):'-';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-size:.9rem;font-weight:700;">'+s.name+'</td>'+faCells+'<td id="fa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--b);font-size:1rem;">'+(tot.fa!==''?tot.fa:'-')+'</td>'+saCells+'<td id="sa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--g);font-size:1rem;">'+(tot.sa!==''?tot.sa:'-')+'</td>'+'<td id="tot5-'+s.id+'" style="font-weight:900;text-align:center;font-size:1.1rem;">'+(tot.total!==''?tot.total:'-')+'</td>'+'<td><span class="bdg '+gradeColor(gr)+'" id="grd5-'+s.id+'">'+gr+'</span></td>'+'<td id="warn5-'+s.id+'-'+term+'" style="min-width:160px;vertical-align:middle;"></td></tr>';}).join('');wrap.innerHTML='<div class="tw"><table><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th><th colspan="'+FA5.length+'" style="text-align:center;background:#1e40af;color:white;font-size:.8rem;padding:12px;">अ - आकारिक मूल्यमापन (FA) /40</th><th rowspan="2" style="text-align:center;background:#1e40af;color:white;font-size:.75rem;padding:12px;">एकूण<br>(अ)<br>/40</th><th colspan="'+SA5.length+'" style="text-align:center;background:#166534;color:white;font-size:.8rem;padding:12px;">ब - संकलित मूल्यमापन (SA) /60</th><th rowspan="2" style="text-align:center;background:#166534;color:white;font-size:.75rem;padding:12px;">एकूण<br>(ब)<br>/60</th><th rowspan="2" style="text-align:center;font-size:.75rem;padding:12px;background:#475569;color:white;">अ+ब<br>/100</th><th rowspan="2" style="background:#475569;color:white;">श्रेणी</th><th rowspan="2" style="min-width:160px;background:#475569;color:white;">⚠️ सूचना</th></tr><tr>'+faHdr+saHdr+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button></div>';stds2.forEach(function(s){validate5Row(s.id,cls,subj,term);});}
+function loadMkTable5(cls,subj,term){var pfx='t'+term+'_';var stds2=getStds(cls);var wrap=document.getElementById('mk-wrap');if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}var faHdr=FA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bfdbfe;">/'+f.max+'</span></th>';}).join('');var saHdr=SA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bbf7d0;">/'+f.max+'</span></th>';}).join('');var rows=stds2.map(function(s){var faCells=FA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');var saCells=SA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');var tot=calc5TotRow(s.id,cls,subj,term);var gr=tot.hasData?grade58(tot.pct100):'-';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-size:.9rem;font-weight:700;">'+s.name+'</td>'+faCells+'<td id="fa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--b);font-size:1rem;">'+(tot.fa!==''?tot.fa:'-')+'</td>'+saCells+'<td id="sa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--g);font-size:1rem;">'+(tot.sa!==''?tot.sa:'-')+'</td>'+'<td id="tot5-'+s.id+'" style="font-weight:900;text-align:center;font-size:1.1rem;">'+(tot.total!==''?tot.total:'-')+'</td>'+'<td><span class="bdg '+gradeColor(gr)+'" id="grd5-'+s.id+'">'+gr+'</span></td>'+'<td id="warn5-'+s.id+'-'+term+'" style="min-width:160px;vertical-align:middle;"></td></tr>';}).join('');wrap.innerHTML='<div class="tw"><table>'+
+    '<thead><tr>'+
+    '<th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+
+    '<th colspan="'+FA5.length+'" style="text-align:center;background:#1e40af;color:white;font-size:.8rem;padding:12px;">अ - आकारिक मूल्यमापन (FA) /40</th>'+
+    '<th rowspan="2" style="text-align:center;background:#1e40af;color:white;font-size:.75rem;padding:12px;">एकूण<br>(अ)<br>/40</th>'+
+    '<th colspan="'+SA5.length+'" style="text-align:center;background:#166534;color:white;font-size:.8rem;padding:12px;">ब - संकलित मूल्यमापन (SA) /60</th>'+
+    '<th rowspan="2" style="text-align:center;background:#166534;color:white;font-size:.75rem;padding:12px;">एकूण<br>(ब)<br>/60</th>'+
+    '<th rowspan="2" style="text-align:center;font-size:.75rem;padding:12px;background:#475569;color:white;">अ+ब<br>/100</th>'+
+    '<th rowspan="2" style="background:#475569;color:white;">श्रेणी</th>'+
+    '<th rowspan="2" style="min-width:160px;background:#475569;color:white;">⚠️ सूचना</th>'+
+    '</tr><tr>'+faHdr+saHdr+'</tr></thead>'+
+    '<tbody>'+rows+'</tbody></table></div>'+
+    '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button></div>';stds2.forEach(function(s){validate5Row(s.id,cls,subj,term);});}
 function validate5Row(sId,cls,subj,term){var el=document.getElementById('warn5-'+sId+'-'+term);if(!el)return;var pfx='t'+term+'_';var warns=[];var hasBlock=false;var faFilled=0,faSum=0;FA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);var num=parseFloat(v)||0;if(v!==''&&num>0){faFilled++;faSum+=num;}});if(faFilled>=5){warns.push('⛔ 5 पेक्षा जास्त कृती भरल्या आहेत — फक्त 4 भरा');hasBlock=true;}if(faSum>40)warns.push('FA एकूण 40 पेक्षा जास्त');var tond=getMk(sId,cls,subj,pfx+'sa_tond');var prat=getMk(sId,cls,subj,pfx+'sa_prat');var saSum=0;SA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!=='')saSum+=parseFloat(v)||0;});if(tond!==''&&prat!=='')warns.push('तोंडी किंवा प्रात्यक्षिक एकच असावे');if(saSum>60)warns.push('SA एकूण 60 पेक्षा जास्त');el.innerHTML=warns.length?'<div style="'+(hasBlock?'background:#fef2f2;border:2px solid var(--r);border-radius:10px;padding:8px 12px;':'')+'color:var(--r);font-size:.7rem;font-weight:700;line-height:1.6;">'+warns.join('<br>')+'</div>':'';}
 function update5TotRow(sId,cls,subj,term){var tot=calc5TotRow(sId,cls,subj,term);var fa5=document.getElementById('fa5-'+sId);var sa5=document.getElementById('sa5-'+sId);var tot5=document.getElementById('tot5-'+sId);var grd5=document.getElementById('grd5-'+sId);if(fa5)fa5.textContent=tot.fa!==''?tot.fa:'-';if(sa5)sa5.textContent=tot.sa!==''?tot.sa:'-';if(tot5)tot5.textContent=tot.total!==''?tot.total:'-';if(grd5){var gr=tot.hasData?grade58(tot.pct100):'-';grd5.textContent=gr;grd5.className='bdg '+gradeColor(gr);}validate5Row(sId,cls,subj,term);}
 function save5Marks(cls,subj,term){var pfx='t'+term+'_';var stds2=getStds(cls);var allFields=FA5.concat(SA5);var blocked=false;stds2.forEach(function(s){var cnt=0;FA5.forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp&&(parseFloat(inp.value)||0)>0)cnt++;});if(cnt>=5)blocked=true;});if(blocked){toast('काही विद्यार्थ्यांचे FA 5+ entries आहेत — आधी 4 वर आणा!','err');return;}stds2.forEach(function(s){allFields.forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp)setMk(s.id,cls,subj,pfx+f.key,inp.value);});});toast('सत्र-'+term+' गुण सेव्ह! ✅');syncStatus('ing');var header=['sId','cls','subj'].concat(allFields.map(function(f){return pfx+f.key;}));var rows=[header];getStds(cls).forEach(function(s){var row=[s.id,cls,subj];allFields.forEach(function(f){row.push(getMk(s.id,cls,subj,pfx+f.key));});rows.push(row);});sheetPost('mk5_t'+term+'_'+cls+'_'+subj.replace(/[^a-zA-Z0-9]/g,'X'),rows,function(){syncStatus('ok');});}
@@ -730,34 +714,68 @@ function loadTransactionsAndSettings(){
   sheetGet('vyavhar',function(tR){if(tR.length>1){transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){return{id:parseInt(r[0]),sId:null,sName:r[1],cls:r[2],bId:null,bTitle:r[3],subj:r[4]||'',issueDate:String(r[5]||'').split('T')[0],retDate:r[6]?String(r[6]).split('T')[0]:null,due:String(r[7]||'').split('T')[0],tId:parseInt(r[8])||null,tName:r[9]||null,retTName:r[10]||null};});nextTxId=transactions.length?Math.max.apply(null,transactions.map(function(t){return t.id;}))+1:1;}
   sheetGet('passwords',function(pwR){if(pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
   sheetGet('settings',function(sr){if(sr.length>1)sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1');});
-  sheetGet('TIMETABLE',function(ttR){if(ttR.length>1)ttR.slice(1).forEach(function(r){var day=r[0],cls=r[1],p=r[2],subj=r[3],tcName=r[4];if(!timetable[cls])timetable[cls]={};if(!timetable[cls][day])timetable[cls][day]={};var tc=TEACHERS.find(function(t){return t.name===tcName||t.ttName===tcName;});timetable[cls][day][p]={tcId:tc?tc.id:0,tcName:tcName,subj:subj};ttData.push({day:day,cls:cls,period:p,subject:subj,teacher:tcName});});
+  sheetGet('TIMETABLE',function(ttR){
+      if(ttR.length>1){
+          ttR.slice(1).forEach(function(r){
+              var dayMap={'Mon':'सोमवार','Tue':'मंगळवार','Wed':'बुधवार','Thu':'गुरुवार','Fri':'शुक्रवार','Sat':'शनिवार'};
+              var pMap={'P1':'1','P2':'2','P3':'3','P4':'4','P5':'5','P6':'6','P7':'7','P8':'8'};
+              var day = dayMap[String(r[0]||'').trim()] || String(r[0]||'').trim();
+              var clsRaw = String(r[1]||'').trim();
+              var cls = parseClass(clsRaw) || clsRaw;
+              var p = pMap[String(r[2]||'').trim()] || String(r[2]||'').trim();
+              var subj = String(r[3]||'').trim();
+              var tcName = String(r[4]||'').trim();
+              if(!day || !cls || !p || !tcName) return;
+              if(!timetable[cls]) timetable[cls]={};
+              if(!timetable[cls][day]) timetable[cls][day]={};
+              var tc=TEACHERS.find(function(t){return t.name===tcName||t.ttName===tcName;});
+              timetable[cls][day][p] = {tcId:tc?tc.id:0, tcName:tcName, subj:subj};
+              ttData.push({day:day, cls:cls, period:p, subject:subj, teacher:tcName});
+          });
+      }
   sheetGet('SubLog',function(slR){if(slR.length>1)slR.slice(1).forEach(function(r){if(r[0])substitutions.push({id:parseInt(r[0]),date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2]),absTcName:r[3],subTcId:parseInt(r[4]),subTcName:r[5],cls:r[6],period:r[7],subj:r[8]});});
   sheetGet('Notices',function(ntRes){if(ntRes.length>1)ntRes.slice(1).forEach(function(r){if(r[0])notices.push({id:parseInt(r[0]),date:normalizeDate(String(r[1]||'')),title:r[2],msg:r[3],author:r[4]});});
   sheetGet('BonafideLog',function(bnRes){if(bnRes.length>1)bnRes.slice(1).forEach(function(r){if(r[0])bonafides.push({id:parseInt(r[0]),date:normalizeDate(String(r[1]||'')),sId:parseInt(r[2]),sName:r[3],cls:r[4],reason:r[5],issuedBy:r[6]});});
   syncStatus('ok');toast('डेटा लोड झाला! ✅');renderNoticeBoard();if(curTab==='tttc')renderSec('tttc');if(curTab==='ntview')renderNtView();
   });});});});});});});
 }
+
 function loadAll(){
   syncStatus('ing');
   sheetGet('pustake',function(bR){if(bR.length>1){books=bR.slice(1).filter(function(r){return r[0];}).map(function(r){return{id:parseInt(r[0]),title:r[1],author:r[2],subject:r[3],copies:parseInt(r[4]),addedBy:r[5]||''};});nextBId=books.length?Math.max.apply(null,books.map(function(b){return b.id;}))+1:1;}
-  sheetGet('Students',function(sR){if(sR.length>1){parseAndLoadStudents(sR);loadTransactionsAndSettings();}else{sheetGet('vidyarthi',function(sR2){parseAndLoadStudents(sR2);loadTransactionsAndSettings();});}});});
+  sheetGet('Students',function(sR){
+      if(sR.length>1){parseAndLoadStudents(sR);loadTransactionsAndSettings();}
+      else{sheetGet('vidyarthi',function(sR2){parseAndLoadStudents(sR2);loadTransactionsAndSettings();});}
+  });});
 }
+
 function parseAndLoadStudents(sR){
-  if(sR.length<2)return;
-  var h=sR[0].map(function(x){return String(x||'').trim();});
-  var isKishor=h[0]&&h[0].includes('इयत्ता');
-  var idC=1;
-  if(isKishor){
-    students=sR.slice(1).filter(function(r){return r[2];}).map(function(r){
-      return {id:idC++, name:String(r[2]||'').trim(), cls:parseClass(r[0]), roll:String(r[1]||'').trim(), status:'active', reason:'', mother:String(r[3]||''), medium:String(r[4]||''), dob:String(r[5]||''), regNo:String(r[6]||''), father:'', phone:'', dobWords:''};
+    if(!sR || sR.length<2) return;
+    students = [];
+    var idC=1;
+    sR.slice(1).forEach(function(r){
+      if(r.join('').trim() === '') return;
+      var cls = parseClass(r[0]);
+      var isKishor = (cls !== ''); 
+      if(isKishor) {
+          if(!r[2]) return;
+          students.push({
+              id: idC++, name: String(r[2]).trim(), cls: cls, roll: String(r[1]||'').trim(),
+              status: 'active', reason: '', mother: String(r[3]||'').trim(), medium: String(r[4]||'').trim(),
+              dob: String(r[5]||'').trim(), regNo: String(r[6]||'').trim(), father: '', phone: '', dobWords: ''
+          });
+      } else {
+          if(!r[1]) return;
+          students.push({
+              id: parseInt(r[0])||idC++, name: String(r[1]).trim(), cls: parseClass(r[2]), roll: String(r[3]||'').trim(),
+              status: String(r[4]||'active'), reason: String(r[5]||''), father: String(r[6]||''), mother: String(r[7]||'').trim(),
+              dob: String(r[8]||'').trim(), phone: String(r[9]||''), regNo: String(r[10]||'').trim(), dobWords: String(r[11]||'').trim()
+          });
+      }
     });
-  } else {
-    students=sR.slice(1).filter(function(r){return r[1];}).map(function(r){
-      return {id:parseInt(r[0])||idC++, name:String(r[1]||'').trim(), cls:parseClass(r[2]), roll:String(r[3]||'').trim(), status:String(r[4]||'active'), reason:String(r[5]||''), father:String(r[6]||''), mother:String(r[7]||''), dob:String(r[8]||''), phone:String(r[9]||''), regNo:String(r[10]||''), dobWords:String(r[11]||'')};
-    });
-  }
-  nextSId=students.length+1;
+    nextSId=students.length+1;
 }
+
 function loadShikshakFirst(){sheetGet('Shikshak',function(rows){if(rows.length>1){var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){var classOf=String(r[3]||'').trim();return{id:parseInt(r[0]),name:r[1],pw:r[2],classOf:classOf,subjects:String(r[4]||'').split('|').filter(Boolean),classes:String(r[5]||'').split('|').filter(Boolean),isMukh:classOf===''&&!r[4]&&!r[5],ttName:(r[6]||'').trim()};});if(loaded.length)TEACHERS=loaded;}loadAll();});}
 
 // ---- EVENT LISTENERS ----
