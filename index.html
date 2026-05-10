@@ -179,6 +179,7 @@ tr:hover td{background:#f1f5f9;}
           <option value="">-- &#x0928;&#x093F;&#x0935;&#x0921;&#x093E; --</option>
           <option value="super">&#x1F534; &#x0938;&#x0902;&#x0938;&#x094D;&#x0925;&#x093E;&#x091A;&#x093E;&#x0932;&#x0915;</option>
           <option value="mukh">&#x1F7E2; &#x092E;&#x0941;&#x0916;&#x094D;&#x092F;&#x093E;&#x0927;&#x094D;&#x092F;&#x093E;&#x092A;&#x0915;</option>
+          <option value="clerk">🟠 लिपिक (Clerk)</option>
           <option value="shik">&#x1F535; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0915;</option>
         </select>
         <div id="tc-sel" style="display:none;margin-top:16px;">
@@ -251,7 +252,7 @@ tr:hover td{background:#f1f5f9;}
 <script>
 var SURL='https://script.google.com/macros/s/AKfycbyOBWkKwGYS69xLSJ8gkxC03t1UgcqiNfaD7WUg5EGa8zFm4rgKopGJcBzpXfp9eSsqyQ/exec';
 var curRole=null,curUser=null,curTc=null,curMod=null,curTab=null;
-var PW={super:'samata@2025',mukh:'katemadhav@2025'};
+var PW={super:'samata@2025',mukh:'katemadhav@2025',clerk:'clerk@2025'};
 var settings={marksLocked:false};
 var CLASSES=[
   {id:'10',label:'10 \u0935\u0940',type:'high'},
@@ -371,8 +372,7 @@ function noAccess(){return '<div class="alert aw"><div>&#x1F512;</div><div>\u090
 
 // ---- LOGIN ----
 function onRole(){var r=document.getElementById('l-role').value;var ts=document.getElementById('tc-sel');ts.style.display=r==='shik'?'block':'none';if(r==='shik'){var sel=document.getElementById('l-tc');sel.innerHTML='<option value="">\u2014 \u0928\u093F\u0935\u0921\u093E \u2014</option>';TEACHERS.filter(function(t){return !t.isMukh;}).forEach(function(t){var o=document.createElement('option');o.value=t.id;o.textContent=t.name;sel.appendChild(o);});}}
-function doLogin(){var r=document.getElementById('l-role').value;var pw=document.getElementById('l-pw').value;if(!r){toast('\u092D\u0942\u092E\u093F\u0915\u093E \u0928\u093F\u0935\u0921\u093E!','err');return;}if(r==='super'){if(pw!==PW.super){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='super';curUser='\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915';curTc=null;}else if(r==='mukh'){if(pw!==PW.mukh){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='mukh';curUser='\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915';curTc=null;}else{var tid=parseInt(document.getElementById('l-tc').value)||0;if(!tid){loginErr('\u0936\u093F\u0915\u094D\u0937\u0915 \u0928\u093F\u0935\u0921\u093E!');return;}var tc=TEACHERS.find(function(t){return t.id===tid;});if(!tc||pw!==tc.pw){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='shik';curUser=tc.name;curTc=tc;}document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';setupHeader();showHome();loadShikshakFirst();}
-function loginErr(msg){var p=document.getElementById('l-pw');p.style.borderColor='var(--r)';p.value='';p.placeholder=msg;setTimeout(function(){p.style.borderColor='';p.placeholder='\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091F\u093E\u0915\u093E...';},2500);}
+function doLogin(){var r=document.getElementById('l-role').value;var pw=document.getElementById('l-pw').value;if(!r){toast('\u092D\u0942\u092E\u093F\u0915\u093E \u0928\u093F\u0935\u0921\u093E!','err');return;}if(r==='super'){if(pw!==PW.super){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='super';curUser='\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915';curTc=null;}else if(r==='mukh'){if(pw!==PW.mukh){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='mukh';curUser='\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915';curTc=null;}else if(r==='clerk'){if(pw!==PW.clerk){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='clerk';curUser='लिपिक';curTc=null;}else{var tid=parseInt(document.getElementById('l-tc').value)||0;if(!tid){loginErr('\u0936\u093F\u0915\u094D\u0937\u0915 \u0928\u093F\u0935\u0921\u093E!');return;}var tc=TEACHERS.find(function(t){return t.id===tid;});if(!tc||pw!==tc.pw){loginErr('\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091A\u0941\u0915\u0940\u091A\u093E!');return;}curRole='shik';curUser=tc.name;curTc=tc;}document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';setupHeader();showHome();loadShikshakFirst();}function loginErr(msg){var p=document.getElementById('l-pw');p.style.borderColor='var(--r)';p.value='';p.placeholder=msg;setTimeout(function(){p.style.borderColor='';p.placeholder='\u092A\u093E\u0938\u0935\u0930\u094D\u0921 \u091F\u093E\u0915\u093E...';},2500);}
 function doLogout(){curRole=null;curUser=null;curTc=null;curMod=null;document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='none';document.getElementById('l-pw').value='';document.getElementById('l-role').value='';document.getElementById('tc-sel').style.display='none';}
 function setupHeader(){document.getElementById('uname').textContent=curUser;var chip=document.getElementById('rchip');var map={super:'\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915',mukh:'\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915',shik:'\u0936\u093F\u0915\u094D\u0937\u0915'};chip.textContent=map[curRole]||'';chip.className='rchip r'+curRole[0];}
 
@@ -416,6 +416,7 @@ function buildTabs(){
     {id:'atch',i:'👨‍🏫',l:'शिक्षक'},
     {id:'apw', i:'🔑',l:'पासवर्ड'},
     {id:'alck',i:'🔒',l:'गुण Lock'},
+    {id:'abona',i:'📜',l:'बोनाफाईड'},
     {id:'apro',i:'🆙',l:'प्रमोट',h:curRole!=='super'},
   ]:curMod==='lib'?[
     {id:'ld',i:'&#x1F3E0;',l:'\u0921\u0945\u0936\u092C\u094B\u0930\u094D\u0921'},
@@ -467,7 +468,7 @@ function renderSec(id){
     else if(id==='rprog')html=secRProg();else if(id==='rgos')html=secRGos();
     else if(id==='rbook')html=secRBook();else if(id==='rcard')html=secRCard();else if(id==='rnik')html=secRNikal();
     else if(id==='astd')html=secRStd();else if(id==='atch')html=secRTch();
-    else if(id==='apw')html=secAPw();else if(id==='alck')html=secRAdm();else if(id==='apro')html=secAPro();
+    else if(id==='apw')html=secAPw();else if(id==='alck')html=secRAdm();else if(id==='abona')html=secABona();else if(id==='apro')html=secAPro();
     else if(id==='ttcls')html=secTTCls();else if(id==='tttc')html=secTTTc();else if(id==='ttsub')html=secTTSub();else if(id==='ttslg')html=secSubLog();else if(id==='ttadm')html=secTTAdm();
     else if(id==='ntview')html=secNtView();else if(id==='ntadd')html=secNtAdd();
   }catch(e){html='<div class="alert aw"><div>&#x26A0;&#xFE0F; '+e.message+'</div></div>';}
@@ -1060,6 +1061,82 @@ function secAPw(){
     '<tbody>'+tcRows+'</tbody></table></div></div>';
 }
 
+var bonafides=[];
+
+function secABona(){
+  if(curRole!=='super'&&curRole!=='mukh'&&curRole!=='clerk')return noAccess();
+  var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
+  
+  var rows = bonafides.slice().reverse().map(function(b){
+    return '<tr><td>'+formatDateIndian(b.date)+'</td><td><strong>'+b.sName+'</strong></td><td>'+b.cls+'</td><td>'+b.reason+'</td><td><span class="bdg bgb">'+b.issuedBy+'</span></td></tr>';
+  }).join('');
+
+  return '<div class="card no-print"><div class="ct">📜 बोनाफाईड प्रमाणपत्र <span class="ctag">फक्त प्रशासन/लिपिक</span></div>'+
+    '<div class="fg2"><div class="fg"><label>वर्ग</label><select id="bn-cls" onchange="loadStdsForBona()"><option value="">निवडा</option>'+clsOpts+'</select></div>'+
+    '<div class="fg"><label>विद्यार्थी</label><select id="bn-std"><option value="">निवडा</option></select></div></div>'+
+    '<div class="fg2" style="margin-top:10px;"><div class="fg"><label>कारण (Reason)</label><input type="text" id="bn-reason" placeholder="उदा. पुढील शिक्षणासाठी, शिष्यवृत्ती इ."></div></div>'+
+    '<button class="btn bp" style="font-size:1.05rem;padding:12px 24px;margin-top:10px;" data-action="genbona">&#x1F5A8;&#xFE0F; बोनाफाईड प्रिंट करा</button></div>'+
+    '<div id="bn-wrap"></div>'+
+    '<div class="card no-print" style="margin-top:20px;"><div class="ct">🗂️ बोनाफाईड रेकॉर्ड (लॉग)</div><div class="tw"><table><thead><tr><th>तारीख</th><th>नाव</th><th>वर्ग</th><th>कारण</th><th>कोणी दिले?</th></tr></thead><tbody>'+(rows||'<tr><td colspan="5" style="text-align:center;">अद्याप नोंदी नाहीत</td></tr>')+'</tbody></table></div></div>';
+}
+
+function loadStdsForBona(){
+  var cls=(document.getElementById('bn-cls')||{}).value||'';
+  var sel=document.getElementById('bn-std');
+  if(!sel)return;
+  sel.innerHTML='<option value="">निवडा</option>';
+  getStds(cls).forEach(function(s){
+    var o=document.createElement('option');o.value=s.id;o.textContent=s.roll+' - '+s.name;sel.appendChild(o);
+  });
+}
+
+function genBona(){
+  var cls=(document.getElementById('bn-cls')||{}).value||'';
+  var sId=parseInt((document.getElementById('bn-std')||{}).value)||0;
+  var reason=(document.getElementById('bn-reason')||{}).value||'';
+  var wrap=document.getElementById('bn-wrap');
+  if(!wrap)return;
+  
+  if(!cls||!sId){toast('वर्ग व विद्यार्थी निवडा!','err');return;}
+  if(!reason){toast('बोनाफाईड देण्याचे कारण टाका!','err');return;}
+  
+  var s=students.find(function(x){return x.id===sId;});if(!s)return;
+  var c=getCls(cls);
+  var dt = today();
+  
+  // Save to Record
+  var rec = {id:Date.now(), date:dt, sId:s.id, sName:s.name, cls:c.label, reason:reason, issuedBy:curUser};
+  bonafides.push(rec);
+  
+  // Sheet मधील Sync लाईन आपण टप्पा ३ मध्ये जोडणार आहोत.
+  syncStatus('ing');
+  var subData={ 'ID':rec.id, 'Date':rec.date, 'StudentName':rec.sName, 'Class':rec.cls, 'Reason':rec.reason, 'IssuedBy':rec.issuedBy };
+  // Note: For now, assuming you create a 'BonafideLog' sheet later.
+  toast('बोनाफाईड रेकॉर्ड सेव्ह! ✅');
+  
+  // Print HTML
+  wrap.innerHTML='<div class="pcard-wrap" style="padding:40px; margin-top:20px; font-size:16px;">'+
+    '<div style="text-align:center; border-bottom:3px solid #000; padding-bottom:15px; margin-bottom:20px;">'+
+    '<h1 style="color:#B02020; margin-bottom:5px;">समता जोगेश्वरी मंडळ, एरंडगाव</h1>'+
+    '<h2 style="color:#1A4A98; margin-bottom:5px;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</h2>'+
+    '<h3>ता. शेवगाव, जि. अहिल्यानगर</h3>'+
+    '<h2 style="margin-top:15px; border:2px solid #000; display:inline-block; padding:5px 15px;">BONAFIDE CERTIFICATE</h2>'+
+    '</div>'+
+    '<div style="display:flex; justify-content:space-between; margin-bottom:30px;">'+
+    '<span><strong>Date:</strong> '+formatDateIndian(dt)+'</span>'+
+    '<span><strong>Reg No / G.R. No:</strong> '+(s.regNo||'_______')+'</span>'+
+    '</div>'+
+    '<p style="line-height:2.2; text-align:justify; font-size:18px;">This is to certify that <strong>Master/Miss '+s.name+'</strong> is/was a bonafide student of this school. '+
+    'He/She is/was studying in standard <strong>'+c.label+'</strong> during the academic year <strong>2025-2026</strong>. '+
+    'His/Her date of birth as per the school register is <strong>'+(s.dob?fmt(s.dob):'___________')+'</strong>. '+
+    '<br><br>This certificate is issued for the purpose of: <strong>'+reason+'</strong>.</p>'+
+    '<div style="display:flex; justify-content:space-between; margin-top:80px; text-align:center;">'+
+    '<div><br><strong>Clerk</strong></div>'+
+    '<div><br><strong>Headmaster</strong></div>'+
+    '</div></div>'+
+    '<button class="btn bp no-print" style="margin-top:16px;font-size:1rem;padding:12px 24px;" onclick="window.print()">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
+}
+  
 function secAPro(){
   if(curRole!=='super')return noAccess();
   var clsRows=CLASSES.map(function(c){
