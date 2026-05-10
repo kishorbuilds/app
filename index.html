@@ -1545,4 +1545,150 @@ function parseAndLoadStudents(sR){
 
 function loadTransactionsAndSettings(){
   sheetGet('vyavhar',function(tR){
-    if(tR.length>1){transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){var iDate=String(r[5]||'').split('T')[0];var rDate=r[6]?String(r[6]).split('T')[0]:null;var due=String(r[7]||'').split('T')[0];return{id:parseInt(r[0])||1,sId:null,sName:String(r[1]||''),cls:String(r[2]||''),bId:null,bTitle:
+    if(tR.length>1){transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){var iDate=String(r[5]||'').split('T')[0];var rDate=r[6]?String(r[6]).split('T')[0]:null;var due=String(r[7]||'').split('T')[0];return{id:parseInt(r[0])||1,sId:null,sName:String(r[1]||''),cls:String(r[2]||''),bId:null,bTitle:String(r[3]||''),subj:String(r[4]||''),issueDate:iDate,retDate:rDate||null,due:due,tId:parseInt(r[8])||null,tName:r[9]||null,retTName:r[10]||null};});nextTxId=transactions.length?Math.max.apply(null,transactions.map(function(t){return t.id;}))+1:1;}
+    sheetGet('passwords',function(pwR){if(pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
+    sheetGet('settings',function(sr){if(sr.length>1)sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1');});
+    sheetGet('TIMETABLE',function(ttR){
+      parseTimetableRows(ttR);
+      sheetGet('SubLog',function(slR){
+        substitutions=[];
+        if(slR.length>1)slR.slice(1).forEach(function(r){
+          if(!r[0])return;
+          substitutions.push({id:parseInt(r[0])||0,date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2])||0,absTcName:String(r[3]||''),subTcId:parseInt(r[4])||0,subTcName:String(r[5]||''),cls:String(r[6]||''),period:String(r[7]||''),subj:String(r[8]||'')});
+        });
+        
+        sheetGet('Notices', function(ntRes){
+          notices = [];
+          if(ntRes.length>1) {
+            ntRes.slice(1).forEach(function(r){
+              if(!r[0]) return;
+              notices.push({id:parseInt(r[0]), date:normalizeDate(String(r[1]||'')), title:String(r[2]||''), msg:String(r[3]||''), author:String(r[4]||'')});
+            });
+          }
+          syncStatus('ok');
+          toast('\u0921\u0947\u091F\u093E \u0932\u094B\u0921 \u091D\u093E\u0932\u093E! &#x2705;');
+          
+          renderNoticeBoard();
+          if(curTab==='tttc') renderSec('tttc');
+          if(curTab==='ntview') renderNtView();
+        });
+      });
+    });
+    });});
+  });
+}
+
+function loadAll(){
+  syncStatus('ing');
+  sheetGet('pustake',function(bR){
+    if(bR.length>1){books=bR.slice(1).filter(function(r){return r[0];}).map(function(r){return{id:parseInt(r[0])||1,title:String(r[1]||''),author:String(r[2]||''),subject:String(r[3]||'\u0907\u0924\u0930'),copies:parseInt(r[4])||1,addedBy:String(r[5]||'')};});nextBId=books.length?Math.max.apply(null,books.map(function(b){return b.id;}))+1:1;}
+    sheetGet('Students',function(sR){
+      if(sR.length>1){parseAndLoadStudents(sR);loadTransactionsAndSettings();}
+      else{sheetGet('vidyarthi',function(sR2){parseAndLoadStudents(sR2);loadTransactionsAndSettings();});}
+    });
+  });
+}
+
+function parseShikshakRows(rows){
+  if(rows.length<2)return;
+  var loaded=rows.slice(1).filter(function(r){return r[0];}).map(function(r){var subjs=String(r[4]||'').split('|').map(function(s){return s.trim();}).filter(Boolean);var cls=String(r[5]||'').split('|').map(function(c){return c.trim().toLowerCase();}).filter(Boolean);var classOf=String(r[3]||'').trim();return{id:parseInt(r[0])||0,name:String(r[1]||''),pw:String(r[2]||''),classOf:classOf,subjects:subjs,classes:cls,isMukh:(classOf===''&&subjs.length===0&&cls.length===0),ttName:(r[6]||'').trim()};});
+  if(loaded.length>0)TEACHERS=loaded;
+}
+function loadShikshakFirst(){sheetGet('Shikshak',function(rows){parseShikshakRows(rows);loadAll();});}
+
+// ---- EVENT DELEGATION ----
+document.addEventListener('DOMContentLoaded',function(){
+  document.addEventListener('keydown',function(ev){
+    var act=(ev.target.getAttribute&&ev.target.getAttribute('data-action'))||'';
+    if(act==='login-key'&&ev.key==='Enter')doLogin();
+  });
+
+  document.addEventListener('change',function(ev){
+    var t=ev.target;if(!t)return;var id=t.id||'';var act=t.getAttribute('data-action')||'';
+    var field=t.getAttribute('data-field')||'';
+    if(field==='role'||id==='l-role')onRole();
+    else if(id==='m-cls')onMCls();
+    else if(id==='m-subj')loadMkTable();
+    else if(id==='m-term')loadMkTable();
+    else if(id==='i-cls'){loadStdByClass();refreshIssued();}
+    else if(id==='is-cls')refreshIssued();
+    else if(id==='rt-cls')filterReturn();
+    else if(id==='rb-cls')loadRBook();
+    else if(id==='pc-cls')loadStdsForCard();
+    else if(id==='gos-cls')loadGosawara();
+    else if(id==='nikal-term'){if(curTc&&curTc.classOf)renderNikal(curTc.classOf,(document.getElementById('nikal-term')||{}).value||'1');}
+    else if(id==='tt-cls-sel')renderTTCls();
+    else if(id==='tt-tc-sel'||id==='tt-tc-date')renderTTTc();
+    else if(id==='ttadm-cls')renderTTAdm();
+    else if(id==='ttsub-tc'||id==='ttsub-day')renderTTSub();
+    else if(t.getAttribute('data-tttype')==='tc'){
+      var ttcls=t.getAttribute('data-ttcls')||'';
+      var ttdi=parseInt(t.getAttribute('data-ttdi')||'0');
+      var ttday=DAYS[ttdi]||'';var ttp=t.getAttribute('data-ttp')||'';
+      var tcIdLive=parseInt(t.value)||0;
+      var cell=t.parentElement;
+      if(cell){
+        var cfLive=tcIdLive?detectConflict(ttcls,ttday,ttp,tcIdLive):null;
+        cell.className='tt-cell'+(cfLive?' tt-conflict':tcIdLive?' tt-filled':'');
+        var confMsg=cell.querySelector('.tt-conf-msg');
+        if(confMsg)confMsg.innerHTML=cfLive?'&#x26A0; '+cfLive:'';
+      }
+    }
+    else if(act==='setmk'){
+      var sid=parseInt(t.getAttribute('data-sid')||0);var cls2=t.getAttribute('data-cls')||'';var subj2=t.getAttribute('data-subj')||'';var exam2=t.getAttribute('data-exam')||'';var mx=parseFloat(t.getAttribute('data-max')||0);var val=parseFloat(t.value)||0;
+      if(mx&&val>mx){t.value=mx;t.classList.add('err');}else{t.classList.remove('err');}
+      if(sid&&cls2&&subj2&&exam2){setMk(sid,cls2,subj2,exam2,t.value);updateRowTotal(sid,cls2,subj2);}
+    }else if(act==='setmk5'){
+      var sid5=parseInt(t.getAttribute('data-sid')||0);var cls5=t.getAttribute('data-cls')||'';
+      var subj5=t.getAttribute('data-subj')||'';var exam5=t.getAttribute('data-exam')||'';
+      var mx5=parseFloat(t.getAttribute('data-max')||0);var term5=t.getAttribute('data-term')||'1';
+      if(mx5&&(parseFloat(t.value)||0)>mx5){t.value=mx5;t.classList.add('err');}else{t.classList.remove('err');}
+      if(sid5&&cls5&&subj5&&exam5){setMk(sid5,cls5,subj5,exam5,t.value);update5TotRow(sid5,cls5,subj5,term5);}
+    }else if(act==='toggleLock'){settings.marksLocked=t.checked;syncSettings();toast(t.checked?'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926!':'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942!');}
+  });
+
+  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();});
+
+  document.addEventListener('click',function(ev){
+    var el=ev.target;
+    while(el&&el.tagName&&el.tagName!=='BODY'){
+      var act=(el.getAttribute&&el.getAttribute('data-action'))||'';
+      if(act){
+        if(act==='login')doLogin();
+        else if(act==='logout')doLogout();
+        else if(act==='goback'){curMod=null;showHome();}
+        else if(act==='closemodal')closeM('cm');
+        else if(act==='openmod')openMod(el.getAttribute('data-mod')||'');
+        else if(act==='showtab')showTab(el.getAttribute('data-tabid')||'');
+        else if(act==='issuebook')issueBook();
+        else if(act==='returnbook')returnBook(parseInt(el.getAttribute('data-txid')||0));
+        else if(act==='addbook')addBook();
+        else if(act==='addstudent')addStudent();
+        else if(act==='addteacher')addTeacher();
+        else if(act==='removestd')removeStd(parseInt(el.getAttribute('data-sid')||0));
+        else if(act==='removeteacher')removeTeacher(parseInt(el.getAttribute('data-tcid')||0));
+        else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
+        else if(act==='saveallmk'){var mc=el.getAttribute('data-cls')||'';var ms=el.getAttribute('data-subj')||'';if(!mc)mc=(document.getElementById('m-cls')||{}).value||'';if(!ms)ms=(document.getElementById('m-subj')||{}).value||'';if(mc&&ms)saveAllMk(mc,ms);}
+        else if(act==='save5mk'){var mc5=el.getAttribute('data-cls')||'';var ms5=el.getAttribute('data-subj')||'';var mt5=el.getAttribute('data-term')||'';if(mc5&&ms5&&mt5)save5Marks(mc5,ms5,mt5);}
+        else if(act==='gencard')genCard();
+        else if(act==='changepw')changePW();
+        else if(act==='changetcpw')changeTcPw(parseInt(el.getAttribute('data-tcid')||0));
+        else if(act==='promoteall')promoteAll();
+        else if(act==='print')window.print();
+        else if(act==='loadnikal')loadAndRenderNikal();
+        else if(act==='savett')saveTimetable();
+        else if(act==='assignttsub')assignTTSub(el.getAttribute('data-cls'),el.getAttribute('data-day'),el.getAttribute('data-p'),el.getAttribute('data-subj'));
+        else if(act==='filtersublog')renderSubLog();
+        else if(act==='printsublog')printSubLog();
+        else if(act==='savenotice')saveNotice();
+        else if(act==='delnotice')delNotice(parseInt(el.getAttribute('data-nid')||0));
+        else if(act==='emailcontact'){try{window.location.href='mailto:emvepatekar@gmail.com';}catch(e){}}
+        break;
+      }
+      el=el.parentNode;
+    }
+  });
+});
+</script>
+</body>
+</html>
