@@ -152,14 +152,14 @@ tr:hover td{background:#f1f5f9;}
   .fg2{grid-template-columns:1fr;}
   body{overflow-x:hidden;}
 }
+#print-area { display: none; }
 @media print{
-  @page { margin: 1cm; }
-  body, html { background: #fff !important; color: #000 !important; height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
-  header, nav, .btn, .bbtn, #toast, .sbtn, .no-print, .dhero { display: none !important; }
-  .card { box-shadow: none; border: 1px solid #000; border-radius: 0; padding: 15px; margin-bottom: 20px; background: #fff; page-break-inside: avoid; }
-  .pcard-wrap { box-shadow: none !important; background: #fff; page-break-inside: avoid; }
-  main { padding: 0 !important; }
-  .tw { overflow-x: visible; }
+  @page { size: A4; margin: 5mm; }
+  body, html { background: #fff !important; color: #000 !important; font-family: 'Times New Roman', serif !important; height: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+  #app, #login-screen, header, nav, main, .no-print, .btn, .ctag, .sc::before, .dhero, #toast, .mov { display: none !important; }
+  #print-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; box-sizing: border-box; }
+  .pcard-wrap { border: 2px solid #000; padding: 15px; background: #fff; page-break-inside: avoid; margin: 0 auto; width: 100%; }
+  .bona-wrap { border: 3px double #000; padding: 15mm; font-size: 19px; line-height: 2.2; page-break-inside: avoid; margin: 0 auto; width: 100%; }
 }
 </style>
 </head>
