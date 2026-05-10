@@ -544,9 +544,12 @@ function secLD(){
   var actS=students.filter(function(s){return s.status!=='removed';}).length;
   var ret=transactions.filter(function(t){return t.retDate;}).length;
   var colors=['#F57F17','#1976D2','#1A6E3C','#6A1B9A','#E87030','#D32F2F'];
-  var tcStats=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){return{name:tc.name.replace(/श्री\.\s*|श्रीम\.\s*/g, '').split(' ').slice(-1)[0],cnt:transactions.filter(function(t){return t.tId===tc.id;}).length};}).sort(function(a,b){return b.cnt-a.cnt;}).slice(0,6);
+  var tcStats=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){
+    var shortName = tc.name.replace(/श्री\.\s*|श्रीम\.\s*/g, '').trim(); 
+    return{name:shortName,cnt:transactions.filter(function(t){return t.tId===tc.id;}).length};
+  }).sort(function(a,b){return b.cnt-a.cnt;}).slice(0,6);
   var maxT=Math.max.apply(null,[1].concat(tcStats.map(function(t){return t.cnt;})));
-  var tcBars=tcStats.map(function(t,i){var h=Math.max(Math.round(t.cnt/maxT*80),5);return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:'+h+'px;background:'+colors[i%6]+';border-radius:6px 6px 0 0;" title="'+t.cnt+'"></div><div style="font-size:.7rem;color:var(--mt);margin-top:6px;overflow:hidden;max-width:55px;white-space:nowrap;text-overflow:ellipsis;font-weight:700;">'+t.name+'</div></div>';}).join('');
+  var tcBars=tcStats.map(function(t,i){var h=Math.max(Math.round(t.cnt/maxT*80),5);return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:100%;height:'+h+'px;background:'+colors[i%6]+';border-radius:6px 6px 0 0;" title="'+t.cnt+'"></div><div style="font-size:.75rem;color:var(--mt);margin-top:6px;overflow:hidden;max-width:65px;white-space:nowrap;text-overflow:ellipsis;font-weight:700;">'+t.name+'</div></div>';}).join('');
   var overRows=over.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--mt);padding:16px;font-weight:600;">&#x2705; \u0915\u094B\u0923\u0924\u0940\u0939\u0940 \u0928\u093E\u0939\u0940</td></tr>':over.map(function(tx){return '<tr><td>'+tx.sName+'</td><td>'+tx.cls+'</td><td>'+tx.bTitle+'</td><td><span class="bdg bgr">+'+dL(tx.due)+' \u0926\u093F.</span></td></tr>';}).join('');
   
   var readCounts = {};
