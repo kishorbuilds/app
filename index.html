@@ -404,7 +404,7 @@ function showHome(){
   document.getElementById('mod-view').style.display='none';
   curMod=null;
   var admCard=document.getElementById('mod-adm');
-  if(admCard)admCard.style.display=(curRole==='super'||curRole==='mukh')?'block':'none';
+  if(admCard)admCard.style.display=(curRole==='super'||curRole==='mukh'||curRole==='clerk')?'block':'none';
   renderNoticeBoard();
 }
 function openMod(mod){curMod=mod;document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='block';buildTabs();}
@@ -412,10 +412,10 @@ function openMod(mod){curMod=mod;document.getElementById('home-view').style.disp
 function buildTabs(){
   var isA=(curRole==='super'||curRole==='mukh');
   var tabs=curMod==='adm'?[
-    {id:'astd',i:'👨‍🎓',l:'विद्यार्थी'},
-    {id:'atch',i:'👨‍🏫',l:'शिक्षक'},
-    {id:'apw', i:'🔑',l:'पासवर्ड'},
-    {id:'alck',i:'🔒',l:'गुण Lock'},
+    {id:'astd',i:'👨‍🎓',l:'विद्यार्थी',h:(curRole==='clerk')},
+    {id:'atch',i:'👨‍🏫',l:'शिक्षक',h:(curRole==='clerk')},
+    {id:'apw', i:'🔑',l:'पासवर्ड',h:(curRole==='clerk')},
+    {id:'alck',i:'🔒',l:'गुण Lock',h:(curRole==='clerk')},
     {id:'abona',i:'📜',l:'बोनाफाईड'},
     {id:'apro',i:'🆙',l:'प्रमोट',h:curRole!=='super'},
   ]:curMod==='lib'?[
@@ -434,11 +434,11 @@ function buildTabs(){
     {id:'ttslg',i:'&#x1F4CB;',l:'समायोजन अहवाल',h:!(curRole==='super'||curRole==='mukh')},
     {id:'ttadm',i:'&#x2699;&#xFE0F;',l:'\u0938\u0902\u092A\u093E\u0926\u0928',h:!(curRole==='super'||curRole==='mukh')},
   ]:[
-    {id:'rm',i:'&#x270F;&#xFE0F;',l:'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940'},
-    {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!isA},
-    {id:'rgos',i:'&#x1F4CB;',l:'\u0917\u094B\u0937\u0935\u093E\u0930\u093E',h:!isA},
+    {id:'rm',i:'&#x270F;&#xFE0F;',l:'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940',h:(curRole==='clerk')},
+    {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:(!isA && curRole!=='clerk')},
+    {id:'rgos',i:'&#x1F4CB;',l:'\u0917\u094B\u0937\u0935\u093E\u0930\u093E',h:(!isA && curRole!=='clerk')},
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
-    {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='super'||curRole==='mukh'||(curRole==='shik'&&curTc&&curTc.classOf))},
+    {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='super'||curRole==='mukh'||curRole==='clerk'||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rnik',i:'&#x1F4CA;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='shik'&&curTc&&curTc.classOf)},
   ];
   var nav=document.getElementById('nav-tabs');nav.innerHTML='';
@@ -789,7 +789,7 @@ function secRProg(){
 }
 
 function secRGos(){
-  if(curRole!=='super'&&curRole!=='mukh')return noAccess();
+  if(curRole!=='super'&&curRole!=='mukh'&&curRole!=='clerk')return noAccess();
   var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
   return '<div class="card"><div class="ct">&#x1F4CB; \u0917\u094B\u0937\u0935\u093E\u0930\u093E (\u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F \u0938\u093E\u0930\u093E\u0902\u0936)</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="gos-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div></div><div id="gos-wrap"></div></div>';
 }
@@ -820,7 +820,7 @@ function loadGosawara(){
 }
 
 function secRBook(){
-  if(curRole!=='super'&&curRole!=='mukh')return noAccess();
+  if(curRole!=='super'&&curRole!=='mukh'&&curRole!=='clerk')return noAccess();
   var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
   return '<div class="card"><div class="ct">&#x1F4C3; \u0928\u093F\u0915\u093E\u0932 \u092A\u0941\u0938\u094D\u0924\u093F\u0915\u093E</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="rb-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div></div><div id="rb-wrap"></div></div>';
 }
@@ -836,7 +836,7 @@ function loadRBook(){
 }
 
 function secRCard(){
-  var isA=(curRole==='super'||curRole==='mukh');var isClassTc=curRole==='shik'&&curTc&&curTc.classOf;
+  var isA=(curRole==='super'||curRole==='mukh'||curRole==='clerk');var isClassTc=curRole==='shik'&&curTc&&curTc.classOf;
   if(!isA&&!isClassTc)return noAccess();
   var availCls=isA?CLASSES:CLASSES.filter(function(c){return c.id===curTc.classOf;});
   var clsOpts=availCls.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
