@@ -174,21 +174,28 @@ tr:hover td{background:#f1f5f9;}
         <span class="llib">&#x1F393; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0923;&#x093E;&#x0924;&#x0942;&#x0928; &#x0938;&#x092E;&#x0943;&#x0926;&#x094D;&#x0927;&#x0940;</span>
       </div>
       <div class="lf">
-        <label>&#x092D;&#x0942;&#x092E;&#x093F;&#x0915;&#x093E;</label>
+        <label>भूमिका (Role)</label>
         <select id="l-role" data-field="role">
-          <option value="">-- &#x0928;&#x093F;&#x0935;&#x0921;&#x093E; --</option>
-          <option value="super">&#x1F534; &#x0938;&#x0902;&#x0938;&#x094D;&#x0925;&#x093E;&#x091A;&#x093E;&#x0932;&#x0915;</option>
-          <option value="mukh">&#x1F7E2; &#x092E;&#x0941;&#x0916;&#x094D;&#x092F;&#x093E;&#x0927;&#x094D;&#x092F;&#x093E;&#x092A;&#x0915;</option>
-          <option value="clerk">🟠 लिपिक (Clerk)</option>
-          <option value="shik">&#x1F535; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0915;</option>
+          <option value="">-- भूमिका निवडा --</option>
+          <option value="admin">🛡️ प्रशासन (Administration)</option>
+          <option value="shik">&#x1F535; शिक्षक (Teacher)</option>
         </select>
-        <div id="tc-sel" style="display:none;margin-top:16px;">
-          <label>&#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0915; &#x0928;&#x093F;&#x0935;&#x0921;&#x093E;</label>
-          <select id="l-tc"><option value="">&#x2014; &#x0928;&#x093F;&#x0935;&#x0921;&#x093E; &#x2014;</option></select>
+        <div id="admin-sel" style="display:none;margin-top:16px;">
+          <label>प्रशासकीय पद</label>
+          <select id="l-admin-role">
+            <option value="">-- पद निवडा --</option>
+            <option value="super">&#x1F534; संस्थाचालक</option>
+            <option value="mukh">&#x1F7E2; मुख्याध्यापक</option>
+            <option value="clerk">🟠 लिपिक (Clerk)</option>
+          </select>
         </div>
-        <label style="margin-top:16px;">&#x092A;&#x093E;&#x0938;&#x0935;&#x0930;&#x094D;&#x0921;</label>
-        <input type="password" id="l-pw" data-action="login-key" placeholder="&#x092A;&#x093E;&#x0938;&#x0935;&#x0930;&#x094D;&#x0921; &#x091F;&#x093E;&#x0915;&#x093E;...">
-        <button class="lbtn" id="login-btn" data-action="login">&#x1F510; &#x092A;&#x094D;&#x0930;&#x0935;&#x0947;&#x0936; &#x0915;&#x0930;&#x093E;</button>
+        <div id="tc-sel" style="display:none;margin-top:16px;">
+          <label>शिक्षक निवडा</label>
+          <select id="l-tc"><option value="">&#x2014; निवड &#x2014;</option></select>
+        </div>
+        <label style="margin-top:16px;">पासवर्ड</label>
+        <input type="password" id="l-pw" data-action="login-key" placeholder="पासवर्ड टाका...">
+        <button class="lbtn" id="login-btn" data-action="login">&#x1F510; प्रवेश करा</button>
       </div>
     </div>
   </div>
