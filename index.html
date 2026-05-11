@@ -153,23 +153,6 @@ tr:hover td{background:#f1f5f9;}
   body{overflow-x:hidden;}
 }
 #print-area { display: none; }
-@media print {
-  body, #app, header, nav, main, .no-print, #login-screen, .btn, .ctag, .sc::before, .dhero, #toast, .mov {
-    display: none !important;
-  }
-  #pc-wrap, #bn-wrap {
-    display: block !important;
-    position: absolute;
-    left: 0; top: 0; width: 100%;
-    background: #fff !important;
-  }
-  .pcard-wrap {
-    border: 2px solid #000 !important;
-    padding: 20px !important;
-    margin: 0 auto !important;
-    page-break-inside: avoid;
-  }
-}
 </style>
 </head>
 <body>
@@ -975,7 +958,7 @@ function genCard(){
     '<div>___________<br><strong>मुख्याध्यापक</strong></div>'+
     '</div>'+
     '</div>'+
-    '<button class="btn bp no-print" style="margin-top:16px;font-size:1rem;padding:12px 24px;" data-action="print">🖨️ प्रिंट करा</button>';
+    '<button class="btn bp no-print" style="margin-top:16px;font-size:1rem;padding:12px 24px;" onclick="printDoc(\'pc-wrap\')">🖨️ प्रिंट करा</button>';
 }
 
 function secRNikal(){
@@ -1861,7 +1844,34 @@ function genBona() {
     '<div style="display:flex; justify-content:space-between; margin-top:80px; text-align:center;">' +
     '<div><b>लिपिक</b></div><div><b>मुख्याध्यापक</b></div>' +
     '</div></div>' +
-    '<button class="btn bp no-print" style="margin-top:20px;" onclick="window.print()">🖨️ प्रिंट करा</button>';
+    '<button class="btn bp no-print" style="margin-top:20px;" onclick="printDoc(\'bn-wrap\')">🖨️ प्रिंट करा</button>';
+}
+
+function printDoc(contentId) {
+  var el = document.getElementById(contentId);
+  if (!el) return;
+  var content = el.innerHTML;
+  var w = window.open('', '_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>प्रिंट</title>' +
+    '<style>' +
+    'body{font-family:Arial,sans-serif;margin:24px;background:#fff;color:#000;}' +
+    '.no-print,.btn{display:none!important;}' +
+    '.pcard-wrap{border:2px solid #000;padding:20px;max-width:800px;margin:0 auto;}' +
+    'table{border-collapse:collapse;width:100%;}' +
+    'th,td{border:1px solid #ccc;padding:6px 8px;}' +
+    'th{background:#f0f0f0;font-weight:700;}' +
+    '.bdg{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;}' +
+    '.bgg{background:#d1fae5;color:#065f46;}' +
+    '.bgb{background:#dbeafe;color:#1e40af;}' +
+    '.bgy{background:#fef9c3;color:#854d0e;}' +
+    '.bgr{background:#fee2e2;color:#991b1b;}' +
+    '@media print{.no-print,.btn{display:none!important;}body{margin:0;}}' +
+    '</style></head><body>' +
+    content +
+    '</body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function(){ w.print(); }, 300);
 }
 </script>
 </body>
