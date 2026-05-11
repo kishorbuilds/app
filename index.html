@@ -1854,8 +1854,8 @@ function printDoc(contentId) {
   w.document.title = 'प्रगतिपत्रक';
   w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>प्रगतिपत्रक</title>' +
     '<style>' +
-    '@page{margin:1cm;}' +
-    'body{font-family:Arial,sans-serif;margin:24px;background:#fff;color:#000;}' +
+    '@page{margin:0;size:A4;}' +
+    'body{font-family:Arial,sans-serif;margin:1.5cm 1cm;background:#fff;color:#000;}' +
     '.no-print,.btn{display:none!important;}' +
     '.pcard-wrap{border:2px solid #000;padding:20px;max-width:800px;margin:0 auto;}' +
     'table{border-collapse:collapse;width:100%;}' +
@@ -1866,9 +1866,9 @@ function printDoc(contentId) {
     '.bgb{background:#dbeafe;color:#1e40af;}' +
     '.bgy{background:#fef9c3;color:#854d0e;}' +
     '.bgr{background:#fee2e2;color:#991b1b;}' +
-    '@media print{.no-print,.btn{display:none!important;}body{margin:0;}}' +
+    '@media print{.no-print{display:none!important;}.btn{display:none!important;}}' +
     '</style></head><body>' +
-    '<button class="no-print" onclick="window.close()" style="margin-bottom:16px;padding:8px 18px;font-size:1rem;cursor:pointer;background:#f3f4f6;border:1px solid #ccc;border-radius:6px;">← परत जा</button>' +
+    '<div class="no-print" onclick="window.close()" style="position:fixed;top:10px;left:10px;z-index:9999;background:#1A4A98;color:white;padding:10px 20px;border-radius:8px;font-size:18px;cursor:pointer;">← परत जा</div>' +
     content +
     '</body></html>');
   w.document.close();
