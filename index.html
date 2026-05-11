@@ -1843,7 +1843,11 @@ function genBona() {
   var rec = {id:Date.now(), date:dt, sId:s.id, sName:s.name, cls:c.label, reason:reason, issuedBy:curUser};
   bonafides.push(rec);
   syncStatus('ing');
-  sheetPost('BonafideLog',[['ID','Date','StudentName','Class','Reason','IssuedBy'],[rec.id,rec.date,rec.sName,rec.cls,rec.reason,rec.issuedBy]],function(){
+  var bR=[['ID','Date','StudentName','Class','Reason','IssuedBy']];
+  bonafides.forEach(function(b){
+    bR.push([b.id,b.date,b.sName,b.cls,b.reason,b.issuedBy]);
+  });
+  sheetPost('BonafideLog',bR,function(){
     syncStatus('ok');
     toast('बोनाफाईड रेकॉर्ड सेव्ह! ✅');
   });
