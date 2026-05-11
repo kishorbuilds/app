@@ -956,8 +956,7 @@ function genCard(){
     '<div>___________<br><strong>मुख्याध्यापक</strong></div>'+
     '</div>'+
     '</div>'+
-    '<button class="btn bp no-print" style="margin-top:16px;font-size:1rem;padding:12px 24px;" onclick="printDoc(\'pc-wrap\')">🖨️ प्रिंट करा</button>';
-}
+'<div class="no-print" style="margin-top:16px; display:flex; gap:12px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" onclick="printDoc(\'pc-wrap\')">🖨️ प्रिंट करा</button><button class="btn bd" style="font-size:1rem;padding:12px 24px;" onclick="document.getElementById(\'pc-wrap\').innerHTML=\'\'">❌ बंद करा</button></div>';}
 
 function secRNikal(){
   if(curRole!=='shik'||!curTc||!curTc.classOf)return '<div class="alert aw"><div>&#x1F512;</div><div>\u092B\u0915\u094D\u0924 \u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915\u093E\u0902\u0938\u093E\u0920\u0940</div></div>';
@@ -1843,8 +1842,7 @@ function genBona() {
     '<div style="display:flex; justify-content:space-between; margin-top:80px; text-align:center;">' +
     '<div><b>लिपिक</b></div><div><b>मुख्याध्यापक</b></div>' +
     '</div></div>' +
-    '<button class="btn bp no-print" style="margin-top:20px;" onclick="printDoc(\'bn-wrap\')">🖨️ प्रिंट करा</button>';
-}
+'<div class="no-print" style="margin-top:20px; display:flex; gap:12px;"><button class="btn bp" onclick="window.print()">🖨️ प्रिंट करा</button><button class="btn bd" onclick="document.getElementById(\'bn-wrap\').innerHTML=\'\'">❌ बंद करा</button></div>';}
 
 function printDoc(contentId) {
   var el = document.getElementById(contentId);
