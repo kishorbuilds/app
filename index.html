@@ -153,6 +153,17 @@ tr:hover td{background:#f1f5f9;}
   body{overflow-x:hidden;}
 }
 #print-area { display: none; }
+@media print {
+  @page { margin: 0; }
+  body * { visibility: hidden; }
+  #pc-wrap, #pc-wrap *, #bn-wrap, #bn-wrap * { visibility: visible; }
+  #pc-wrap, #bn-wrap {
+    position: absolute; left: 0; top: 0;
+    width: 100%; display: block !important;
+  }
+  .no-print, button, .btn, .ctag, .mov, #toast { display: none !important; }
+  body { margin: 1cm; background: #fff !important; }
+}
 </style>
 </head>
 <body>
@@ -906,7 +917,7 @@ function genCard(){
     '<div class="pcard-wrap">'+
     '<div style="text-align:center;border-bottom:3px double #000;padding-bottom:12px;margin-bottom:12px;">'+
     '<div style="font-size:.72rem;color:#555;">विद्या विनयेन शोभते</div>'+
-    '<div style="font-size:1rem;font-weight:800;color:#B02020;">समता जोगेश्वरी मंडळाचे,</div>'+
+    '<div style="font-size:1rem;font-weight:800;color:#B02020;">समता जोगेश्वरी मंडळ, एरंडगाव</div>'+
     '<div style="font-size:1.15rem;font-weight:900;color:#1A4A98;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
     '<div style="font-size:.78rem;">ता. शेवगाव, जि. अहिल्यानगर</div>'+
     '<div style="font-size:.95rem;font-weight:800;margin-top:8px;border:2px solid #000;display:inline-block;padding:3px 16px;">प्रगतिपत्रक - सन २०२५-२०२६</div>'+
@@ -956,7 +967,11 @@ function genCard(){
     '<div>___________<br><strong>मुख्याध्यापक</strong></div>'+
     '</div>'+
     '</div>'+
-'<div class="no-print" style="margin-top:16px; display:flex; gap:12px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" onclick="printDoc(\'pc-wrap\')">🖨️ प्रिंट करा</button><button class="btn bd" style="font-size:1rem;padding:12px 24px;" onclick="document.getElementById(\'pc-wrap\').innerHTML=\'\'">❌ बंद करा</button></div>';}
+    '<div class="no-print" style="margin-top:16px;display:flex;gap:12px;">'+
+    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" onclick="window.print()">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bd" style="font-size:1rem;padding:12px 24px;" onclick="document.getElementById(\'pc-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
+    '</div>';
+}
 
 function secRNikal(){
   if(curRole!=='shik'||!curTc||!curTc.classOf)return '<div class="alert aw"><div>&#x1F512;</div><div>\u092B\u0915\u094D\u0924 \u0935\u0930\u094D\u0917\u0936\u093F\u0915\u094D\u0937\u0915\u093E\u0902\u0938\u093E\u0920\u0940</div></div>';
@@ -1824,7 +1839,7 @@ function genBona() {
   var dt = today();
   wrap.innerHTML = '<div class="pcard-wrap">' +
     '<div style="text-align:center; border-bottom:3px solid #000; padding-bottom:10px; margin-bottom:20px;">' +
-    '<h2 style="color:#B02020; margin:0;">समता जोगेश्वरी मंडळाचे,</h2>' +
+    '<h2 style="color:#B02020; margin:0;">समता जोगेश्वरी मंडळ, एरंडगाव</h2>' +
     '<h1 style="color:#1A4A98; margin:5px 0;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</h1>' +
     '<h3 style="margin:0;">ता. शेवगाव, जि. अहिल्यानगर</h3>' +
     '<h2 style="margin-top:15px; border:2px solid #000; display:inline-block; padding:5px 15px;">बोनाफाईड प्रमाणपत्र</h2>' +
@@ -1842,7 +1857,11 @@ function genBona() {
     '<div style="display:flex; justify-content:space-between; margin-top:80px; text-align:center;">' +
     '<div><b>लिपिक</b></div><div><b>मुख्याध्यापक</b></div>' +
     '</div></div>' +
-'<div class="no-print" style="margin-top:20px; display:flex; gap:12px;"><button class="btn bp" onclick="window.print()">🖨️ प्रिंट करा</button><button class="btn bd" onclick="document.getElementById(\'bn-wrap\').innerHTML=\'\'">❌ बंद करा</button></div>';}
+    '<div class="no-print" style="margin-top:20px;display:flex;gap:12px;">'+
+    '<button class="btn bp" onclick="window.print()">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bd" onclick="document.getElementById(\'bn-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
+    '</div>';
+}
 
 function printDoc(contentId) {
   var el = document.getElementById(contentId);
