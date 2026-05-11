@@ -159,7 +159,7 @@ tr:hover td{background:#f1f5f9;}
   body * { visibility: hidden; }
   #pc-wrap, #pc-wrap *, #bn-wrap, #bn-wrap * { visibility: visible; }
   #pc-wrap, #bn-wrap {
-    position: fixed; left: 0; top: 0;
+    position: absolute; left: 0; top: 0;
     width: 100%; height: auto;
     display: block !important;
     padding: 1cm !important;
@@ -1723,6 +1723,13 @@ function loadAll(){
     sheetGet('Students',function(sR){
       if(sR.length>1){parseAndLoadStudents(sR);loadTransactionsAndSettings();}
       else{sheetGet('vidyarthi',function(sR2){parseAndLoadStudents(sR2);loadTransactionsAndSettings();});}
+    });
+    sheetGet('BonafideLog',function(rows){
+      if(rows&&rows.length>1){
+        bonafides=rows.slice(1).map(function(r){
+          return{id:r[0],date:r[1],sName:r[2],cls:r[3],reason:r[4],issuedBy:r[5]};
+        });
+      }
     });
   });
 }
