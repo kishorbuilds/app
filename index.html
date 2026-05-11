@@ -158,13 +158,16 @@ tr:hover td{background:#f1f5f9;}
   html, body { margin: 0 !important; padding: 0 !important; }
   body * { visibility: hidden; }
   #pc-wrap, #pc-wrap *, #bn-wrap, #bn-wrap * { visibility: visible; }
+  #bn-wrap *, #pc-wrap * { background: white !important; color: black !important; }
   #pc-wrap, #bn-wrap {
     position: absolute; left: 0; top: 0;
     width: 100%; height: auto;
     display: block !important;
     padding: 1cm !important;
     box-sizing: border-box;
+    page-break-inside: avoid !important;
   }
+  .pcard-wrap { page-break-inside: avoid !important; }
   .no-print, button, .btn, .ctag, .mov, #toast { display: none !important; }
 }
 </style>
