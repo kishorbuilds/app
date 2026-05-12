@@ -160,7 +160,8 @@ tr:hover td{background:#f1f5f9;}
   #bn-wrap, #bn-wrap *, #pc-wrap, #pc-wrap *, .pcard-wrap, .card {
     background-color: white !important;
   }
-  body * { visibility: hidden; }
+  body > *:not(#mod-view):not(script):not(style) { visibility: hidden; }
+  #mod-view { visibility: visible; }
   #pc-wrap, #pc-wrap *, #bn-wrap, #bn-wrap * { visibility: visible; }
   #bn-wrap, #bn-wrap *, #pc-wrap, #pc-wrap *, .pcard-wrap, .card {
     background: white !important;
