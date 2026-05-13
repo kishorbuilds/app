@@ -751,6 +751,10 @@ function loadMkTable(){
   var tcName = tcEntry ? tcEntry.teacher : '';
   var termLabel = term==='2' ? 'द्वितीय सत्र' : 'प्रथम सत्र';
   var wrap=document.getElementById('mk-wrap');if(!wrap)return;
+  if(settings.marksLocked && curRole==='shik'){
+    document.getElementById('mk-wrap').innerHTML='<div class="alert aw">⚠️ गुण नोंदणी बंद आहे. मुख्याध्यापकांशी संपर्क साधा.</div>';
+    return;
+  }
   if(!cls||!subj){wrap.innerHTML='';return;}
   if(getCtype(cls)!=='high'){
     if(!term){wrap.innerHTML='<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>सत्र निवडा</div></div>';return;}
@@ -776,7 +780,7 @@ function loadMkTable(){
     '<div class="tw"><table><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" onclick="window.print()">🖨️ प्रिंट करा</button></div>';
 }
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
-function saveAllMk(cls,subj){var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
+function saveAllMk(cls,subj){if(settings.marksLocked && curRole==='shik'){ toast('गुण नोंदणी बंद आहे!','err'); return; }var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
 
 function calc5TotRow(sId,cls,subj,term){
   var pfx='t'+term+'_';
@@ -789,6 +793,10 @@ function calc5TotRow(sId,cls,subj,term){
 }
 function loadMkTable5(cls,subj,term){
   var pfx='t'+term+'_';
+  if(settings.marksLocked && curRole==='shik'){
+    document.getElementById('mk-wrap').innerHTML='<div class="alert aw">⚠️ गुण नोंदणी बंद आहे. मुख्याध्यापकांशी संपर्क साधा.</div>';
+    return;
+  }
   var clsLabel = getCls(cls).label;
   var tcEntry = ttData.find(function(s){ return s.cls===cls && s.subject===subj; });
   var tcName = tcEntry ? tcEntry.teacher : '';
@@ -858,6 +866,7 @@ function update5TotRow(sId,cls,subj,term){
   validate5Row(sId,cls,subj,term);
 }
 function save5Marks(cls,subj,term){
+  if(settings.marksLocked && curRole==='shik'){ toast('गुण नोंदणी बंद आहे!','err'); return; }
   var pfx='t'+term+'_';var stds2=getStds(cls);var allFields=FA5.concat(SA5);
   var blocked=false;
   stds2.forEach(function(s){var cnt=0;FA5.forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp&&(parseFloat(inp.value)||0)>0)cnt++;});if(cnt>=5)blocked=true;});
@@ -1843,7 +1852,7 @@ document.addEventListener('DOMContentLoaded',function(){
       var mx5=parseFloat(t.getAttribute('data-max')||0);var term5=t.getAttribute('data-term')||'1';
       if(mx5&&(parseFloat(t.value)||0)>mx5){t.value=mx5;t.classList.add('err');}else{t.classList.remove('err');}
       if(sid5&&cls5&&subj5&&exam5){setMk(sid5,cls5,subj5,exam5,t.value);update5TotRow(sid5,cls5,subj5,term5);}
-    }else if(act==='toggleLock'){settings.marksLocked=t.checked;syncSettings();toast(t.checked?'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926!':'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942!');}
+    }else if(act==='toggleLock'){settings.marksLocked=t.checked;syncSettings();toast(t.checked?'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926!':'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942!');if(document.getElementById('mk-wrap')) document.getElementById('mk-wrap').innerHTML='';}
   });
 
   document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();});
