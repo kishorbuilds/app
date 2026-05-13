@@ -719,7 +719,7 @@ function buildLibReport(){var el=document.getElementById('lrp-content');if(!el)r
 // ---- RESULTS SECTIONS ----
 function secRD(){return '<div id="rd-content"><div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;font-size:1.1rem;">&#x1F504; \u0932\u094B\u0921...</div></div>';}
 
-function secRM(){
+function renderSecRM(){
   if(settings.marksLocked&&curRole==='shik')return '<div class="alert aw"><div>&#x1F512;</div><div><strong>गुण नोंदणी बंद आहे</strong></div></div>';
   var isA=(curRole==='super'||curRole==='mukh');
   var availCls=isA?CLASSES:CLASSES.filter(function(c){return curTc&&curTc.classes.indexOf(c.id)>=0;});
@@ -731,6 +731,16 @@ function secRM(){
     '<div class="fg"><label>विषय</label><select id="m-subj"><option value="">निवडा</option></select></div>'+
     '</div>'+
     '<div id="mk-wrap"></div></div>';
+}
+function secRM(){
+  sheetGet('settings', function(sr){
+    if(sr && sr.length>1) sr.slice(1).forEach(function(r){
+      if(r[0]==='marksLocked') settings.marksLocked=(r[1]==='1');
+    });
+    var mkWrap = document.getElementById('mod-secs');
+    if(mkWrap) mkWrap.innerHTML = renderSecRM();
+  });
+  return '<div style="text-align:center;padding:20px;">⏳ लोड होत आहे...</div>';
 }
 function onMCls(){
   var cls=(document.getElementById('m-cls')||{}).value||'';
