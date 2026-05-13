@@ -1316,7 +1316,12 @@ function secRAdm(){
   return '<div class="card"><div class="ct">🔒 गुण नोंदणी नियंत्रण</div>'+
     '<div class="trow" style="padding:20px;"><div><div style="font-weight:800;font-size:1rem;color:var(--d);">गुण नोंदणी बंद/सुरू</div>'+
     '<div style="font-size:.8rem;color:var(--mt);margin-top:4px;font-weight:500;">बंद केल्यानंतर शिक्षक गुण भरू शकणार नाही</div></div>'+
-    '<label class="tsw"><input type="checkbox" id="tg-lk2" '+(settings.marksLocked?'checked':'')+' data-action="toggleLock"><span class="tsl"></span></label></div></div>'+
+    '<div style="margin-top:12px;">'+
+    '<button id="tg-lk2" data-action="toggleLock" class="btn" style="font-size:1rem;padding:12px 28px;background:'+(settings.marksLocked?'#dc2626':'#16a34a')+'!important;color:white;border:none;border-radius:8px;cursor:pointer;">'+
+    (settings.marksLocked?'🔒 गुण नोंदणी बंद आहे — सुरू करा':'🔓 गुण नोंदणी सुरू आहे — बंद करा')+
+    '</button>'+
+    '</div>'+
+    '</div></div>'+
     '<div class="card"><div class="ct">👨‍🏫 शिक्षक गुण प्रगती</div>'+
     '<div class="tw"><table><thead><tr><th>शिक्षक</th><th>विषय</th><th>वर्गशिक्षक</th><th>प्रगती</th></tr></thead>'+
     '<tbody>'+tcRows+'</tbody></table></div></div>';
@@ -1867,7 +1872,7 @@ document.addEventListener('DOMContentLoaded',function(){
       var mx5=parseFloat(t.getAttribute('data-max')||0);var term5=t.getAttribute('data-term')||'1';
       if(mx5&&(parseFloat(t.value)||0)>mx5){t.value=mx5;t.classList.add('err');}else{t.classList.remove('err');}
       if(sid5&&cls5&&subj5&&exam5){setMk(sid5,cls5,subj5,exam5,t.value);update5TotRow(sid5,cls5,subj5,term5);}
-    }else if(act==='toggleLock'){settings.marksLocked=t.checked;syncSettings();toast(t.checked?'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926!':'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942!');if(document.getElementById('mk-wrap')) document.getElementById('mk-wrap').innerHTML='';}
+    }else if(act==='toggleLock'){settings.marksLocked=!settings.marksLocked;syncSettings();toast(settings.marksLocked?'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926!':'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942!');var btn=document.getElementById('tg-lk2');if(btn){btn.style.background=settings.marksLocked?'#dc2626':'#16a34a';btn.textContent=settings.marksLocked?'\uD83D\uDD12 \u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u092C\u0902\u0926 \u0906\u0939\u0947 \u2014 \u0938\u0941\u0930\u0942 \u0915\u0930\u093E':'\uD83D\uDD13 \u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940 \u0938\u0941\u0930\u0942 \u0906\u0939\u0947 \u2014 \u092C\u0902\u0926 \u0915\u0930\u093E';}if(document.getElementById('mk-wrap')) document.getElementById('mk-wrap').innerHTML='';}
   });
 
   document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();});
