@@ -154,8 +154,37 @@ tr:hover td{background:#f1f5f9;}
 }
 #print-area { display: none; }
 @media print {
-  @page { margin: 1cm; }
+  @page { margin: 0.5cm; size: A4 portrait; }
+  body.print-a4-land @page { size: A4 landscape; }
+  body.print-a3-land @page { size: A3 landscape; }
+
   .no-print, button, .btn, .ctag, .mov, #toast, header, nav { display: none !important; }
+
+  body.print-a4-land #mod-view,
+  body.print-a3-land #mod-view {
+    transform: scale(0.95);
+    transform-origin: top left;
+    width: 105% !important;
+  }
+
+  #pc-wrap:not(:empty), #bn-wrap:not(:empty) {
+    position: fixed !important;
+    left: 0 !important; top: 0 !important;
+    width: 100% !important;
+    background: white !important;
+    z-index: 9999;
+    padding: 0.5cm !important;
+    box-sizing: border-box;
+    font-size: 12px !important;
+    zoom: 0.72;
+  }
+
+  #pc-wrap:not(:empty) *, #bn-wrap:not(:empty) * {
+    background: transparent !important;
+    color: black !important;
+  }
+
+  .pcard-wrap { page-break-inside: avoid !important; }
 }
 </style>
 </head>
@@ -849,7 +878,7 @@ function loadGosawara(){
     var rows2=subjs.map(function(subj){var cells2=grades.map(function(g,i){var cnt=stds2.filter(function(s){var t=calcSubjTotal(s.id,cls,subj);return t.total!==''&&gFn[i](t.pct);}).length;return '<td style="text-align:center;font-weight:600;">'+(cnt||'-')+'</td>';}).join('');var tot=stds2.filter(function(s){return calcSubjTotal(s.id,cls,subj).total!=='';}).length;return '<tr><td style="font-weight:800;font-size:.85rem;">'+subj+'</td>'+cells2+'<td style="text-align:center;font-weight:900;color:var(--b);font-size:1rem;">'+tot+'</td></tr>';}).join('');
     table='<div class="tw"><table class="gos-tbl"><thead><tr>'+thG+'</tr></thead><tbody>'+rows2+'</tbody></table></div>';
   }
-  wrap.innerHTML=stats+table+'<button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
+  wrap.innerHTML=stats+table+'<button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" onclick="document.body.classList.add(\'print-a4-land\');window.print();document.body.classList.remove(\'print-a4-land\');">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
 }
 
 function secRBook(){
@@ -865,7 +894,7 @@ function loadRBook(){
   var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.7rem;padding:10px;">'+s+'</th>';}).join('');
   var thExams=subjs.map(function(){return exams.map(function(e){return '<th style="font-size:.65rem;text-align:center;font-weight:700;">'+e.key.toUpperCase()+'</th>';}).join('');}).join('');
   var rows=stds2.map(function(s){var r=calcStudentTotal(s.id,cls);var cells=subjs.map(function(subj){return exams.map(function(exam){var v=getMk(s.id,cls,subj,exam.key);return '<td style="text-align:center;font-size:.85rem;font-weight:600;">'+(v!==''?v:'-')+'</td>';}).join('');}).join('');var gr=r.hasData?grade(r.pct,cls):'-';var pf=r.pct>=33?'<span class="bdg bgg">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':'<span class="bdg bgr">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-weight:700;font-size:.9rem;">'+s.name+'</td>'+cells+'<td style="font-weight:900;text-align:center;font-size:1rem;color:var(--b);">'+r.pct+'%</td><td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td><td>'+pf+'</td></tr>';}).join('');
-  wrap.innerHTML='<div class="tw" style="font-size:.85rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
+  wrap.innerHTML='<div class="tw" style="font-size:.85rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" onclick="document.body.classList.add(\'print-a3-land\');window.print();document.body.classList.remove(\'print-a3-land\');">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
 }
 
 function secRCard(){
@@ -961,7 +990,7 @@ function genCard(){
     '</div>'+
     '</div>'+
     '<div class="no-print" style="margin-top:16px;display:flex;gap:12px;">'+
-    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" onclick="window.print()">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" onclick="document.body.classList.add(\'print-cert\');window.print();document.body.classList.remove(\'print-cert\');">🖨️ प्रिंट करा</button>'+
     '<button class="btn bd" style="font-size:1rem;padding:12px 24px;" onclick="document.getElementById(\'pc-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
     '</div>';
 }
@@ -973,7 +1002,7 @@ function secRNikal(){
     '<div class="fg2" style="margin-bottom:16px;"><div class="fg"><label>\u0938\u0924\u094D\u0930</label>'+
     '<select id="nikal-term"><option value="1">\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930</option><option value="2">\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930</option></select></div></div>'+
     '<button class="btn bb" style="font-size:1.05rem;padding:12px 24px;" data-action="loadnikal">&#x2B07;&#xFE0F; Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E</button> '+
-    '<button class="btn bp no-print" style="font-size:1.05rem;padding:12px 24px;" data-action="print">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button></div>'+
+    '<button class="btn bp no-print" style="font-size:1.05rem;padding:12px 24px;" onclick="document.body.classList.add(\'print-a3-land\');window.print();document.body.classList.remove(\'print-a3-land\');">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button></div>'+
     '<div id="nikal-root"><div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;font-size:1.1rem;">&#x23F3; \u0938\u0924\u094D\u0930 \u0928\u093F\u0935\u0921\u093E \u0935 Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E \u0915\u094D\u0932\u093F\u0915 \u0915\u0930\u093E</div></div>';
 }
 function loadAndRenderNikal(){
@@ -1494,6 +1523,7 @@ function printSubLog(){
   var rows=filtered.map(function(s,i){
     return '<tr><td style="text-align:center;">'+(i+1)+'</td><td>'+formatDateIndian(s.date)+'</td><td>'+s.absTcName+'</td><td>'+s.subTcName+'</td><td style="text-align:center;">'+s.cls+'</td><td style="text-align:center;">'+s.period+'</td><td>'+s.subj+'</td></tr>';
   }).join('');
+  document.body.classList.add('print-a4-land');
   var win=window.open('','_blank');
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>तासिका समायोजन अहवाल</title>'+
     '<style>body{font-family:-apple-system,Arial,sans-serif;padding:30px;}h2{text-align:center;font-size:24px;margin-bottom:10px;}table{width:100%;border-collapse:collapse;font-size:15px;margin-top:24px;}th,td{border:1px solid #ccc;padding:10px 12px;text-align:left;}th{background:#f4f4f4;font-weight:800;}tr:nth-child(even){background:#fafafa;}@media print{button{display:none;}}</style>'+
@@ -1504,6 +1534,7 @@ function printSubLog(){
     '<br><button onclick="window.print()" style="padding:12px 24px;font-size:16px;font-weight:bold;cursor:pointer;background:#2563eb;color:#fff;border:none;border-radius:8px;">🖨️ प्रिंट करा</button>'+
     '</body></html>');
   win.document.close();
+  document.body.classList.remove('print-a4-land');
 }
 
 function secTTAdm(){
