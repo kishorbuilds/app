@@ -155,8 +155,13 @@ tr:hover td{background:#f1f5f9;}
 #print-area { display: none; }
 @media print {
   @page { margin: 5mm; size: auto; }
-  header, nav, .no-print, button, .btn, .ctag, .mov, #toast, #login-screen {
+  header, nav, .no-print, button, .btn, .ctag, .mov, #toast, #login-screen,
+  .tw th.no-print, .tw td.no-print {
     display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    padding: 0 !important;
+    border: none !important;
   }
   body:has(#bn-wrap:not(:empty)) #app,
   body:has(#pc-wrap:not(:empty)) #app {
