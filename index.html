@@ -154,37 +154,8 @@ tr:hover td{background:#f1f5f9;}
 }
 #print-area { display: none; }
 @media print {
-  @page { margin: 0.5cm; size: A4 portrait; }
-  body.print-a4-land @page { size: A4 landscape; }
-  body.print-a3-land @page { size: A3 landscape; }
-
+  @page { margin: 0.5cm; }
   .no-print, button, .btn, .ctag, .mov, #toast, header, nav { display: none !important; }
-
-  body.print-a4-land #mod-view,
-  body.print-a3-land #mod-view {
-    transform: scale(0.95);
-    transform-origin: top left;
-    width: 105% !important;
-  }
-
-  #pc-wrap:not(:empty), #bn-wrap:not(:empty) {
-    position: fixed !important;
-    left: 0 !important; top: 0 !important;
-    width: 100% !important;
-    background: white !important;
-    z-index: 9999;
-    padding: 0.5cm !important;
-    box-sizing: border-box;
-    font-size: 12px !important;
-    zoom: 0.72;
-  }
-
-  #pc-wrap:not(:empty) *, #bn-wrap:not(:empty) * {
-    background: transparent !important;
-    color: black !important;
-  }
-
-  .pcard-wrap { page-break-inside: avoid !important; }
 }
 </style>
 </head>
