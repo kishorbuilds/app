@@ -815,7 +815,7 @@ function loadMkTable5(cls,subj,term){
       saCells+'<td id="sa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--g);font-size:1rem;">'+(tot.sa!==''?tot.sa:'-')+'</td>'+
       '<td id="tot5-'+s.id+'" style="font-weight:900;text-align:center;font-size:1.1rem;">'+(tot.total!==''?tot.total:'-')+'</td>'+
       '<td><span class="bdg '+gradeColor(gr)+'" id="grd5-'+s.id+'">'+gr+'</span></td>'+
-      '<td id="warn5-'+s.id+'-'+term+'" style="min-width:160px;vertical-align:middle;"></td></tr>';
+      '<td id="warn5-'+s.id+'-'+term+'" class="no-print" style="min-width:160px;vertical-align:middle;"></td></tr>';
   }).join('');
   wrap.innerHTML='<div class="print-header" style="text-align:center; margin-bottom:10px;">'+
     '<div style="font-size:0.85rem;">समता जोगेश्वरी मंडळाचे</div>'+
@@ -831,7 +831,7 @@ function loadMkTable5(cls,subj,term){
     '<th rowspan="2" style="text-align:center;background:#166534;color:white;font-size:.75rem;padding:12px;">एकूण<br>(ब)<br>/60</th>'+
     '<th rowspan="2" style="text-align:center;font-size:.75rem;padding:12px;background:#475569;color:white;">अ+ब<br>/100</th>'+
     '<th rowspan="2" style="background:#475569;color:white;">श्रेणी</th>'+
-    '<th rowspan="2" style="min-width:160px;background:#475569;color:white;">⚠️ सूचना</th>'+
+    '<th rowspan="2" class="no-print" style="min-width:160px;background:#475569;color:white;">⚠️ सूचना</th>'+
     '</tr><tr>'+faHdr+saHdr+'</tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" onclick="window.print()">🖨️ प्रिंट करा</button></div>';
