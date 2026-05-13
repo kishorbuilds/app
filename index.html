@@ -742,6 +742,10 @@ function loadMkTable(){
   var cls=(document.getElementById('m-cls')||{}).value||'';
   var subj=(document.getElementById('m-subj')||{}).value||'';
   var term=(document.getElementById('m-term')||{}).value||'';
+  var clsLabel = getCls(cls).label;
+  var tcEntry = ttData.find(function(s){ return s.cls===cls && s.subject===subj; });
+  var tcName = tcEntry ? tcEntry.teacher : '';
+  var termLabel = term==='2' ? 'द्वितीय सत्र' : 'प्रथम सत्र';
   var wrap=document.getElementById('mk-wrap');if(!wrap)return;
   if(!cls||!subj){wrap.innerHTML='';return;}
   if(getCtype(cls)!=='high'){
@@ -760,7 +764,12 @@ function loadMkTable(){
     var t=calcSubjTotal(s.id,cls,subj);var gr=t.total!==''?grade(t.pct,cls):'-';
     return '<tr><td><strong>'+s.roll+'</strong></td><td><strong>'+s.name+'</strong></td>'+cells+'<td id="tot-'+s.id+'" style="font-weight:900;font-size:1.05rem;color:var(--b);">'+(t.total||'-')+'</td><td><span class="bdg '+gradeColor(gr)+'" id="grd-'+s.id+'">'+gr+'</span></td></tr>';
   }).join('');
-  wrap.innerHTML='<div class="tw"><table><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" onclick="window.print()">🖨️ प्रिंट करा</button></div>';
+  wrap.innerHTML='<div class="print-header" style="text-align:center; margin-bottom:10px;">'+
+    '<div style="font-size:0.85rem;">समता जोगेश्वरी मंडळाचे</div>'+
+    '<strong style="font-size:1.1rem;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</strong><br>'+
+    '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+subj+' | शिक्षक: '+tcName+'</span>'+
+    '</div>'+
+    '<div class="tw"><table><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" onclick="window.print()">🖨️ प्रिंट करा</button></div>';
 }
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
 function saveAllMk(cls,subj){var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
@@ -776,6 +785,10 @@ function calc5TotRow(sId,cls,subj,term){
 }
 function loadMkTable5(cls,subj,term){
   var pfx='t'+term+'_';
+  var clsLabel = getCls(cls).label;
+  var tcEntry = ttData.find(function(s){ return s.cls===cls && s.subject===subj; });
+  var tcName = tcEntry ? tcEntry.teacher : '';
+  var termLabel = term==='2' ? 'द्वितीय सत्र' : 'प्रथम सत्र';
   var stds2=getStds(cls);var wrap=document.getElementById('mk-wrap');
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
   var faHdr=FA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bfdbfe;">/'+f.max+'</span></th>';}).join('');
@@ -792,7 +805,12 @@ function loadMkTable5(cls,subj,term){
       '<td><span class="bdg '+gradeColor(gr)+'" id="grd5-'+s.id+'">'+gr+'</span></td>'+
       '<td id="warn5-'+s.id+'-'+term+'" style="min-width:160px;vertical-align:middle;"></td></tr>';
   }).join('');
-  wrap.innerHTML='<div class="tw"><table>'+
+  wrap.innerHTML='<div class="print-header" style="text-align:center; margin-bottom:10px;">'+
+    '<div style="font-size:0.85rem;">समता जोगेश्वरी मंडळाचे</div>'+
+    '<strong style="font-size:1.1rem;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</strong><br>'+
+    '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+subj+' | शिक्षक: '+tcName+'</span>'+
+    '</div>'+
+    '<div class="tw"><table>'+
     '<thead><tr>'+
     '<th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+
     '<th colspan="'+FA5.length+'" style="text-align:center;background:#1e40af;color:white;font-size:.8rem;padding:12px;">अ - आकारिक मूल्यमापन (FA) /40</th>'+
@@ -821,7 +839,7 @@ function validate5Row(sId,cls,subj,term){
   SA5.forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!=='')saSum+=parseFloat(v)||0;});
   if(tond!==''&&prat!=='')warns.push('तोंडी किंवा प्रात्यक्षिक एकच असावे');
   if(saSum>60)warns.push('SA एकूण 60 पेक्षा जास्त');
-  el.innerHTML=warns.length?'<div style="'+(hasBlock?'background:#fef2f2;border:2px solid var(--r);border-radius:10px;padding:8px 12px;':'')+
+  el.innerHTML=warns.length?'<div class="no-print" style="'+(hasBlock?'background:#fef2f2;border:2px solid var(--r);border-radius:10px;padding:8px 12px;':'')+
     'color:var(--r);font-size:.7rem;font-weight:700;line-height:1.6;">'+warns.join('<br>')+'</div>':'';
 }
 
@@ -950,7 +968,7 @@ function genCard(){
     '<div class="pcard-wrap">'+
     '<div style="text-align:center;border-bottom:3px double #000;padding-bottom:12px;margin-bottom:12px;">'+
     '<div style="font-size:.72rem;color:#555;">विद्या विनयेन शोभते</div>'+
-    '<div style="font-size:1rem;font-weight:800;color:#B02020;">समता जोगेश्वरी मंडळ, एरंडगाव</div>'+
+    '<div style="font-size:1rem;font-weight:800;color:#B02020;">समता जोगेश्वरी मंडळाचे</div>'+
     '<div style="font-size:1.15rem;font-weight:900;color:#1A4A98;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
     '<div style="font-size:.78rem;">ता. शेवगाव, जि. अहिल्यानगर</div>'+
     '<div style="font-size:.95rem;font-weight:800;margin-top:8px;border:2px solid #000;display:inline-block;padding:3px 16px;">प्रगतिपत्रक - सन २०२५-२०२६</div>'+
@@ -1892,7 +1910,7 @@ function genBona() {
   });
   wrap.innerHTML = '<div class="pcard-wrap">' +
     '<div style="text-align:center; border-bottom:3px solid #000; padding-bottom:10px; margin-bottom:20px;">' +
-    '<h2 style="color:#B02020; margin:0;">समता जोगेश्वरी मंडळ, एरंडगाव</h2>' +
+    '<h2 style="color:#B02020; margin:0;">समता जोगेश्वरी मंडळाचे</h2>' +
     '<h1 style="color:#1A4A98; margin:5px 0;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</h1>' +
     '<h3 style="margin:0;">ता. शेवगाव, जि. अहिल्यानगर</h3>' +
     '<h2 style="margin-top:15px; border:2px solid #000; display:inline-block; padding:5px 15px;">बोनाफाईड प्रमाणपत्र</h2>' +
