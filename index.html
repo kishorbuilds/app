@@ -156,6 +156,14 @@ tr:hover td{background:#f1f5f9;}
 @media print {
   @page { margin: 0.5cm; }
   .no-print, button, .btn, .ctag, .mov, #toast, header, nav { display: none !important; }
+  #pc-wrap:not(:empty), #bn-wrap:not(:empty) {
+    zoom: 0.72;
+  }
+  body:not(.print-cert) #mod-view {
+    transform: scale(0.72);
+    transform-origin: top left;
+    width: 139% !important;
+  }
 }
 </style>
 </head>
