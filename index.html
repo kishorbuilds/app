@@ -475,10 +475,16 @@ function renderNoticeBoard(){
   var db = document.getElementById('dashboard-widgets');
   if(!db) return;
 
-  var todaySubs = substitutions.filter(function(s){return s.date===today();});
+  var todaySubs = substitutions.filter(function(s){
+    if(s.date !== today()) return false;
+    if(curRole === 'shik' && curTc){
+      return parseInt(s.subTcId)===parseInt(curTc.id) || s.subTcName===curTc.name;
+    }
+    return true;
+  });
   var subRows = '';
   if(todaySubs.length === 0){
-    subRows = '<div style="padding:16px 0;font-size:.85rem;color:var(--mt);text-align:center;font-weight:600;">आज कोणतेही तासिका समायोजन नाही.</div>';
+    subRows = '<div style="padding:16px 0;font-size:.85rem;color:var(--mt);text-align:center;font-weight:600;">'+(curRole==='shik' ? 'आज तुमचे कोणतेही समायोजित तास नाहीत.' : 'आज कोणतेही तासिका समायोजन नाही.')+'</div>';
   } else {
     subRows = todaySubs.map(function(s){
       return '<div class="notice-row"><div><strong>वर्ग '+s.cls+'</strong> ('+s.subj+') - तास '+s.period+'</div><div style="text-align:right;"><span style="color:var(--g);font-weight:800;">'+s.subTcName+'</span> <span style="font-size:.75rem;color:var(--mt);">('+s.absTcName+')</span></div></div>';
