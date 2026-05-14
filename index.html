@@ -384,7 +384,26 @@ var nextBId=1,nextTxId=1,nextSId=1;
 // ---- UTILS ----
 function today(){return new Date().toISOString().split('T')[0];}
 function formatDateIndian(s){if(!s)return '';var d=String(s).split('T')[0];var p=d.split('-');if(p.length!==3)return d;return p[0].length===4?p[2]+'-'+p[1]+'-'+p[0]:d;}
-function normalizeDate(s){if(!s)return '';var d=String(s).split('T')[0];var p=d.split('-');if(p.length!==3)return d;return p[2].length===4?p[2]+'-'+p[1]+'-'+p[0]:d;}
+function normalizeDate(s){
+  if(!s) return '';
+  var str = String(s);
+  if(str.indexOf('T') !== -1 || str.indexOf('Z') !== -1){
+    var dt = new Date(str);
+    if(!isNaN(dt.getTime())){
+      var ist = new Date(dt.getTime() + (5.5 * 60 * 60 * 1000));
+      var yy = ist.getUTCFullYear();
+      var mm = String(ist.getUTCMonth()+1).padStart(2,'0');
+      var dd = String(ist.getUTCDate()).padStart(2,'0');
+      return yy+'-'+mm+'-'+dd;
+    }
+  }
+  var d = str.split('T')[0];
+  var p = d.split('-');
+  if(p.length !== 3) return d;
+  return p[2].length === 4
+    ? p[2]+'-'+p[1]+'-'+p[0]
+    : d;
+}
 function addDays(d,n){var dt=new Date(d);dt.setDate(dt.getDate()+n);return dt.toISOString().split('T')[0];}
 function dL(due){if(!due)return 0;var d=new Date(String(due).split('T')[0]),n=new Date(today());return Math.floor((n-d)/86400000);}
 function fmt(d){
