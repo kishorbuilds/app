@@ -71,6 +71,7 @@ header{background:linear-gradient(90deg, #1e293b 0%, #3b82f6 100%);color:#fff;po
 .rt{background:#dbeafe;color:var(--b);}
 .sbtn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:800;transition:background .2s;}
 .sbtn:hover{background:rgba(255,255,255,.3);}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 .modules{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:800px;margin:30px auto;padding:0 20px;}
 .mcard{background:rgba(255, 255, 255, 0.95);backdrop-filter: blur(10px);border-radius:24px;padding:32px 20px;text-align:center;cursor:pointer;box-shadow:var(--sh);transition:all .3s ease;border:1px solid rgba(255,255,255,0.5);}
@@ -265,7 +266,10 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
     </div>
     <div class="hr">
       <span id="sync"></span>
-      <div class="ubdg"><span id="uname">&#x2014;</span><span class="rchip" id="rchip"></span></div>
+      <div class="ubdg" style="flex-direction:column;align-items:flex-end;gap:2px;padding:6px 14px;">
+        <span id="uname" style="font-size:clamp(0.85rem,2.5vw,1.1rem);white-space:nowrap;">&#x2014;</span>
+        <span class="rchip" id="rchip"></span>
+      </div>
       <button class="sbtn" id="logout-btn" data-action="logout">&#x092C;&#x093E;&#x0939;&#x0947;&#x0930;</button>
     </div>
   </div>
@@ -446,7 +450,7 @@ var _toast=null;
 function toast(msg,t){var el=document.getElementById('toast');el.textContent=msg;el.className='show '+(t||'ok');if(_toast)clearTimeout(_toast);_toast=setTimeout(function(){el.className='';},3000);}
 function openM(id){document.getElementById(id).classList.add('op');}
 function closeM(id){document.getElementById(id).classList.remove('op');}
-function syncStatus(s){var el=document.getElementById('sync');if(!el)return;if(s==='ok'){el.textContent='☁️ Saved';el.style.color='#23A058';}else if(s==='ing'){el.textContent='⏳...';el.style.color='#F57F17';}else{el.textContent='📵 Offline';el.style.color='var(--r)';}}
+function syncStatus(s){var el=document.getElementById('sync');if(!el)return;if(s==='ok'){el.innerHTML='☁️ Saved';el.style.color='#23A058';}else if(s==='ing'){el.innerHTML='<div style="display:inline-flex;align-items:center;gap:6px;"><div style="width:18px;height:18px;border:3px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div><span style="font-size:0.8rem;">लोड...</span></div>';el.style.color='#fff';}else{el.innerHTML='📵 Offline';el.style.color='var(--r)';}}
 function noAccess(){return '<div class="alert aw"><div>&#x1F512;</div><div>\u0905\u0927\u093F\u0915\u093E\u0930 \u0928\u093E\u0939\u0940</div></div>';}
 
 // ---- LOGIN ----
@@ -1452,9 +1456,7 @@ function secTTTc(){
     '<div class="fg2"><div class="fg"><label>शिक्षक</label><select id="tt-tc-sel"><option value="">निवडा</option>'+
     TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('')+'</select></div></div>';
   
-  var dateFilter = '<div class="fg2"><div class="fg"><label>तारीख (समायोजन पाहण्यासाठी)</label><input type="date" id="tt-tc-date" value="'+today()+'"></div></div>';
-
-  return '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; शिक्षकनिहाय वेळापत्रक</div>'+tcTop+dateFilter+'<div id="tt-tc-wrap"></div></div>';
+  return '<div class="card"><div class="ct">&#x1F468;&#x200D;&#x1F3EB; शिक्षकनिहाय वेळापत्रक</div>'+tcTop+'<div id="tt-tc-wrap"></div></div>';
 }
 
 function renderTTTc(){
