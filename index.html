@@ -471,23 +471,38 @@ function doLogin(){
   var rType=document.getElementById('l-role').value;
   var pw=document.getElementById('l-pw').value;
   if(!rType){toast('भूमिका निवडा!','err');return;}
-  if(rType==='admin'){
-     var r=document.getElementById('l-admin-role').value;
-     if(!r){toast('प्रशासकीय पद निवडा!','err');return;}
-     if(r==='super'){if(pw!==PW.super){loginErr('पासवर्ड चुकीचा!');return;}curRole='super';curUser='संस्थाचालक';curTc=null;}
-     else if(r==='mukh'){if(pw!==PW.mukh){loginErr('पासवर्ड चुकीचा!');return;}curRole='mukh';curUser='मुख्याध्यापक';curTc=null;}
-     else if(r==='clerk'){if(pw!==PW.clerk){loginErr('पासवर्ड चुकीचा!');return;}curRole='clerk';curUser='लिपिक';curTc=null;}
-  } else if(rType==='shik'){
-     var tid=parseInt(document.getElementById('l-tc').value)||0;
-     if(!tid){loginErr('शिक्षक निवडा!');return;}
-     var tc=TEACHERS.find(function(t){return t.id===tid;});
-     if(!tc||pw!==tc.pw){loginErr('पासवर्ड चुकीचा!');return;}
-     curRole='shik';curUser=tc.name;curTc=tc;
-  }
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='block';
-  setupHeader();showHome();loadShikshakFirst();
-}function doLogout(){curRole=null;curUser=null;curTc=null;curMod=null;document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='none';document.getElementById('l-pw').value='';document.getElementById('l-role').value='';document.getElementById('tc-sel').style.display='none';}
+  sheetGet('passwords',function(pwR){
+    if(pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
+    sheetGet('Shikshak',function(rows){parseShikshakRows(rows);
+      if(rType==='admin'){
+         var r=document.getElementById('l-admin-role').value;
+         if(!r){toast('प्रशासकीय पद निवडा!','err');return;}
+         if(r==='super'){if(pw!==PW.super){loginErr('पासवर्ड चुकीचा!');return;}curRole='super';curUser='संस्थाचालक';curTc=null;}
+         else if(r==='mukh'){if(pw!==PW.mukh){loginErr('पासवर्ड चुकीचा!');return;}curRole='mukh';curUser='मुख्याध्यापक';curTc=null;}
+         else if(r==='clerk'){if(pw!==PW.clerk){loginErr('पासवर्ड चुकीचा!');return;}curRole='clerk';curUser='लिपिक';curTc=null;}
+      } else if(rType==='shik'){
+         var tid=parseInt(document.getElementById('l-tc').value)||0;
+         if(!tid){loginErr('शिक्षक निवडा!');return;}
+         var tc=TEACHERS.find(function(t){return t.id===tid;});
+         if(!tc||pw!==tc.pw){loginErr('पासवर्ड चुकीचा!');return;}
+         curRole='shik';curUser=tc.name;curTc=tc;
+      }
+      if(!curRole)return;
+      localStorage.setItem('emve_role',curRole);
+      localStorage.setItem('emve_user',curUser);
+      localStorage.setItem('emve_tc',JSON.stringify(curTc));
+      localStorage.setItem('emve_login_time',Date.now());
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('app').style.display='block';
+      setupHeader();showHome();loadShikshakFirst();
+    });
+  });
+}function doLogout(){
+  localStorage.removeItem('emve_role');
+  localStorage.removeItem('emve_user');
+  localStorage.removeItem('emve_tc');
+  localStorage.removeItem('emve_login_time');
+  curRole=null;curUser=null;curTc=null;curMod=null;document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='none';document.getElementById('l-pw').value='';document.getElementById('l-role').value='';document.getElementById('tc-sel').style.display='none';}
 function setupHeader(){document.getElementById('uname').textContent=curUser;var chip=document.getElementById('rchip');var map={super:'\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915',mukh:'\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915',shik:'\u0936\u093F\u0915\u094D\u0937\u0915'};chip.textContent=map[curRole]||'';chip.className='rchip r'+curRole[0];}
 
 // ---- DASHBOARD (NOTICE BOARD) ----
@@ -1866,6 +1881,19 @@ function loadShikshakFirst(){sheetGet('Shikshak',function(rows){parseShikshakRow
 
 // ---- EVENT DELEGATION ----
 document.addEventListener('DOMContentLoaded',function(){
+  var savedRole=localStorage.getItem('emve_role');
+  var savedTime=parseInt(localStorage.getItem('emve_login_time')||'0');
+  if(savedRole&&(Date.now()-savedTime)<15*60*1000){
+    curRole=savedRole;
+    curUser=localStorage.getItem('emve_user');
+    curTc=JSON.parse(localStorage.getItem('emve_tc')||'null');
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    setupHeader();showHome();loadShikshakFirst();
+  }
+  document.addEventListener('click',function(){
+    if(curRole)localStorage.setItem('emve_login_time',Date.now());
+  });
   document.addEventListener('keydown',function(ev){
     var act=(ev.target.getAttribute&&ev.target.getAttribute('data-action'))||'';
     if(act==='login-key'&&ev.key==='Enter')doLogin();
