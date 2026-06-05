@@ -1661,7 +1661,10 @@ function secTTAdm(){
     '<div class="fg2"><div class="fg"><label>वर्ग</label><select id="ttadm-cls"><option value="">निवडा</option>'+clsOpts+'</select></div></div>'+
     '<div id="tt-conflict-banner"></div><div id="ttadm-wrap"></div>'+
     '<div id="ttadm-btns" style="display:none;margin-top:20px;">'+
-    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="savett">&#x1F4BE; वेळापत्रक सेव्ह करा</button></div></div>';
+    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="savett">&#x1F4BE; वेळापत्रक सेव्ह करा</button></div>'+
+    '<div style="margin-top:24px;padding-top:20px;border-top:2px dashed var(--bdr);">'+
+    '<button class="btn" style="background:var(--pur);color:#fff;font-size:1rem;padding:12px 24px;border-radius:10px;border:none;cursor:pointer;" data-action="generateTimetable">&#x2728; वेळापत्रक Generate करा</button>'+
+    '<div id="generate-tt-status" style="margin-top:14px;"></div></div></div>';
 }
 function renderTTAdm(){
   var cls=(document.getElementById('ttadm-cls')||{}).value||'';
@@ -1731,6 +1734,35 @@ function syncTimetableSheet(){
   });});});
   sheetPost('TIMETABLE',rows,function(){syncStatus('ok');});
 }
+function generateTimetableXHR(){
+  var statusEl=document.getElementById('generate-tt-status');
+  var btn=document.querySelector('[data-action="generateTimetable"]');
+  if(statusEl)statusEl.innerHTML='<div class="alert ai"><div>&#x23F3;</div><div>वेळापत्रक तयार होत आहे...</div></div>';
+  if(btn)btn.disabled=true;
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET',SURL+'?action=generateTimetable&t='+new Date().getTime(),true);
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4)return;
+    if(btn)btn.disabled=false;
+    var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}
+    if(xhr.status===200&&res.success){
+      sheetGet('TIMETABLE',function(ttR){parseTimetableRows(ttR);renderTTAdm();});
+      if(statusEl)statusEl.innerHTML='<div class="alert ag"><div>&#x2705;</div><div>वेळापत्रक यशस्वीरित्या तयार झाले!</div></div>';
+      toast('वेळापत्रक तयार! &#x2705;');
+    }else{
+      var msg=(res.message)||'वेळापत्रक तयार करताना चूक झाली.';
+      if(statusEl)statusEl.innerHTML='<div class="alert aw"><div>&#x274C;</div><div>'+msg+'</div></div>';
+      toast(msg,'err');
+    }
+  };
+  xhr.onerror=function(){
+    if(btn)btn.disabled=false;
+    var msg='नेटवर्क त्रुटी — पुन्हा प्रयत्न करा.';
+    if(statusEl)statusEl.innerHTML='<div class="alert aw"><div>&#x274C;</div><div>'+msg+'</div></div>';
+    toast(msg,'err');
+  };
+  xhr.send();
+}
 function parseTimetableRows(rows){
   timetable={};ttData=[];
   if(!rows||rows.length<2)return;
@@ -1752,6 +1784,22 @@ function parseTimetableRows(rows){
 }
 
 // ---- SYNC ----
+/*
+  === Apps Script doGet handler (add to your .gs file) ===
+  In doGet(e), add before the final return:
+    if (e.parameter.action === 'generateTimetable') {
+      try {
+        var result = generateTimetable();
+        return ContentService
+          .createTextOutput(JSON.stringify({ success: true, message: 'Done', data: result }))
+          .setMimeType(ContentService.MimeType.JSON);
+      } catch(err) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ success: false, message: err.message }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+*/
 function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4){var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}if(cb)cb(res);}};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
 function sheetGet(name,cb){
   var url=SURL+'?sheet='+encodeURIComponent(name)+'&t='+new Date().getTime();
@@ -1975,6 +2023,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='print')window.print();
         else if(act==='loadnikal')loadAndRenderNikal();
         else if(act==='savett')saveTimetable();
+        else if(act==='generateTimetable')generateTimetableXHR();
         else if(act==='assignttsub')assignTTSub(el.getAttribute('data-cls'),el.getAttribute('data-day'),el.getAttribute('data-p'),el.getAttribute('data-subj'));
         else if(act==='filtersublog')renderSubLog();
         else if(act==='printsublog')printSubLog();
