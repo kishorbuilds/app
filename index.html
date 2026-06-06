@@ -155,7 +155,7 @@ tr:hover td{background:#f1f5f9;}
 }
 #print-area { display: none; }
 @media print {
-  @page { margin: 5mm; size: auto; }
+  @page { margin: 15mm; size: A4; }
   header, nav, .no-print, button, .btn, .ctag, .mov, #toast, #login-screen,
   .tw th.no-print, .tw td.no-print {
     display: none !important;
@@ -182,6 +182,15 @@ tr:hover td{background:#f1f5f9;}
     display: block !important;
     background: #fff !important;
     zoom: 0.75;
+  }
+  body:has(#bn-wrap:not(:empty)) #bn-wrap,
+  body:has(#bn-wrap:not(:empty)) #bn-wrap * {
+    background: #fff !important;
+    background-color: #fff !important;
+  }
+  body:has(#bn-wrap:not(:empty)) #bn-wrap .pcard-wrap {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   body, #app, #mod-view, main, .card, .tw, .table-wrap {
     overflow: visible !important;
