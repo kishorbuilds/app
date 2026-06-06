@@ -191,6 +191,28 @@ tr:hover td{background:#f1f5f9;}
   body:has(#bn-wrap:not(:empty)) #bn-wrap .pcard-wrap {
     page-break-inside: avoid;
     break-inside: avoid;
+    page-break-after: avoid;
+    break-after: avoid;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  body:has(#bn-wrap:not(:empty)) #bn-wrap {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  body:has(#bn-wrap:not(:empty)) #app {
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+  body:has(#bn-wrap:not(:empty)) * {
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body:has(#bn-wrap:not(:empty)) .pcard-wrap,
+  body:has(#bn-wrap:not(:empty)) .card {
+    background: white !important;
+    color: black !important;
   }
   body, #app, #mod-view, main, .card, .tw, .table-wrap {
     overflow: visible !important;
