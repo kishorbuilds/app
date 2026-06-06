@@ -165,17 +165,14 @@ tr:hover td{background:#f1f5f9;}
     border: none !important;
   }
   body { margin: 0 !important; padding: 0 !important; }
-  body:has(#pc-wrap:not(:empty)) #app,
-  body:has(#bn-wrap:not(:empty)) #app {
+  body:has(#pc-wrap:not(:empty)) #app {
     visibility: hidden !important;
   }
   body:has(#pc-wrap:not(:empty)) #pc-wrap,
-  body:has(#pc-wrap:not(:empty)) #pc-wrap *,
-  body:has(#bn-wrap:not(:empty)) #bn-wrap,
-  body:has(#bn-wrap:not(:empty)) #bn-wrap * {
+  body:has(#pc-wrap:not(:empty)) #pc-wrap * {
     visibility: visible !important;
   }
-  #pc-wrap:not(:empty), #bn-wrap:not(:empty) {
+  #pc-wrap:not(:empty) {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
@@ -184,41 +181,35 @@ tr:hover td{background:#f1f5f9;}
     background: #fff !important;
     zoom: 0.75;
   }
-  body:has(#bn-wrap:not(:empty)) #bn-wrap,
-  body:has(#bn-wrap:not(:empty)) #bn-wrap * {
-    background: #fff !important;
-    background-color: #fff !important;
-  }
-  body:has(#bn-wrap:not(:empty)) #bn-wrap .pcard-wrap {
-    page-break-inside: avoid;
-    break-inside: avoid;
-    page-break-after: avoid;
-    break-after: avoid;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+  body:has(#bn-wrap:not(:empty)) #app {
+    display: none !important;
   }
   body:has(#bn-wrap:not(:empty)) #bn-wrap {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    display: block !important;
+    background: #fff !important;
+    zoom: 0.75;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  body:has(#bn-wrap:not(:empty)) #app {
-    max-height: 100vh !important;
-    overflow: hidden !important;
-  }
-  body:has(#bn-wrap:not(:empty)) * {
-    background: white !important;
-    background-color: white !important;
-    color: black !important;
+  body:has(#bn-wrap:not(:empty)) #bn-wrap *,
+  body:has(#bn-wrap:not(:empty)) #bn-wrap div,
+  body:has(#bn-wrap:not(:empty)) #bn-wrap p,
+  body:has(#bn-wrap:not(:empty)) #bn-wrap h1,
+  body:has(#bn-wrap:not(:empty)) #bn-wrap h2,
+  body:has(#bn-wrap:not(:empty)) #bn-wrap h3 {
+    background: #fff !important;
+    background-color: #fff !important;
+    color: #000 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  body:has(#bn-wrap:not(:empty)) .pcard-wrap,
-  body:has(#bn-wrap:not(:empty)) .pcard-wrap *,
-  body:has(#bn-wrap:not(:empty)) .card,
-  body:has(#bn-wrap:not(:empty)) .cert-body {
-    background: white !important;
-    background-color: white !important;
-    color: black !important;
+  body:has(#bn-wrap:not(:empty)) .pcard-wrap {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
   body, #app, #mod-view, main, .card, .tw, .table-wrap {
     overflow: visible !important;
