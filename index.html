@@ -156,7 +156,7 @@ tr:hover td{background:#f1f5f9;}
 #print-area { display: none; }
 @media print {
   @page { margin: 15mm; size: A4; }
-  header, nav, .no-print, button, .btn, .ctag, .mov, #toast, #login-screen,
+  header, footer, nav, .no-print, button, .btn, .ctag, .mov, #toast, #login-screen,
   .tw th.no-print, .tw td.no-print {
     display: none !important;
     visibility: hidden !important;
@@ -164,6 +164,7 @@ tr:hover td{background:#f1f5f9;}
     padding: 0 !important;
     border: none !important;
   }
+  body { margin: 0 !important; padding: 0 !important; }
   body:has(#pc-wrap:not(:empty)) #app,
   body:has(#bn-wrap:not(:empty)) #app {
     visibility: hidden !important;
@@ -206,12 +207,17 @@ tr:hover td{background:#f1f5f9;}
   }
   body:has(#bn-wrap:not(:empty)) * {
     background: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    background-color: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   body:has(#bn-wrap:not(:empty)) .pcard-wrap,
-  body:has(#bn-wrap:not(:empty)) .card {
+  body:has(#bn-wrap:not(:empty)) .pcard-wrap *,
+  body:has(#bn-wrap:not(:empty)) .card,
+  body:has(#bn-wrap:not(:empty)) .cert-body {
     background: white !important;
+    background-color: white !important;
     color: black !important;
   }
   body, #app, #mod-view, main, .card, .tw, .table-wrap {
