@@ -2092,6 +2092,8 @@ function genBona() {
 }
 
 function printBonafide() {
+  var proceed = confirm('पट करण्यापूर्वी:\nPrint dialog मध्ये "Headers and Footers" बंद करा\n\nOK दाबा आण print dialog मध्ये headers/footers uncheck करा.');
+  if(!proceed) return;
   var content = document.getElementById('bn-wrap').innerHTML;
   var printWindow = window.open('', '_blank', 'width=800,height=600');
   printWindow.document.write('<html><head><style>');
