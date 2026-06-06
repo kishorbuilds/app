@@ -2092,19 +2092,14 @@ function genBona() {
 }
 
 function printBonafide() {
-  var proceed = confirm('पट करण्यापूर्वी:\nPrint dialog मध्ये "Headers and Footers" बंद करा\n\nOK दाबा आण print dialog मध्ये headers/footers uncheck करा.');
-  if(!proceed) return;
   var content = document.getElementById('bn-wrap').innerHTML;
-  var printWindow = window.open('', '_blank', 'width=800,height=600');
-  printWindow.document.write('<html><head><style>');
-  printWindow.document.write('body{font-family:serif;margin:15mm;background:white;color:black;}');
-  printWindow.document.write('.no-print{display:none!important;}');
-  printWindow.document.write('</style></head><body>');
+  var printWindow = window.open('', '_blank');
+  if(!printWindow) { alert('Popup blocked. Please allow popups for this site.'); return; }
+  printWindow.document.write('<html><head><style>@page{margin:15mm;}body{font-family:serif;background:white;color:black;}.no-print{display:none!important;}</style></head><body>');
   printWindow.document.write(content);
+  printWindow.document.write('<script>window.onload=function(){window.print();window.close();}<\/script>');
   printWindow.document.write('</body></html>');
   printWindow.document.close();
-  printWindow.focus();
-  setTimeout(function(){ printWindow.print(); printWindow.close(); }, 500);
 }
 
 function printDoc(contentId) {
