@@ -181,30 +181,6 @@ tr:hover td{background:#f1f5f9;}
     background: #fff !important;
     zoom: 0.75;
   }
-  body:has(#bn-wrap:not(:empty)) * {
-    visibility: hidden !important;
-  }
-  body:has(#bn-wrap:not(:empty)) #bn-wrap,
-  body:has(#bn-wrap:not(:empty)) #bn-wrap * {
-    visibility: visible !important;
-    background: white !important;
-    background-color: white !important;
-    color: black !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  body:has(#bn-wrap:not(:empty)) #bn-wrap {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    zoom: 0.75;
-  }
-  body:has(#bn-wrap:not(:empty)) html,
-  body:has(#bn-wrap:not(:empty)) body {
-    height: auto !important;
-    overflow: hidden !important;
-  }
   body, #app, #mod-view, main, .card, .tw, .table-wrap {
     overflow: visible !important;
     max-width: none !important;
@@ -2110,9 +2086,23 @@ function genBona() {
     '<div><b>लिपिक</b></div><div><b>मुख्याध्यापक</b></div>' +
     '</div></div>' +
     '<div class="no-print" style="margin-top:20px;display:flex;gap:12px;">'+
-    '<button class="btn bp" onclick="window.print()">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bp" onclick="printBonafide()">🖨️ प्रिंट करा</button>'+
     '<button class="btn bd" onclick="document.getElementById(\'bn-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
     '</div>';
+}
+
+function printBonafide() {
+  var content = document.getElementById('bn-wrap').innerHTML;
+  var printWindow = window.open('', '_blank', 'width=800,height=600');
+  printWindow.document.write('<html><head><style>');
+  printWindow.document.write('body{font-family:serif;margin:15mm;background:white;color:black;}');
+  printWindow.document.write('.no-print{display:none!important;}');
+  printWindow.document.write('</style></head><body>');
+  printWindow.document.write(content);
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(function(){ printWindow.print(); printWindow.close(); }, 500);
 }
 
 function printDoc(contentId) {
