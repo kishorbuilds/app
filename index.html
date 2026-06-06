@@ -509,7 +509,15 @@ function doLogin(){
   localStorage.removeItem('emve_tc');
   localStorage.removeItem('emve_login_time');
   curRole=null;curUser=null;curTc=null;curMod=null;document.getElementById('login-screen').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='none';document.getElementById('l-pw').value='';document.getElementById('l-role').value='';document.getElementById('tc-sel').style.display='none';}
-function setupHeader(){document.getElementById('uname').textContent=curUser;var chip=document.getElementById('rchip');var map={super:'\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915',mukh:'\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915',shik:'\u0936\u093F\u0915\u094D\u0937\u0915'};chip.textContent=map[curRole]||'';chip.className='rchip r'+curRole[0];}
+function setupHeader(){
+  var uname=document.getElementById('uname');
+  var chip=document.getElementById('rchip');
+  var map={super:'\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u0932\u0915',mukh:'\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915',shik:'\u0936\u093F\u0915\u094D\u0937\u0915',clerk:'\u0932\u093F\u092A\u093F\u0915'};
+  if(curRole==='shik'&&curTc){uname.textContent=curTc.name;uname.style.display='inline';}
+  else{uname.textContent='';uname.style.display='none';}
+  chip.textContent=map[curRole]||'';
+  chip.className='rchip r'+(curRole?curRole[0]:'');
+}
 
 // ---- DASHBOARD (NOTICE BOARD) ----
 function renderNoticeBoard(){
