@@ -8,9 +8,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="EMVE School App">
+<meta name="apple-mobile-web-app-title" content="EMVE">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="Saraswati Logo192x192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <style>
 /* Premium Educational Theme */
 :root{
@@ -3291,7 +3292,7 @@ function ttPlacementReasonHard(lesson,day,p,opts){
 
 /* initialize teacher list from the 2026-27 sheet as soon as possible */
 document.addEventListener('DOMContentLoaded',function(){
-  try{navigator.serviceWorker&&navigator.serviceWorker.register('./sw.js').catch(function(){});}catch(e){}
+  try{navigator.serviceWorker&&navigator.serviceWorker.register('./service-worker.js').catch(function(){});}catch(e){}
   sheetGet(TT_TEACHERS_SHEET,function(rows){parseTTTeachers(rows);parseShikshakRows(rows);emvePopulateTeacherLogin();});
 });
 </script>
