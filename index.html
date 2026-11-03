@@ -280,6 +280,7 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
 #emve-print-root.ep-capture{display:block!important;position:static!important;visibility:visible!important;background:#fff;}
 #emve-print-root.ep-capture .ep-sp{height:0;}
 #emve-print-root.ep-port{width:190mm;}
+main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs [data-action="tt-print"]) .ep-top-print,main:has(#mod-secs [data-action="tt-print-teacher"]) .ep-top-print,main:has(#mod-secs [data-action="printsublog"]) .ep-top-print{display:none;}
 #emve-print-root.ep-land{width:277mm;}
 @media print{
   html,body{background:#fff!important;margin:0!important;padding:0!important;}
@@ -468,7 +469,7 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
   <nav><div class="ni" id="nav-tabs"></div></nav>
   <main>
     <button class="bbtn no-print" id="back-btn" data-action="goback">&#x2190; &#x092E;&#x0941;&#x0916;&#x094D;&#x092F;&#x092A;&#x0943;&#x0937;&#x094D;&#x0920;</button>
-    <button class="bbtn no-print" style="float:right;" data-action="emve-print-sec">🖨️ प्रिंट</button>
+    <button class="bbtn no-print ep-top-print" style="float:right;" data-action="emve-print-sec">🖨️ प्रिंट</button>
     <div id="mod-secs"></div>
   </main>
 </div>
@@ -2363,6 +2364,8 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='promoteall')promoteAll();
         else if(act==='print')emvePrintSection();
         else if(act==='emve-print-sec')emvePrintSection();
+        else if(act==='emve-pdf-share')emvePdfShare();
+        else if(act==='emve-pdf-close')emvePdfClose();
         else if(act==='emve-print'){
           var pf=[];(el.getAttribute('data-filters')||'').split(',').forEach(function(fid){var fe=document.getElementById(fid);if(fe&&fe.tagName==='SELECT'&&fe.value&&fe.options[fe.selectedIndex]){var lb=fe.parentNode&&fe.parentNode.querySelector('label');pf.push((lb?emvePrintText(lb.textContent)+': ':'')+fe.options[fe.selectedIndex].text);}});
           emvePrint(el.getAttribute('data-target'),{title:el.getAttribute('data-title')||'',sub:pf.join('  |  '),orient:el.getAttribute('data-orient')||'',raw:el.getAttribute('data-raw')==='1',sign:el.getAttribute('data-sign')==='1'?['वर्गशिक्षक','मुख्याध्यापक']:null});
@@ -2529,7 +2532,9 @@ document.addEventListener('mousedown',emvePrintTouch,true);
 document.addEventListener('touchstart',emvePrintTouch,true);
 document.addEventListener('keydown',emvePrintTouch,true);
 /* Home-screen app / WhatsApp browser: print() does nothing there -> make a PDF instead */
+function emveIsIOSApp(){return window.navigator.standalone===true;}
 function emveDoPrint(orient,fname){
+  if(emveIsIOSApp()){emvePdf(orient,fname);return;}
   var opened=false,mark=function(){opened=true;};
   window.addEventListener('beforeprint',mark);
   var t0=Date.now();
@@ -2554,14 +2559,40 @@ function emvePdf(orient,fname){
     var A=orient==='landscape'?[297,210]:[210,297];
     var k=Math.max(1,w*1.06/((A[0]-16)*3.7795));
     try{
-      window.html2pdf().set({margin:[8*k,8*k,8*k,8*k],filename:fname+'.pdf',image:{type:'jpeg',quality:0.95},
-        html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',windowWidth:w+40},
+      var job=window.html2pdf().set({margin:[8*k,8*k,8*k,8*k],filename:fname+'.pdf',image:{type:'jpeg',quality:0.95},
+        html2canvas:{scale:Math.min(2,Math.sqrt(14e6/Math.max(1,w*root.offsetHeight))),useCORS:true,backgroundColor:'#ffffff',windowWidth:w+40},
         jsPDF:{unit:'mm',format:[A[0]*k,A[1]*k],orientation:orient},
-        pagebreak:{mode:['css','legacy'],avoid:['tr','.ep-head','.ep-sign']}}).from(root).save().then(function(){done();toast('PDF download झाली ✅');},function(){done();fail();});
+        pagebreak:{mode:['css','legacy'],avoid:['tr','.ep-head','.ep-sign']}}).from(root);
+      if(emveIsIOSApp())job.outputPdf('blob').then(function(b){done();emvePdfReady(b,fname);},function(){done();fail();});
+      else job.save().then(function(){done();toast('PDF download झाली ✅');},function(){done();fail();});
     }catch(e){done();fail();}
   };
   if(window.html2pdf){go();return;}
   var sc=document.createElement('script');sc.src=EMVE_PDF_LIB;sc.onload=go;sc.onerror=fail;document.head.appendChild(sc);
+}
+/* iPhone app cannot download: show the PDF through the share sheet (Print / Files / WhatsApp) */
+var emvePdfFile=null;
+function emvePdfReady(blob,fname){
+  emvePdfFile={blob:blob,name:fname+'.pdf'};
+  var old=document.getElementById('emve-pdf-ready');if(old)old.parentNode.removeChild(old);
+  var d=document.createElement('div');d.id='emve-pdf-ready';d.className='no-print';
+  d.style.cssText='position:fixed;inset:0;background:rgba(15,23,42,.72);display:flex;align-items:center;justify-content:center;z-index:5001;padding:20px;';
+  d.innerHTML='<div style="background:#fff;border-radius:20px;padding:24px;max-width:340px;width:100%;text-align:center;">'+
+    '<div style="font-size:2rem;">📄</div><div style="font-weight:900;font-size:1.1rem;margin:6px 0 4px;">PDF तयार आहे</div>'+
+    '<div style="font-size:.85rem;color:#64748b;margin-bottom:16px;">पुढील स्क्रीनवर Print, Save to Files किंवा WhatsApp निवडा.</div>'+
+    '<button class="btn bp" style="width:100%;font-size:1.05rem;padding:14px;" data-action="emve-pdf-share">📤 PDF शेअर / प्रिंट</button>'+
+    '<button class="btn" style="width:100%;margin-top:10px;" data-action="emve-pdf-close">बंद करा</button></div>';
+  document.body.appendChild(d);
+}
+function emvePdfClose(){var d=document.getElementById('emve-pdf-ready');if(d)d.parentNode.removeChild(d);}
+function emvePdfShare(){
+  if(!emvePdfFile)return;
+  var f=null;try{f=new File([emvePdfFile.blob],emvePdfFile.name,{type:'application/pdf'});}catch(e){}
+  if(f&&navigator.canShare&&navigator.canShare({files:[f]})){
+    navigator.share({files:[f],title:emvePdfFile.name}).then(emvePdfClose,function(){});
+  }else{
+    window.open(URL.createObjectURL(emvePdfFile.blob),'_blank');emvePdfClose();
+  }
 }
 /* print the current screen (lists, reports) with the tab name as title */
 function emvePrintSection(){
