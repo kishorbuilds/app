@@ -1120,6 +1120,10 @@ function loadMkTable(){
     return;
   }
   if(!cls||!subj){wrap.innerHTML='';return;}
+  if(emveMarksErr[cls+'|'+subj]){
+    wrap.innerHTML='<div class="alert aw"><div>⚠️ जतन केलेले गुण Sheet मधून आणता आले नाहीत (Internet कमकुवत?). जुने गुण पुसले जाऊ नयेत म्हणून गुण नोंदणी थांबवली आहे.<br><button class="btn bp" style="margin-top:10px;" data-action="mkretry">पुन्हा प्रयत्न करा</button></div></div>';
+    return;
+  }
   if(!emveMarksLoaded[cls+'|'+subj]){
     wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ जतन केलेले गुण आणत आहे…</div>';
     emveLoadMarks(cls,[subj],function(){var c2=(document.getElementById('m-cls')||{}).value,s2=(document.getElementById('m-subj')||{}).value;if(c2===cls&&s2===subj)loadMkTable();});
@@ -1220,6 +1224,8 @@ function emveParseMarks(rows,cls,sb){
   });
 }
 var emveMarksLoaded={};
+/* subjects whose saved marks could not be read: entry is blocked so Save cannot wipe them */
+var emveMarksErr={};
 /* reports re-read the sheet once per class per session (fresh marks from all teachers) */
 var emveMarksReadyCls={};function emveMarksReady(cls){return !!emveMarksReadyCls[cls];}
 /* fetch saved marks of the given subjects of a class from the sheet (once per session unless force) */
@@ -1227,8 +1233,17 @@ function emveLoadMarks(cls,subjects,done,force){
   var todo=subjects.filter(function(sb){return force||!emveMarksLoaded[cls+'|'+sb];});
   var tabs=[];todo.forEach(function(sb){emveMarksTabs(cls,sb).forEach(function(t){tabs.push({t:t,sb:sb});});});
   if(!tabs.length){done();return;}
-  var left=tabs.length;
-  tabs.forEach(function(x){sheetGet(x.t,function(rows){emveParseMarks(rows,cls,x.sb);emveMarksLoaded[cls+'|'+x.sb]=1;left--;if(!left)done();});});
+  var left=tabs.length,failed=false;
+  tabs.forEach(function(x){sheetGet(x.t,function(rows){
+    if(emveGetFailed[x.t]){failed=true;emveMarksErr[cls+'|'+x.sb]=1;}
+    else{emveParseMarks(rows,cls,x.sb);if(!emveMarksErr[cls+'|'+x.sb])emveMarksLoaded[cls+'|'+x.sb]=1;}
+    left--;if(left)return;
+    todo.forEach(function(sb){if(emveMarksErr[cls+'|'+sb])delete emveMarksLoaded[cls+'|'+sb];});
+    if(failed)toast('काही गुण Sheet मधून आणता आले नाहीत. Internet तपासा.','err');
+    done();
+    /* reports retry next time they open */
+    if(failed)delete emveMarksReadyCls[cls];
+  });});
 }
 function emveWithWorkload(done){
   if(emveWorkload){done();return;}
@@ -2152,6 +2167,7 @@ function parseTimetableRows(rows){
 
 // ---- SYNC ----
 function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4){var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}emveAfterWrite(name,res);if(cb)cb(res);}};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows,token:emveToken,since:emveLoadedAt[name]||emveLoadedAt._first||0}));}
+var emveGetFailed={};
 function sheetGet(name, cb) {
 
   /* Teacher roster: JSONP for GitHub Pages -> Apps Script */
@@ -2237,7 +2253,8 @@ function sheetGet(name, cb) {
   var xhr = new XMLHttpRequest();
   var answered = false;
   var cb0 = cb;
-  cb = function(r) { if (answered) return; answered = true; cb0(r); };
+  /* remember failed reads so callers can tell "load failed" from "empty tab" */
+  cb = function(r, ok) { if (answered) return; answered = true; if (ok) delete emveGetFailed[name]; else emveGetFailed[name] = 1; cb0(r); };
 
   xhr.open('GET', url, true);
   xhr.timeout = 25000;
@@ -2252,7 +2269,8 @@ function sheetGet(name, cb) {
       cb(
         payload && Array.isArray(payload.rows)
           ? payload.rows
-          : []
+          : [],
+        xhr.status === 200 && payload && Array.isArray(payload.rows) && !payload.error
       );
     } catch (e) {
       cb([]);
@@ -2560,6 +2578,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='removestd')removeStd(parseInt(el.getAttribute('data-sid')||0));
         else if(act==='removeteacher')removeTeacher(parseInt(el.getAttribute('data-tcid')||0));
         else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
+        else if(act==='mkretry'){var rc=(document.getElementById('m-cls')||{}).value||'',rs=(document.getElementById('m-subj')||{}).value||'';delete emveMarksErr[rc+'|'+rs];loadMkTable();}
         else if(act==='saveallmk'){var mc=el.getAttribute('data-cls')||'';var ms=el.getAttribute('data-subj')||'';if(!mc)mc=(document.getElementById('m-cls')||{}).value||'';if(!ms)ms=(document.getElementById('m-subj')||{}).value||'';if(mc&&ms)saveAllMk(mc,ms);}
         else if(act==='save5mk'){var mc5=el.getAttribute('data-cls')||'';var ms5=el.getAttribute('data-subj')||'';var mt5=el.getAttribute('data-term')||'';if(mc5&&ms5&&mt5)save5Marks(mc5,ms5,mt5);}
         else if(act==='gencard')genCard();
