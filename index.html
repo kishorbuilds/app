@@ -250,13 +250,13 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
 #emve-print-root .ep-page>thead>tr>td,#emve-print-root .ep-page>tfoot>tr>td,#emve-print-root .ep-page>tbody>tr>td{border:0!important;padding:0!important;background:none!important;}
 #emve-print-root .ep-sp{height:9mm;}
 #emve-print-root .ep-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px;}
-#emve-print-root .ep-head img{width:52px;height:52px;object-fit:contain;}
+#emve-print-root .ep-head img{width:22mm;height:22mm;object-fit:contain;}
 #emve-print-root .ep-ht{flex:1;text-align:center;}
 #emve-print-root .ep-s1{font-size:10pt;}
 #emve-print-root .ep-s2{font-size:16pt;font-weight:800;line-height:1.25;}
 #emve-print-root .ep-s3{font-size:12pt;font-weight:700;margin-top:2px;}
 #emve-print-root .ep-s4{font-size:10pt;margin-top:2px;}
-#emve-print-root .ep-logo-sp{width:52px;}
+#emve-print-root .ep-logo-sp{width:22mm;}
 #emve-print-root .ep-h{font-size:11.5pt;font-weight:800;margin:10px 0 5px;}
 #emve-print-root .tw{overflow:visible!important;box-shadow:none!important;border-radius:0!important;margin:0 0 8px!important;width:auto!important;max-height:none!important;}
 #emve-print-root .card{box-shadow:none!important;border:0!important;padding:0!important;margin:0 0 8px!important;background:none!important;border-radius:0!important;}
@@ -274,11 +274,15 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
 #emve-print-root .tt-cell{border:0.6pt solid #888!important;min-height:0!important;padding:3px!important;background:#fff!important;font-size:9pt;}
 #emve-print-root .tt-cell *{color:#000!important;}
 #emve-print-root .tt-hdr,#emve-print-root .tt-period{background:#e8e8e8!important;color:#000!important;font-weight:800;}
-#emve-print-root.ep-raw .ep-body{font-size:11pt;}
+#emve-print-root.ep-raw .ep-body{font-size:11.5pt;}
+#emve-print-root.ep-raw .ep-body table:not(.ep-plain) th,#emve-print-root.ep-raw .ep-body table:not(.ep-plain) td{padding:7px 8px!important;font-size:11pt!important;}
+#emve-print-root.ep-raw .ep-body table{margin-bottom:14px!important;}
+#emve-print-root.ep-wk .ep-sp{height:0;}
 #emve-print-root .ep-sign{display:flex;justify-content:space-between;margin-top:40px;font-size:10.5pt;font-weight:700;text-align:center;}
 #emve-print-root .ep-sign div{min-width:150px;border-top:0.6pt solid #000;padding-top:4px;}
 #emve-print-root.ep-capture{display:block!important;position:static!important;visibility:visible!important;background:#fff;}
 #emve-print-root.ep-capture .ep-sp{height:0;}
+#emve-print-root.ep-capture *{letter-spacing:0!important;font-variant-ligatures:normal!important;}
 #emve-print-root.ep-port{width:190mm;}
 main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs [data-action="tt-print"]) .ep-top-print,main:has(#mod-secs [data-action="tt-print-teacher"]) .ep-top-print,main:has(#mod-secs [data-action="printsublog"]) .ep-top-print{display:none;}
 #emve-print-root.ep-land{width:277mm;}
@@ -286,6 +290,7 @@ main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs 
   html,body{background:#fff!important;margin:0!important;padding:0!important;}
   body.emve-printing>*{display:none!important;}
   body.emve-printing>#emve-print-root{display:block!important;position:static!important;visibility:visible!important;left:auto!important;padding:0 10mm!important;width:auto!important;}
+  body.emve-printing>#emve-print-root.ep-wk{padding:0!important;}
   body.emve-printing #emve-print-root *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 }
 
@@ -2489,10 +2494,12 @@ function emvePrintDone(){
   document.body.classList.remove('emve-printing');
   var st=document.getElementById('emve-page-style');if(st)st.parentNode.removeChild(st);
 }
+/* Safari / iPhone (any WebKit browser) lays out print pages differently from Chrome */
+var emveWebKit=/AppleWebKit/.test(navigator.userAgent)&&!/Chrome|Chromium|Edg|OPR|Android/.test(navigator.userAgent);
 function emvePrint(src,opts){
   opts=opts||{};
   if(typeof src==='string')src=document.getElementById(src)||(function(h){var d=document.createElement('div');d.innerHTML=h;return d;})(src);
-  if(!src||!emvePrintText(src.textContent)){toast('प्रिंट करण्यासाठी माहिती नाही.','err');return;}
+  if(!src||!emvePrintText(src.textContent)){if(!opts.noPrint)toast('प्रिंट करण्यासाठी माहिती नाही.','err');return;}
   emvePrintDone();
   var old=document.getElementById('emve-print-root');if(old)old.parentNode.removeChild(old);
   var cl=opts.raw?{node:src.cloneNode(true),filters:[]}:emvePrintClean(src);
@@ -2515,16 +2522,29 @@ function emvePrint(src,opts){
   if(!opts.orient&&ratio>1.02){orient='landscape';ratio=fit(orient);}
   if(ratio>1.01)body.style.zoom=String(Math.max(0.45,Math.floor(100/ratio)/100));
   root.className=(opts.raw?'ep-raw ':'')+(orient==='landscape'?'ep-land':'ep-port');
+  if(emveWebKit)root.className+=' ep-wk';
   var st=document.createElement('style');st.id='emve-page-style';
-  st.textContent='@page{size:A4 '+orient+';margin:0;}';
+  st.textContent='@page{size:A4 '+orient+';margin:'+(emveWebKit?'10mm':'0')+';}';
   document.head.appendChild(st);
   document.body.classList.add('emve-printing');
   var imgs=root.querySelectorAll('img'),wait=0;
   for(var k=0;k<imgs.length;k++){if(!imgs[k].complete)wait++;}
   emvePrintAt=Date.now();
   var fname=emvePrintText(opts.title||'EMVE')||'EMVE';
+  if(opts.noPrint)return;
   setTimeout(function(){emveDoPrint(orient,fname);},wait?400:60);
 }
+/* Cmd+P / Ctrl+P / browser menu: still give the clean page, not the app screen */
+function emvePrintForMenu(){
+  if(document.body.classList.contains('emve-printing'))return;
+  var mv=document.getElementById('mod-view');if(!mv||mv.style.display==='none')return;
+  var b=document.querySelector('#mod-secs [data-action="emve-print"]');
+  try{
+    if(b)emvePrint(b.getAttribute('data-target'),{title:b.getAttribute('data-title')||'',orient:b.getAttribute('data-orient')||'',raw:b.getAttribute('data-raw')==='1',sign:b.getAttribute('data-sign')==='1'?['वर्गशिक्षक','मुख्याध्यापक']:null,noPrint:true});
+    else{var tb=document.querySelector('#nav-tabs .tab.on');emvePrint(document.getElementById('mod-secs'),{title:tb?tb.textContent:'',noPrint:true});}
+  }catch(e){}
+}
+window.addEventListener('beforeprint',emvePrintForMenu);
 /* print stays ready until the user touches the app again (Chrome may re-render the preview) */
 var emvePrintAt=0;
 function emvePrintTouch(){if(document.body.classList.contains('emve-printing')&&Date.now()-emvePrintAt>2000)emvePrintDone();}
@@ -2550,19 +2570,20 @@ function emvePdf(orient,fname){
   var go=function(){
     var body=root.querySelector('.ep-body');
     var z=body.style.zoom;body.style.zoom='';
+    var sy=window.pageYOffset||0;window.scrollTo(0,0);
     root.classList.add('ep-capture');
     var pg=root.querySelector('.ep-page');
     var w=Math.max(root.offsetWidth,pg?pg.scrollWidth:0,body.scrollWidth);
     root.style.width=w+'px';
-    var done=function(){root.classList.remove('ep-capture');root.style.width='';body.style.zoom=z;emveHideLoader();};
+    var done=function(){root.classList.remove('ep-capture');root.style.width='';body.style.zoom=z;emveHideLoader();window.scrollTo(0,sy);};
     /* wide table: same A4 shape, just bigger, so nothing is cut; printers fit it to A4 */
     var A=orient==='landscape'?[297,210]:[210,297];
     var k=Math.max(1,w*1.06/((A[0]-16)*3.7795));
     try{
       var job=window.html2pdf().set({margin:[8*k,8*k,8*k,8*k],filename:fname+'.pdf',image:{type:'jpeg',quality:0.95},
-        html2canvas:{scale:Math.min(2,Math.sqrt(14e6/Math.max(1,w*root.offsetHeight))),useCORS:true,backgroundColor:'#ffffff',windowWidth:w+40},
+        html2canvas:{scale:Math.min(2,Math.sqrt(14e6/Math.max(1,w*root.offsetHeight))),useCORS:true,backgroundColor:'#ffffff',windowWidth:w+40,scrollX:0,scrollY:0},
         jsPDF:{unit:'mm',format:[A[0]*k,A[1]*k],orientation:orient},
-        pagebreak:{mode:['css','legacy'],avoid:['tr','.ep-head','.ep-sign']}}).from(root);
+        pagebreak:{mode:['css'],avoid:['tr','.ep-sign']}}).from(root);
       if(emveIsIOSApp())job.outputPdf('blob').then(function(b){done();emvePdfReady(b,fname);},function(){done();fail();});
       else job.save().then(function(){done();toast('PDF download झाली ✅');},function(){done();fail();});
     }catch(e){done();fail();}
