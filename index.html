@@ -277,6 +277,8 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
 #emve-print-root.ep-raw .ep-body{font-size:11pt;}
 #emve-print-root .ep-sign{display:flex;justify-content:space-between;margin-top:40px;font-size:10.5pt;font-weight:700;text-align:center;}
 #emve-print-root .ep-sign div{min-width:150px;border-top:0.6pt solid #000;padding-top:4px;}
+#emve-print-root.ep-capture{display:block!important;position:static!important;visibility:visible!important;background:#fff;}
+#emve-print-root.ep-capture .ep-sp{height:0;}
 #emve-print-root.ep-port{width:190mm;}
 #emve-print-root.ep-land{width:277mm;}
 @media print{
@@ -2516,9 +2518,51 @@ function emvePrint(src,opts){
   document.body.classList.add('emve-printing');
   var imgs=root.querySelectorAll('img'),wait=0;
   for(var k=0;k<imgs.length;k++){if(!imgs[k].complete)wait++;}
-  setTimeout(function(){window.print();},wait?400:60);
+  emvePrintAt=Date.now();
+  var fname=emvePrintText(opts.title||'EMVE')||'EMVE';
+  setTimeout(function(){emveDoPrint(orient,fname);},wait?400:60);
 }
-if(window.addEventListener)window.addEventListener('afterprint',function(){setTimeout(emvePrintDone,300);});
+/* print stays ready until the user touches the app again (Chrome may re-render the preview) */
+var emvePrintAt=0;
+function emvePrintTouch(){if(document.body.classList.contains('emve-printing')&&Date.now()-emvePrintAt>2000)emvePrintDone();}
+document.addEventListener('mousedown',emvePrintTouch,true);
+document.addEventListener('touchstart',emvePrintTouch,true);
+document.addEventListener('keydown',emvePrintTouch,true);
+/* Home-screen app / WhatsApp browser: print() does nothing there -> make a PDF instead */
+function emveDoPrint(orient,fname){
+  var opened=false,mark=function(){opened=true;};
+  window.addEventListener('beforeprint',mark);
+  var t0=Date.now();
+  try{window.print();}catch(e){}
+  if(Date.now()-t0>300)opened=true;
+  setTimeout(function(){window.removeEventListener('beforeprint',mark);if(!opened)emvePdf(orient,fname);},1200);
+}
+var EMVE_PDF_LIB='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+function emvePdf(orient,fname){
+  var root=document.getElementById('emve-print-root');if(!root)return;
+  emveShowLoader('PDF तयार होत आहे…');
+  var fail=function(){emveHideLoader();toast('PDF बनली नाही. Internet तपासा.','err');};
+  var go=function(){
+    var body=root.querySelector('.ep-body');
+    var z=body.style.zoom;body.style.zoom='';
+    root.classList.add('ep-capture');
+    var pg=root.querySelector('.ep-page');
+    var w=Math.max(root.offsetWidth,pg?pg.scrollWidth:0,body.scrollWidth);
+    root.style.width=w+'px';
+    var done=function(){root.classList.remove('ep-capture');root.style.width='';body.style.zoom=z;emveHideLoader();};
+    /* wide table: same A4 shape, just bigger, so nothing is cut; printers fit it to A4 */
+    var A=orient==='landscape'?[297,210]:[210,297];
+    var k=Math.max(1,w*1.06/((A[0]-16)*3.7795));
+    try{
+      window.html2pdf().set({margin:[8*k,8*k,8*k,8*k],filename:fname+'.pdf',image:{type:'jpeg',quality:0.95},
+        html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',windowWidth:w+40},
+        jsPDF:{unit:'mm',format:[A[0]*k,A[1]*k],orientation:orient},
+        pagebreak:{mode:['css','legacy'],avoid:['tr','.ep-head','.ep-sign']}}).from(root).save().then(function(){done();toast('PDF download झाली ✅');},function(){done();fail();});
+    }catch(e){done();fail();}
+  };
+  if(window.html2pdf){go();return;}
+  var sc=document.createElement('script');sc.src=EMVE_PDF_LIB;sc.onload=go;sc.onerror=fail;document.head.appendChild(sc);
+}
 /* print the current screen (lists, reports) with the tab name as title */
 function emvePrintSection(){
   var el=document.getElementById('mod-secs');if(!el)return;
