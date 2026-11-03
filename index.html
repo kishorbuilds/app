@@ -46,9 +46,20 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);padding:16px;}
-.lbox{background:var(--card);border-radius:24px;padding:40px 24px;width:100%;max-width:400px;box-shadow:var(--shl);}
-.lemb{width:70px;height:70px;background:linear-gradient(135deg,var(--s),var(--s2));border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:16px;box-shadow:0 6px 16px rgba(217,119,6,.3);}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:radial-gradient(circle at 15% 12%,rgba(245,158,11,.55),transparent 42%),radial-gradient(circle at 88% 30%,rgba(99,102,241,.55),transparent 45%),radial-gradient(circle at 30% 95%,rgba(20,184,166,.45),transparent 45%),linear-gradient(160deg,#0f172a 0%,#1e1b4b 55%,#0f172a 100%);}
+.lbox{background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgba(255,255,255,.65);border-radius:30px;padding:36px 22px;width:100%;max-width:400px;box-shadow:0 30px 80px rgba(2,6,23,.45),inset 0 1px 0 rgba(255,255,255,.9);}
+.lseg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lopt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;border-radius:20px;border:1.5px solid rgba(15,23,42,.08);background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-family:inherit;cursor:pointer;color:#334155;box-shadow:0 4px 14px rgba(15,23,42,.06),inset 0 1px 0 rgba(255,255,255,.9);transition:all .2s;}
+.lopt .ei{width:30px;height:30px;color:#6366f1;}
+.lopt b{font-size:1.05rem;font-weight:900;color:#0f172a;}
+.lopt small{font-size:.7rem;font-weight:600;color:#64748b;line-height:1.3;text-align:center;}
+.lopt.on{border-color:#f59e0b;background:linear-gradient(160deg,rgba(255,251,235,.95),rgba(254,243,199,.8));box-shadow:0 8px 24px rgba(245,158,11,.28),inset 0 1px 0 #fff;}
+.lopt.on .ei{color:#d97706;}
+.lchips{display:flex;gap:8px;flex-wrap:wrap;}
+.lchip{flex:1;min-width:30%;padding:11px 8px;border-radius:999px;border:1.5px solid rgba(15,23,42,.1);background:rgba(255,255,255,.65);font-family:inherit;font-size:.92rem;font-weight:800;color:#334155;cursor:pointer;transition:all .2s;}
+.lchip.on{background:linear-gradient(135deg,#f59e0b,#d97706);border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(217,119,6,.35);}
+.lhid{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
+.lemb{width:84px;height:84px;padding:8px;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.9);border-radius:26px;display:inline-flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:16px;box-shadow:0 6px 16px rgba(217,119,6,.3);}
 .lschool{font-size:1.3rem;font-weight:900;color:var(--d);line-height:1.4;margin:6px 0;}
 .lsub{font-size:.9rem;color:var(--mt);font-weight:600;}
 .llib{font-size:.9rem;font-weight:800;color:var(--s);background:#fffbeb;padding:8px 16px;border-radius:10px;border-left:4px solid var(--s);display:inline-block;margin-top:12px;}
@@ -252,6 +263,72 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
 
 
 
+
+/* ---- PROGRESS CARD (colour print) ---- */
+.pc2{max-width:760px;margin:0 auto;background:#fff;border:2px solid #1e3a8a;border-radius:14px;padding:0 0 18px;overflow:hidden;font-size:13px;color:#0f172a;box-shadow:0 0 0 4px #fff,0 0 0 6px #f59e0b;}
+.pc2 *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.pc2-head{display:flex;align-items:center;gap:14px;padding:16px 20px 14px;background:linear-gradient(120deg,#1e3a8a 0%,#3730a3 60%,#6d28d9 100%);color:#fff;}
+.pc2-logo{width:74px;height:74px;flex:none;border-radius:50%;background:#fff;padding:5px;box-shadow:0 0 0 3px #fbbf24;}
+.pc2-logo img{width:100%;height:100%;object-fit:contain;}
+.pc2-ht{flex:1;text-align:center;padding-right:74px;}
+.pc2-motto{font-size:11px;color:#fde68a;letter-spacing:.5px;}
+.pc2-trust{font-size:13px;font-weight:700;color:#fef3c7;margin-top:2px;}
+.pc2-school{font-size:22px;font-weight:900;line-height:1.25;margin:2px 0;}
+.pc2-addr{font-size:12px;color:#e0e7ff;}
+.pc2-ribbon{display:flex;align-items:center;justify-content:center;gap:12px;margin:-1px 0 0;padding:7px 10px;background:linear-gradient(90deg,#f59e0b,#d97706);color:#fff;}
+.pc2-ribbon span{font-size:17px;font-weight:900;letter-spacing:.5px;}
+.pc2-ribbon em{font-style:normal;font-size:12px;font-weight:700;background:rgba(255,255,255,.22);padding:2px 10px;border-radius:999px;}
+.pc2-info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 20px 6px;}
+.pc2-f{background:#f1f5ff;border:1px solid #dbe4ff;border-radius:10px;padding:6px 10px;}
+.pc2-f span{display:block;font-size:10.5px;color:#64748b;font-weight:700;}
+.pc2-f b{display:block;font-size:13.5px;color:#1e293b;font-weight:800;}
+.pc2-f:first-child{grid-column:span 2;}
+.pc2-tw{padding:10px 20px 0;}
+table.pc2-tbl{width:100%!important;max-width:100%!important;margin:0;border-collapse:separate;border-spacing:0;border:1px solid #c7d2fe;border-radius:12px;overflow:hidden;min-width:0;}
+.pc2-tbl th{background:#1e3a8a;color:#fff;font-size:12px;font-weight:800;padding:8px;text-align:left;border:0;letter-spacing:0;text-transform:none;}
+.pc2-tbl td{padding:7px 8px;border-top:1px solid #e0e7ff;font-size:13px;font-weight:600;color:#0f172a;}
+.pc2-tbl tbody tr:nth-child(even) td{background:#f8faff;}
+.pc2-tbl .c{text-align:center;}
+.pc2-code{display:inline-block;min-width:26px;padding:1px 6px;border-radius:6px;background:#e0e7ff;color:#3730a3;font-weight:800;font-size:11.5px;}
+.pc2-sub{font-weight:800;}
+.pc2-got{font-weight:900;color:#1e3a8a;font-size:14px;}
+.pc2-dash{color:#94a3b8;}
+.pc2-chip{display:inline-block;min-width:34px;padding:2px 8px;border-radius:999px;font-weight:900;font-size:12px;color:#fff;}
+.pc2-gt.pc2-g1{color:#16a34a;}.pc2-gt.pc2-g2{color:#2563eb;}.pc2-gt.pc2-g3{color:#d97706;}.pc2-gt.pc2-g4{color:#dc2626;}.pc2-gt.pc2-g0{color:#64748b;}
+.pc2-tile b.pc2-gt{background:none!important;font-size:22px;}
+.pc2-g1{background:#16a34a;}.pc2-g2{background:#2563eb;}.pc2-g3{background:#d97706;}.pc2-g4{background:#dc2626;}.pc2-g0{background:#64748b;}
+.pc2-tot td{background:#fef3c7!important;font-weight:900;border-top:2px solid #f59e0b;}
+.pc2-tot td:first-child{text-align:right;}
+.pc2-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 20px 4px;}
+.pc2-tile{border-radius:12px;padding:9px 10px;background:linear-gradient(160deg,#eef2ff,#e0e7ff);border:1px solid #c7d2fe;text-align:center;}
+.pc2-tile span{display:block;font-size:11px;font-weight:800;color:#475569;}
+.pc2-tile b{display:block;font-size:19px;font-weight:900;color:#1e3a8a;margin-top:2px;}
+.pc2-tile b small{font-size:12px;color:#64748b;}
+.pc2-tile>small{display:block;font-size:10.5px;font-weight:700;margin-top:2px;}
+.pc2-bar{display:block;height:6px;border-radius:9px;background:#c7d2fe;margin-top:5px;overflow:hidden;}
+.pc2-bar i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#16a34a);}
+.pc2-pass{background:linear-gradient(160deg,#dcfce7,#bbf7d0);border-color:#86efac;}.pc2-pass b,.pc2-pass>small{color:#15803d;}
+.pc2-fail{background:linear-gradient(160deg,#fee2e2,#fecaca);border-color:#fca5a5;}.pc2-fail b,.pc2-fail>small{color:#b91c1c;}
+.pc2-rem{padding:12px 20px 0;display:grid;grid-template-columns:1fr 3fr;gap:14px;}
+.pc2-rem div{display:flex;align-items:flex-end;gap:8px;}
+.pc2-rem span{font-weight:800;font-size:12px;color:#475569;white-space:nowrap;}
+.pc2-rem i{flex:1;border-bottom:1.5px dotted #94a3b8;height:18px;}
+.pc2-sign{display:flex;justify-content:space-between;gap:20px;padding:46px 20px 0;}
+.pc2-sign div{flex:1;text-align:center;border-top:1.5px solid #1e3a8a;padding-top:5px;font-weight:800;font-size:12.5px;color:#1e3a8a;}
+@media screen and (max-width:640px){
+  .pc2-info{grid-template-columns:1fr 1fr;}.pc2-sum{grid-template-columns:1fr 1fr;}
+  .pc2-school{font-size:17px;}.pc2-ht{padding-right:0;}.pc2-logo{width:56px;height:56px;}
+}
+#emve-print-root .pc2{max-width:none;box-shadow:none;border-radius:10px;}
+#emve-print-root .pc2-info{grid-template-columns:repeat(3,1fr);}
+#emve-print-root .pc2-sum{grid-template-columns:repeat(4,1fr);}
+#emve-print-root .pc2{page-break-inside:avoid;break-inside:avoid;}
+#emve-print-root.ep-wk .pc2-head{padding:10px 18px 9px;}
+#emve-print-root.ep-wk .pc2-info{padding-top:9px;gap:6px;}
+#emve-print-root.ep-wk .pc2-tbl td{padding:5px 8px;}
+#emve-print-root.ep-wk .pc2-sum{padding-top:9px;}
+#emve-print-root.ep-wk .pc2-sign{padding-top:30px;}
+
 /* ---- ICONS: one line-icon set (same on Android, iPhone, desktop) ---- */
 .ei{width:1.15em;height:1.15em;vertical-align:-0.2em;flex:none;display:inline-block;}
 .ei-ok{color:#16a34a;}.ei-warn{color:#d97706;}.ei-bad{color:#dc2626;}.ei-inf{color:#2563eb;}
@@ -428,19 +505,28 @@ main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs 
         <span class="llib">&#x1F393; &#x0936;&#x093F;&#x0915;&#x094D;&#x0937;&#x0923;&#x093E;&#x0924;&#x0942;&#x0928; &#x0938;&#x092E;&#x0943;&#x0926;&#x094D;&#x0927;&#x0940;</span>
       </div>
       <div class="lf">
-        <label>भूमिका (Role)</label>
-        <select id="l-role" data-field="role">
+        <label>भूमिका निवडा</label>
+        <div class="lseg">
+          <button type="button" class="lopt" data-action="lpick" data-sel="l-role" data-val="admin"><svg class="ei" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><b>प्रशासन</b><small>संस्थाचालक · मुख्याध्यापक · लिपिक</small></button>
+          <button type="button" class="lopt" data-action="lpick" data-sel="l-role" data-val="shik"><svg class="ei" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg><b>शिक्षक</b><small>गुण नोंदणी · वेळापत्रक</small></button>
+        </div>
+        <select id="l-role" data-field="role" autocomplete="off" class="lhid" tabindex="-1" aria-hidden="true">
           <option value="">-- भूमिका निवडा --</option>
-          <option value="admin">🛡️ प्रशासन (Administration)</option>
-          <option value="shik">&#x1F535; शिक्षक (Teacher)</option>
+          <option value="admin">प्रशासन</option>
+          <option value="shik">शिक्षक</option>
         </select>
         <div id="admin-sel" style="display:none;margin-top:16px;">
           <label>प्रशासकीय पद</label>
-          <select id="l-admin-role">
+          <div class="lchips">
+            <button type="button" class="lchip" data-action="lpick" data-sel="l-admin-role" data-val="super">संस्थाचालक</button>
+            <button type="button" class="lchip" data-action="lpick" data-sel="l-admin-role" data-val="mukh">मुख्याध्यापक</button>
+            <button type="button" class="lchip" data-action="lpick" data-sel="l-admin-role" data-val="clerk">लिपिक</button>
+          </div>
+          <select id="l-admin-role" autocomplete="off" class="lhid" tabindex="-1" aria-hidden="true">
             <option value="">-- पद निवडा --</option>
-            <option value="super">&#x1F534; संस्थाचालक</option>
-            <option value="mukh">&#x1F7E2; मुख्याध्यापक</option>
-            <option value="clerk">🟠 लिपिक (Clerk)</option>
+            <option value="super">संस्थाचालक</option>
+            <option value="mukh">मुख्याध्यापक</option>
+            <option value="clerk">लिपिक</option>
           </select>
         </div>
         <div id="tc-sel" style="display:none;margin-top:16px;">
@@ -1246,6 +1332,8 @@ function genCard(){
   var grandTotal=0;var grandMax=0;
   var subjCodes={'प्रथम भाषा':'01','द्वितीय भाषा':'02','तृतीय भाषा':'03','गणित':'04','सा.विज्ञान/परिसर अ.1':'05','सामाजिक शास्त्रे/परिसर अ.2':'06','कला':'07','कार्यानुभव':'08','शा.शिक्षण':'09'};
   var gradeOnly=['कला','कार्यानुभव','शा.शिक्षण'];
+  var gCls=function(g){var k=gradeColor(g);return k==='bgg'?'pc2-g1':k==='bgb'?'pc2-g2':k==='bgy'?'pc2-g3':k==='bgr'?'pc2-g4':'pc2-g0';};
+  var chip=function(g){return g&&g!=='-'?'<span class="pc2-chip '+gCls(g)+'">'+g+'</span>':'<span class="pc2-dash">—</span>';};
   var markRows=subjs.map(function(subj,idx){
     var t=calcSubjTotal(sId,cls,subj);
     var isGO=gradeOnly.indexOf(subj)>=0;
@@ -1253,75 +1341,50 @@ function genCard(){
     var gr=t.total!==''?grade(t.pct,cls):'-';
     if(!isGO){grandTotal+=parseFloat(t.total)||0;grandMax+=t.max;}
     return '<tr>'+
-      '<td style="text-align:center;">'+code+'</td>'+
-      '<td style="text-align:left;">'+subj+'</td>'+
-      '<td style="text-align:center;">'+(isGO?'-':t.max)+'</td>'+
-      '<td style="text-align:center;">'+(isGO?'-':(t.total!==''?t.total:'-'))+'</td>'+
-      '<td style="text-align:center;">'+(isGO?'<span class="bdg '+gradeColor(gr)+'">'+gr+'</span>':'-')+'</td>'+
-      '<td style="text-align:center;">'+(isGO?'-':'<span class="bdg '+gradeColor(gr)+'">'+gr+'</span>')+'</td>'+
+      '<td class="c"><span class="pc2-code">'+code+'</span></td>'+
+      '<td class="pc2-sub">'+subj+'</td>'+
+      '<td class="c">'+(isGO?'<span class="pc2-dash">—</span>':t.max)+'</td>'+
+      '<td class="c pc2-got">'+(isGO?'<span class="pc2-dash">—</span>':(t.total!==''?t.total:'<span class="pc2-dash">—</span>'))+'</td>'+
+      '<td class="c">'+(isGO?chip(gr):'<span class="pc2-dash">—</span>')+'</td>'+
+      '<td class="c">'+(isGO?'<span class="pc2-dash">—</span>':chip(gr))+'</td>'+
       '</tr>';
   }).join('');
   var totalPct=grandMax>0?Math.round(grandTotal/grandMax*100):0;
   var totalGr=totalPct>0?grade(totalPct,cls):'-';
   var pf=totalPct>=33?'उत्तीर्ण':'अनुत्तीर्ण';
   var nextCls=pf==='उत्तीर्ण'?'पुढील इयत्तेत प्रविष्ट':'त्याच इयत्तेत';
+  var med=s.medium||c.medium||'मराठी';
+  var info=function(l,v){return '<div class="pc2-f"><span>'+l+'</span><b>'+(v||'—')+'</b></div>';};
   wrap.innerHTML=
-    '<div class="pcard-wrap">'+
-    '<div style="border:3px double #1A4A98;padding:15px;margin-bottom:10px;">'+
-    '<div style="text-align:center;border-bottom:2px solid #1A4A98;padding-bottom:8px;margin-bottom:8px;">'+
-    '<div style="font-size:0.75rem;color:#555;letter-spacing:1px;">|| विद्या विनयेन शोभते ||</div>'+
-    '<div style="font-size:0.9rem;color:#B02020;font-weight:600;">समता जोगेश्वरी मंडळाचे</div>'+
-    '<div style="font-size:1.4rem;font-weight:800;color:#1A4A98;letter-spacing:1px;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
-    '<div style="font-size:0.85rem;color:#444;">ता. शेवगाव, जि. अहिल्यानगर</div>'+
+    '<div class="pcard-wrap pc2">'+
+    '<div class="pc2-head">'+
+      '<div class="pc2-logo"><img src="Saraswati Logo.jpg" alt=""></div>'+
+      '<div class="pc2-ht">'+
+        '<div class="pc2-motto">|| विद्या विनयेन शोभते ||</div>'+
+        '<div class="pc2-trust">समता जोगेश्वरी मंडळाचे</div>'+
+        '<div class="pc2-school">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
+        '<div class="pc2-addr">ता. शेवगाव, जि. अहिल्यानगर</div>'+
+      '</div>'+
     '</div>'+
-    '<div style="text-align:center;">'+
-    '<span style="background:#1A4A98;color:white;padding:4px 20px;border-radius:4px;font-weight:700;font-size:1rem;">प्रगतिपत्रक - सन '+emveAcadYear()+'</span>'+
+    '<div class="pc2-ribbon"><span>प्रगतिपत्रक</span><em>शैक्षणिक वर्ष '+emveAcadYear()+'</em></div>'+
+    '<div class="pc2-info">'+
+      info('विद्यार्थ्याचे नाव',s.name)+info('इयत्ता',c.label)+info('हजेरी क्रमांक',s.roll)+
+      info('आईचे नाव',s.mother)+info('जन्मतारीख',s.dob)+info('रजिस्टर क्रमांक',s.regNo)+
+      info('माध्यम',med)+
     '</div>'+
-    '</div>'+
-    '<table style="width:100%;border-collapse:collapse;margin-bottom:10px;font-size:.85rem;">'+
-    '<tr>'+
-    '<td style="padding:3px 6px;width:25%;">नाव:</td><td style="font-weight:700;border-bottom:1px solid #000;width:25%;">'+s.name+'</td>'+
-    '<td style="padding:3px 6px;width:25%;">इयत्ता:</td><td style="font-weight:700;border-bottom:1px solid #000;">'+c.label+'</td>'+
-    '</tr><tr>'+
-    '<td style="padding:3px 6px;">तुकडी:</td><td style="font-weight:700;border-bottom:1px solid #000;">'+(s.div||'-')+'</td>'+
-    '<td style="padding:3px 6px;">माध्यम:</td><td style="font-weight:700;border-bottom:1px solid #000;">'+(c.medium||'मराठी')+'</td>'+
-    '</tr><tr>'+
-    '<td style="padding:3px 6px;">रजिस्टर क्र.:</td><td style="font-weight:700;border-bottom:1px solid #000;">'+(s.regNo||'_____')+'</td>'+
-    '<td style="padding:3px 6px;">रोल क्रमांक:</td><td style="font-weight:700;border-bottom:1px solid #000;">'+(s.roll||'_____')+'</td>'+
-    '</tr>'+
-    '</table>'+
-    '<div style="overflow-x:auto;">'+
-    '<table class="pcard-marks" style="width:100%;">'+
-    '<thead style="background:#1A4A98;color:white;"><tr>'+
-    '<th style="text-align:center;">विषय कोड क्र.</th>'+
-    '<th style="text-align:left;">विषय</th>'+
-    '<th style="text-align:center;">कमाल गुण</th>'+
-    '<th style="text-align:center;">प्राप्त गुण</th>'+
-    '<th style="text-align:center;">श्रेणीले विषय</th>'+
-    '<th style="text-align:center;">श्रेणी</th>'+
-    '</tr></thead>'+
-    '<tbody>'+markRows+
-    '<tr style="background:#f0f0f0;font-weight:700;">'+
-    '<td colspan="2" style="text-align:right;padding:6px;">एकूण</td>'+
-    '<td style="text-align:center;">'+grandMax+'</td>'+
-    '<td style="text-align:center;">'+Math.round(grandTotal)+'</td>'+
-    '<td>-</td>'+
-    '<td style="text-align:center;"><span class="bdg '+gradeColor(totalGr)+'">'+totalGr+'</span></td>'+
-    '</tr>'+
+    '<div class="pc2-tw"><table class="ep-plain pc2-tbl"><thead><tr>'+
+      '<th class="c">कोड</th><th>विषय</th><th class="c">कमाल गुण</th><th class="c">प्राप्त गुण</th><th class="c">श्रेणी विषय</th><th class="c">श्रेणी</th>'+
+    '</tr></thead><tbody>'+markRows+
+      '<tr class="pc2-tot"><td colspan="2">एकूण</td><td class="c">'+grandMax+'</td><td class="c">'+Math.round(grandTotal)+'</td><td></td><td class="c">'+chip(totalGr)+'</td></tr>'+
     '</tbody></table></div>'+
-    '<div style="background:#f0f7ff;border:1px solid #1A4A98;border-radius:6px;padding:10px;margin-top:10px;font-size:.85rem;">'+
-    '<table style="width:100%;border-collapse:collapse;">'+
-    '<tr>'+
-    '<td style="padding:4px 8px;">एकूण गुण: <strong>'+Math.round(grandTotal)+' / '+grandMax+'</strong></td>'+
-    '<td style="padding:4px 8px;">शेकडा गुण: <strong>'+totalPct+'%</strong></td>'+
-    '<td style="padding:4px 8px;">निकाल: <strong style="color:'+(pf==='उत्तीर्ण'?'green':'red')+';">'+pf+'</strong></td>'+
-    '<td style="padding:4px 8px;">श्रेणी (पुढील इयत्ता): <strong>'+nextCls+'</strong></td>'+
-    '</tr>'+
-    '</table></div>'+
-    '<div style="display:flex;justify-content:space-between;margin-top:50px;text-align:center;font-size:.83rem;">'+
-    '<div>___________<br><strong>वर्गशिक्षक</strong></div>'+
-    '<div>___________<br><strong>मुख्याध्यापक</strong></div>'+
+    '<div class="pc2-sum">'+
+      '<div class="pc2-tile"><span>एकूण गुण</span><b>'+Math.round(grandTotal)+'<small> / '+grandMax+'</small></b></div>'+
+      '<div class="pc2-tile"><span>टक्केवारी</span><b>'+totalPct+'%</b><i class="pc2-bar"><i style="width:'+Math.min(100,totalPct)+'%"></i></i></div>'+
+      '<div class="pc2-tile"><span>एकूण श्रेणी</span><b class="pc2-gt '+(totalGr!=='-'?gCls(totalGr):'')+'">'+(totalGr!=='-'?totalGr:'—')+'</b></div>'+
+      '<div class="pc2-tile '+(pf==='उत्तीर्ण'?'pc2-pass':'pc2-fail')+'"><span>निकाल</span><b>'+pf+'</b><small>'+nextCls+'</small></div>'+
     '</div>'+
+    '<div class="pc2-rem"><div><span>उपस्थिती</span><i></i></div><div><span>शेरा</span><i></i></div></div>'+
+    '<div class="pc2-sign"><div>वर्गशिक्षक</div><div>पालक</div><div>मुख्याध्यापक</div></div>'+
     '</div>'+
     '<div class="no-print" style="margin-top:16px;display:flex;gap:12px;">'+
     '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="pc-wrap" data-title="प्रगतिपत्रक" data-raw="1" data-orient="portrait">🖨️ प्रिंट करा</button>'+
@@ -1476,9 +1539,10 @@ function secRTch(){
   if(curRole!=='super'&&curRole!=='mukh')return noAccess();
   var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
   var rows=TEACHERS.filter(function(t){return !t.isMukh;}).map(function(tc){
-    return '<tr><td style="font-weight:700;">'+tc.name+'</td><td><code style="background:#e2e8f0;padding:4px 8px;border-radius:6px;font-size:.85rem;">'+tc.pw+'</code></td><td><strong style="color:var(--b);">'+tc.classOf+'</strong></td>'+
+    return '<tr><td style="font-weight:700;">'+tc.name+'</td><td><strong style="color:var(--b);">'+String(tc.classOf||'').toUpperCase()+'</strong></td>'+
       '<td style="color:var(--mt);font-weight:500;">'+tc.subjects.join(', ')+'</td>'+
-      '<td><button class="btn bo bsm" data-action="changetcpw" data-tcid="'+tc.id+'">'+(curRole==='super'?'✏️ संपादन':'🔑 PW')+'</button>'+( curRole==='super' ? ' <button class="btn bd bsm" data-action="removeteacher" data-tcid="'+tc.id+'">🗑️</button>' : '' )+'</td></tr>';
+      '<td style="color:var(--mt);font-weight:500;">'+(tc.classes||[]).map(function(c){return String(c).toUpperCase();}).join(', ')+'</td>'+
+      '<td style="white-space:nowrap;"><button class="btn bo bsm" data-action="edittc" data-tcid="'+tc.id+'">✏️ संपादन</button>'+( curRole==='super' ? ' <button class="btn bd bsm" data-action="removeteacher" data-tcid="'+tc.id+'">🗑️</button>' : '' )+'</td></tr>';
   }).join('');
   return '<div class="card"><div class="ct">👨‍🏫 शिक्षक व्यवस्थापन</div>'+
     (curRole==='super'?'<details style="margin-bottom:18px;"><summary style="cursor:pointer;font-weight:800;color:var(--b);padding:10px 0;font-size:1.05rem;">➕ नवीन शिक्षक जोडा</summary>'+
@@ -1488,7 +1552,8 @@ function secRTch(){
     '<div class="fg"><label>वर्गशिक्षक (वर्ग)</label><select id="tc-co"><option value="">--</option>'+clsOpts+'</select></div>'+
     '<div class="fg"><label>विषय (comma separated)</label><input type="text" id="tc-subj" placeholder="मराठी,हिंदी"></div>'+
     '</div><button class="btn bs" style="margin-top:10px;font-size:1rem;padding:10px 20px;" data-action="addteacher">✅ जोडा</button></div></details>':'')+
-    '<div class="tw"><table><thead><tr><th>नाव</th><th>पासवर्ड</th><th>वर्गशिक्षक</th><th>विषय</th><th>कृती</th></tr></thead>'+
+    '<div id="tc-edit"></div>'+
+    '<div class="tw"><table><thead><tr><th>नाव</th><th>वर्गशिक्षक</th><th>विषय</th><th>शिकवतात ते वर्ग</th><th>कृती</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div></div>';
 }
 
@@ -1505,6 +1570,31 @@ function addTeacher(){
   toast(n+' जोडले! ✅');syncAll();showTab('atch');
 }
 
+/* edit class-teacher, subjects and classes of a teacher (password: पासवर्ड tab) */
+function editTc(id){
+  var tc=(TEACHERS||[]).find(function(x){return parseInt(x.id,10)===parseInt(id,10);});
+  var box=document.getElementById('tc-edit');if(!tc||!box)return;
+  var co=String(tc.classOf||'').toLowerCase();
+  var opts='<option value="">— नाही —</option>'+CLASSES.map(function(c){return '<option value="'+c.id+'"'+(c.id===co?' selected':'')+'>'+c.label+'</option>';}).join('');
+  var mine=(tc.classes||[]).map(function(c){return String(c).toLowerCase();});
+  var chk=CLASSES.map(function(c){return '<label style="display:inline-flex;align-items:center;gap:6px;margin:4px 12px 4px 0;font-weight:700;"><input type="checkbox" class="tc-ecls" value="'+c.id+'"'+(mine.indexOf(c.id)>=0?' checked':'')+'> '+c.label+'</label>';}).join('');
+  box.innerHTML='<div style="margin-bottom:18px;padding:16px;background:#f8fafc;border-radius:16px;border:2px solid var(--b);">'+
+    '<div style="font-weight:900;font-size:1.05rem;margin-bottom:12px;">✏️ '+tc.name+' — माहिती बदला</div><div class="fg2">'+
+    '<div class="fg"><label>वर्गशिक्षक (वर्ग)</label><select id="tc-eco">'+opts+'</select></div>'+
+    '<div class="fg"><label>विषय (स्वल्पविरामाने वेगळे करा)</label><input type="text" id="tc-esubj" value="'+(tc.subjects||[]).join(', ').replace(/"/g,'&quot;')+'"></div>'+
+    '</div><div class="fg"><label>शिकवतात ते वर्ग</label><div>'+chk+'</div></div>'+
+    '<div style="display:flex;gap:10px;margin-top:10px;"><button class="btn bs" data-action="savetc" data-tcid="'+tc.id+'">💾 जतन करा</button><button class="btn" data-action="canceltc">रद्द करा</button></div>'+
+    '<div style="font-size:.8rem;color:var(--mt);margin-top:10px;">पासवर्ड बदलण्यासाठी: व्यवस्थापन → पासवर्ड tab.</div></div>';
+  box.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function saveTc(id){
+  var tc=(TEACHERS||[]).find(function(x){return parseInt(x.id,10)===parseInt(id,10);});if(!tc)return;
+  tc.classOf=(document.getElementById('tc-eco')||{}).value||'';
+  tc.subjects=String((document.getElementById('tc-esubj')||{}).value||'').split(/[,|]/).map(function(x){return x.trim();}).filter(Boolean);
+  var cb=document.querySelectorAll('.tc-ecls'),cl=[];for(var i=0;i<cb.length;i++){if(cb[i].checked)cl.push(cb[i].value);}
+  tc.classes=cl;
+  toast(tc.name+' यांची माहिती जतन केली ✅');syncAll();showTab('atch');
+}
 function removeTeacher(id){
   var tc=TEACHERS.find(function(t){return t.id===id;});if(!tc)return;
   if(!confirm(tc.name+' यांना काढायचे आहे का?'))return;
@@ -2405,9 +2495,18 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='genbona')genBona();
         else if(act==='changepw')changePW();
         else if(act==='changetcpw')changeTcPw(parseInt(el.getAttribute('data-tcid')||0));
+        else if(act==='edittc')editTc(parseInt(el.getAttribute('data-tcid')||0));
+        else if(act==='savetc')saveTc(parseInt(el.getAttribute('data-tcid')||0));
+        else if(act==='canceltc'){var te=document.getElementById('tc-edit');if(te)te.innerHTML='';}
         else if(act==='promoteall')promoteAll();
         else if(act==='print')emvePrintSection();
         else if(act==='emve-print-sec')emvePrintSection();
+        else if(act==='lpick'){
+          var lsel=document.getElementById(el.getAttribute('data-sel'));
+          if(lsel){lsel.value=el.getAttribute('data-val');
+            var sib=el.parentNode.children;for(var li=0;li<sib.length;li++)sib[li].classList.remove('on');el.classList.add('on');
+            if(lsel.id==='l-role')onRole();}
+        }
         else if(act==='emve-pdf-share')emvePdfShare();
         else if(act==='emve-pdf-close')emvePdfClose();
         else if(act==='emve-print'){
@@ -2807,6 +2906,9 @@ function emveIconize(root){
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 
+/* login tiles start unselected (browser may restore old select values after reload) */
+document.addEventListener('DOMContentLoaded',function(){['l-role','l-admin-role'].forEach(function(i){var e=document.getElementById(i);if(e)e.value='';});});
+
 /* print the current screen (lists, reports) with the tab name as title */
 function emvePrintSection(){
   var el=document.getElementById('mod-secs');if(!el)return;
@@ -3022,7 +3124,8 @@ function syncAll(){
   /* keep every key from the sheet (clerk too) */
   var pwR=[['key','value']];for(var pk in PW){if(PW.hasOwnProperty(pk)&&PW[pk])pwR.push([pk,PW[pk]]);}
   var tcR=[['ID','Name','PW','ClassOf','Subjects','Classes','TTName']];
-  (TEACHERS||[]).forEach(function(tc){tcR.push([tc.id,tc.name,tc.pw||'',tc.classOf||'',(tc.subjects||[]).join('|'),(tc.classes||[]).join('|'),tc.ttName||tc.name||'']);});
+  var upC=function(c){return String(c||'').toUpperCase();};
+  (TEACHERS||[]).forEach(function(tc){tcR.push([tc.id,tc.name,tc.pw||'',upC(tc.classOf),(tc.subjects||[]).join(' | '),(tc.classes||[]).map(upC).join(' | '),tc.ttName||tc.name||'']);});
   var ntR=[['ID','Date','Title','Message','Author']];notices.forEach(function(n){ntR.push([n.id,n.date,n.title,n.msg,n.author]);});
   /* never overwrite a sheet with an empty list (data not loaded yet) */
   var postIf=function(n,rows,cb){if(rows.length>1)sheetPost(n,rows,cb);else cb();};
