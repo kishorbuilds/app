@@ -283,6 +283,9 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
 #emve-print-root.ep-capture{display:block!important;position:static!important;visibility:visible!important;background:#fff;}
 #emve-print-root.ep-capture .ep-sp{height:0;}
 #emve-print-root.ep-capture *{letter-spacing:0!important;font-variant-ligatures:normal!important;}
+#emve-print-root.ep-capture tr{background:transparent!important;}
+#emve-print-root.ep-capture th.ep-up{border-bottom-color:#fff!important;vertical-align:bottom!important;}
+#emve-print-root.ep-capture th.ep-low{border-top-color:#fff!important;}
 #emve-print-root.ep-port{width:190mm;}
 main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs [data-action="tt-print"]) .ep-top-print,main:has(#mod-secs [data-action="tt-print-teacher"]) .ep-top-print,main:has(#mod-secs [data-action="printsublog"]) .ep-top-print{display:none;}
 #emve-print-root.ep-land{width:277mm;}
@@ -1285,7 +1288,7 @@ function genCard(){
     '</div>'+
     '</div>'+
     '<div class="no-print" style="margin-top:16px;display:flex;gap:12px;">'+
-    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="pc-wrap" data-raw="1" data-orient="portrait">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="pc-wrap" data-title="प्रगतिपत्रक" data-raw="1" data-orient="portrait">🖨️ प्रिंट करा</button>'+
     '<button class="btn bd" style="font-size:1rem;padding:12px 24px;" onclick="document.getElementById(\'pc-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
     '</div>';
 }
@@ -2433,7 +2436,7 @@ function genBona() {
     '<div><b>लिपिक</b></div><div><b>मुख्याध्यापक</b></div>' +
     '</div></div>' +
     '<div class="no-print" style="margin-top:20px;display:flex;gap:12px;">'+
-    '<button class="btn bp" data-action="emve-print" data-target="bn-wrap" data-raw="1" data-orient="portrait">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bp" data-action="emve-print" data-target="bn-wrap" data-title="बोनाफाईड" data-raw="1" data-orient="portrait">🖨️ प्रिंट करा</button>'+
     '<button class="btn bd" onclick="document.getElementById(\'bn-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
     '</div>';
 }
@@ -2483,6 +2486,7 @@ function emvePrintClean(src){
   });
   each('.ct',function(el){var h=document.createElement('div');h.className='ep-h';h.textContent=emvePrintText(el.textContent);el.parentNode.replaceChild(h,el);});
   each('[id]',function(el){el.removeAttribute('id');});
+  each('.mkt,.mkw',function(el){el.className=el.className.replace(/\bmk[tw]\b/g,'');});
   c.removeAttribute('id');
   each('.card',function(el){if(!emvePrintText(el.textContent)&&!el.querySelector('table,img'))el.parentNode.removeChild(el);});
   var walk=document.createTreeWalker(c,NodeFilter.SHOW_TEXT,null,false),n,txt=[];
@@ -2509,8 +2513,9 @@ function emvePrint(src,opts){
   var head=opts.raw?'':'<div class="ep-head"><img src="Saraswati Logo.jpg" alt=""><div class="ep-ht"><div class="ep-s1">समता जोगेश्वरी मंडळाचे</div><div class="ep-s2">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
     (opts.title?'<div class="ep-s3"></div>':'')+(sub?'<div class="ep-s4"></div>':'')+'</div><div class="ep-logo-sp"></div></div>';
   root.innerHTML='<table class="ep-page ep-plain"><thead><tr><td><div class="ep-sp"></div></td></tr></thead><tfoot><tr><td><div class="ep-sp"></div></td></tr></tfoot><tbody><tr><td>'+head+'<div class="ep-body"></div>'+(opts.sign?'<div class="ep-sign"></div>':'')+'</td></tr></tbody></table>';
-  if(opts.title)root.querySelector('.ep-s3').textContent=emvePrintText(opts.title);
-  if(sub)root.querySelector('.ep-s4').textContent=sub;
+  var s3=root.querySelector('.ep-s3'),s4=root.querySelector('.ep-s4');
+  if(opts.title&&s3)s3.textContent=emvePrintText(opts.title);
+  if(sub&&s4)s4.textContent=sub;
   if(opts.sign){var sg=root.querySelector('.ep-sign');opts.sign.forEach(function(x){var d=document.createElement('div');d.textContent=x;sg.appendChild(d);});}
   var body=root.querySelector('.ep-body');body.appendChild(cl.node);
   if(opts.raw)root.className='ep-raw';
@@ -2562,34 +2567,88 @@ function emveDoPrint(orient,fname){
   if(Date.now()-t0>300)opened=true;
   setTimeout(function(){window.removeEventListener('beforeprint',mark);if(!opened)emvePdf(orient,fname);},1200);
 }
-var EMVE_PDF_LIB='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+/* PDF made page by page: A4, equal margins, breaks only between rows,
+   table heading repeated on every page, canvas kept within iPhone limits */
+var EMVE_PDF_LIBS=['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js','https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'];
+function emveLoadLibs(list,ok,bad){
+  var i=0;var next=function(){
+    if(i>=list.length){ok();return;}
+    var u=list[i++];
+    if((u.indexOf('html2canvas')>=0&&window.html2canvas)||(u.indexOf('jspdf')>=0&&window.jspdf)){next();return;}
+    var sc=document.createElement('script');sc.src=u;sc.onload=next;sc.onerror=bad;document.head.appendChild(sc);
+  };next();
+}
+/* turn header cells spanning 2 rows into a top cell + a cell below (same look, safe for html2canvas) */
+function emveSplitRowspan(root){
+  var th=root.querySelectorAll('.ep-body thead th[rowspan]');
+  for(var i=0;i<th.length;i++){
+    var c=th[i],n=parseInt(c.getAttribute('rowspan'),10)||1;if(n<2)continue;
+    var tr=c.parentNode,nx=tr.nextElementSibling;if(!nx)continue;
+    var col=0;for(var k=0;k<tr.children.length&&tr.children[k]!==c;k++){if(!tr.children[k].hasAttribute('rowspan'))col+=parseInt(tr.children[k].getAttribute('colspan')||'1',10);}
+    var before=0,ref=null;for(var j=0;j<nx.children.length;j++){if(before>=col){ref=nx.children[j];break;}before+=parseInt(nx.children[j].getAttribute('colspan')||'1',10);}
+    var low=document.createElement('th');low.className='ep-low';
+    c.removeAttribute('rowspan');c.className+=' ep-up';
+    nx.insertBefore(low,ref);
+  }
+}
 function emvePdf(orient,fname){
   var root=document.getElementById('emve-print-root');if(!root)return;
   emveShowLoader('PDF तयार होत आहे…');
   var fail=function(){emveHideLoader();toast('PDF बनली नाही. Internet तपासा.','err');};
-  var go=function(){
+  emveLoadLibs(EMVE_PDF_LIBS,function(){
     var body=root.querySelector('.ep-body');
     var z=body.style.zoom;body.style.zoom='';
     var sy=window.pageYOffset||0;window.scrollTo(0,0);
+    var M=10,A=orient==='landscape'?[297,210]:[210,297],CW=A[0]-2*M,CH=A[1]-2*M,PX=3.7795;
     root.classList.add('ep-capture');
-    var pg=root.querySelector('.ep-page');
-    var w=Math.max(root.offsetWidth,pg?pg.scrollWidth:0,body.scrollWidth);
-    root.style.width=w+'px';
+    root.style.width=Math.round(CW*PX)+'px';
+    var w=Math.max(root.scrollWidth,body.scrollWidth);
+    if(w>root.offsetWidth+1)root.style.width=w+'px';
+    w=root.offsetWidth;
     var done=function(){root.classList.remove('ep-capture');root.style.width='';body.style.zoom=z;emveHideLoader();window.scrollTo(0,sy);};
-    /* wide table: same A4 shape, just bigger, so nothing is cut; printers fit it to A4 */
-    var A=orient==='landscape'?[297,210]:[210,297];
-    var k=Math.max(1,w*1.06/((A[0]-16)*3.7795));
-    try{
-      var job=window.html2pdf().set({margin:[8*k,8*k,8*k,8*k],filename:fname+'.pdf',image:{type:'jpeg',quality:0.95},
-        html2canvas:{scale:Math.min(2,Math.sqrt(14e6/Math.max(1,w*root.offsetHeight))),useCORS:true,backgroundColor:'#ffffff',windowWidth:w+40,scrollX:0,scrollY:0},
-        jsPDF:{unit:'mm',format:[A[0]*k,A[1]*k],orientation:orient},
-        pagebreak:{mode:['css'],avoid:['tr','.ep-sign']}}).from(root);
-      if(emveIsIOSApp())job.outputPdf('blob').then(function(b){done();emvePdfReady(b,fname);},function(){done();fail();});
-      else job.save().then(function(){done();toast('PDF download झाली ✅');},function(){done();fail();});
-    }catch(e){done();fail();}
-  };
-  if(window.html2pdf){go();return;}
-  var sc=document.createElement('script');sc.src=EMVE_PDF_LIB;sc.onload=go;sc.onerror=fail;document.head.appendChild(sc);
+    emveSplitRowspan(root);
+    var r0=root.getBoundingClientRect(),H=Math.ceil(root.scrollHeight);
+    var top=function(el){return el.getBoundingClientRect().top-r0.top;};
+    var bot=function(el){return el.getBoundingClientRect().bottom-r0.top;};
+    /* places where a page may end: below a table row or below a block */
+    var cuts=[],i,list=body.querySelectorAll('tr,.ep-head,.ep-sign,.ep-h,.sg,.pcard-wrap>div,p,h1,h2,h3,br');
+    for(i=0;i<list.length;i++)cuts.push(bot(list[i]));
+    var hd=root.querySelector('.ep-head');if(hd)cuts.push(bot(hd));
+    cuts.push(H);cuts.sort(function(x,y){return x-y;});
+    var tables=[],tl=body.querySelectorAll('table');
+    for(i=0;i<tl.length;i++){var th=tl[i].querySelector('thead');if(th)tables.push({t:top(tl[i]),b:bot(tl[i]),ht:top(th),hb:bot(th)});}
+    var f=Math.min(CW/w,1/PX);           /* mm per css px */
+    var pageH=CH/f;
+    var sc=Math.min(2,Math.sqrt(12e6/Math.max(1,w*H)));
+    window.html2canvas(root,{scale:sc,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:w+40,width:w,height:H}).then(function(cv){
+      try{
+        var pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',orientation:orient});
+        var start=0,first=true,guard=0;
+        while(start<H-2&&guard++<200){
+          var rep=null;
+          if(!first){for(var t=0;t<tables.length;t++){if(tables[t].hb<=start+1&&tables[t].b>start+1){rep=tables[t];break;}}}
+          var repH=rep?rep.hb-rep.ht:0;
+          var lim=start+pageH-repH,end=lim;
+          if(lim>=H)end=H;
+          else{var best=0;for(var c=0;c<cuts.length;c++){if(cuts[c]>start+20&&cuts[c]<=lim)best=cuts[c];}if(best)end=best;}
+          var sh=end-start;
+          var pc=document.createElement('canvas');
+          pc.width=cv.width;pc.height=Math.ceil((repH+sh)*sc);
+          var g=pc.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,pc.width,pc.height);
+          if(rep)g.drawImage(cv,0,Math.round(rep.ht*sc),cv.width,Math.round(repH*sc),0,0,cv.width,Math.round(repH*sc));
+          g.drawImage(cv,0,Math.round(start*sc),cv.width,Math.round(sh*sc),0,Math.round(repH*sc),cv.width,Math.round(sh*sc));
+          if(!first)pdf.addPage('a4',orient);
+          var iw=w*f,ih=(repH+sh)*f;
+          pdf.addImage(pc.toDataURL('image/jpeg',0.92),'JPEG',M+(CW-iw)/2,M,iw,ih);
+          start=end;first=false;
+        }
+        var blob=pdf.output('blob');
+        done();
+        if(emveIsIOSApp())emvePdfReady(blob,fname);
+        else{var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'.pdf';document.body.appendChild(a);a.click();setTimeout(function(){a.parentNode.removeChild(a);},1000);toast('PDF download झाली ✅');}
+      }catch(e){done();fail();}
+    },function(){done();fail();});
+  },fail);
 }
 /* iPhone app cannot download: show the PDF through the share sheet (Print / Files / WhatsApp) */
 var emvePdfFile=null;
