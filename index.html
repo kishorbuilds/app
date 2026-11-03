@@ -241,6 +241,51 @@ table tbody tr:nth-child(even) { background-color: #f5f5f5; }
 }
 table tbody tr:nth-child(odd) { background-color: #ffffff; }
 
+
+/* ---- CLEAN PRINT (one system for every print in the app) ---- */
+#emve-print-root{display:none;}
+#emve-print-root.ep-measure{display:block;position:absolute;left:-99999px;top:0;visibility:hidden;}
+#emve-print-root{font-family:'Noto Sans Devanagari','Mukta',Arial,sans-serif;color:#000;background:#fff;}
+#emve-print-root .ep-page{width:100%;border-collapse:collapse;border:0;}
+#emve-print-root .ep-page>thead>tr>td,#emve-print-root .ep-page>tfoot>tr>td,#emve-print-root .ep-page>tbody>tr>td{border:0!important;padding:0!important;background:none!important;}
+#emve-print-root .ep-sp{height:9mm;}
+#emve-print-root .ep-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px;}
+#emve-print-root .ep-head img{width:52px;height:52px;object-fit:contain;}
+#emve-print-root .ep-ht{flex:1;text-align:center;}
+#emve-print-root .ep-s1{font-size:10pt;}
+#emve-print-root .ep-s2{font-size:16pt;font-weight:800;line-height:1.25;}
+#emve-print-root .ep-s3{font-size:12pt;font-weight:700;margin-top:2px;}
+#emve-print-root .ep-s4{font-size:10pt;margin-top:2px;}
+#emve-print-root .ep-logo-sp{width:52px;}
+#emve-print-root .ep-h{font-size:11.5pt;font-weight:800;margin:10px 0 5px;}
+#emve-print-root .tw{overflow:visible!important;box-shadow:none!important;border-radius:0!important;margin:0 0 8px!important;width:auto!important;max-height:none!important;}
+#emve-print-root .card{box-shadow:none!important;border:0!important;padding:0!important;margin:0 0 8px!important;background:none!important;border-radius:0!important;}
+#emve-print-root .ep-body table:not(.ep-plain){border-collapse:collapse!important;width:100%!important;min-width:0!important;font-size:10pt!important;background:#fff!important;}
+#emve-print-root .ep-body table:not(.ep-plain) th,#emve-print-root .ep-body table:not(.ep-plain) td{border:0.6pt solid #444!important;padding:3px 5px!important;color:#000!important;background:#fff!important;font-size:inherit!important;text-transform:none!important;letter-spacing:0!important;position:static!important;box-shadow:none!important;white-space:normal!important;}
+#emve-print-root .ep-body table:not(.ep-plain) th *,#emve-print-root .ep-body table:not(.ep-plain) td *{color:#000!important;background:none!important;}
+#emve-print-root .ep-body table:not(.ep-plain) th{background:#e8e8e8!important;font-weight:800!important;text-align:center!important;}
+#emve-print-root .ep-body table:not(.ep-plain) thead{display:table-header-group;}
+#emve-print-root .ep-body tr{page-break-inside:avoid;break-inside:avoid;}
+#emve-print-root .bdg{background:none!important;color:#000!important;padding:0!important;font-weight:800;border-radius:0;}
+#emve-print-root .sg{display:flex!important;flex-wrap:wrap;gap:6px;margin:4px 0 8px!important;}
+#emve-print-root .sc{border:0.6pt solid #444!important;background:#fff!important;box-shadow:none!important;padding:4px 10px!important;border-radius:0!important;color:#000!important;min-width:0!important;}
+#emve-print-root .sc *{color:#000!important;font-size:10pt!important;}
+#emve-print-root .tt-grid{border:0.6pt solid #444;}
+#emve-print-root .tt-cell{border:0.6pt solid #888!important;min-height:0!important;padding:3px!important;background:#fff!important;font-size:9pt;}
+#emve-print-root .tt-cell *{color:#000!important;}
+#emve-print-root .tt-hdr,#emve-print-root .tt-period{background:#e8e8e8!important;color:#000!important;font-weight:800;}
+#emve-print-root.ep-raw .ep-body{font-size:11pt;}
+#emve-print-root .ep-sign{display:flex;justify-content:space-between;margin-top:40px;font-size:10.5pt;font-weight:700;text-align:center;}
+#emve-print-root .ep-sign div{min-width:150px;border-top:0.6pt solid #000;padding-top:4px;}
+#emve-print-root.ep-port{width:190mm;}
+#emve-print-root.ep-land{width:277mm;}
+@media print{
+  html,body{background:#fff!important;margin:0!important;padding:0!important;}
+  body.emve-printing>*{display:none!important;}
+  body.emve-printing>#emve-print-root{display:block!important;position:static!important;visibility:visible!important;left:auto!important;padding:0 10mm!important;width:auto!important;}
+  body.emve-printing #emve-print-root *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+
 /* ---- DRAG & DROP TIMETABLE EDITOR ---- */
 .tt-editor-card{overflow:visible;}
 .tt-editor-note{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;padding:12px 14px;border-radius:12px;font-weight:700;font-size:.9rem;margin:-6px 0 18px;}
@@ -421,6 +466,7 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
   <nav><div class="ni" id="nav-tabs"></div></nav>
   <main>
     <button class="bbtn no-print" id="back-btn" data-action="goback">&#x2190; &#x092E;&#x0941;&#x0916;&#x094D;&#x092F;&#x092A;&#x0943;&#x0937;&#x094D;&#x0920;</button>
+    <button class="bbtn no-print" style="float:right;" data-action="emve-print-sec">🖨️ प्रिंट</button>
     <div id="mod-secs"></div>
   </main>
 </div>
@@ -972,7 +1018,7 @@ function loadMkTable(){
     '<strong style="font-size:1.1rem;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</strong><br>'+
     '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+subj+' | शिक्षक: '+tcName+'</span>'+
     '</div>'+
-    '<div class="tw mkw"><table class="mkt"><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" onclick="window.print()">🖨️ प्रिंट करा</button></div>';
+    '<div class="tw mkw"><table class="mkt"><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="mk-wrap" data-title="गुण नोंदणी">🖨️ प्रिंट करा</button></div>';
 }
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
 function saveAllMk(cls,subj){if(settings.marksLocked && curRole==='shik'){ toast('गुण नोंदणी बंद आहे!','err'); return; }var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
@@ -1029,7 +1075,7 @@ function loadMkTable5(cls,subj,term){
     '<th rowspan="2" class="no-print" style="min-width:160px;background:#475569;color:white;">⚠️ सूचना</th>'+
     '</tr><tr>'+faHdr+saHdr+'</tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div>'+
-    '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" onclick="window.print()">🖨️ प्रिंट करा</button></div>';
+    '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="mk-wrap" data-title="गुण नोंदणी">🖨️ प्रिंट करा</button></div>';
   stds2.forEach(function(s){validate5Row(s.id,cls,subj,term);});
 }
 
@@ -1115,7 +1161,7 @@ function loadGosawara(){
     var rows2=subjs.map(function(subj){var cells2=grades.map(function(g,i){var cnt=stds2.filter(function(s){var t=calcSubjTotal(s.id,cls,subj);return t.total!==''&&gFn[i](t.pct);}).length;return '<td style="text-align:center;font-weight:600;">'+(cnt||'-')+'</td>';}).join('');var tot=stds2.filter(function(s){return calcSubjTotal(s.id,cls,subj).total!=='';}).length;return '<tr><td style="font-weight:800;font-size:.85rem;">'+subj+'</td>'+cells2+'<td style="text-align:center;font-weight:900;color:var(--b);font-size:1rem;">'+tot+'</td></tr>';}).join('');
     table='<div class="tw"><table class="gos-tbl"><thead><tr>'+thG+'</tr></thead><tbody>'+rows2+'</tbody></table></div>';
   }
-  wrap.innerHTML=stats+table+'<button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" onclick="document.body.classList.add(\'print-a4-land\');window.print();document.body.classList.remove(\'print-a4-land\');">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
+  wrap.innerHTML=stats+table+'<button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="gos-wrap" data-title="\u0917\u094B\u0937\u0935\u093E\u0930\u093E" data-filters="gos-cls" data-sign="1">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
 }
 
 function secRBook(){
@@ -1131,7 +1177,7 @@ function loadRBook(){
   var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.7rem;padding:10px;">'+s+'</th>';}).join('');
   var thExams=subjs.map(function(){return exams.map(function(e){return '<th style="font-size:.65rem;text-align:center;font-weight:700;">'+e.key.toUpperCase()+'</th>';}).join('');}).join('');
   var rows=stds2.map(function(s){var r=calcStudentTotal(s.id,cls);var cells=subjs.map(function(subj){return exams.map(function(exam){var v=getMk(s.id,cls,subj,exam.key);return '<td style="text-align:center;font-size:.85rem;font-weight:600;">'+(v!==''?v:'-')+'</td>';}).join('');}).join('');var gr=r.hasData?grade(r.pct,cls):'-';var pf=r.pct>=33?'<span class="bdg bgg">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':'<span class="bdg bgr">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-weight:700;font-size:.9rem;">'+s.name+'</td>'+cells+'<td style="font-weight:900;text-align:center;font-size:1rem;color:var(--b);">'+r.pct+'%</td><td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td><td>'+pf+'</td></tr>';}).join('');
-  wrap.innerHTML='<div class="tw" style="font-size:.85rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" onclick="document.body.classList.add(\'print-a3-land\');window.print();document.body.classList.remove(\'print-a3-land\');">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
+  wrap.innerHTML='<div class="tw" style="font-size:.85rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="rb-wrap" data-title="\u0928\u093F\u0915\u093E\u0932 \u092A\u0941\u0938\u094D\u0924\u093F\u0915\u093E" data-filters="rb-cls" data-orient="landscape" data-sign="1">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
 }
 
 function secRCard(){
@@ -1182,7 +1228,7 @@ function genCard(){
     '<div style="font-size:0.85rem;color:#444;">ता. शेवगाव, जि. अहिल्यानगर</div>'+
     '</div>'+
     '<div style="text-align:center;">'+
-    '<span style="background:#1A4A98;color:white;padding:4px 20px;border-radius:4px;font-weight:700;font-size:1rem;">प्रगतिपत्रक - सन २०२५-२०२६</span>'+
+    '<span style="background:#1A4A98;color:white;padding:4px 20px;border-radius:4px;font-weight:700;font-size:1rem;">प्रगतिपत्रक - सन '+emveAcadYear()+'</span>'+
     '</div>'+
     '</div>'+
     '<table style="width:100%;border-collapse:collapse;margin-bottom:10px;font-size:.85rem;">'+
@@ -1231,7 +1277,7 @@ function genCard(){
     '</div>'+
     '</div>'+
     '<div class="no-print" style="margin-top:16px;display:flex;gap:12px;">'+
-    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" onclick="document.body.classList.add(\'print-cert\');window.print();document.body.classList.remove(\'print-cert\');">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="pc-wrap" data-raw="1" data-orient="portrait">🖨️ प्रिंट करा</button>'+
     '<button class="btn bd" style="font-size:1rem;padding:12px 24px;" onclick="document.getElementById(\'pc-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
     '</div>';
 }
@@ -1243,7 +1289,7 @@ function secRNikal(){
     '<div class="fg2" style="margin-bottom:16px;"><div class="fg"><label>\u0938\u0924\u094D\u0930</label>'+
     '<select id="nikal-term"><option value="1">\u092A\u094D\u0930\u0925\u092E \u0938\u0924\u094D\u0930</option><option value="2">\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u0938\u0924\u094D\u0930</option></select></div></div>'+
     '<button class="btn bb" style="font-size:1.05rem;padding:12px 24px;" data-action="loadnikal">&#x2B07;&#xFE0F; Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E</button> '+
-    '<button class="btn bp no-print" style="font-size:1.05rem;padding:12px 24px;" onclick="document.body.classList.add(\'print-a3-land\');window.print();document.body.classList.remove(\'print-a3-land\');">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button></div>'+
+    '<button class="btn bp no-print" style="font-size:1.05rem;padding:12px 24px;" data-action="emve-print" data-target="nikal-root" data-title="\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915 &mdash; '+(c?c.label:'')+'" data-filters="nikal-term" data-orient="landscape" data-sign="1">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F</button></div>'+
     '<div id="nikal-root"><div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;font-size:1.1rem;">&#x23F3; \u0938\u0924\u094D\u0930 \u0928\u093F\u0935\u0921\u093E \u0935 Sheet \u092E\u0927\u0942\u0928 \u0906\u0923\u093E \u0915\u094D\u0932\u093F\u0915 \u0915\u0930\u093E</div></div>';
 }
 function loadAndRenderNikal(){
@@ -1609,12 +1655,8 @@ function renderTTTc(){
   wrap.innerHTML='<div style="display:flex;justify-content:flex-end;margin:0 0 10px;"><button class="btn bo bsm no-print" data-action="tt-print-teacher">🖨️ Print / Download PDF</button></div><div class="tw"><div class="tt-grid" style="display:grid;grid-template-columns:'+cols+';">'+hdr+body+'</div></div>';
 }
 function ttPrintTeacher(name){
-  var tcName=String(name||'Teacher');
-  var html=document.getElementById('tt-tc-wrap');
-  var w=window.open('','_blank','width=1400,height=900');
-  if(!w||!html)return;
-  w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+ttEsc(tcName)+' — 2026-27 Timetable</title><style>body{font-family:Arial,sans-serif;padding:20px;color:#111}h2{margin:0 0 10px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #aaa;padding:6px;text-align:center;vertical-align:top}.tt-hdr{background:#0f172a;color:#fff}.tt-period{background:#f1f5f9;font-weight:700}.tt-filled{background:#eff6ff}.no-print{display:none!important}</style></head><body><h2>'+ttEsc(tcName)+' — 2026–27 Weekly Timetable</h2>'+html.innerHTML+'</body></html>');
-  w.document.close();w.focus();setTimeout(function(){w.print();},300);
+  var html=document.getElementById('tt-tc-wrap');if(!html)return;
+  emvePrint(html,{title:String(name||'')+' — साप्ताहिक वेळापत्रक',orient:'landscape'});
 }
 
 function secTTSub(){
@@ -1737,18 +1779,8 @@ function printSubLog(){
   var rows=filtered.map(function(s,i){
     return '<tr><td style="text-align:center;">'+(i+1)+'</td><td>'+formatDateIndian(s.date)+'</td><td>'+s.absTcName+'</td><td>'+s.subTcName+'</td><td style="text-align:center;">'+s.cls+'</td><td style="text-align:center;">'+s.period+'</td><td>'+s.subj+'</td></tr>';
   }).join('');
-  document.body.classList.add('print-a4-land');
-  var win=window.open('','_blank');
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>तासिका समायोजन अहवाल</title>'+
-    '<style>body{font-family:-apple-system,Arial,sans-serif;padding:30px;}h2{text-align:center;font-size:24px;margin-bottom:10px;}table{width:100%;border-collapse:collapse;font-size:15px;margin-top:24px;}th,td{border:1px solid #ccc;padding:10px 12px;text-align:left;}th{background:#f4f4f4;font-weight:800;}tr:nth-child(even){background:#fafafa;}@media print{button{display:none;}}</style>'+
-    '</head><body>'+
-    '<h2>मासिक तासिका समायोजन अहवाल</h2>'+
-    '<p style="text-align:center;font-size:15px;color:#555;">कालावधी: <strong>'+(from?formatDateIndian(from):'—')+'</strong> ते <strong>'+formatDateIndian(to)+'</strong> &nbsp;|&nbsp; एकूण नोंदी: <strong>'+filtered.length+'</strong></p>'+
-    '<table><thead><tr><th style="text-align:center;">#</th><th>तारीख</th><th>गैरहजर शिक्षक</th><th>समायोजित शिक्षक</th><th style="text-align:center;">वर्ग</th><th style="text-align:center;">तास</th><th>विषय</th></tr></thead><tbody>'+rows+'</tbody></table>'+
-    '<br><button onclick="window.print()" style="padding:12px 24px;font-size:16px;font-weight:bold;cursor:pointer;background:#2563eb;color:#fff;border:none;border-radius:8px;">🖨️ प्रिंट करा</button>'+
-    '</body></html>');
-  win.document.close();
-  document.body.classList.remove('print-a4-land');
+  emvePrint('<table><thead><tr><th>#</th><th>तारीख</th><th>गैरहजर शिक्षक</th><th>समायोजित शिक्षक</th><th>वर्ग</th><th>तास</th><th>विषय</th></tr></thead><tbody>'+rows+'</tbody></table>',
+    {title:'तासिका समायोजन अहवाल',sub:'कालावधी: '+(from?formatDateIndian(from):'—')+' ते '+formatDateIndian(to)+'  |  एकूण नोंदी: '+filtered.length,orient:'portrait',sign:['मुख्याध्यापक']});
 }
 
 function secTTAdm(){
@@ -2327,7 +2359,12 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='changepw')changePW();
         else if(act==='changetcpw')changeTcPw(parseInt(el.getAttribute('data-tcid')||0));
         else if(act==='promoteall')promoteAll();
-        else if(act==='print')window.print();
+        else if(act==='print')emvePrintSection();
+        else if(act==='emve-print-sec')emvePrintSection();
+        else if(act==='emve-print'){
+          var pf=[];(el.getAttribute('data-filters')||'').split(',').forEach(function(fid){var fe=document.getElementById(fid);if(fe&&fe.tagName==='SELECT'&&fe.value&&fe.options[fe.selectedIndex]){var lb=fe.parentNode&&fe.parentNode.querySelector('label');pf.push((lb?emvePrintText(lb.textContent)+': ':'')+fe.options[fe.selectedIndex].text);}});
+          emvePrint(el.getAttribute('data-target'),{title:el.getAttribute('data-title')||'',sub:pf.join('  |  '),orient:el.getAttribute('data-orient')||'',raw:el.getAttribute('data-raw')==='1',sign:el.getAttribute('data-sign')==='1'?['वर्गशिक्षक','मुख्याध्यापक']:null});
+        }
         else if(act==='loadnikal')loadAndRenderNikal();
         else if(act==='savett')saveTimetable();
         else if(act==='assignttsub')assignTTSub(el.getAttribute('data-cls'),el.getAttribute('data-day'),el.getAttribute('data-p'),el.getAttribute('data-subj'));
@@ -2378,7 +2415,7 @@ function genBona() {
     '</div>' +
     '<p style="line-height:2.4; font-size:19px; text-align:justify;">' +
     'दाखल्यावरून असे प्रमाणित करण्यात येते की, कुमार/कुमारी <b>' + s.name + '</b> ' +
-    'हा/ही या विद्यालयाचा/ची बोनाफाईड विद्यार्थी असून तो/ती शैक्षणिक वर्ष २०२५-२०२६ मध्ये ' +
+    'हा/ही या विद्यालयाचा/ची बोनाफाईड विद्यार्थी असून तो/ती शैक्षणिक वर्ष ' + emveAcadYear() + ' मध्ये ' +
     'इयत्ता <b>' + c.label + '</b> मध्ये शिकत आहे/होता. ' +
     'त्याची/तिची जन्मतारीख जनरल रजिस्टरप्रमाणे <b>' + (s.dob ? fmt(s.dob) : '___________') + '</b> अशी आहे. ' +
     '<br><br>सदर प्रमाणपत्र त्याच्या/तिच्या <b>' + reason + '</b> या कामासाठी देण्यात येत आहे.</p>' +
@@ -2386,9 +2423,107 @@ function genBona() {
     '<div><b>लिपिक</b></div><div><b>मुख्याध्यापक</b></div>' +
     '</div></div>' +
     '<div class="no-print" style="margin-top:20px;display:flex;gap:12px;">'+
-    '<button class="btn bp" onclick="window.print()">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bp" data-action="emve-print" data-target="bn-wrap" data-raw="1" data-orient="portrait">🖨️ प्रिंट करा</button>'+
     '<button class="btn bd" onclick="document.getElementById(\'bn-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
     '</div>';
+}
+
+/* ==========================================================
+   CLEAN PRINT
+   emvePrint(elementOrHtml, {title, sub, orient:'portrait'|'landscape', raw, sign})
+   Prints in the same page (works in the phone app too), with the
+   school letterhead, no browser date/URL, wide tables fitted to A4.
+   ========================================================== */
+var EMVE_PRINT_STRIP=/[\uD800-\uDFFF]|[️‍⏳⬇⚠ℹ]/g;
+/* academic year starts in June: Nov 2026 -> २०२६-२०२७ */
+function emveAcadYear(){var d=new Date(),y=d.getFullYear();if(d.getMonth()<5)y--;var m=function(n){return String(n).replace(/[0-9]/g,function(x){return String.fromCharCode(0x0966+parseInt(x,10));});};return m(y)+'-'+m(y+1);}
+function emvePrintText(t){return String(t||'').replace(EMVE_PRINT_STRIP,'').replace(/\s+/g,' ').trim();}
+function emvePrintClean(src){
+  var c=src.cloneNode(true);
+  var filters=[];
+  var each=function(sel,fn){var l=c.querySelectorAll(sel);for(var i=l.length-1;i>=0;i--)fn(l[i]);};
+  var inTable=function(el){while(el&&el!==c){if(el.tagName==='TD'||el.tagName==='TH')return true;el=el.parentNode;}return false;};
+  var swap=function(el,txt){var sp=document.createElement('span');sp.textContent=txt;el.parentNode.replaceChild(sp,el);};
+  each('.fg',function(fg){
+    if(inTable(fg))return;
+    var lb=fg.querySelector('label'),f=fg.querySelector('select,input');
+    if(lb&&f){var v=f.tagName==='SELECT'?(f.value&&f.options[f.selectedIndex]?f.options[f.selectedIndex].text:''):f.value;if(v)filters.unshift(emvePrintText(lb.textContent)+': '+emvePrintText(v));}
+    fg.parentNode.removeChild(fg);
+  });
+  each('select',function(el){if(inTable(el))swap(el,el.options[el.selectedIndex]?el.options[el.selectedIndex].text:'');else el.parentNode.removeChild(el);});
+  each('textarea',function(el){swap(el,el.value);});
+  each('input',function(el){
+    var ty=(el.type||'').toLowerCase();
+    if(ty==='checkbox'||ty==='radio')swap(el,el.checked?'✓':'');
+    else if(ty==='hidden'||ty==='button'||ty==='submit')el.parentNode.removeChild(el);
+    else if(inTable(el))swap(el,el.value);
+    else el.parentNode.removeChild(el);
+  });
+  var ph=c.querySelector('.print-header span');var hdrSub=ph?emvePrintText(ph.textContent):'';
+  each('.no-print,button,.btn,script,.mov,.alert,.print-header,details',function(el){el.parentNode.removeChild(el);});
+  /* drop the action column (its buttons are gone) */
+  each('table',function(tb){
+    var hr=tb.querySelector('thead tr');if(!hr)return;
+    for(var ci=hr.children.length-1;ci>=0;ci--){
+      var h=emvePrintText(hr.children[ci].textContent);
+      if(h==='कृती'||h==='Action'||h==='Actions'||h==='कार्यवाही'){
+        var rs=tb.querySelectorAll('tr');for(var ri=0;ri<rs.length;ri++){if(rs[ri].children.length===hr.children.length&&rs[ri].children[ci])rs[ri].removeChild(rs[ri].children[ci]);}
+      }
+    }
+  });
+  each('.ct',function(el){var h=document.createElement('div');h.className='ep-h';h.textContent=emvePrintText(el.textContent);el.parentNode.replaceChild(h,el);});
+  each('[id]',function(el){el.removeAttribute('id');});
+  c.removeAttribute('id');
+  each('.card',function(el){if(!emvePrintText(el.textContent)&&!el.querySelector('table,img'))el.parentNode.removeChild(el);});
+  var walk=document.createTreeWalker(c,NodeFilter.SHOW_TEXT,null,false),n,txt=[];
+  while((n=walk.nextNode()))txt.push(n);
+  txt.forEach(function(t){if(EMVE_PRINT_STRIP.test(t.nodeValue))t.nodeValue=t.nodeValue.replace(EMVE_PRINT_STRIP,'');EMVE_PRINT_STRIP.lastIndex=0;});
+  return {node:c,filters:filters,hdrSub:hdrSub};
+}
+function emvePrintDone(){
+  document.body.classList.remove('emve-printing');
+  var st=document.getElementById('emve-page-style');if(st)st.parentNode.removeChild(st);
+}
+function emvePrint(src,opts){
+  opts=opts||{};
+  if(typeof src==='string')src=document.getElementById(src)||(function(h){var d=document.createElement('div');d.innerHTML=h;return d;})(src);
+  if(!src||!emvePrintText(src.textContent)){toast('प्रिंट करण्यासाठी माहिती नाही.','err');return;}
+  emvePrintDone();
+  var old=document.getElementById('emve-print-root');if(old)old.parentNode.removeChild(old);
+  var cl=opts.raw?{node:src.cloneNode(true),filters:[]}:emvePrintClean(src);
+  if(opts.raw){var rm=cl.node.querySelectorAll('.no-print,button,.btn');for(var i=rm.length-1;i>=0;i--)rm[i].parentNode.removeChild(rm[i]);var ids=cl.node.querySelectorAll('[id]');for(var j=0;j<ids.length;j++)ids[j].removeAttribute('id');cl.node.removeAttribute('id');}
+  var sub=opts.sub||cl.filters.join('  |  ')||cl.hdrSub||'';
+  var root=document.createElement('div');root.id='emve-print-root';
+  var head=opts.raw?'':'<div class="ep-head"><img src="Saraswati Logo.jpg" alt=""><div class="ep-ht"><div class="ep-s1">समता जोगेश्वरी मंडळाचे</div><div class="ep-s2">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
+    (opts.title?'<div class="ep-s3"></div>':'')+(sub?'<div class="ep-s4"></div>':'')+'</div><div class="ep-logo-sp"></div></div>';
+  root.innerHTML='<table class="ep-page ep-plain"><thead><tr><td><div class="ep-sp"></div></td></tr></thead><tfoot><tr><td><div class="ep-sp"></div></td></tr></tfoot><tbody><tr><td>'+head+'<div class="ep-body"></div>'+(opts.sign?'<div class="ep-sign"></div>':'')+'</td></tr></tbody></table>';
+  if(opts.title)root.querySelector('.ep-s3').textContent=emvePrintText(opts.title);
+  if(sub)root.querySelector('.ep-s4').textContent=sub;
+  if(opts.sign){var sg=root.querySelector('.ep-sign');opts.sign.forEach(function(x){var d=document.createElement('div');d.textContent=x;sg.appendChild(d);});}
+  var body=root.querySelector('.ep-body');body.appendChild(cl.node);
+  if(opts.raw)root.className='ep-raw';
+  document.body.appendChild(root);
+  /* choose A4 portrait/landscape and shrink wide tables to fit the page */
+  var fit=function(o){root.className=(opts.raw?'ep-raw ':'')+'ep-measure '+(o==='landscape'?'ep-land':'ep-port');body.style.zoom='';var pg=root.querySelector('.ep-page');var need=Math.max(body.scrollWidth,pg?pg.offsetWidth:0),have=root.clientWidth||1;return need/have;};
+  var orient=opts.orient||'portrait';
+  var ratio=fit(orient);
+  if(!opts.orient&&ratio>1.02){orient='landscape';ratio=fit(orient);}
+  if(ratio>1.01)body.style.zoom=String(Math.max(0.45,Math.floor(100/ratio)/100));
+  root.className=(opts.raw?'ep-raw ':'')+(orient==='landscape'?'ep-land':'ep-port');
+  var st=document.createElement('style');st.id='emve-page-style';
+  st.textContent='@page{size:A4 '+orient+';margin:0;}';
+  document.head.appendChild(st);
+  document.body.classList.add('emve-printing');
+  var imgs=root.querySelectorAll('img'),wait=0;
+  for(var k=0;k<imgs.length;k++){if(!imgs[k].complete)wait++;}
+  setTimeout(function(){window.print();},wait?400:60);
+}
+if(window.addEventListener)window.addEventListener('afterprint',function(){setTimeout(emvePrintDone,300);});
+/* print the current screen (lists, reports) with the tab name as title */
+function emvePrintSection(){
+  var el=document.getElementById('mod-secs');if(!el)return;
+  var tb=document.querySelector('#nav-tabs .tab.on');
+  emvePrint(el,{title:tb?tb.textContent:''});
 }
 
 function printDoc(contentId) {
@@ -2894,11 +3029,8 @@ function ttRefreshFromSheet(){
   ttEditMode=false;sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttSuggestionHtml='<div class="tt-info">↻ 2026–27 timetable Google Sheet मधून load झाले.</div>';var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';renderTTAdm();});
 }
 function ttPrintSchool(){
-  var w=window.open('','_blank','width=1400,height=900');
-  if(!w)return;
-  var wrap=document.getElementById('ttadm-wrap');
-  w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>EMVE 2026-27 Timetable</title><style>body{font-family:Arial,sans-serif;padding:15px;color:#111}h2{margin:0 0 12px}table{border-collapse:collapse;font-size:9px;width:100%}th,td{border:1px solid #999;padding:5px;text-align:center;vertical-align:top}th{background:#eee}.tt-card{padding:3px}.tt-card-subj{font-weight:700}.tt-card-teacher{font-size:8px;margin-top:3px;color:#444}</style></head><body><h2>EMVE School — 2026–27 Weekly Timetable</h2>'+wrap.innerHTML+'</body></html>');
-  w.document.close();w.focus();setTimeout(function(){w.print();},350);
+  var wrap=document.getElementById('ttadm-wrap');if(!wrap)return;
+  emvePrint(wrap,{title:'संपूर्ण शाळेचे साप्ताहिक वेळापत्रक',orient:'landscape'});
 }
 
 /* ---------- Rule/availability UI ---------- */
