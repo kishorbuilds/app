@@ -419,6 +419,9 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
 </div>
 <script>
 var SURL='https://script.google.com/macros/s/AKfycbyOBWkKwGYS69xLSJ8gkxC03t1UgcqiNfaD7WUg5EGa8zFm4rgKopGJcBzpXfp9eSsqyQ/exec';
+/* login token (from server) and server time each sheet was loaded, sent back on write */
+var emveToken='';try{emveToken=localStorage.getItem('emve_token')||'';}catch(e){}
+var emveLoadedAt={};
 var curRole=null,curUser=null,curTc=null,curMod=null,curTab=null;
 /* Admin passwords come only from the 'passwords' sheet tab */
 var PW={};
@@ -603,6 +606,7 @@ function doLogin(){
     });
   });
 }function doLogout(){
+  localStorage.removeItem('emve_token');emveToken='';emveLoadedAt={};
   localStorage.removeItem('emve_role');
   localStorage.removeItem('emve_user');
   localStorage.removeItem('emve_tc');
@@ -1657,6 +1661,7 @@ function assignTTSub(cls,day,p,subj){
   var rec={id:newId,date:dt,absTcId:absTcId,absTcName:absTc?absTc.name:'',subTcId:subTcId,subTcName:subTc?subTc.name:'',cls:cls,period:p,subj:subj};
   
   var subData={
+    'token':emveToken,
     'ID':newId,
     'Date':dt,
     'AbsentTcId':absTcId,
@@ -1811,7 +1816,7 @@ function renderTTAdm(){var cls=(document.getElementById('ttadm-cls')||{}).value|
 function renderTTAdmGrid(cls){if(ttEditMode)renderTTAdmEditGrid(cls);else renderTTAdmViewGrid(cls);}
 function renderTTAdmViewGrid(cls){var wrap=document.getElementById('ttadm-wrap');if(!wrap)return;var progress=ttClassProgress(cls);var pr=document.getElementById('tt-progress');if(pr)pr.innerHTML='<div class="tt-progress-pill">Class '+String(cls).toUpperCase()+': <b>'+progress.placed+'/'+progress.total+'</b> placed · <span>'+progress.remaining+' remaining</span></div>';var cols='82px '+Array(8).fill(0).map(function(){return 'minmax(110px,1fr)';}).join(' ');var hdr='<div class="tt-hdr">Day</div>'+Array(8).fill(0).map(function(_,i){return '<div class="tt-hdr">P'+(i+1)+'</div>';}).join('');var body=DAYS.map(function(day){var cells='';for(var i=1;i<=8;i++){if(day==='शनिवार'&&i===2){cells+='<div class="tt-drop tt-pt-slot"><div class="tt-pt">COMMON PT</div></div>';continue;}if(day==='शनिवार'&&i>6){cells+='<div class="tt-drop" style="background:#f8fafc;"><div style="font-size:.7rem;text-align:center;color:#94a3b8;font-weight:800;">—</div></div>';continue;}var sl=getTTSlot(cls,day,'P'+i)||getTTSlot(cls,day,String(i));if(sl)cells+='<div class="tt-drop tt-lesson '+(sl.locked?'tt-locked':'')+'"><div class="tt-lesson-subj">'+(sl.subj||sl.subject||'')+'</div><div class="tt-lesson-teacher">'+ttTeacherDisplayName(ttSlotTeacher(sl))+'</div><div class="tt-drag">'+(sl.locked?'🔒':'')+'</div></div>';else cells+='<div class="tt-drop tt-empty-slot"><div class="tt-period-num">P'+i+'</div><div>—</div></div>';}return '<div class="tt-day-row"><div class="tt-day-label">'+day+'</div><div class="tt-periods">'+cells+'</div></div>';}).join('');wrap.innerHTML='<div class="tt-week"><div class="tt-week-title">CLASS '+String(cls).toUpperCase()+' — WEEKLY TIMETABLE</div><div class="tt-editor-note" style="margin:10px 0 12px;background:#f8fafc;color:var(--mt);">View Mode — timetable सुरक्षित आहे. बदल करण्यासाठी <b>Edit Timetable</b> दाबा.</div>'+body+'</div>'+ttSuggestionHtml;}
 function renderTTAdmEditGrid(cls){var wrap=document.getElementById('ttadm-wrap');if(!wrap)return;var progress=ttClassProgress(cls);var pr=document.getElementById('tt-progress');if(pr)pr.innerHTML='<div class="tt-progress-pill">Class '+String(cls).toUpperCase()+': <b>'+progress.placed+'/'+progress.total+'</b> placed · <span>'+progress.remaining+' remaining</span></div>';var workload=ttWorkloadRows.filter(function(w){return String(w.cls).toLowerCase()===String(cls).toLowerCase()&&ttRemaining(w.teacher,w.subject,cls)>0;});var bank='';workload.forEach(function(w){var rem=ttRemaining(w.teacher,w.subject,cls);if(rem>0)bank+='<div class="tt-bank-item" draggable="true" ondragstart="ttDragStartWorkload(event,'+JSON.stringify(w.teacher)+','+JSON.stringify(w.subject)+','+JSON.stringify(cls)+');"><div class="tt-bank-subj">'+w.subject+'</div><div class="tt-bank-teacher">'+w.teacher+'</div><div class="tt-bank-rem">Remaining: <b>'+rem+'</b></div></div>';});if(!bank)bank='<div class="tt-bank-done">✓ Workload पूर्ण झाला.</div>';var grid='<div class="tt-editor-layout"><div class="tt-bank"><div class="tt-pane-title">WORKLOAD BANK</div><div class="tt-pane-sub">Lesson पकडा आणि slotवर drop करा</div>'+bank+'</div><div class="tt-week"><div class="tt-week-title">CLASS '+String(cls).toUpperCase()+' — EDIT MODE</div>';DAYS.forEach(function(day){var max=day==='शनिवार'?6:8;grid+='<div class="tt-day-row"><div class="tt-day-label">'+day+'</div><div class="tt-periods">';for(var i=1;i<=8;i++){if(day==='शनिवार'&&i===2){grid+='<div class="tt-drop tt-pt-slot"><div class="tt-pt">COMMON PT<br><small>FIXED</small></div></div>';continue;}if(day==='शनिवार'&&i>6){grid+='<div class="tt-drop" style="background:#f8fafc;"><div style="font-size:.7rem;text-align:center;color:#94a3b8;font-weight:800;">—</div></div>';continue;}var p='P'+i,sl=getTTSlot(cls,day,p);if(sl){grid+='<div class="tt-drop tt-lesson '+(sl.locked?'tt-locked':'')+'" draggable="'+(!sl.locked)+'" ondragstart="ttDragStartExisting(event,'+JSON.stringify(cls)+','+JSON.stringify(day)+','+JSON.stringify(p)+')" ondragover="ttAllowDrop(event)" ondrop="ttDrop(event,'+JSON.stringify(cls)+','+JSON.stringify(day)+','+JSON.stringify(p)+')"><div class="tt-lesson-subj">'+(sl.subj||sl.subject||'')+'</div><div class="tt-lesson-teacher">'+ttTeacherDisplayName(ttSlotTeacher(sl))+'</div><div class="tt-drag">'+(sl.locked?'🔒':'↕')+'</div><button class="tt-lock-btn" onclick="event.stopPropagation();ttToggleLock('+JSON.stringify(cls)+','+JSON.stringify(day)+','+JSON.stringify(p)+');return false;">'+(sl.locked?'Unlock':'Lock')+'</button></div>';}else grid+='<div class="tt-drop tt-empty-slot" ondragover="ttAllowDrop(event)" ondrop="ttDrop(event,'+JSON.stringify(cls)+','+JSON.stringify(day)+','+JSON.stringify(p)+')"><div class="tt-period-num">'+p+'</div><div>DROP</div></div>';}grid+='</div></div>';});grid+='</div></div>'+ttRenderSuggestionBox();wrap.innerHTML=grid;}
-function ttRequestGenerate(){if(ttEditMode){toast('आधी Save किंवा Cancel करा.','err');return;}if(!confirm('2026–27 timetable generate/rebuild करायचे? Locked lessons जागेवर राहतील.'))return;syncStatus('ing');var xhr=new XMLHttpRequest();xhr.open('GET',SURL+'?action=generateTimetable&year='+TT_YEAR+'&role='+encodeURIComponent(curRole||'')+'&t='+Date.now(),true);xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){}if(res.success){sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttWorkloadLoaded=false;ttLoadWorkload('',function(){ttSuggestionHtml='<div class="tt-ok"><strong>✓ Timetable generated.</strong><br>Placed: '+(res.placed||0)+' | Locked: '+(res.locked||0)+'</div>';renderTTAdm();});});toast('Timetable तयार झाले! ✅');}else{syncStatus('err');var b=document.getElementById('tt-conflict-banner');if(b)b.innerHTML='<div class="tt-warn"><strong>Generate पूर्ण झाले नाही.</strong><br>'+String(res.message||'Rule conflict')+(res.unfilled&&res.unfilled.length?'<div style="margin-top:8px;">'+res.unfilled.slice(0,12).join('<br>')+'</div>':'')+'</div>';toast('Timetable पूर्ण तयार झाले नाही.','err');}};xhr.onerror=function(){syncStatus('err');toast('Google Apps Script connection failed.','err');};xhr.send();}
+function ttRequestGenerate(){if(ttEditMode){toast('आधी Save किंवा Cancel करा.','err');return;}if(!confirm('2026–27 timetable generate/rebuild करायचे? Locked lessons जागेवर राहतील.'))return;syncStatus('ing');var xhr=new XMLHttpRequest();xhr.open('GET',SURL+'?action=generateTimetable&year='+TT_YEAR+'&role='+encodeURIComponent(curRole||'')+'&token='+encodeURIComponent(emveToken)+'&t='+Date.now(),true);xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){}if(res.success){sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttWorkloadLoaded=false;ttLoadWorkload('',function(){ttSuggestionHtml='<div class="tt-ok"><strong>✓ Timetable generated.</strong><br>Placed: '+(res.placed||0)+' | Locked: '+(res.locked||0)+'</div>';renderTTAdm();});});toast('Timetable तयार झाले! ✅');}else{syncStatus('err');var b=document.getElementById('tt-conflict-banner');if(b)b.innerHTML='<div class="tt-warn"><strong>Generate पूर्ण झाले नाही.</strong><br>'+String(res.message||'Rule conflict')+(res.unfilled&&res.unfilled.length?'<div style="margin-top:8px;">'+res.unfilled.slice(0,12).join('<br>')+'</div>':'')+'</div>';toast('Timetable पूर्ण तयार झाले नाही.','err');}};xhr.onerror=function(){syncStatus('err');toast('Google Apps Script connection failed.','err');};xhr.send();}
 function saveTimetable(){
   if(!ttEditMode){toast('Edit Mode सुरू करा.','err');return;}
   var dayToCode={'सोमवार':'Mon','मंगळवार':'Tue','बुधवार':'Wed','गुरुवार':'Thu','शुक्रवार':'Fri','शनिवार':'Sat'};
@@ -1850,14 +1855,14 @@ function saveTimetable(){
     }
   });
 }
-function postTimetableValidated(rows,cb){syncStatus('ing');var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){res={success:false,message:'Server response unreadable.'};}if(cb)cb(res);};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false,message:'Google Apps Script connection failed.'});};xhr.send(JSON.stringify({action:'saveTimetableValidated',sheet:TT_SHEET,rows:rows}));}
+function postTimetableValidated(rows,cb){syncStatus('ing');var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){res={success:false,message:'Server response unreadable.'};}if(cb)cb(res);};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false,message:'Google Apps Script connection failed.'});};xhr.send(JSON.stringify({action:'saveTimetableValidated',sheet:TT_SHEET,token:emveToken,rows:rows}));}
 function ttRefreshFromSheet(){if(ttEditMode&& !confirm('Unsaved changes आहेत. Refresh केल्यास ते रद्द होतील. Continue?'))return;ttEditMode=false;sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttSuggestionHtml='<div class="tt-info">↻ 2026–27 timetable Google Sheet मधून load झाले.</div>';renderTTAdm();});}
 function parseTTTeachers(rows){TT_TEACHERS=[];if(!rows||rows.length<2)return;rows.slice(1).forEach(function(r){if(!r[0]&&!r[1])return;TT_TEACHERS.push({id:parseInt(r[0],10)||0,name:String(r[1]||''),classOf:normalizeClass(r[2]),subjects:String(r[3]||'').split('|').map(function(x){return x.trim();}).filter(Boolean),classes:String(r[4]||'').split('|').map(function(x){return normalizeClass(x);}).filter(Boolean),ttName:String(r[5]||r[1]||'').trim()});});}
 function parseTTClassSettings(rows){TT_CLASS_SETTINGS={};if(!rows||rows.length<2)return;rows.slice(1).forEach(function(r){var c=normalizeClass(r[0]);if(!c)return;TT_CLASS_SETTINGS[c]={teacher:String(r[1]||'').trim(),p1Rule:String(r[2]||'').trim(),saturdayP2:String(r[3]||'').trim(),satPeriods:parseInt(r[4],10)||6,weekdayPeriods:parseInt(r[5],10)||8,morningPriority:String(r[6]||'').trim(),routinePriority:String(r[7]||'').trim()};});}
 function parseTTSubjectSettings(rows){TT_SUBJECT_SETTINGS={};if(!rows||rows.length<2)return;rows.slice(1).forEach(function(r){var subject=String(r[0]||'').trim();if(!subject)return;var pref=String(r[2]||'').trim(),priority=String(r[3]||'').trim().toUpperCase(),dbl=String(r[4]||'').trim().toUpperCase();var inf=(pref.match(/HIGH|MEDIUM|LOW/i)||[])[0];if((!priority||priority==='NO')&&inf)priority=inf.toUpperCase();if(!priority)priority='MEDIUM';if(dbl==='CORE SUBJECT'||dbl.indexOf('SUBJECT')>=0)dbl='NO';TT_SUBJECT_SETTINGS[subject.toLowerCase()]={subject:subject,preferredTime:String(r[1]||'').trim(),preferredPeriods:pref,priority:priority,doublePeriod:dbl||'NO',notes:String(r[5]||'').trim()};});}
 function parseTTTeacherAvailability(rows){TT_TEACHER_AVAIL={};if(!rows||rows.length<2)return;rows.slice(1).forEach(function(r){var t=ttNorm(r[0]),day=String(r[1]||'').trim(),p=String(r[2]||'').trim();if(!t||!day||!p)return;if(!TT_TEACHER_AVAIL[t])TT_TEACHER_AVAIL[t]={};TT_TEACHER_AVAIL[t][day+'|'+p]=(String(r[3]||'').toLowerCase()!=='false'&&String(r[3]||'')!=='0');});}
 function loadTTMasterData(done){var left=4;function next(){left--;if(left===0)done();}sheetGet(TT_TEACHERS_SHEET,function(r){parseTTTeachers(r);next();});sheetGet(TT_CLASS_SETTINGS_SHEET,function(r){parseTTClassSettings(r);next();});sheetGet(TT_SUBJECT_SETTINGS_SHEET,function(r){parseTTSubjectSettings(r);next();});sheetGet(TT_TEACHER_AVAIL_SHEET,function(r){parseTTTeacherAvailability(r);next();});}
-function postTTConfig(sheet,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4){var r={};try{r=JSON.parse(xhr.responseText);}catch(e){}if(cb)cb(r);}};xhr.onerror=function(){if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'saveTimetableConfig',sheet:sheet,role:curRole||'',rows:rows}));}
+function postTTConfig(sheet,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4){var r={};try{r=JSON.parse(xhr.responseText);}catch(e){}if(cb)cb(r);}};xhr.onerror=function(){if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'saveTimetableConfig',sheet:sheet,role:curRole||'',token:emveToken,rows:rows}));}
 function saveTTClassSetting(){var cls=(document.getElementById('ttcfg-class')||{}).value||'';if(!cls)return;var teacherId=(document.getElementById('ttcfg-teacher')||{}).value||'';var teacher=(ttAllTeachers().find(function(x){return String(x.id)===String(teacherId);})||{}).name||((TT_CLASS_SETTINGS[cls]||{}).teacher||'');var rows=[['Class','ClassTeacher','P1_Rule','Saturday_P2','Sat_Periods','Weekday_Periods','Morning_Core_Priority','Routine_Priority']];CLASSES.forEach(function(c){var x=TT_CLASS_SETTINGS[c.id]||{};var tn=c.id===cls?teacher:(x.teacher||'');rows.push([c.id,tn,x.p1Rule||'CLASS_TEACHER_FIXED',x.saturdayP2||'COMMON_PT',x.satPeriods||6,x.weekdayPeriods||8,x.morningPriority||'Math,English,Science',x.routinePriority||'HIGH']);});postTTConfig(TT_CLASS_SETTINGS_SHEET,rows,function(r){if(r.success){parseTTClassSettings(rows);toast('Class Teacher update झाला. ✅');renderTTAdm();}else toast('Save failed.','err');});}
 function saveTTSubjectSetting(){var subject=(document.getElementById('ttcfg-subject')||{}).value||'';if(!subject)return;var time=(document.getElementById('ttcfg-subj-time')||{}).value||'';var pri=(document.getElementById('ttcfg-subj-priority')||{}).value||'MEDIUM';var rows=[['Subject','Preferred_Time','Preferred_Periods','Priority','Double_Period','Notes']];var seen=false;Object.keys(TT_SUBJECT_SETTINGS).forEach(function(k){var x=TT_SUBJECT_SETTINGS[k];if(k===subject.toLowerCase()){rows.push([x.subject||subject,time,x.preferredPeriods||'',pri,x.doublePeriod||'NO',x.notes||'']);seen=true;}else rows.push([x.subject||k,x.preferredTime||'',x.preferredPeriods||'',x.priority||'MEDIUM',x.doublePeriod||'NO',x.notes||'']);});if(!seen)rows.push([subject,time,'',pri,'NO','']);postTTConfig(TT_SUBJECT_SETTINGS_SHEET,rows,function(r){if(r.success){parseTTSubjectSettings(rows);toast('Subject preference update झाला. ✅');renderTTAdm();}else toast('Save failed.','err');});}
 function saveTTAvailability(){
@@ -1889,7 +1894,7 @@ function parseTimetableRows(rows){
 }
 
 // ---- SYNC ----
-function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4){var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}if(cb)cb(res);}};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows}));}
+function sheetPost(name,rows,cb){var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState===4){var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}emveAfterWrite(name,res);if(cb)cb(res);}};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false});};xhr.send(JSON.stringify({action:'write',sheet:name,rows:rows,token:emveToken,since:emveLoadedAt[name]||emveLoadedAt._first||0}));}
 function sheetGet(name, cb) {
 
   /* Teacher roster: JSONP for GitHub Pages -> Apps Script */
@@ -1926,6 +1931,7 @@ function sheetGet(name, cb) {
           ? payload.rows
           : [];
 
+      emveNoteLoad(name, payload);
       cb(rows);
     };
 
@@ -1948,6 +1954,8 @@ function sheetGet(name, cb) {
       SURL +
       '?sheet=' +
       encodeURIComponent(TT_TEACHERS_SHEET) +
+      '&token=' +
+      encodeURIComponent(emveToken) +
       '&callback=' +
       encodeURIComponent(callbackName) +
       '&t=' +
@@ -1964,6 +1972,8 @@ function sheetGet(name, cb) {
     SURL +
     '?sheet=' +
     encodeURIComponent(name) +
+    '&token=' +
+    encodeURIComponent(emveToken) +
     '&t=' +
     Date.now();
 
@@ -1976,6 +1986,7 @@ function sheetGet(name, cb) {
 
     try {
       var payload = JSON.parse(xhr.responseText || '{}');
+      emveNoteLoad(name, payload);
       cb(
         payload && Array.isArray(payload.rows)
           ? payload.rows
@@ -2119,7 +2130,7 @@ function loadShikshakFirst(){sheetGet('Shikshak',function(rows){parseShikshakRow
 document.addEventListener('DOMContentLoaded',function(){
   var savedRole=localStorage.getItem('emve_role');
   var savedTime=parseInt(localStorage.getItem('emve_login_time')||'0');
-  if(savedRole&&(Date.now()-savedTime)<15*60*1000){
+  if(savedRole&&emveToken&&(Date.now()-savedTime)<15*60*1000){
     curRole=savedRole;
     curUser=localStorage.getItem('emve_user');
     curTc=JSON.parse(localStorage.getItem('emve_tc')||'null');
@@ -2343,6 +2354,16 @@ function emveSetLoginButton(loading){
 /* Sheet class like ' 7A ' -> app class id '7a' */
 function normalizeClass(c){return String(c||'').replace(/\s+/g,'').toLowerCase();}
 function loginErr(msg){toast(msg,'err');}
+function emveAuthExpired(){if(!curRole)return;toast('Login ची वेळ संपली. पुन्हा login करा.','err');doLogout();}
+function emveNoteLoad(name,p){if(!p)return;if(p.error==='auth')emveAuthExpired();if(p.ts){emveLoadedAt[name]=p.ts;if(!emveLoadedAt._first)emveLoadedAt._first=p.ts;}}
+var emveReloading=false;
+function emveAfterWrite(name,res){
+  if(!res)return;
+  if(res.ts)emveLoadedAt[name]=res.ts;
+  if(res.auth){emveAuthExpired();return;}
+  /* sheet was changed by someone else: reload instead of overwriting it */
+  if(res.stale&&!emveReloading){emveReloading=true;toast(res.message||'Sheet मध्ये नवीन बदल. Data पुन्हा load होत आहे.','err');setTimeout(function(){emveReloading=false;},8000);loadShikshakFirst();}
+}
 function emveRosterHeaderMap(rows){
   var h=(rows&&rows.length)?rows[0].map(function(x){return String(x||'').trim().toLowerCase();}):[];
   function ix(names,def){for(var i=0;i<names.length;i++){var q=h.indexOf(names[i].toLowerCase());if(q>=0)return q;}return def;}
@@ -2397,31 +2418,32 @@ function onRole(){
 function doLogin(){
   var rType=(document.getElementById('l-role')||{}).value||'';
   var pw=(document.getElementById('l-pw')||{}).value||'';
+  var aRole=(document.getElementById('l-admin-role')||{}).value||'';
+  var tid=parseInt((document.getElementById('l-tc')||{}).value,10)||0;
   if(!rType){toast('भूमिका निवडा!','err');return;}
+  if(rType==='admin'&&!aRole){toast('प्रशासकीय पद निवडा!','err');return;}
+  if(rType==='shik'&&!tid){toast('शिक्षक निवडा!','err');return;}
   emveSetLoginButton(true);
   var finishFail=function(msg){emveSetLoginButton(false);loginErr(msg);};
-  sheetGet('passwords',function(pwR){
-    if(pwR&&pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
+  /* password is checked only on the server; it returns a signed token */
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4)return;
+    var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}
+    if(!res.success||!res.token){finishFail(res.message||'Server शी connection झाले नाही.');return;}
+    emveToken=res.token;emveLoadedAt={};
     sheetGet(TT_TEACHERS_SHEET,function(rows){
       parseTTTeachers(rows);parseShikshakRows(rows);
-      emveMergeOldPw(function(){
-      if(!TEACHERS.length && rType==='shik'){finishFail('2026–27 शिक्षक यादी सापडली नाही.');return;}
-      if(rType==='admin'){
-        var r=(document.getElementById('l-admin-role')||{}).value||'';
-        if(!r){finishFail('प्रशासकीय पद निवडा!');return;}
-        if(r==='super'){if(pw!==PW.super){finishFail('पासवर्ड चुकीचा!');return;}curRole='super';curUser='संस्थाचालक';curTc=null;}
-        else if(r==='mukh'){if(pw!==PW.mukh){finishFail('पासवर्ड चुकीचा!');return;}curRole='mukh';curUser='मुख्याध्यापक';curTc=null;}
-        else if(r==='clerk'){if(pw!==PW.clerk){finishFail('पासवर्ड चुकीचा!');return;}curRole='clerk';curUser='लिपिक';curTc=null;}
-      }else{
-        var tid=parseInt((document.getElementById('l-tc')||{}).value,10)||0;
-        if(!tid){finishFail('शिक्षक निवडा!');return;}
-        var tc=TEACHERS.find(function(t){return parseInt(t.id,10)===tid;});
+      if(res.role==='shik'){
+        var tc=TEACHERS.find(function(t){return parseInt(t.id,10)===parseInt(res.tid,10);});
         if(!tc){finishFail('शिक्षक सापडला नाही.');return;}
-        if(!tc.pw){finishFail('या शिक्षकाचा 2026–27 पासवर्ड सेट केलेला नाही. प्रशासनातून पासवर्ड सेट करा.');return;}
-        if(pw!==tc.pw){finishFail('पासवर्ड चुकीचा!');return;}
         curRole='shik';curUser=tc.name;curTc=tc;
+      }else{
+        curRole=res.role;curUser={super:'संस्थाचालक',mukh:'मुख्याध्यापक',clerk:'लिपिक'}[res.role]||'';curTc=null;
       }
-      if(!curRole){emveSetLoginButton(false);return;}
+      (document.getElementById('l-pw')||{}).value='';
+      localStorage.setItem('emve_token',emveToken);
       localStorage.setItem('emve_role',curRole);
       localStorage.setItem('emve_user',curUser);
       localStorage.setItem('emve_tc',JSON.stringify(curTc));
@@ -2433,20 +2455,10 @@ function doLogin(){
       showHome();
       emveShowLoader('डेटा लोड होत आहे…');
       loadShikshakFirst();
-      });
     });
-  });
-}
-/* Use PW column of 2026-27 tab if present; otherwise take password from old Shikshak tab, matched by TTName (column G) */
-function emveMergeOldPw(cb){
-  var need=(TEACHERS||[]).some(function(t){return !t.pw;});
-  if(!need){cb();return;}
-  sheetGet('Shikshak',function(rows){
-    var map={};
-    (rows||[]).slice(1).forEach(function(r){var k=String(r[6]||'').trim().toLowerCase();if(k&&r[2])map[k]=String(r[2]).trim();});
-    TEACHERS.forEach(function(t){if(!t.pw){var k=String(t.ttName||t.name).trim().toLowerCase();if(map[k])t.pw=map[k];}});
-    cb();
-  });
+  };
+  xhr.onerror=function(){finishFail('Server शी connection झाले नाही.');};
+  xhr.send(JSON.stringify({action:'login',role:rType,adminRole:aRole,tid:tid,pw:pw}));
 }
 function setupHeader(){
   var uname=document.getElementById('uname');
@@ -2744,7 +2756,7 @@ function ttRequestGenerate(){
   if(!confirm('संपूर्ण 2026–27 शाळेचे वेळापत्रक generate / rebuild करायचे? LOCK केलेले lessons जागेवरच ठेवले जातील.'))return;
   emveShowLoader('संपूर्ण शाळेचे वेळापत्रक तयार होत आहे…');
   var xhr=new XMLHttpRequest();
-  xhr.open('GET',SURL+'?action=generateTimetable&year='+TT_YEAR+'&role='+encodeURIComponent(curRole||'')+'&t='+Date.now(),true);
+  xhr.open('GET',SURL+'?action=generateTimetable&year='+TT_YEAR+'&role='+encodeURIComponent(curRole||'')+'&token='+encodeURIComponent(emveToken)+'&t='+Date.now(),true);
   xhr.onreadystatechange=function(){
     if(xhr.readyState!==4)return;
     var res={success:false,message:'Server response मिळाला नाही.'};
@@ -2765,7 +2777,7 @@ function postTimetableValidated(rows,cb){
   xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');
   xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){res={success:false,message:'Server response unreadable.'};}if(cb)cb(res);};
   xhr.onerror=function(){if(cb)cb({success:false,message:'Google Apps Script connection failed.'});};
-  xhr.send(JSON.stringify({action:'saveTimetableValidated',sheet:TT_SHEET,editor:curUser||'',role:curRole||'',rows:rows}));
+  xhr.send(JSON.stringify({action:'saveTimetableValidated',sheet:TT_SHEET,editor:curUser||'',role:curRole||'',token:emveToken,rows:rows}));
 }
 function saveTimetable(){
   if(!ttEditMode){toast('आधी Edit Mode सुरू करा.','err');return;}
