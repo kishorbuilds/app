@@ -482,6 +482,7 @@ var TT_TEACHERS_SHEET='Shikshak_'+TT_YEAR;
 var TT_CLASS_SETTINGS_SHEET='Class_Settings_'+TT_YEAR;
 var TT_SUBJECT_SETTINGS_SHEET='Subject_Settings_'+TT_YEAR;
 var TT_TEACHER_AVAIL_SHEET='Teacher_Availability_'+TT_YEAR;
+var TT_CLASS_AVAIL_SHEET='Class_Availability_'+TT_YEAR;
 var TT_TEACHERS=[];
 var TT_CLASS_SETTINGS={};
 var TT_SUBJECT_SETTINGS={};
@@ -1978,8 +1979,13 @@ function sheetGet(name, cb) {
     Date.now();
 
   var xhr = new XMLHttpRequest();
+  var answered = false;
+  var cb0 = cb;
+  cb = function(r) { if (answered) return; answered = true; cb0(r); };
 
   xhr.open('GET', url, true);
+  xhr.timeout = 25000;
+  xhr.ontimeout = function() { cb([]); };
 
   xhr.onreadystatechange = function() {
     if (xhr.readyState !== 4) return;
@@ -2043,17 +2049,38 @@ function syncMks(cls,subj){
 
 function syncSettings(){sheetPost('settings',[['key','value'],['marksLocked',settings.marksLocked?'1':'0']],null);}
 
+var emveStdHeader=null;
 function parseAndLoadStudents(sR){
   if(sR.length<2)return;
   var header=sR[0].map(function(h){return String(h||'').trim();});
   var isKishor=header[0]&&header[0].indexOf('\u0907\u092F\u0924\u094D\u0924\u093E')>=0;
   var idC=1;
+  emveStdHeader=null;
   if(isKishor){
-    students=sR.slice(1).filter(function(r){return r[0]||r[2];}).map(function(r){return{id:idC++,name:String(r[2]||'').trim(),cls:parseClass(r[0]),roll:String(r[1]||'').trim(),status:'active',reason:'',mother:String(r[3]||''),medium:String(r[4]||''),dob:String(r[5]||''),regNo:String(r[6]||''),father:'',phone:''};});
+    /* Students tab is the master. 'ID' column (added by the server) keeps marks tied to the right child. */
+    var hIdx=function(t){for(var i=0;i<header.length;i++){if(header[i]===t)return i;}return -1;};
+    var idI=hIdx('ID'),stI=hIdx('स्थिती'),rsI=hIdx('कारण');
+    if(idI>=0)emveStdHeader=header;
+    students=sR.slice(1).filter(function(r){return r[0]||r[2];}).map(function(r){
+      var seq=idC++;
+      var st=stI>=0?String(r[stI]||'').trim():'';
+      return{id:(idI>=0?parseInt(r[idI],10):0)||seq,name:String(r[2]||'').trim(),cls:parseClass(r[0]),clsRaw:String(r[0]||'').trim(),roll:String(r[1]||'').trim(),status:(st&&/removed|काढ/i.test(st))?'removed':'active',reason:rsI>=0?String(r[rsI]||''):'',mother:String(r[3]||''),medium:String(r[4]||''),dob:String(r[5]||''),regNo:String(r[6]||''),father:'',phone:''};
+    });
   }else{
     students=sR.slice(1).filter(function(r){return r[0];}).map(function(r){return{id:parseInt(r[0])||idC++,name:String(r[1]||''),cls:parseClass(r[2]),roll:String(r[3]||''),status:String(r[4]||'active'),reason:String(r[5]||''),father:String(r[6]||''),mother:String(r[7]||''),dob:String(r[8]||''),phone:String(r[9]||''),regNo:String(r[10]||'')};});
   }
-  nextSId=students.length+1;
+  nextSId=students.length?Math.max.apply(null,students.map(function(x){return x.id;}))+1:1;
+}
+/* rows for the Students tab: only ID, class, roll, name, status, reason are sent;
+   the server keeps every other column (mother, DOB, caste...) as it is in the sheet */
+function emveStudentRows(){
+  var h=emveStdHeader;
+  var rows=[['ID',h[0],h[1],h[2],'स्थिती','कारण']];
+  students.forEach(function(st){
+    var c=(st.clsRaw&&parseClass(st.clsRaw)===st.cls)?st.clsRaw:String(st.cls).replace(/a$/,' अ').replace(/b$/,' ब');
+    rows.push([st.id,c,st.roll||'',st.name,st.status==='removed'?'काढले':'',st.status==='removed'?(st.reason||''):'']);
+  });
+  return rows;
 }
 
 function loadTransactionsAndSettings(){
@@ -2103,20 +2130,63 @@ function loadTransactionsAndSettings(){
 
 function loadAll(){
   syncStatus('ing');
-  sheetGet('pustake',function(bR){
-    if(bR.length>1){books=bR.slice(1).filter(function(r){return r[0];}).map(function(r){return{id:parseInt(r[0])||1,title:String(r[1]||''),author:String(r[2]||''),subject:String(r[3]||'\u0907\u0924\u0930'),copies:parseInt(r[4])||1,addedBy:String(r[5]||'')};});nextBId=books.length?Math.max.apply(null,books.map(function(b){return b.id;}))+1:1;}
-    sheetGet('Students',function(sR){
-      if(sR.length>1){parseAndLoadStudents(sR);loadTransactionsAndSettings();}
-      else{sheetGet('vidyarthi',function(sR2){parseAndLoadStudents(sR2);loadTransactionsAndSettings();});}
-    });
-    sheetGet('BonafideLog',function(rows){
-      if(rows&&rows.length>1){
-        bonafides=rows.slice(1).map(function(r){
-          return{id:r[0],date:r[1],sName:r[2],cls:r[3],reason:r[4],issuedBy:r[5]};
-        });
-      }
-    });
+  /* all sheets are requested together; the screen is ready when every one has answered */
+  var left=9;
+  function done(){
+    left--;if(left>0)return;
+    syncStatus('ok');
+    toast('डेटा लोड झाला! ✅');
+    emveHideLoader();
+    renderNoticeBoard();
+    if(curTab==='tttc')renderSec('tttc');
+    if(curTab==='ttcls')renderSec('ttcls');
+    if(curTab==='ntview')renderNtView();
+  }
+  function step(fn){return function(r){try{fn(r||[]);}catch(e){if(window.console)console.error(e);}done();};}
+  sheetGet('pustake',step(function(bR){
+    if(bR.length>1){books=bR.slice(1).filter(function(r){return r[0];}).map(function(r){return{id:parseInt(r[0])||1,title:String(r[1]||''),author:String(r[2]||''),subject:String(r[3]||'इतर'),copies:parseInt(r[4])||1,addedBy:String(r[5]||'')};});nextBId=books.length?Math.max.apply(null,books.map(function(b){return b.id;}))+1:1;}
+  }));
+  sheetGet('Students',function(sR){
+    if(sR&&sR.length>1)step(parseAndLoadStudents)(sR);
+    else sheetGet('vidyarthi',step(parseAndLoadStudents));
   });
+  sheetGet('BonafideLog',step(function(rows){
+    if(rows.length>1){
+      bonafides=rows.slice(1).map(function(r){
+        return{id:r[0],date:r[1],sName:r[2],cls:r[3],reason:r[4],issuedBy:r[5]};
+      });
+    }
+  }));
+  sheetGet('vyavhar',step(function(tR){
+    if(tR.length>1){
+      transactions=tR.slice(1).filter(function(r){return r[0];}).map(function(r){
+        var iDate=String(r[5]||'').split('T')[0];
+        var rDate=r[6]?String(r[6]).split('T')[0]:null;
+        var due=String(r[7]||'').split('T')[0];
+        return {id:parseInt(r[0])||1,sId:null,sName:String(r[1]||''),cls:String(r[2]||''),bId:null,bTitle:String(r[3]||''),subj:String(r[4]||''),issueDate:iDate,retDate:rDate||null,due:due,tId:parseInt(r[8])||null,tName:r[9]||null,retTName:r[10]||null};
+      });
+      nextTxId=transactions.length?Math.max.apply(null,transactions.map(function(t){return t.id;}))+1:1;
+    }
+  }));
+  sheetGet('settings',step(function(sr){
+    if(sr.length>1)sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1'||r[1]===1||r[1]===true);});
+  }));
+  sheetGet(TT_SHEET,step(parseTimetableRows));
+  loadTTMasterData(step(function(){}));
+  sheetGet('SubLog',step(function(slR){
+    substitutions=[];
+    if(slR.length>1)slR.slice(1).forEach(function(r){
+      if(!r[0])return;
+      substitutions.push({id:parseInt(r[0])||0,date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2])||0,absTcName:String(r[3]||''),subTcId:parseInt(r[4])||0,subTcName:String(r[5]||''),cls:String(r[6]||''),period:String(r[7]||''),subj:String(r[8]||'')});
+    });
+  }));
+  sheetGet('Notices',step(function(ntRes){
+    notices=[];
+    if(ntRes.length>1)ntRes.slice(1).forEach(function(r){
+      if(!r[0])return;
+      notices.push({id:parseInt(r[0]),date:normalizeDate(String(r[1]||'')),title:String(r[2]||''),msg:String(r[3]||''),author:String(r[4]||'')});
+    });
+  }));
 }
 
 function parseShikshakRows(rows){
@@ -2454,7 +2524,7 @@ function doLogin(){
       setupHeader();
       showHome();
       emveShowLoader('डेटा लोड होत आहे…');
-      loadShikshakFirst();
+      loadShikshakFirst(rows);
     });
   };
   xhr.onerror=function(){finishFail('Server शी connection झाले नाही.');};
@@ -2466,8 +2536,8 @@ function setupHeader(){
   var chip=document.getElementById('rchip');
   if(chip){var map={super:'प्रशासन',mukh:'प्रशासन',clerk:'लिपिक',shik:'शिक्षक'};chip.textContent=map[curRole]||'';chip.className='rchip '+(curRole?'r'+curRole[0]:'');}
 }
-function loadShikshakFirst(){
-  sheetGet(TT_TEACHERS_SHEET,function(rows){
+function loadShikshakFirst(preRows){
+  var go=function(rows){
     parseTTTeachers(rows);parseShikshakRows(rows);
     /* Refresh an auto-restored teacher session against the NEW 2026-27 roster. */
     if(curRole==='shik'&&curTc){
@@ -2489,9 +2559,10 @@ function loadShikshakFirst(){
     var timer=setInterval(function(){
       tries++;
       var st=document.getElementById('sync');
-      if((st&&/Saved/.test(st.textContent||''))||tries>75){clearInterval(timer);emveHideLoader();}
+      if((st&&/Saved/.test(st.textContent||''))||tries>150){clearInterval(timer);emveHideLoader();}
     },200);
-  });
+  };
+  if(preRows)go(preRows);else sheetGet(TT_TEACHERS_SHEET,go);
 }
 
 /* Keep teacher management pointed to the 2026-27 roster. */
@@ -2507,7 +2578,8 @@ function syncAll(){
   var ntR=[['ID','Date','Title','Message','Author']];notices.forEach(function(n){ntR.push([n.id,n.date,n.title,n.msg,n.author]);});
   /* never overwrite a sheet with an empty list (data not loaded yet) */
   var postIf=function(n,rows,cb){if(rows.length>1)sheetPost(n,rows,cb);else cb();};
-  sheetPost('pustake',bR,function(){postIf('vidyarthi',sR,function(){sheetPost('vyavhar',tR,function(){postIf('passwords',pwR,function(){postIf(TT_TEACHERS_SHEET,tcR,function(){sheetPost('Notices',ntR,function(){syncStatus('ok');});});});});});});
+  var stdTab='vidyarthi';if(emveStdHeader){stdTab='Students';sR=emveStudentRows();}
+  sheetPost('pustake',bR,function(){postIf(stdTab,sR,function(){sheetPost('vyavhar',tR,function(){postIf('passwords',pwR,function(){postIf(TT_TEACHERS_SHEET,tcR,function(){sheetPost('Notices',ntR,function(){syncStatus('ok');});});});});});});
 }
 function changeTcPw(id){
   var tc=(TEACHERS||[]).find(function(x){return parseInt(x.id,10)===parseInt(id,10);});
