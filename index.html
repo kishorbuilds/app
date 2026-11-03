@@ -420,7 +420,8 @@ table tbody tr:nth-child(odd) { background-color: #ffffff; }
 <script>
 var SURL='https://script.google.com/macros/s/AKfycbyOBWkKwGYS69xLSJ8gkxC03t1UgcqiNfaD7WUg5EGa8zFm4rgKopGJcBzpXfp9eSsqyQ/exec';
 var curRole=null,curUser=null,curTc=null,curMod=null,curTab=null;
-var PW={super:'samata@2025',mukh:'katemadhav@2025',clerk:'clerk@2025'};
+/* Admin passwords come only from the 'passwords' sheet tab */
+var PW={};
 var settings={marksLocked:false};
 var CLASSES=[
   {id:'10',label:'10 \u0935\u0940',type:'high'},
@@ -2487,11 +2488,14 @@ function syncAll(){
   var bR=[['ID','Title','Author','Subject','Copies','AddedBy']];books.forEach(function(b){bR.push([b.id,b.title,b.author||'',b.subject||'',b.copies,b.addedBy||'']);});
   var sR=[['ID','Name','Class','Roll','Status','Reason','Father','Mother','DOB','Phone','RegNo']];students.forEach(function(s){sR.push([s.id,s.name,s.cls,s.roll||'',s.status,s.reason||'',s.father||'',s.mother||'',s.dob||'',s.phone||'',s.regNo||'']);});
   var tR=[['ID','SName','Class','BTitle','Subj','IDate','RDate','Due','TId','TName','RetTName']];transactions.forEach(function(t){tR.push([t.id,t.sName,t.cls,t.bTitle,t.subj||'',t.issueDate,t.retDate||'',t.due,t.tId||'',t.tName||'',t.retTName||'']);});
-  var pwR=[['key','value'],['super',PW.super],['mukh',PW.mukh]];
+  /* keep every key from the sheet (clerk too) */
+  var pwR=[['key','value']];for(var pk in PW){if(PW.hasOwnProperty(pk)&&PW[pk])pwR.push([pk,PW[pk]]);}
   var tcR=[['ID','Name','PW','ClassOf','Subjects','Classes','TTName']];
   (TEACHERS||[]).forEach(function(tc){tcR.push([tc.id,tc.name,tc.pw||'',tc.classOf||'',(tc.subjects||[]).join('|'),(tc.classes||[]).join('|'),tc.ttName||tc.name||'']);});
   var ntR=[['ID','Date','Title','Message','Author']];notices.forEach(function(n){ntR.push([n.id,n.date,n.title,n.msg,n.author]);});
-  sheetPost('pustake',bR,function(){sheetPost('vidyarthi',sR,function(){sheetPost('vyavhar',tR,function(){sheetPost('passwords',pwR,function(){sheetPost(TT_TEACHERS_SHEET,tcR,function(){sheetPost('Notices',ntR,function(){syncStatus('ok');});});});});});});
+  /* never overwrite a sheet with an empty list (data not loaded yet) */
+  var postIf=function(n,rows,cb){if(rows.length>1)sheetPost(n,rows,cb);else cb();};
+  sheetPost('pustake',bR,function(){postIf('vidyarthi',sR,function(){sheetPost('vyavhar',tR,function(){postIf('passwords',pwR,function(){postIf(TT_TEACHERS_SHEET,tcR,function(){sheetPost('Notices',ntR,function(){syncStatus('ok');});});});});});});
 }
 function changeTcPw(id){
   var tc=(TEACHERS||[]).find(function(x){return parseInt(x.id,10)===parseInt(id,10);});
