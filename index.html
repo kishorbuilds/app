@@ -1703,6 +1703,7 @@ function secAPw(){
     (curRole==='super'?'<div class="fg2" style="background:#f8fafc;padding:16px;border-radius:12px;border:2px solid var(--bdr);margin-bottom:20px;">'+
     '<div class="fg"><label>संस्थाचालक नवीन पासवर्ड</label><input type="password" id="pw-sup"></div>'+
     '<div class="fg"><label>मुख्याध्यापक नवीन पासवर्ड</label><input type="password" id="pw-muk"></div>'+
+    '<div class="fg"><label>लिपिक नवीन पासवर्ड</label><input type="password" id="pw-clk"></div>'+
     '<div class="fg" style="display:flex;align-items:flex-end;"><button class="btn bp" style="font-size:1rem;padding:10px 20px;" data-action="changepw">🔑 बदला</button></div></div>':'')+
     '<div class="tw"><table><thead><tr><th>शिक्षक</th><th>पासवर्ड</th><th>वर्गशिक्षक</th><th>कृती</th></tr></thead>'+
     '<tbody>'+tcRows+'</tbody></table></div></div>';
@@ -3221,6 +3222,20 @@ function syncAll(){
   var postIf=function(n,rows,cb){if(rows.length>1)sheetPost(n,rows,cb);else cb();};
   var stdTab='vidyarthi';if(emveStdHeader){stdTab='Students';sR=emveStudentRows();}
   sheetPost('pustake',bR,function(){postIf(stdTab,sR,function(){sheetPost('vyavhar',tR,function(){postIf('passwords',pwR,function(){postIf(TT_TEACHERS_SHEET,tcR,function(){sheetPost('Notices',ntR,function(){syncStatus('ok');});});});});});});
+}
+/* admin passwords: send only the changed keys; the server keeps the rest */
+function changePW(){
+  var map={super:'pw-sup',mukh:'pw-muk',clerk:'pw-clk'},rows=[['key','value']],k,v;
+  for(k in map){if(!map.hasOwnProperty(k))continue;v=String((document.getElementById(map[k])||{}).value||'').trim();if(!v)continue;if(v.length<6){toast('पासवर्ड किमान 6 अक्षरांचा हवा.','err');return;}rows.push([k,v]);}
+  if(rows.length<2){toast('नवीन पासवर्ड टाका.','err');return;}
+  syncStatus('ing');
+  sheetPost('passwords',rows,function(res){
+    if(res&&res.success&&!res.skipped&&!res.stale){
+      rows.slice(1).forEach(function(r){PW[r[0]]=r[1];});
+      for(k in map){if(map.hasOwnProperty(k)&&document.getElementById(map[k]))document.getElementById(map[k]).value='';}
+      syncStatus('ok');toast('पासवर्ड बदलला. ✅');
+    }else if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('पासवर्ड बदलला नाही. पुन्हा प्रयत्न करा.','err');}
+  });
 }
 function changeTcPw(id){
   var tc=(TEACHERS||[]).find(function(x){return parseInt(x.id,10)===parseInt(id,10);});
