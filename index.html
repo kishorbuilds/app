@@ -1074,7 +1074,8 @@ function secRD(){return '<div id="rd-content"><div style="padding:30px;text-alig
 function renderSecRM(){
   if(settings.marksLocked&&curRole==='shik')return '<div class="alert aw"><div>&#x1F512;</div><div><strong>गुण नोंदणी बंद आहे</strong></div></div>';
   var isA=(curRole==='super'||curRole==='mukh');
-  var availCls=isA?CLASSES:CLASSES.filter(function(c){return curTc&&curTc.classes.indexOf(c.id)>=0;});
+  var tCls=(!isA&&curTc&&emveWorkload)?emveTeacherClasses(curTc.ttName||curTc.name):null;
+  var availCls=isA?CLASSES:CLASSES.filter(function(c){return tCls?tCls.indexOf(c.id)>=0:(curTc&&curTc.classes.indexOf(c.id)>=0);});
   var clsOpts=availCls.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
   return '<div class="card"><div class="ct">&#x270F;&#xFE0F; गुण नोंदणी</div>'+
     '<div class="fg2">'+
@@ -1097,11 +1098,12 @@ function secRM(){
 function onMCls(){
   var cls=(document.getElementById('m-cls')||{}).value||'';
   var sel=document.getElementById('m-subj');if(!sel)return;
+  if(cls&&!emveWorkload){emveWithWorkload(onMCls);return;}
   var isPrimary=cls&&getCtype(cls)!=='high';
   var tw=document.getElementById('m-term-wrap');if(tw)tw.style.display=isPrimary?'block':'none';
   var tm=document.getElementById('m-term');if(tm)tm.value='';
-  var subjs=(curRole==='shik'&&curTc)?curTc.subjects:(cls?getSubjs(cls):[]);
-  sel.innerHTML='<option value="">निवडा</option>'+subjs.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('');
+  var subjs=cls?emveClassSubjects(cls,(curRole==='shik'&&curTc)?(curTc.ttName||curTc.name):''):[];
+  sel.innerHTML='<option value="">निवडा</option>'+subjs.map(function(s){return '<option value="'+s+'">'+emveSubjLabel(cls,s)+'</option>';}).join('');
   document.getElementById('mk-wrap').innerHTML='';
 }
 function loadMkTable(){
@@ -1118,6 +1120,11 @@ function loadMkTable(){
     return;
   }
   if(!cls||!subj){wrap.innerHTML='';return;}
+  if(!emveMarksLoaded[cls+'|'+subj]){
+    wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ जतन केलेले गुण आणत आहे…</div>';
+    emveLoadMarks(cls,[subj],function(){var c2=(document.getElementById('m-cls')||{}).value,s2=(document.getElementById('m-subj')||{}).value;if(c2===cls&&s2===subj)loadMkTable();});
+    return;
+  }
   if(getCtype(cls)!=='high'){
     if(!term){wrap.innerHTML='<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>सत्र निवडा</div></div>';return;}
     loadMkTable5(cls,subj,term);return;
@@ -1137,11 +1144,101 @@ function loadMkTable(){
   wrap.innerHTML='<div class="print-header" style="text-align:center; margin-bottom:10px;">'+
     '<div style="font-size:0.85rem;">समता जोगेश्वरी मंडळाचे</div>'+
     '<strong style="font-size:1.1rem;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</strong><br>'+
-    '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+subj+' | शिक्षक: '+tcName+'</span>'+
+    '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+emveSubjLabel(cls,subj)+' | शिक्षक: '+tcName+'</span>'+
     '</div>'+
     '<div class="tw mkw"><table class="mkt"><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="mk-wrap" data-title="गुण नोंदणी">🖨️ प्रिंट करा</button></div>';
   emveMkSticky();
 }
+/* ==========================================================
+   SUBJECTS & MARKS
+   Marks are saved per real subject from Workload_2026_27 (Marathi,
+   Science 1, History...). The progress card / result show the board
+   subject (प्रथम भाषा, सा.विज्ञान...); a subject taught in two parts
+   (Science 1+2, History+Geography) shows the average of the parts.
+   ========================================================== */
+var EMVE_SCI='सा.विज्ञान/परिसर अ.1',EMVE_SOC='सामाजिक शास्त्रे/परिसर अ.2';
+var EMVE_CAT={'Marathi':'प्रथम भाषा','Hindi':'द्वितीय भाषा','English':'तृतीय भाषा','Math':'गणित','Maths':'गणित',
+  'Science 1':EMVE_SCI,'Science 2':EMVE_SCI,'Parisar 1':EMVE_SCI,
+  'History':EMVE_SOC,'Geography':EMVE_SOC,'Samaj A':EMVE_SOC,'Parisar 2':EMVE_SOC,
+  'Art':'कला','Arts':'कला','Karya':'कार्यानुभव','Sports':'शा.शिक्षण'};
+var EMVE_SUBJ_MR={'Marathi':'मराठी','Hindi':'हिंदी','English':'इंग्रजी','Math':'गणित','Maths':'गणित','Science 1':'विज्ञान भाग 1','Science 2':'विज्ञान भाग 2',
+  'Parisar 1':'परिसर अभ्यास भाग 1','Parisar 2':'परिसर अभ्यास भाग 2','History':'इतिहास','Geography':'भूगोल','Samaj A':'सामाजिक शास्त्रे',
+  'Art':'कला','Arts':'कला','Karya':'कार्यानुभव','Sports':'शारीरिक शिक्षण'};
+var emveWorkload=null;
+function emveParseWorkload(rows){
+  emveWorkload=[];
+  (rows||[]).slice(1).forEach(function(r){
+    var t=String(r[0]||'').trim(),sb=String(r[1]||'').trim(),c=normalizeClass(r[2]);
+    if(t&&sb&&c)emveWorkload.push({teacher:t,subject:sb,cls:c});
+  });
+}
+function emveSameName(a,b){return String(a||'').replace(/\s+/g,' ').trim().toLowerCase()===String(b||'').replace(/\s+/g,' ').trim().toLowerCase();}
+/* subjects that get marks in a class (only ones that appear on the progress card); teacher = only own */
+function emveClassSubjects(cls,teacher){
+  var out=[];
+  (emveWorkload||[]).forEach(function(w){
+    if(w.cls!==cls||!EMVE_CAT[w.subject])return;
+    if(teacher&&!emveSameName(w.teacher,teacher))return;
+    if(out.indexOf(w.subject)<0)out.push(w.subject);
+  });
+  return out;
+}
+function emveTeacherClasses(teacher){
+  var out=[];(emveWorkload||[]).forEach(function(w){if(EMVE_CAT[w.subject]&&emveSameName(w.teacher,teacher)&&out.indexOf(w.cls)<0)out.push(w.cls);});
+  return out;
+}
+function emveParts(cls,cat){return emveClassSubjects(cls).filter(function(sb){return EMVE_CAT[sb]===cat;});}
+function emveSubjLabel(cls,sb){
+  if(!EMVE_CAT[sb])return sb;
+  var mr=EMVE_SUBJ_MR[sb]||sb;
+  if(EMVE_CAT[sb]===EMVE_SCI&&/^Science/.test(sb)&&emveParts(cls,EMVE_SCI).length<2)return 'विज्ञान';
+  return mr;
+}
+/* card subject = average of its parts (shown only when every part has the mark) */
+var emveGetMkRaw=getMk;
+getMk=function(sId,cls,subj,exam){
+  var v=emveGetMkRaw(sId,cls,subj,exam);
+  if(v!==''||EMVE_CAT[subj])return v;
+  var parts=emveParts(cls,subj);if(!parts.length)return '';
+  var sum=0;
+  for(var i=0;i<parts.length;i++){var pv=emveGetMkRaw(sId,cls,parts[i],exam);if(pv==='')return '';sum+=parseFloat(pv)||0;}
+  return String(Math.round(sum/parts.length*10)/10);
+};
+function emveMarksTabs(cls,sb){
+  if(getCtype(cls)==='high')return ['marks_'+cls+'_'+sb.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X')];
+  return ['mk5_t1_'+cls+'_'+sb.replace(/[^a-zA-Z0-9]/g,'X'),'mk5_t2_'+cls+'_'+sb.replace(/[^a-zA-Z0-9]/g,'X')];
+}
+function emveParseMarks(rows,cls,sb){
+  if(!rows||rows.length<2)return;
+  var hdr=rows[0].map(function(h){return String(h||'').trim();});
+  rows.slice(1).forEach(function(row){
+    var sId=parseInt(row[0],10)||0;if(!sId)return;
+    for(var i=3;i<hdr.length;i++){
+      if(!hdr[i])continue;var raw=row[i];var v=(raw===undefined||raw===null)?'':String(raw);
+      if(v!==''&&v!=='undefined'&&v!=='null')setMk(sId,cls,sb,hdr[i],v);
+    }
+  });
+}
+var emveMarksLoaded={};
+/* reports re-read the sheet once per class per session (fresh marks from all teachers) */
+var emveMarksReadyCls={};function emveMarksReady(cls){return !!emveMarksReadyCls[cls];}
+/* fetch saved marks of the given subjects of a class from the sheet (once per session unless force) */
+function emveLoadMarks(cls,subjects,done,force){
+  var todo=subjects.filter(function(sb){return force||!emveMarksLoaded[cls+'|'+sb];});
+  var tabs=[];todo.forEach(function(sb){emveMarksTabs(cls,sb).forEach(function(t){tabs.push({t:t,sb:sb});});});
+  if(!tabs.length){done();return;}
+  var left=tabs.length;
+  tabs.forEach(function(x){sheetGet(x.t,function(rows){emveParseMarks(rows,cls,x.sb);emveMarksLoaded[cls+'|'+x.sb]=1;left--;if(!left)done();});});
+}
+function emveWithWorkload(done){
+  if(emveWorkload){done();return;}
+  sheetGet(TT_WORKLOAD_SHEET,function(r){emveParseWorkload(r);done();});
+}
+/* all marks of a class, then run fn (used by progress card, result book, goshvara, nikal) */
+function emveEnsureClassMarks(cls,fn,force){
+  emveWithWorkload(function(){emveLoadMarks(cls,emveClassSubjects(cls),fn,force);});
+}
+
 /* marks table: keep the 2nd header row just below the 1st while scrolling */
 function emveMkSticky(){
   var t=document.querySelector('#mk-wrap table.mkt');if(!t)return;
@@ -1193,7 +1290,7 @@ function loadMkTable5(cls,subj,term){
   wrap.innerHTML='<div class="print-header" style="text-align:center; margin-bottom:10px;">'+
     '<div style="font-size:0.85rem;">समता जोगेश्वरी मंडळाचे</div>'+
     '<strong style="font-size:1.1rem;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</strong><br>'+
-    '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+subj+' | शिक्षक: '+tcName+'</span>'+
+    '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+emveSubjLabel(cls,subj)+' | शिक्षक: '+tcName+'</span>'+
     '</div>'+
     '<div class="tw mkw"><table class="mkt">'+
     '<thead><tr>'+
@@ -1274,6 +1371,7 @@ function secRGos(){
 function loadGosawara(){
   var cls=(document.getElementById('gos-cls')||{}).value||'';var wrap=document.getElementById('gos-wrap');if(!wrap)return;
   if(!cls){wrap.innerHTML='';return;}
+  if(!emveMarksReady(cls)){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ गुण आणत आहे…</div>';emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;loadGosawara();});return;}
   var stds2=getStds(cls);
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
   var subjs=getSubjs(cls);var isHigh=getCtype(cls)==='high';
@@ -1305,6 +1403,7 @@ function secRBook(){
 function loadRBook(){
   var cls=(document.getElementById('rb-cls')||{}).value||'';var wrap=document.getElementById('rb-wrap');if(!wrap)return;
   if(!cls){wrap.innerHTML='';return;}
+  if(!emveMarksReady(cls)){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ गुण आणत आहे…</div>';emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;loadRBook();});return;}
   var stds2=getStds(cls);if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
   var subjs=getSubjs(cls);var exams=getExams(cls);
   var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.7rem;padding:10px;">'+s+'</th>';}).join('');
@@ -1328,6 +1427,7 @@ function genCard(){
   if(!wrap)return;
   if(!cls||!sId){toast('वर्ग व विद्यार्थी निवडा!','err');return;}
   var s=students.find(function(x){return x.id===sId;});if(!s)return;
+  if(!emveMarksReady(cls)){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ गुण आणत आहे…</div>';emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;genCard();});return;}
   var c=getCls(cls);var subjs=getSubjs(cls);
   var grandTotal=0;var grandMax=0;
   var subjCodes={'प्रथम भाषा':'01','द्वितीय भाषा':'02','तृतीय भाषा':'03','गणित':'04','सा.विज्ञान/परिसर अ.1':'05','सामाजिक शास्त्रे/परिसर अ.2':'06','कला':'07','कार्यानुभव':'08','शा.शिक्षण':'09'};
@@ -1407,38 +1507,8 @@ function loadAndRenderNikal(){
   if(!curTc||!curTc.classOf){el.innerHTML='<div class="alert aw">\u0935\u0930\u094D\u0917 \u0928\u093E\u0939\u0940</div>';return;}
   var selTerm=(document.getElementById('nikal-term')||{}).value||'1';
   el.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;font-size:1.1rem;">&#x23F3; Google Sheet \u092E\u0927\u0942\u0928 \u0921\u0947\u091F\u093E \u0906\u0923\u0924 \u0906\u0939\u0947...</div>';
-  var cls=curTc.classOf;var subjs=getSubjs(cls);var ct=getCtype(cls);var isPrimary=ct!=='high';
-  var pending=0;
-  function parseMkIntoCache(rows,subj){
-    if(!rows||rows.length<2)return;
-    var hdr=rows[0].map(function(h){return String(h||'').trim();});
-    var ks=hdr.slice(3);
-    rows.slice(1).forEach(function(row){
-      var sId=parseInt(row[0])||0;if(!sId)return;
-      ks.forEach(function(key,i){
-        if(!key)return;
-        var raw=row[3+i];var v=raw!==undefined&&raw!==null?String(raw):'';
-        if(v!==''&&v!=='undefined'&&v!=='null')setMk(sId,cls,subj,key,v);
-      });
-    });
-  }
-  function tryRender(){pending--;if(pending<=0)renderNikal(cls,selTerm);}
-  if(isPrimary){
-    pending=subjs.length*2;
-    subjs.forEach(function(subj){
-      [1,2].forEach(function(term){
-        var shName='mk5_t'+term+'_'+cls+'_'+subj.replace(/[^a-zA-Z0-9]/g,'X');
-        sheetGet(shName,function(rows){parseMkIntoCache(rows,subj);tryRender();});
-      });
-    });
-  }else{
-    pending=subjs.length;
-    subjs.forEach(function(subj){
-      var shName='marks_'+cls+'_'+subj.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');
-      sheetGet(shName,function(rows){parseMkIntoCache(rows,subj);tryRender();});
-    });
-  }
-  if(pending===0)renderNikal(cls,selTerm);
+  var cls=normalizeClass(curTc.classOf);
+  emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;renderNikal(cls,selTerm);},true);
 }
 
 function renderNikal(cls,term){term=term||'1';
@@ -2317,7 +2387,7 @@ function loadTransactionsAndSettings(){
 function loadAll(){
   syncStatus('ing');
   /* all sheets are requested together; the screen is ready when every one has answered */
-  var left=9;
+  var left=10;
   function done(){
     left--;if(left>0)return;
     syncStatus('ok');
@@ -2358,6 +2428,7 @@ function loadAll(){
     if(sr.length>1)sr.slice(1).forEach(function(r){if(r[0]==='marksLocked')settings.marksLocked=(r[1]==='1'||r[1]===1||r[1]===true);});
   }));
   sheetGet(TT_SHEET,step(parseTimetableRows));
+  sheetGet(TT_WORKLOAD_SHEET,step(emveParseWorkload));
   loadTTMasterData(step(function(){}));
   sheetGet('SubLog',step(function(slR){
     substitutions=[];
