@@ -231,13 +231,21 @@ table tbody tr:nth-child(even) { background-color: #f5f5f5; }
   .mkt input.mi:focus{outline:none;border-color:var(--b);box-shadow:0 0 0 4px rgba(37,99,235,.2);background:#eff6ff;}
   .mkt input.mi.err{border-color:var(--r);background:#fef2f2;}
   .mkt tbody tr:focus-within td{background:#fef9c3 !important;}
+  .mkt thead th{position:sticky;top:0;z-index:3;background-color:#f8fafc;box-shadow:inset 0 -1px 0 #cbd5e1;}
+  .mkt thead tr:nth-child(2) th{top:var(--mkh1,0px);}
   .mkt tbody td:nth-child(1),.mkt thead tr:first-child th:nth-child(1){position:sticky;left:0;z-index:2;background:#fff;min-width:44px;width:44px;}
   .mkt tbody td:nth-child(2),.mkt thead tr:first-child th:nth-child(2){position:sticky;left:44px;z-index:2;background:#fff;box-shadow:2px 0 0 #cbd5e1;}
-  .mkt thead tr:first-child th:nth-child(1),.mkt thead tr:first-child th:nth-child(2){z-index:3;background:#f8fafc;}
+  .mkt thead tr:first-child th:nth-child(1),.mkt thead tr:first-child th:nth-child(2){top:0;z-index:5;background:#f8fafc;}
+  .mkt thead th.mk-on{background:#fde047!important;color:#0f172a!important;}
+  .mkt thead th.mk-on span{color:#0f172a!important;}
 }
 @media screen and (max-width:640px){
-  .mkt tbody td:nth-child(2){white-space:normal !important;max-width:110px;font-size:.8rem !important;line-height:1.25;}
-  .mkt input.mi{width:54px;height:46px;font-size:1.15rem;}
+  .mkt th{padding:5px 4px !important;font-size:.68rem !important;letter-spacing:0 !important;line-height:1.2;}
+  .mkt td{padding:4px 3px !important;}
+  .mkt tbody td:nth-child(1),.mkt thead tr:first-child th:nth-child(1){min-width:30px;width:30px;font-size:.85rem;}
+  .mkt tbody td:nth-child(2),.mkt thead tr:first-child th:nth-child(2){left:30px;}
+  .mkt tbody td:nth-child(2){white-space:normal !important;max-width:96px;min-width:80px;font-size:.78rem !important;line-height:1.2;}
+  .mkt input.mi{width:50px;height:44px;font-size:1.15rem;}
 }
 table tbody tr:nth-child(odd) { background-color: #ffffff; }
 
@@ -1018,7 +1026,7 @@ function loadMkTable(){
   var groups={};var groupKeys=[];
   exams.forEach(function(e){if(groupKeys.indexOf(e.group)<0)groupKeys.push(e.group);groups[e.group]=(groups[e.group]||[]).concat([e]);});
   var thGroup=groupKeys.map(function(g){return '<th colspan="'+groups[g].length+'" style="text-align:center;background:var(--d);color:white;padding:12px;">'+g+'</th>';}).join('');
-  var thExams=exams.map(function(e){return '<th style="text-align:center;font-size:.8rem;">'+e.label+'<br><span style="font-weight:600;font-size:.7rem;">/'+e.max+'</span></th>';}).join('');
+  var thExams=exams.map(function(e){return '<th data-k="'+e.key+'" style="text-align:center;font-size:.8rem;">'+e.label+'<br><span style="font-weight:600;font-size:.7rem;">/'+e.max+'</span></th>';}).join('');
   var rows=stds2.map(function(s){
     var cells=exams.map(function(e){var v=getMk(s.id,cls,subj,e.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+e.max+'" value="'+v+'" data-action="setmk" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+e.key+'" data-max="'+e.max+'"></td>';}).join('');
     var t=calcSubjTotal(s.id,cls,subj);var gr=t.total!==''?grade(t.pct,cls):'-';
@@ -1030,7 +1038,18 @@ function loadMkTable(){
     '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+subj+' | शिक्षक: '+tcName+'</span>'+
     '</div>'+
     '<div class="tw mkw"><table class="mkt"><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="mk-wrap" data-title="गुण नोंदणी">🖨️ प्रिंट करा</button></div>';
+  emveMkSticky();
 }
+/* marks table: keep the 2nd header row just below the 1st while scrolling */
+function emveMkSticky(){
+  var t=document.querySelector('#mk-wrap table.mkt');if(!t)return;
+  var r=t.querySelector('thead tr');if(r)t.style.setProperty('--mkh1',r.offsetHeight+'px');
+  /* table box = screen below the app header, so its frozen heading is never hidden behind it */
+  var w=t.parentNode,hd=document.querySelector('header'),hh=hd?hd.offsetHeight:0;
+  w.style.maxHeight=Math.max(300,window.innerHeight-hh-16)+'px';
+  setTimeout(function(){var y=w.getBoundingClientRect().top+(window.pageYOffset||0)-hh-8;window.scrollTo(0,Math.max(0,y));},50);
+}
+window.addEventListener('resize',function(){var t=document.querySelector('#mk-wrap table.mkt');if(!t)return;var r=t.querySelector('thead tr');if(r)t.style.setProperty('--mkh1',r.offsetHeight+'px');});
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
 function saveAllMk(cls,subj){if(settings.marksLocked && curRole==='shik'){ toast('गुण नोंदणी बंद आहे!','err'); return; }var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
 
@@ -1055,8 +1074,8 @@ function loadMkTable5(cls,subj,term){
   var termLabel = term==='2' ? 'द्वितीय सत्र' : 'प्रथम सत्र';
   var stds2=getStds(cls);var wrap=document.getElementById('mk-wrap');
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
-  var faHdr=FA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bfdbfe;">/'+f.max+'</span></th>';}).join('');
-  var saHdr=SA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bbf7d0;">/'+f.max+'</span></th>';}).join('');
+  var faHdr=FA5.map(function(f){return '<th data-k="'+pfx+f.key+'" style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bfdbfe;">/'+f.max+'</span></th>';}).join('');
+  var saHdr=SA5.map(function(f){return '<th data-k="'+pfx+f.key+'" style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bbf7d0;">/'+f.max+'</span></th>';}).join('');
   var rows=stds2.map(function(s){
     var faCells=FA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
     var saCells=SA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
@@ -1088,6 +1107,7 @@ function loadMkTable5(cls,subj,term){
     '<tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="save5mk" data-cls="'+cls+'" data-subj="'+subj+'" data-term="'+term+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="mk-wrap" data-title="गुण नोंदणी">🖨️ प्रिंट करा</button></div>';
   stds2.forEach(function(s){validate5Row(s.id,cls,subj,term);});
+  emveMkSticky();
 }
 
 function validate5Row(sId,cls,subj,term){
@@ -2554,6 +2574,12 @@ window.addEventListener('beforeprint',emvePrintForMenu);
 var emvePrintAt=0;
 function emvePrintTouch(){if(document.body.classList.contains('emve-printing')&&Date.now()-emvePrintAt>2000)emvePrintDone();}
 document.addEventListener('mousedown',emvePrintTouch,true);
+document.addEventListener('focusin',function(ev){
+  var t=ev.target;if(!t||!t.classList||!t.classList.contains('mi'))return;
+  var tb=t.closest?t.closest('table.mkt'):null;if(!tb)return;
+  var on=tb.querySelectorAll('th.mk-on');for(var i=0;i<on.length;i++)on[i].classList.remove('mk-on');
+  var h=tb.querySelector('th[data-k="'+t.getAttribute('data-exam')+'"]');if(h)h.classList.add('mk-on');
+});
 document.addEventListener('touchstart',emvePrintTouch,true);
 document.addEventListener('keydown',emvePrintTouch,true);
 /* Home-screen app / WhatsApp browser: print() does nothing there -> make a PDF instead */
