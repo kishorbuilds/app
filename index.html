@@ -222,6 +222,23 @@ tr:hover td{background:#f1f5f9;}
   input[type="number"] { border: none !important; box-shadow: none !important; -webkit-appearance: none !important; width: auto !important; }
 }
 table tbody tr:nth-child(even) { background-color: #f5f5f5; }
+/* Marks entry: big boxes, name column stays visible while scrolling, current row highlighted */
+@media screen{
+  .mkw{max-height:75vh;overflow:auto;}
+  .mkt td{padding:6px 5px;}
+  .mkt input.mi{width:62px;height:48px;padding:4px;border:2px solid #cbd5e1;border-radius:10px;font-size:1.25rem;font-weight:800;text-align:center;font-family:inherit;background:#fff;color:#0f172a;-moz-appearance:textfield;}
+  .mkt input.mi::-webkit-outer-spin-button,.mkt input.mi::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .mkt input.mi:focus{outline:none;border-color:var(--b);box-shadow:0 0 0 4px rgba(37,99,235,.2);background:#eff6ff;}
+  .mkt input.mi.err{border-color:var(--r);background:#fef2f2;}
+  .mkt tbody tr:focus-within td{background:#fef9c3 !important;}
+  .mkt tbody td:nth-child(1),.mkt thead tr:first-child th:nth-child(1){position:sticky;left:0;z-index:2;background:#fff;min-width:44px;width:44px;}
+  .mkt tbody td:nth-child(2),.mkt thead tr:first-child th:nth-child(2){position:sticky;left:44px;z-index:2;background:#fff;box-shadow:2px 0 0 #cbd5e1;}
+  .mkt thead tr:first-child th:nth-child(1),.mkt thead tr:first-child th:nth-child(2){z-index:3;background:#f8fafc;}
+}
+@media screen and (max-width:640px){
+  .mkt tbody td:nth-child(2){white-space:normal !important;max-width:110px;font-size:.8rem !important;line-height:1.25;}
+  .mkt input.mi{width:54px;height:46px;font-size:1.15rem;}
+}
 table tbody tr:nth-child(odd) { background-color: #ffffff; }
 
 /* ---- DRAG & DROP TIMETABLE EDITOR ---- */
@@ -946,7 +963,7 @@ function loadMkTable(){
   var thGroup=groupKeys.map(function(g){return '<th colspan="'+groups[g].length+'" style="text-align:center;background:var(--d);color:white;padding:12px;">'+g+'</th>';}).join('');
   var thExams=exams.map(function(e){return '<th style="text-align:center;font-size:.8rem;">'+e.label+'<br><span style="font-weight:600;font-size:.7rem;">/'+e.max+'</span></th>';}).join('');
   var rows=stds2.map(function(s){
-    var cells=exams.map(function(e){var v=getMk(s.id,cls,subj,e.key);return '<td><input class="mi" type="number" min="0" max="'+e.max+'" value="'+v+'" data-action="setmk" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+e.key+'" data-max="'+e.max+'"></td>';}).join('');
+    var cells=exams.map(function(e){var v=getMk(s.id,cls,subj,e.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+e.max+'" value="'+v+'" data-action="setmk" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+e.key+'" data-max="'+e.max+'"></td>';}).join('');
     var t=calcSubjTotal(s.id,cls,subj);var gr=t.total!==''?grade(t.pct,cls):'-';
     return '<tr><td><strong>'+s.roll+'</strong></td><td><strong>'+s.name+'</strong></td>'+cells+'<td id="tot-'+s.id+'" style="font-weight:900;font-size:1.05rem;color:var(--b);">'+(t.total||'-')+'</td><td><span class="bdg '+gradeColor(gr)+'" id="grd-'+s.id+'">'+gr+'</span></td></tr>';
   }).join('');
@@ -955,7 +972,7 @@ function loadMkTable(){
     '<strong style="font-size:1.1rem;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</strong><br>'+
     '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+subj+' | शिक्षक: '+tcName+'</span>'+
     '</div>'+
-    '<div class="tw"><table><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" onclick="window.print()">🖨️ प्रिंट करा</button></div>';
+    '<div class="tw mkw"><table class="mkt"><thead><tr><th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+thGroup+'<th rowspan="2">एकूण</th><th rowspan="2">श्रेणी</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="saveallmk" data-cls="'+cls+'" data-subj="'+subj+'">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" onclick="window.print()">🖨️ प्रिंट करा</button></div>';
 }
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
 function saveAllMk(cls,subj){if(settings.marksLocked && curRole==='shik'){ toast('गुण नोंदणी बंद आहे!','err'); return; }var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
@@ -984,8 +1001,8 @@ function loadMkTable5(cls,subj,term){
   var faHdr=FA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bfdbfe;">/'+f.max+'</span></th>';}).join('');
   var saHdr=SA5.map(function(f){return '<th style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bbf7d0;">/'+f.max+'</span></th>';}).join('');
   var rows=stds2.map(function(s){
-    var faCells=FA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
-    var saCells=SA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
+    var faCells=FA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
+    var saCells=SA5.map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
     var tot=calc5TotRow(s.id,cls,subj,term);
     var gr=tot.hasData?grade58(tot.pct100):'-';
     return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-size:.9rem;font-weight:700;">'+s.name+'</td>'+
@@ -1000,7 +1017,7 @@ function loadMkTable5(cls,subj,term){
     '<strong style="font-size:1.1rem;">एकनाथ माध्यमिक विद्यालय, एरंडगाव</strong><br>'+
     '<span>इयत्ता: '+clsLabel+' | सत्र: '+termLabel+' | विषय: '+subj+' | शिक्षक: '+tcName+'</span>'+
     '</div>'+
-    '<div class="tw"><table>'+
+    '<div class="tw mkw"><table class="mkt">'+
     '<thead><tr>'+
     '<th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+
     '<th colspan="'+FA5.length+'" style="text-align:center;background:#1e40af;color:white;font-size:.8rem;padding:12px;">अ - आकारिक मूल्यमापन (FA) /40</th>'+
@@ -2214,6 +2231,14 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('keydown',function(ev){
     var act=(ev.target.getAttribute&&ev.target.getAttribute('data-action'))||'';
     if(act==='login-key'&&ev.key==='Enter')doLogin();
+    if((act==='setmk'||act==='setmk5')&&ev.key==='Enter'){
+      ev.preventDefault();
+      var td=ev.target.parentNode,tr=td&&td.parentNode,col=-1;
+      if(tr){for(var ci=0;ci<tr.children.length;ci++){if(tr.children[ci]===td)col=ci;}}
+      var nx=tr&&tr.nextElementSibling;
+      var nIn=nx&&nx.children[col]?nx.children[col].querySelector('input.mi'):null;
+      if(nIn){nIn.focus();nIn.select();}else{ev.target.blur();}
+    }
   });
 
   document.addEventListener('change',function(ev){
