@@ -2339,6 +2339,9 @@ function emveSetLoginButton(loading){
 }
 
 /* ---------- 2026-27 TEACHER ROSTER ---------- */
+/* Sheet class like ' 7A ' -> app class id '7a' */
+function normalizeClass(c){return String(c||'').replace(/\s+/g,'').toLowerCase();}
+function loginErr(msg){toast(msg,'err');}
 function emveRosterHeaderMap(rows){
   var h=(rows&&rows.length)?rows[0].map(function(x){return String(x||'').trim().toLowerCase();}):[];
   function ix(names,def){for(var i=0;i<names.length;i++){var q=h.indexOf(names[i].toLowerCase());if(q>=0)return q;}return def;}
@@ -2400,6 +2403,7 @@ function doLogin(){
     if(pwR&&pwR.length>1)pwR.slice(1).forEach(function(r){if(r[0]&&r[1])PW[String(r[0])]=String(r[1]);});
     sheetGet(TT_TEACHERS_SHEET,function(rows){
       parseTTTeachers(rows);parseShikshakRows(rows);
+      emveMergeOldPw(function(){
       if(!TEACHERS.length && rType==='shik'){finishFail('2026–27 शिक्षक यादी सापडली नाही.');return;}
       if(rType==='admin'){
         var r=(document.getElementById('l-admin-role')||{}).value||'';
@@ -2428,7 +2432,19 @@ function doLogin(){
       showHome();
       emveShowLoader('डेटा लोड होत आहे…');
       loadShikshakFirst();
+      });
     });
+  });
+}
+/* Use PW column of 2026-27 tab if present; otherwise take password from old Shikshak tab, matched by TTName (column G) */
+function emveMergeOldPw(cb){
+  var need=(TEACHERS||[]).some(function(t){return !t.pw;});
+  if(!need){cb();return;}
+  sheetGet('Shikshak',function(rows){
+    var map={};
+    (rows||[]).slice(1).forEach(function(r){var k=String(r[6]||'').trim().toLowerCase();if(k&&r[2])map[k]=String(r[2]).trim();});
+    TEACHERS.forEach(function(t){if(!t.pw){var k=String(t.ttName||t.name).trim().toLowerCase();if(map[k])t.pw=map[k];}});
+    cb();
   });
 }
 function setupHeader(){
