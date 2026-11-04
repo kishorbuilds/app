@@ -248,6 +248,7 @@ table tbody tr:nth-child(even) { background-color: #f5f5f5; }
   .ntp-q{margin:0 16px 8px;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:10px;font-size:1rem;font-family:inherit;}
   .ntp-list{overflow:auto;padding:0 8px 12px;}
   .ntp-tabs{display:flex;gap:8px;padding:0 16px 10px;}
+  .ntl{font-size:.78rem;font-weight:800;color:var(--b);margin:8px 0 3px;}
   .ntp-t{flex:1;padding:10px 6px;border-radius:10px;border:1.5px solid var(--bdr);background:#fff;font-weight:800;font-size:.9rem;font-family:inherit;cursor:pointer;color:#475569;}
   .ntp-t.g.on{background:#dcfce7;border-color:#16a34a;color:#166534;}
   .ntp-t.s.on{background:#ffedd5;border-color:#ea580c;color:#9a3412;}
@@ -1447,6 +1448,16 @@ var EMVE_NOTE_SUBJ={'Marathi':'मराठी','Hindi':'हिंदी','Engli
   'Science 1':'विज्ञान','Science 2':'विज्ञान','Parisar 1':'विज्ञान',
   'History':'सामाजिक शास्त्रे','Geography':'सामाजिक शास्त्रे','Samaj A':'सामाजिक शास्त्रे','Parisar 2':'सामाजिक शास्त्रे',
   'Art':'कला','Arts':'कला','Karya':'कार्यानुभव','Sports':'शारीरिक शिक्षण'};
+/* class teacher's 4 general notes per term (Excel: विद्यार्थी माहिती → वर्णनात्मक नोंदी) */
+var EMVE_CT='Vargshikshak';
+var EMVE_CT_F=[['vp','विशेष प्रगती'],['av','आवड/छंद'],['su','सुधारणा आवश्यक'],['vy','व्यक्तिमत्व गुणविशेष']];
+var EMVE_NOTE_CT={
+vp:['शालेय शिस्तीचे पालन उत्तम आहे','शाळेत नियमित उपस्थिती आहे','अभ्यास वेळेवर पूर्ण करण्याची चांगली सवय आहे','गृहपाठ वेळेत पूर्ण होतो','स्वाध्यायपुस्तिका स्वतः पूर्ण करण्याची सवय आहे','वाचन स्पष्ट व शुद्ध आहे','कविता पाठांतर व सुरात गायन चांगले जमते','इंग्रजी शब्दांचे उच्चार शुद्ध आहेत','ऐतिहासिक माहिती मिळवण्यात रुची आहे','चित्रकलेत विशेष प्रगती आहे','दैनंदिन व्यवहारात ज्ञानाचा उपयोग चांगल्या प्रकारे करता येतो','गणितातील क्रिया अचूक जमतात','शिक्षकांविषयी आदर आहे','शालेय उपक्रमांत उत्साहाने सहभाग असतो','सांस्कृतिक कार्यक्रमांत उत्साहाने सहभाग असतो','प्रयोगाचे निरीक्षण लक्षपूर्वक करता येते','खेळात उत्तम प्रगती आहे','विविध खेळ प्रकारांत सहभाग असतो','समानार्थी शब्दांचा संग्रह करण्याची चांगली सवय आहे','दिलेले काम वेळेवर पूर्ण होते','प्रयोगाची मांडणी अचूक जमते','चित्रे छान काढता व रंगवता येतात','प्रयोगवहीत आकृत्या सुबक काढता येतात','स्वाध्याय स्वतः समजून सोडवता येतो','वाचन स्पष्ट उच्चारात होते','संभाषणात हिंदी भाषेचा चांगला वापर करता येतो','चित्राचे निरीक्षण करून वर्णन सांगता येते','नियमित शुद्धलेखन करण्याची चांगली सवय आहे','कार्यानुभवातील वस्तू छान बनवता येतात','तोंडी प्रश्नांची उत्तरे चांगल्या प्रकारे देता येतात','गणितातील उदाहरणे अचूक सोडवता येतात','सुविचार व बोधकथा संग्रहाची चांगली सवय आहे','हिंदीतून पत्र लिहिता येते','परिपाठात उत्साहाने सहभाग असतो','क्रीडा स्पर्धांत सहभाग असतो','मुहावऱ्यांचा वाक्यात उपयोग करता येतो','प्रयोगाची कृती अचूक जमते','वर्गाचे नेतृत्व चांगल्या प्रकारे करता येते','वर्तमानपत्रांची कात्रणे संग्रहित करण्याची चांगली सवय आहे','शाळाबाह्य परीक्षांत सहभाग असतो','व्यवहारज्ञान चांगले आहे','अभ्यासात सातत्य आहे','वर्गात क्रियाशील सहभाग असतो','अभ्यासात नियमितता आहे','वर्गात लक्ष देऊन ऐकण्याची चांगली सवय आहे','प्रश्नांची उत्तरे विचारपूर्वक व अचूक देता येतात','गटकार्यात व परिपाठात उत्स्फूर्त सहभाग असतो','अक्षर वळणदार काढण्याचा चांगला प्रयत्न दिसतो'],
+av:['चित्रे काढणे','गोष्ट सांगणे','गाणी-कविता म्हणणे','नृत्य','अभिनय','नाट्यीकरण','खेळ','अवांतर वाचन','गणिती आकडेमोड','कार्यानुभवातील वस्तू बनवणे','स्पर्धा परीक्षा','कथा-कविता-संवाद लेखन','वाचन','लेखन','पोहणे','सायकल चालवणे','गीत गायन','संग्रह करणे','प्रतिकृती बनवणे','प्रयोग करणे','खो-खो','कबड्डी','क्रिकेट','संगणक हाताळणे','गोष्टी ऐकणे','गोष्टी वाचणे','रांगोळी काढणे','प्रवास करणे','नक्षीकाम','व्यायाम करणे','संगीत ऐकणे','उपक्रम तयार करणे'],
+su:['वाचन व लेखनाकडे लक्ष द्यावे','अभ्यासात सातत्य असावे','अवांतर वाचन करावे','शब्दांचे पाठांतर करावे','शब्दसंग्रह करावा','बेरजेत हातच्याकडे लक्ष द्यावे','नियमित शुद्धलेखन लिहावे','गुणाकारात मांडणी योग्य करावी','खेळात सहभागी व्हावे','संवाद कौशल्य वाढवावे','परिपाठात सहभाग घ्यावा','विज्ञानाचे प्रयोग करून पाहावेत','हिंदी भाषेचा उपयोग करावा','शालेय उपक्रमांत सहभाग घ्यावा','गटचर्चेत सहभाग घ्यावा','चित्रकलेचा छंद जोपासावा','वर्तमानपत्राचे नियमित वाचन करावे','संगणकाचा वापर शिकावा','प्रयोगांमध्ये कृतिशील सहभाग असावा','गणित विषयाकडे लक्ष द्यावे','गटकार्यात सहभाग वाढवावा','गणिती क्रियांकडे लक्ष द्यावे','हस्ताक्षरात सुधारणा करावी','इंग्रजी वाचन व लेखन सुधारावे','इंग्रजी शब्दांचा संग्रह व पाठांतर करावे','इंग्रजी वाचन व लेखनाचा सराव करावा','शैक्षणिक चित्रांचा संग्रह करावा','शुद्धलेखनात प्रगती करावी','लेखनातील चुका टाळाव्यात','नकाशा वाचनाचा सराव करावा','उदाहरणे सोडवण्याचा सराव करावा','नियमित अभ्यासाची सवय लावावी','शाळेत नियमित उपस्थित राहावे','जोडाक्षर वाचनाचा सराव करावा','अवांतर पुस्तकांचे वाचन करावे','प्रकल्प वेळेवर पूर्ण करावेत','अक्षर वळणदार काढावे','भाषा विषयांत प्रगती करावी','गणितातील सूत्रांचे पाठांतर करावे','स्वाध्याय वेळेत पूर्ण करावा','दैनंदिन उपस्थितीकडे लक्ष द्यावे','संवाद कौशल्य आत्मसात करावे','गणितातील मांडणी योग्य करावी','शुद्धलेखनाकडे लक्ष द्यावे','इंग्रजी शब्दसंग्रह वाढवावा'],
+vy:['आपली मते मुद्देसूद व थोडक्यात मांडता येतात','आपली मते ठामपणे मांडता येतात','कोणतेही काम एकाग्रतेने केले जाते','कोणतेही काम वेळेत पूर्ण केले जाते','आत्मविश्वासाने काम करण्याची वृत्ती आहे','इतरांपेक्षा वेगळ्या कल्पना व विचार मांडले जातात','संधी मिळेल तेथे पुढाकार घेऊन काम करण्याची वृत्ती आहे','वैयक्तिक स्वच्छतेकडे सातत्याने लक्ष असते','शिक्षकांच्या सूचनांचे पालन केले जाते','स्वतःच्या आवडी-निवडीबाबत स्पष्टता आहे','धाडसी वृत्ती दिसून येते','स्वतःची चूक मोकळेपणाने मान्य करण्याची वृत्ती आहे','गटात काम करताना सोबत्यांची मते जाणून घेतली जातात','भेदभाव न करता सर्वांमध्ये मिसळण्याची वृत्ती आहे','वर्ग, शाळा व परिसर स्वच्छ ठेवण्याचा प्रयत्न असतो','मित्रांना गरजेनुसार सहकार्य करण्याची वृत्ती आहे','मित्रांच्या सुख-दुःखात सहभागी होण्याची वृत्ती आहे','शाळेच्या नियमांचे पालन केले जाते','इतरांशी नम्रपणे वागण्याची वृत्ती आहे','नवीन गोष्टी समजून घेण्याची जिज्ञासा आहे','नवनवीन गोष्टी शिकायला आवडतात','उपक्रमांमध्ये कृतिशील सहभाग असतो','शाळेत येण्यात आनंद वाटतो','गृहपाठ आवडीने केला जातो','जिज्ञासेने प्रश्न विचारण्याची वृत्ती आहे','स्वतःचा अभ्यास स्वतः करण्याची सवय आहे','शिक्षकांविषयी आदर आहे']};
+function emveIsCT(cls){return curRole==='super'||curRole==='mukh'||(curRole==='shik'&&curTc&&normalizeClass(curTc.classOf)===cls);}
+function emveNtLabel(cls,sb){return sb===EMVE_CT?'वर्गशिक्षक नोंदी':emveSubjLabel(cls,sb);}
 var emveNotes={},emveNotesLoaded={},emveNotesErr={};
 function emveNotesTab(cls,sb){return 'notes_'+cls+'_'+sb.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');}
 function emveNote(cls,sb,sId,t){var n=emveNotes[cls+'|'+sb+'|'+sId];return n&&n[t]?n[t]:'';}
@@ -1462,9 +1473,10 @@ function emveLoadNotes(cls,subjects,done){
     else{
       delete emveNotesErr[cls+'|'+sb];
       var h=(rows&&rows[0]||[]).map(function(x){return String(x||'').trim();});
-      var i1=h.indexOf('t1'),i2=h.indexOf('t2');
+      /* every column after sId/नाव is a note field: t1,t2 (subject) or t1_vp… (class teacher) */
       (rows||[]).slice(1).forEach(function(r){var id=parseInt(r[0],10)||0;if(!id)return;
-        emveNotes[cls+'|'+sb+'|'+id]={t1:i1>=0&&r[i1]!=null?String(r[i1]):'',t2:i2>=0&&r[i2]!=null?String(r[i2]):''};});
+        var o={};for(var ci=2;ci<h.length;ci++){if(h[ci])o[h[ci]]=r[ci]!=null?String(r[ci]):'';}
+        emveNotes[cls+'|'+sb+'|'+id]=o;});
       emveNotesLoaded[cls+'|'+sb]=1;
     }
     left--;if(left)return;
@@ -1478,7 +1490,7 @@ function secRNote(){
   if(settings.marksLocked&&curRole==='shik')return '<div class="alert aw"><div>&#x1F512;</div><div><strong>गुण नोंदणी बंद आहे</strong></div></div>';
   if(!emveWorkload){emveWithWorkload(function(){var el=document.getElementById('mod-secs');if(el&&curTab==='rnote')el.innerHTML=secRNote();});return '<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ लोड होत आहे…</div>';}
   var tCls=isA?null:emveTeacherClasses(curTc.ttName||curTc.name);
-  var avail=CLASSES.filter(function(c){return c.type!=='high'&&(isA||tCls.indexOf(c.id)>=0);});
+  var avail=CLASSES.filter(function(c){return c.type!=='high'&&(isA||tCls.indexOf(c.id)>=0||emveIsCT(c.id));});
   if(!avail.length)return '<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>वर्णनात्मक नोंदी फक्त 5 ते 8 वी साठी आहेत. तुमचे या वर्गांचे विषय नाहीत.</div></div>';
   var clsOpts=avail.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
   return '<div class="card"><div class="ct">&#x1F4DC; वर्णनात्मक नोंदी</div>'+
@@ -1491,7 +1503,7 @@ function secRNote(){
 function onNtCls(){
   var cls=(document.getElementById('nt-cls')||{}).value||'';var sel=document.getElementById('nt-subj');if(!sel)return;
   var subjs=cls?emveNoteSubjects(cls,(curRole==='shik'&&curTc)?(curTc.ttName||curTc.name):''):[];
-  sel.innerHTML='<option value="">निवडा</option>'+subjs.map(function(s){return '<option value="'+s+'">'+emveSubjLabel(cls,s)+'</option>';}).join('');
+  sel.innerHTML='<option value="">निवडा</option>'+(cls&&emveIsCT(cls)?'<option value="'+EMVE_CT+'">वर्गशिक्षक नोंदी (४ रकाने)</option>':'')+subjs.map(function(s){return '<option value="'+s+'">'+emveSubjLabel(cls,s)+'</option>';}).join('');
   var w=document.getElementById('nt-wrap');if(w)w.innerHTML='';
 }
 function loadNoteTable(){
@@ -1508,12 +1520,15 @@ function loadNoteTable(){
   var stds2=getStds(cls);
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
   var t='t'+term;
+  var isCT=subj===EMVE_CT;
+  var box=function(s,f,ph){var key=f?t+'_'+f:t;return '<div class="ntr"><input class="nti" maxlength="300" autocomplete="off" enterkeyhint="next" data-sid="'+s.id+'"'+(f?' data-f="'+f+'"':'')+' value="'+emveAttr(emveNote(cls,subj,s.id,key))+'" placeholder="'+ph+'" style="width:0;padding:10px;font-size:.95rem;border:1.5px solid var(--bdr);border-radius:8px;"><button type="button" class="ntb no-print" data-action="ntpick" data-sid="'+s.id+'"'+(f?' data-f="'+f+'"':'')+'>यादी ▾</button></div>';};
   var rows=stds2.map(function(s){
-    return '<tr><td style="vertical-align:top;"><strong>'+s.roll+'</strong></td><td style="width:100%;"><div style="font-weight:700;font-size:.92rem;margin-bottom:6px;">'+s.name+'</div><div class="ntr"><input class="nti" maxlength="300" autocomplete="off" enterkeyhint="next" data-sid="'+s.id+'" value="'+emveAttr(emveNote(cls,subj,s.id,t))+'" placeholder="नोंद लिहा…" style="width:0;padding:10px;font-size:.95rem;border:1.5px solid var(--bdr);border-radius:8px;"><button type="button" class="ntb no-print" data-action="ntpick" data-sid="'+s.id+'">यादी ▾</button></div></td></tr>';
+    var body=isCT?EMVE_CT_F.map(function(f){return '<div class="ntl">'+f[1]+'</div>'+box(s,f[0],f[1]+'…');}).join(''):box(s,'','नोंद लिहा…');
+    return '<tr><td style="vertical-align:top;"><strong>'+s.roll+'</strong></td><td style="width:100%;"><div style="font-weight:700;font-size:.92rem;margin-bottom:6px;">'+s.name+'</div>'+body+'</td></tr>';
   }).join('');
-  var filled=stds2.filter(function(s){return emveNote(cls,subj,s.id,t);}).length;
+  var filled=stds2.filter(function(s){return isCT?EMVE_CT_F.some(function(f){return emveNote(cls,subj,s.id,t+'_'+f[0]);}):emveNote(cls,subj,s.id,t);}).length;
   wrap.innerHTML='<div class="alert ai no-print"><div>&#x2139;&#xFE0F;</div><div><strong>"यादी ▾"</strong> दाबा: तयार वाक्ये दिसतील, एक निवडा. किंवा चौकटीत स्वतः लिहा.<br>आधी भरलेल्या नोंदी चौकटीतच दिसतात. भरलेल्या: <strong>'+filled+' / '+stds2.length+'</strong></div></div>'+
-    '<div class="print-header" style="text-align:center;margin-bottom:10px;"><strong>वर्णनात्मक नोंदी</strong><br><span>इयत्ता: '+getCls(cls).label+' | सत्र: '+(term==='2'?'द्वितीय':'प्रथम')+' | विषय: '+emveSubjLabel(cls,subj)+'</span></div>'+
+    '<div class="print-header" style="text-align:center;margin-bottom:10px;"><strong>वर्णनात्मक नोंदी</strong><br><span>इयत्ता: '+getCls(cls).label+' | सत्र: '+(term==='2'?'द्वितीय':'प्रथम')+' | '+(isCT?'':'विषय: ')+emveNtLabel(cls,subj)+'</span></div>'+
     '<div class="tw"><table class="ntt"><thead><tr><th>ह.क्र.</th><th>नाव व नोंद</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="savenotes">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="nt-wrap" data-title="वर्णनात्मक नोंदी">🖨️ प्रिंट करा</button></div>';
 }
@@ -1522,15 +1537,18 @@ function saveNotes(){
   var cls=(document.getElementById('nt-cls')||{}).value||'',subj=(document.getElementById('nt-subj')||{}).value||'',term=(document.getElementById('nt-term')||{}).value||'';
   if(!cls||!subj||!term||!emveNotesLoaded[cls+'|'+subj])return;
   var t='t'+term,count=0;
-  var ins=document.querySelectorAll('#nt-wrap input.nti');
+  var ins=document.querySelectorAll('#nt-wrap input.nti'),seen={};
   for(var i=0;i<ins.length;i++){
     var id=parseInt(ins[i].getAttribute('data-sid'),10)||0;if(!id)continue;
-    var key=cls+'|'+subj+'|'+id;if(!emveNotes[key])emveNotes[key]={t1:'',t2:''};
-    emveNotes[key][t]=String(ins[i].value||'').replace(/\s+/g,' ').trim();
-    if(emveNotes[key][t])count++;
+    var f=ins[i].getAttribute('data-f')||'',fk=f?t+'_'+f:t;
+    var key=cls+'|'+subj+'|'+id;if(!emveNotes[key])emveNotes[key]={};
+    emveNotes[key][fk]=String(ins[i].value||'').replace(/\s+/g,' ').trim();
+    if(emveNotes[key][fk]&&!seen[id]){seen[id]=1;count++;}
   }
-  var rows=[['sId','नाव','t1','t2']];
-  getStds(cls).forEach(function(s){rows.push([s.id,s.name,emveNote(cls,subj,s.id,'t1'),emveNote(cls,subj,s.id,'t2')]);});
+  var cols=subj===EMVE_CT?[]:['t1','t2'];
+  if(subj===EMVE_CT)['t1','t2'].forEach(function(tt){EMVE_CT_F.forEach(function(f){cols.push(tt+'_'+f[0]);});});
+  var rows=[['sId','नाव'].concat(cols)];
+  getStds(cls).forEach(function(s){rows.push([s.id,s.name].concat(cols.map(function(c){return emveNote(cls,subj,s.id,c);})));});
   syncStatus('ing');
   sheetPost(emveNotesTab(cls,subj),rows,function(res){
     if(res&&res.success){syncStatus('ok');toast('नोंदी सेव्ह! ('+count+') ✅');}
@@ -1540,19 +1558,22 @@ function saveNotes(){
 /* phrase picker: bottom sheet listing the subject's ready phrases */
 var emveNtPickSid=0;
 /* bank per subject: g = विशेष प्रगती (good), s = सुधारणा आवश्यक (to improve) */
-function emveNtBank(){var subj=(document.getElementById('nt-subj')||{}).value||'';return EMVE_NOTE_BANK[EMVE_NOTE_SUBJ[subj]]||{g:[],s:[]};}
-function emveNtPick(sid){
-  var bank=emveNtBank();
-  var inp=document.querySelector('#nt-wrap input.nti[data-sid="'+sid+'"]');if(!inp)return;
-  emveNtPickSid=sid;emveNtPickClose();
+var emveNtPickF='';
+function emveNtBank(f){if(f)return {g:EMVE_NOTE_CT[f]||[],s:[]};var subj=(document.getElementById('nt-subj')||{}).value||'';return EMVE_NOTE_BANK[EMVE_NOTE_SUBJ[subj]]||{g:[],s:[]};}
+function emveNtInp(sid,f){return document.querySelector('#nt-wrap input.nti[data-sid="'+sid+'"]'+(f?'[data-f="'+f+'"]':':not([data-f])'));}
+function emveNtPick(sid,f){
+  f=f||'';var bank=emveNtBank(f);
+  var inp=emveNtInp(sid,f);if(!inp)return;
+  emveNtPickClose();emveNtPickSid=sid;emveNtPickF=f;
+  var fl='';EMVE_CT_F.forEach(function(x){if(x[0]===f)fl=x[1];});
   var cur=String(inp.value||'').trim();
   var tab=bank.s.indexOf(cur)>=0?'s':'g';
   var list=function(k){return '<div class="ntp-list" data-k="'+k+'"'+(k===tab?'':' style="display:none"')+'>'+bank[k].map(function(p,i){return '<button type="button" data-action="ntpickset" data-k="'+k+'" data-i="'+i+'"'+(cur.indexOf(p)>=0?' class="on"':'')+'>'+emveEsc(p)+'</button>';}).join('')+'</div>';};
   var d=document.createElement('div');d.className='ntp';d.id='nt-pick';d.setAttribute('data-action','ntpickbg');
-  d.innerHTML='<div class="ntp-box"><div class="ntp-h"><span>नोंद निवडा</span><button type="button" data-action="ntpickclose">✕</button></div>'+
-    '<div class="ntp-tabs"><button type="button" class="ntp-t g'+(tab==='g'?' on':'')+'" data-action="ntpicktab" data-k="g">👍 विशेष प्रगती</button><button type="button" class="ntp-t s'+(tab==='s'?' on':'')+'" data-action="ntpicktab" data-k="s">📈 सुधारणा आवश्यक</button></div>'+
+  d.innerHTML='<div class="ntp-box"><div class="ntp-h"><span>'+(fl||'नोंद निवडा')+'</span><button type="button" data-action="ntpickclose">✕</button></div>'+
+    (f?'':'<div class="ntp-tabs"><button type="button" class="ntp-t g'+(tab==='g'?' on':'')+'" data-action="ntpicktab" data-k="g">👍 विशेष प्रगती</button><button type="button" class="ntp-t s'+(tab==='s'?' on':'')+'" data-action="ntpicktab" data-k="s">📈 सुधारणा आवश्यक</button></div>')+
     '<input class="ntp-q" id="ntp-q" placeholder="शोधा… (उदा. वाचन)" autocomplete="off">'+
-    (cur?'<label class="ntp-add"><input type="checkbox" id="ntp-add"> आधीच्या नोंदीनंतर जोडा (एक प्रगती + एक सुधारणा)</label>':'')+
+    (cur?'<label class="ntp-add"><input type="checkbox" id="ntp-add"'+(f==='av'?' checked':'')+'> '+(f==='av'?'आधीच्या आवडींनंतर जोडा':f?'आधीच्या नोंदीनंतर जोडा':'आधीच्या नोंदीनंतर जोडा (एक प्रगती + एक सुधारणा)')+'</label>':'')+
     list('g')+list('s')+'</div>';
   document.body.appendChild(d);
 }
@@ -1562,12 +1583,12 @@ function emveNtPickTab(k){
 }
 function emveNtPickClose(){var d=document.getElementById('nt-pick');if(d)d.parentNode.removeChild(d);}
 function emveNtPickSet(k,i){
-  var p=(emveNtBank()[k]||[])[i];
-  var inp=document.querySelector('#nt-wrap input.nti[data-sid="'+emveNtPickSid+'"]');
+  var p=(emveNtBank(emveNtPickF)[k]||[])[i];
+  var inp=emveNtInp(emveNtPickSid,emveNtPickF);
   var add=document.getElementById('ntp-add');
   if(p&&inp){
-    var old=String(inp.value||'').trim().replace(/[.।]$/,'');
-    inp.value=(add&&add.checked&&old&&old.indexOf(p)<0)?old+'. '+p:p;
+    var old=String(inp.value||'').trim().replace(/[.।,]$/,'');
+    inp.value=(add&&add.checked&&old&&old.indexOf(p)<0)?old+(emveNtPickF==='av'?', ':'. ')+p:p;
     inp.style.borderColor='var(--g)';
   }
   emveNtPickClose();
@@ -1626,15 +1647,16 @@ setInterval(emveJumpCheck,1500);
 /* result book: notes of every subject, both terms (5-8 वी only) */
 function emveRBookNotes(cls,stds2){
   if(getCtype(cls)==='high')return '';
-  var subs=emveNoteSubjects(cls);if(!subs.length)return '';
-  var miss=subs.filter(function(sb){return emveNotesErr[cls+'|'+sb];});
+  var subs=emveNoteSubjects(cls);
+  var miss=subs.concat([EMVE_CT]).filter(function(sb){return emveNotesErr[cls+'|'+sb];});
   /* let the next opening of the result book try the failed subjects again */
   miss.forEach(function(sb){delete emveNotesErr[cls+'|'+sb];});
   var rows=stds2.map(function(s){
-    return subs.map(function(sb,i){
-      var a=emveNote(cls,sb,s.id,'t1'),b=emveNote(cls,sb,s.id,'t2');
+    var lines=subs.map(function(sb){return [emveSubjLabel(cls,sb),emveNote(cls,sb,s.id,'t1'),emveNote(cls,sb,s.id,'t2')];});
+    EMVE_CT_F.forEach(function(f){lines.push([f[1],emveNote(cls,EMVE_CT,s.id,'t1_'+f[0]),emveNote(cls,EMVE_CT,s.id,'t2_'+f[0])]);});
+    return lines.map(function(x,i){
       return '<tr'+(i===0?' style="border-top:2px solid #94a3b8;"':'')+'><td>'+(i===0?'<strong>'+s.roll+'</strong>':'')+'</td><td style="white-space:nowrap;font-weight:700;">'+(i===0?s.name:'')+'</td>'+
-        '<td style="white-space:nowrap;">'+emveSubjLabel(cls,sb)+'</td><td>'+(a?emveEsc(a):'-')+'</td><td>'+(b?emveEsc(b):'-')+'</td></tr>';
+        '<td style="white-space:nowrap;'+(i>=subs.length?'color:var(--b);font-weight:700;':'')+'">'+x[0]+'</td><td>'+(x[1]?emveEsc(x[1]):'-')+'</td><td>'+(x[2]?emveEsc(x[2]):'-')+'</td></tr>';
     }).join('');
   }).join('');
   return '<div style="margin-top:24px;font-weight:900;font-size:1.05rem;">वर्णनात्मक नोंदी</div>'+
@@ -1651,7 +1673,7 @@ function loadRBook(){
   var cls=(document.getElementById('rb-cls')||{}).value||'';var wrap=document.getElementById('rb-wrap');if(!wrap)return;
   if(!cls){wrap.innerHTML='';return;}
   if(!emveMarksReady(cls)){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ गुण आणत आहे…</div>';emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;loadRBook();});return;}
-  if(getCtype(cls)!=='high'){var ntPend=emveNoteSubjects(cls).filter(function(sb){return !emveNotesLoaded[cls+'|'+sb]&&!emveNotesErr[cls+'|'+sb];});if(ntPend.length){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ नोंदी आणत आहे…</div>';emveLoadNotes(cls,ntPend,function(){if(((document.getElementById('rb-cls')||{}).value||'')===cls)loadRBook();});return;}}
+  if(getCtype(cls)!=='high'){var ntPend=emveNoteSubjects(cls).concat([EMVE_CT]).filter(function(sb){return !emveNotesLoaded[cls+'|'+sb]&&!emveNotesErr[cls+'|'+sb];});if(ntPend.length){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ नोंदी आणत आहे…</div>';emveLoadNotes(cls,ntPend,function(){if(((document.getElementById('rb-cls')||{}).value||'')===cls)loadRBook();});return;}}
   var stds2=getStds(cls);if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
   var subjs=getSubjs(cls);var exams=getExams(cls);
   var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.7rem;padding:10px;">'+s+'</th>';}).join('');
@@ -2816,7 +2838,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
         else if(act==='mkretry'){var rc=(document.getElementById('m-cls')||{}).value||'',rs=(document.getElementById('m-subj')||{}).value||'';delete emveMarksErr[rc+'|'+rs];loadMkTable();}
         else if(act==='savenotes')saveNotes();
-        else if(act==='ntpick'){emveNtPick(parseInt(el.getAttribute('data-sid'),10)||0);break;}
+        else if(act==='ntpick'){emveNtPick(parseInt(el.getAttribute('data-sid'),10)||0,el.getAttribute('data-f')||'');break;}
         else if(act==='ntpickset'){emveNtPickSet(el.getAttribute('data-k')||'g',parseInt(el.getAttribute('data-i'),10));break;}
         else if(act==='ntpicktab'){emveNtPickTab(el.getAttribute('data-k')||'g');break;}
         else if(act==='ntpickclose'){emveNtPickClose();break;}
