@@ -248,6 +248,9 @@ table tbody tr:nth-child(even) { background-color: #f5f5f5; }
   .ntp-q{margin:0 16px 8px;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:10px;font-size:1rem;font-family:inherit;}
   .ntp-list{overflow:auto;padding:0 8px 12px;}
   .ntp-tabs{display:flex;gap:8px;padding:0 16px 10px;}
+  .ntp-lang{display:flex;align-items:center;gap:6px;padding:0 16px 8px;font-size:.85rem;font-weight:700;color:#475569;}
+  .ntp-l{flex:1;padding:7px 6px;border-radius:999px;border:1.5px solid var(--bdr);background:#fff;font-weight:800;font-size:.85rem;font-family:inherit;cursor:pointer;color:#475569;}
+  .ntp-l.on{background:#e0e7ff;border-color:#4f46e5;color:#3730a3;}
   .ntl{font-size:.78rem;font-weight:800;color:var(--b);margin:8px 0 3px;}
   .ntp-t{flex:1;padding:10px 6px;border-radius:10px;border:1.5px solid var(--bdr);background:#fff;font-weight:800;font-size:.9rem;font-family:inherit;cursor:pointer;color:#475569;}
   .ntp-t.g.on{background:#dcfce7;border-color:#16a34a;color:#166534;}
@@ -1448,6 +1451,10 @@ var EMVE_NOTE_SUBJ={'Marathi':'मराठी','Hindi':'हिंदी','Engli
   'Science 1':'विज्ञान','Science 2':'विज्ञान','Parisar 1':'विज्ञान',
   'History':'सामाजिक शास्त्रे','Geography':'सामाजिक शास्त्रे','Samaj A':'सामाजिक शास्त्रे','Parisar 2':'सामाजिक शास्त्रे',
   'Art':'कला','Arts':'कला','Karya':'कार्यानुभव','Sports':'शारीरिक शिक्षण'};
+/* Hindi/English teachers can also pick Marathi phrases; choice remembered per subject */
+var EMVE_NOTE_MR={"हिंदी": {"g": ["सामान्य सूचना नीट समजून घेणे चांगल्या प्रकारे जमते", "हिंदीचे स्पष्ट व योग्य उच्चार करणे चांगल्या प्रकारे जमते", "वर्णांचे योग्य उच्चार करणे चांगल्या प्रकारे जमते", "चित्रे पाहून हिंदी शब्द सांगणे चांगल्या प्रकारे जमते", "हिंदी कविता आवडीने व आनंदाने ऐकण्याची चांगली सवय आहे", "ऐकलेल्या गोष्टी समजून पुन्हा सांगणे चांगल्या प्रकारे जमते", "स्वर व व्यंजनांचे उच्चार लक्षपूर्वक करण्याची चांगली सवय आहे", "पाठातील आशय नीट समजून घेणे चांगल्या प्रकारे जमते", "हिंदी गीते व कविता पाठ करणे चांगल्या प्रकारे जमते", "मातृभाषा व हिंदी यांच्या ध्वनींतील फरक समजून घेणे चांगल्या प्रकारे जमते", "आपले विचार हिंदीत व्यक्त करणे चांगल्या प्रकारे जमते", "मित्रांशी हिंदीत संवाद साधण्याची चांगली सवय आहे", "हिंदी शब्द व वाक्यांचा मातृभाषेत अनुवाद करणे चांगल्या प्रकारे जमते", "योग्य आरोह-अवरोहासह समजपूर्वक प्रकटवाचन करणे चांगल्या प्रकारे जमते", "पाठ समजपूर्वक वाचणे चांगल्या प्रकारे जमते", "समजपूर्वक मूकवाचन करणे चांगल्या प्रकारे जमते", "हिंदी उपयोजित व्याकरण समजपूर्वक जाणणे चांगल्या प्रकारे जमते", "लेखनात व्याकरणाचा योग्य वापर करण्याची चांगली सवय आहे", "नाट्यीकरण व संवादात उत्साहाने भाग घेण्याची चांगली सवय आहे", "अवांतर हिंदी पुस्तके व लिखित साहित्य वाचण्याची चांगली सवय आहे", "हिंदी वर्तमानपत्र वाचण्याची चांगली सवय आहे", "सुस्पष्ट व शुद्ध हिंदी लेखन करणे चांगल्या प्रकारे जमते", "दिलेल्या विषयावर स्वतःहून हिंदीत लेखन करणे चांगल्या प्रकारे जमते", "परिचित विषयावर हिंदी निबंध लिहिणे चांगल्या प्रकारे जमते", "दैनंदिन जीवनात हिंदी भाषेचा वापर करण्याची चांगली सवय आहे", "हिंदी भाषेची आवड आहे", "हिंदीत गोष्ट सांगणे चांगल्या प्रकारे जमते", "शिक्षकांशी हिंदीत बोलण्याची चांगली सवय आहे", "हिंदी शुद्धलेखन समजपूर्वक करणे चांगल्या प्रकारे जमते"], "s": ["सामान्य सूचना समजून घेण्याकडे लक्ष द्यावे", "हिंदीच्या स्पष्ट व योग्य उच्चारांकडे लक्ष द्यावे", "वर्णांच्या योग्य उच्चारांचा सराव करावा", "चित्रे पाहून हिंदी शब्द सांगण्याचा सराव करावा", "हिंदी कविता आवडीने ऐकण्याचा प्रयत्न करावा", "ऐकलेल्या गोष्टी समजून पुन्हा सांगण्याचा सराव करावा", "स्वर व व्यंजनांच्या उच्चारांकडे लक्ष द्यावे", "पाठातील आशय समजून घेण्याकडे लक्ष द्यावे", "हिंदी गीते व कविता पाठ करण्याचा सराव करावा", "मातृभाषा व हिंदी यांच्या ध्वनींतील फरक समजून घेण्याकडे लक्ष द्यावे", "आपले विचार हिंदीत व्यक्त करण्याचा सराव करावा", "मित्रांशी हिंदीत संवाद साधण्याचा प्रयत्न करावा", "हिंदी शब्द व वाक्यांच्या अनुवादाचा सराव करावा", "आरोह-अवरोहासह प्रकटवाचन करण्याचा सराव करावा", "पाठ समजपूर्वक वाचण्याचा सराव करावा", "समजपूर्वक मूकवाचन करण्याचा सराव करावा", "हिंदी उपयोजित व्याकरणाच्या सरावाकडे लक्ष द्यावे", "लेखनात व्याकरणाच्या योग्य वापराकडे लक्ष द्यावे", "नाट्यीकरण व संवादात भाग घेण्याचा प्रयत्न करावा", "अवांतर हिंदी पुस्तके वाचण्याची सवय लावावी", "हिंदी वर्तमानपत्र वाचण्याची सवय लावावी", "सुस्पष्ट व शुद्ध हिंदी लेखनाकडे लक्ष द्यावे", "दिलेल्या विषयावर स्वतः लेखन करण्याचा सराव करावा", "परिचित विषयावर निबंध लेखनाचा सराव करावा", "दैनंदिन जीवनात हिंदी भाषेचा वापर वाढवावा", "हिंदी भाषेची आवड वाढवावी", "हिंदीत गोष्ट सांगण्याचा सराव करावा", "शिक्षकांशी हिंदीत बोलण्याचा प्रयत्न करावा", "हिंदी शुद्धलेखनाकडे विशेष लक्ष द्यावे", "हिंदीच्या तासाला हिंदीत बोलावे", "योग्य उच्चारांसाठी हिंदी बातम्या व कार्यक्रम ऐकावेत", "हिंदी बोलताना मराठी शब्द वापरू नयेत", "पाठांचे नियमित प्रकटवाचन करावे"]}, "English": {"g": ["इंग्रजीतील लेखी कृती आत्मविश्वासाने सोडविणे चांगल्या प्रकारे जमते", "इंग्रजी अक्षरे व शब्द अचूक उतरवून काढणे चांगल्या प्रकारे जमते", "पाठ्यपुस्तकातील इंग्रजी मजकुराचे प्रकटवाचन चांगल्या प्रकारे जमते", "ओळीवर नीटनेटके इंग्रजी लेखन करणे चांगल्या प्रकारे जमते", "एकाग्रतेने ऐकण्याची चांगली सवय आहे", "इंग्रजी कविता तालात वाचणे चांगल्या प्रकारे जमते", "इंग्रजी मजकूर वाचून त्यानुसार कृती करणे चांगल्या प्रकारे जमते", "इंग्रजी संवाद समजपूर्वक वाचणे चांगल्या प्रकारे जमते", "प्रश्नांची उत्तरे इंग्रजीत अचूक लिहिणे चांगल्या प्रकारे जमते", "भाषिक खेळांमध्ये भाग घेण्याची चांगली सवय आहे", "इंग्रजी मजकुराचे समजपूर्वक मूकवाचन करणे चांगल्या प्रकारे जमते", "इंग्रजी कविता व गाणी आनंदाने म्हणणे चांगल्या प्रकारे जमते", "विविध प्रसंगी इंग्रजीत योग्य प्रतिसाद देणे चांगल्या प्रकारे जमते", "नेहमीच्या वापरातील इंग्रजी शब्द ओळखणे चांगल्या प्रकारे जमते", "गोष्टीतील घटना योग्य क्रमाने लावणे चांगल्या प्रकारे जमते", "इंग्रजी कवितेचा ताल व अर्थ समजून घेणे चांगल्या प्रकारे जमते", "परिचित इंग्रजी शब्दांचे श्रुतलेखन अचूक करणे चांगल्या प्रकारे जमते", "इंग्रजी वर्तमानपत्र वाचण्याची चांगली सवय आहे", "वर्गातील सर्व उपक्रमांत सक्रिय सहभाग घेण्याची चांगली सवय आहे", "योग्य उच्चारांसह इंग्रजी प्रकटवाचन करणे चांगल्या प्रकारे जमते", "इंग्रजी संभाषणात भाग घेण्याची चांगली सवय आहे", "दिलेला इंग्रजी मजकूर चार रेषांत अचूक लिहिणे चांगल्या प्रकारे जमते", "इंग्रजी कविता हावभाव व तालासह म्हणणे चांगल्या प्रकारे जमते", "गृहपाठ वेळेवर पूर्ण करण्याची चांगली सवय आहे", "इंग्रजी परिपाठात सक्रिय सहभाग घेण्याची चांगली सवय आहे", "भूमिका-अभिनय व नाटिकांमध्ये नेहमी भाग घेण्याची चांगली सवय आहे", "सोपी इंग्रजी वाक्ये तयार करणे चांगल्या प्रकारे जमते", "इंग्रजीत स्वतःची ओळख करून देणे चांगल्या प्रकारे जमते", "दिलेल्या विषयावर इंग्रजीत आत्मविश्वासाने बोलणे चांगल्या प्रकारे जमते", "लक्षपूर्वक ऐकून सूचनांचे पालन करण्याची चांगली सवय आहे", "दैनंदिन संभाषणात सोपे इंग्रजी वापरण्याची चांगली सवय आहे", "सोप्या इंग्रजी गोष्टी वाचण्याची आवड आहे", "नवीन इंग्रजी शब्दांचे अर्थ शिकण्याची उत्सुकता आहे", "इंग्रजी शब्दसंग्रह चांगला आहे"], "s": ["इंग्रजीतील लेखी कृती आत्मविश्वासाने सोडविण्याचा सराव करावा", "इंग्रजी अक्षरे व शब्द अचूक उतरवून काढण्याचा सराव करावा", "पाठ्यपुस्तकातील इंग्रजी मजकुराच्या प्रकटवाचनाचा अधिक सराव करावा", "ओळीवर नीटनेटके इंग्रजी लेखन करण्याचा सराव करावा", "अधिक एकाग्रतेने ऐकण्याकडे लक्ष द्यावे", "इंग्रजी कविता तालात वाचण्याचा सराव करावा", "इंग्रजी मजकूर वाचून त्यानुसार कृती करण्याचा सराव करावा", "इंग्रजी संवाद समजपूर्वक वाचण्याचा सराव करावा", "प्रश्नांची उत्तरे इंग्रजीत लिहिण्याचा सराव करावा", "भाषिक खेळांमध्ये भाग घेण्याचा प्रयत्न करावा", "इंग्रजी मजकुराच्या समजपूर्वक मूकवाचनाचा सराव करावा", "इंग्रजी कविता व गाणी नियमित म्हणावीत", "विविध प्रसंगी इंग्रजीत प्रतिसाद देण्याचा सराव करावा", "नेहमीच्या वापरातील इंग्रजी शब्द ओळखण्याचा सराव करावा", "गोष्टीतील घटना क्रमाने लावण्याचा सराव करावा", "इंग्रजी कवितेचा ताल व अर्थ समजून घेण्याचा प्रयत्न करावा", "परिचित इंग्रजी शब्दांच्या श्रुतलेखनाचा सराव करावा", "रोज इंग्रजी वर्तमानपत्र वाचण्याची सवय लावावी", "वर्गातील उपक्रमांत सक्रिय सहभाग घ्यावा", "इंग्रजी प्रकटवाचन करताना उच्चारांकडे लक्ष द्यावे", "इंग्रजी संभाषणात अधिक भाग घ्यावा", "चार रेषांत इंग्रजी मजकूर लिहिण्याचा सराव करावा", "इंग्रजी कविता हावभाव व तालासह म्हणाव्यात", "गृहपाठ वेळेवर पूर्ण करावा", "इंग्रजी परिपाठात सहभाग घ्यावा", "भूमिका-अभिनय व नाटिकांमध्ये भाग घ्यावा", "सोपी इंग्रजी वाक्ये तयार करण्याचा सराव करावा", "इंग्रजीत स्वतःबद्दल बोलण्याचा सराव करावा", "दिलेल्या विषयावर इंग्रजीत बोलण्याचा सराव करावा", "लक्षपूर्वक ऐकून सूचनांचे पालन करावे", "दैनंदिन संभाषणात सोपे इंग्रजी वापरावे", "फावल्या वेळेत सोप्या इंग्रजी गोष्टी वाचाव्यात", "नवीन इंग्रजी शब्दांचे अर्थ नियमित शिकावेत", "इंग्रजी शब्दसंग्रह वाढवावा", "कठीण इंग्रजी शब्दांच्या उच्चारांचा सराव करावा", "इंग्रजी प्रकटवाचनाचा अधिक सराव करावा", "कठीण इंग्रजी शब्दांच्या स्पेलिंगचा सराव करावा", "चार रेषांत योग्य प्रकारे लिहिण्याचा सराव करावा"]}};
+var EMVE_NOTE_LANG={'हिंदी':'हिंदी','English':'English'};
+function emveNtLang(k){var v='';try{v=localStorage.getItem('emveNtLang_'+k)||'';}catch(e){}return v==='mr'?'mr':'own';}
 /* class teacher's 4 general notes per term (Excel: विद्यार्थी माहिती → वर्णनात्मक नोंदी) */
 var EMVE_CT='Vargshikshak';
 var EMVE_CT_F=[['vp','विशेष प्रगती'],['av','आवड/छंद'],['su','सुधारणा आवश्यक'],['vy','व्यक्तिमत्व गुणविशेष']];
@@ -1559,7 +1566,7 @@ function saveNotes(){
 var emveNtPickSid=0;
 /* bank per subject: g = विशेष प्रगती (good), s = सुधारणा आवश्यक (to improve) */
 var emveNtPickF='';
-function emveNtBank(f){if(f)return {g:EMVE_NOTE_CT[f]||[],s:[]};var subj=(document.getElementById('nt-subj')||{}).value||'';return EMVE_NOTE_BANK[EMVE_NOTE_SUBJ[subj]]||{g:[],s:[]};}
+function emveNtBank(f){if(f)return {g:EMVE_NOTE_CT[f]||[],s:[]};var subj=(document.getElementById('nt-subj')||{}).value||'';var key=EMVE_NOTE_SUBJ[subj];if(EMVE_NOTE_MR[key]&&emveNtLang(key)==='mr')return EMVE_NOTE_MR[key];return EMVE_NOTE_BANK[key]||{g:[],s:[]};}
 function emveNtInp(sid,f){return document.querySelector('#nt-wrap input.nti[data-sid="'+sid+'"]'+(f?'[data-f="'+f+'"]':':not([data-f])'));}
 function emveNtPick(sid,f){
   f=f||'';var bank=emveNtBank(f);
@@ -1568,9 +1575,11 @@ function emveNtPick(sid,f){
   var fl='';EMVE_CT_F.forEach(function(x){if(x[0]===f)fl=x[1];});
   var cur=String(inp.value||'').trim();
   var tab=bank.s.indexOf(cur)>=0?'s':'g';
+  var lk=f?'':EMVE_NOTE_SUBJ[(document.getElementById('nt-subj')||{}).value||''];var lg=EMVE_NOTE_MR[lk]?emveNtLang(lk):'';
   var list=function(k){return '<div class="ntp-list" data-k="'+k+'"'+(k===tab?'':' style="display:none"')+'>'+bank[k].map(function(p,i){return '<button type="button" data-action="ntpickset" data-k="'+k+'" data-i="'+i+'"'+(cur.indexOf(p)>=0?' class="on"':'')+'>'+emveEsc(p)+'</button>';}).join('')+'</div>';};
   var d=document.createElement('div');d.className='ntp';d.id='nt-pick';d.setAttribute('data-action','ntpickbg');
   d.innerHTML='<div class="ntp-box"><div class="ntp-h"><span>'+(fl||'नोंद निवडा')+'</span><button type="button" data-action="ntpickclose">✕</button></div>'+
+    (lg?'<div class="ntp-lang"><span>भाषा:</span><button type="button" class="ntp-l'+(lg==='own'?' on':'')+'" data-action="ntpicklang" data-l="own">'+EMVE_NOTE_LANG[lk]+'</button><button type="button" class="ntp-l'+(lg==='mr'?' on':'')+'" data-action="ntpicklang" data-l="mr">मराठी</button></div>':'')+
     (f?'':'<div class="ntp-tabs"><button type="button" class="ntp-t g'+(tab==='g'?' on':'')+'" data-action="ntpicktab" data-k="g">👍 विशेष प्रगती</button><button type="button" class="ntp-t s'+(tab==='s'?' on':'')+'" data-action="ntpicktab" data-k="s">📈 सुधारणा आवश्यक</button></div>')+
     '<input class="ntp-q" id="ntp-q" placeholder="शोधा… (उदा. वाचन)" autocomplete="off">'+
     (cur?'<label class="ntp-add"><input type="checkbox" id="ntp-add"'+(f==='av'?' checked':'')+'> '+(f==='av'?'आधीच्या आवडींनंतर जोडा':f?'आधीच्या नोंदीनंतर जोडा':'आधीच्या नोंदीनंतर जोडा (एक प्रगती + एक सुधारणा)')+'</label>':'')+
@@ -1580,6 +1589,12 @@ function emveNtPick(sid,f){
 function emveNtPickTab(k){
   var t=document.querySelectorAll('#nt-pick .ntp-t');for(var i=0;i<t.length;i++)t[i].className='ntp-t '+t[i].getAttribute('data-k')+(t[i].getAttribute('data-k')===k?' on':'');
   var l=document.querySelectorAll('#nt-pick .ntp-list');for(var j=0;j<l.length;j++)l[j].style.display=l[j].getAttribute('data-k')===k?'':'none';
+}
+function emveNtPickLang(l){
+  var k=EMVE_NOTE_SUBJ[(document.getElementById('nt-subj')||{}).value||''];if(!EMVE_NOTE_MR[k])return;
+  try{localStorage.setItem('emveNtLang_'+k,l==='mr'?'mr':'own');}catch(e){}
+  var on=document.querySelector('#nt-pick .ntp-t.on');var t=on?on.getAttribute('data-k'):'g';
+  emveNtPick(emveNtPickSid,emveNtPickF);emveNtPickTab(t);
 }
 function emveNtPickClose(){var d=document.getElementById('nt-pick');if(d)d.parentNode.removeChild(d);}
 function emveNtPickSet(k,i){
@@ -1594,9 +1609,9 @@ function emveNtPickSet(k,i){
   emveNtPickClose();
 }
 function emveNtPickFilter(){
-  var q=String((document.getElementById('ntp-q')||{}).value||'').trim();
+  var q=String((document.getElementById('ntp-q')||{}).value||'').trim().toLowerCase();
   var b=document.querySelectorAll('#nt-pick .ntp-list button');
-  for(var i=0;i<b.length;i++)b[i].style.display=(!q||b[i].textContent.indexOf(q)>=0)?'':'none';
+  for(var i=0;i<b.length;i++)b[i].style.display=(!q||b[i].textContent.toLowerCase().indexOf(q)>=0)?'':'none';
 }
 
 /* floating jump buttons: top / bottom / go to roll number (long lists on phones) */
@@ -2840,6 +2855,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='savenotes')saveNotes();
         else if(act==='ntpick'){emveNtPick(parseInt(el.getAttribute('data-sid'),10)||0,el.getAttribute('data-f')||'');break;}
         else if(act==='ntpickset'){emveNtPickSet(el.getAttribute('data-k')||'g',parseInt(el.getAttribute('data-i'),10));break;}
+        else if(act==='ntpicklang'){emveNtPickLang(el.getAttribute('data-l')||'own');break;}
         else if(act==='ntpicktab'){emveNtPickTab(el.getAttribute('data-k')||'g');break;}
         else if(act==='ntpickclose'){emveNtPickClose();break;}
         else if(act==='ntpickbg'){if(ev.target===el)emveNtPickClose();break;}
