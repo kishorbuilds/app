@@ -194,7 +194,10 @@ tr:hover td{background:#f1f5f9;}
 .fee-cb{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bdr);border-radius:10px;padding:8px 10px;font-weight:700;background:#fff;font-size:.88rem;}
 .fee-cb.all{background:#eef2ff;border-color:#c7d2fe;}
 .fee-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #f1f5f9;}
-.fee-item.closed{opacity:.6;}
+.fee-item.closed{opacity:.75;}
+.fee-state{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;font-weight:800;border-radius:12px;padding:8px 12px;margin-bottom:10px;font-size:.88rem;}
+.fee-state.off{background:#fff7ed;border-color:#fed7aa;color:#c2410c;}
+.fee-pause{color:#c2410c!important;border-color:#fdba74!important;}
 @media (max-width:480px){.fee-pay{padding:9px 10px;}.fee-mini{padding:7px 6px;}}
 .sp-g{border:1px solid var(--bdr);border-radius:14px;overflow:hidden;margin:10px 0;background:#fff;}
 .sp-h{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#fff7ed;border-bottom:1px solid #fed7aa;font-size:.92rem;}
@@ -1299,7 +1302,7 @@ function secFeeCol(){
 }
 function renderFeeCol(){
   var w=document.getElementById('fee-col');if(!w)return;
-  emveFeeData={};emveFeeHomeAt=0;
+  emveFeeData={};emveFeeHomeAt=0;emveFeeCheckAt=Date.now();
   emveFeeLoad(function(ok){
     if(!ok){w.innerHTML='<div class="alert aw"><div>⚠️ शुल्कांची यादी आणता आली नाही (Internet?).</div></div><button class="btn bp" data-action="feeretry">पुन्हा प्रयत्न करा</button>';return;}
     var list=emveFees.filter(function(f){return !f.closed&&f.classes.some(function(c){return emveFeeMine(f,c);});});
@@ -1354,8 +1357,16 @@ function renderFeeList(){
   w.innerHTML=head+'<div class="fee-rows">'+rows+'</div>';
 }
 function emveFeeCur(){var f=emveFeeFind((document.getElementById('fee-f')||{}).value),cls=(document.getElementById('fee-c')||{}).value||'';if(!f||!cls)return null;var d=emveFeeData[emveFeeTab(f.id,cls)];return d?{f:f,cls:cls,d:d,amt:emveFeeAmt(f,cls)}:null;}
+/* a teacher's open screen notices within a minute when the office pauses the fee */
+var emveFeeCheckAt=0;
+function emveFeeRecheck(id){
+  if(emveFeeIsAdm()||Date.now()-emveFeeCheckAt<60000)return;emveFeeCheckAt=Date.now();
+  emveFeeLoad(function(ok){var f=ok&&emveFeeFind(id);if(ok&&(!f||f.closed)&&document.getElementById('fee-col')){toast('ऑफिसने हे फी भरणे थांबवले आहे.','err');renderFeeCol();}});
+}
 function emveFeeAdd(sid,add,st){
   var c=emveFeeCur();if(!c)return;sid=parseInt(sid,10);
+  if(c.f.closed&&!emveFeeIsAdm()){toast('हे फी भरणे थांबवले आहे.','err');return;}
+  emveFeeRecheck(c.f.id);
   var p=c.d.pay[sid]||{paid:0,st:'',log:''};
   if(st!=null)p.st=st;
   if(add){p.paid=Math.round((p.paid+add)*100)/100;p.log=(p.log?p.log+' + ':'')+add+' ('+formatDateIndian(today()).slice(0,5)+')';}
@@ -1406,7 +1417,7 @@ function renderFeeSum(){
     if(!ok){w.innerHTML='<div class="alert aw"><div>⚠️ शुल्कांची यादी आणता आली नाही.</div></div><button class="btn bp" data-action="feeretry">पुन्हा प्रयत्न करा</button>';return;}
     if(!emveFees.length){w.innerHTML='<div class="alert ai"><div>ℹ️</div><div>अजून कोणतेही शुल्क तयार केलेले नाही. "नवीन शुल्क" मधून तयार करा.</div></div>';return;}
     var cur=(document.getElementById('fee-sf')||{}).value||emveFees[emveFees.length-1].id;
-    w.innerHTML='<div class="fg2"><div class="fg"><label>शुल्क</label><select id="fee-sf">'+emveFees.slice().reverse().map(function(f){return '<option value="'+emveAttr(f.id)+'"'+(f.id===cur?' selected':'')+'>'+emveEsc(f.name)+(f.closed?' (बंद)':'')+'</option>';}).join('')+'</select></div></div><div id="fee-sum-t"></div>';
+    w.innerHTML='<div class="fg2"><div class="fg"><label>शुल्क</label><select id="fee-sf">'+emveFees.slice().reverse().map(function(f){return '<option value="'+emveAttr(f.id)+'"'+(f.id===cur?' selected':'')+'>'+emveEsc(f.name)+(f.closed?' (थांबवले)':'')+'</option>';}).join('')+'</select></div></div><div id="fee-sum-t"></div>';
     renderFeeSumTable(true);
   });
 }
@@ -1434,7 +1445,8 @@ function renderFeeSumTable(reload){
   }).join('');
   var Texp=0,Tcoll=0;f.classes.forEach(function(c){var d=emveFeeData[emveFeeTab(f.id,c)];if(!d)return;var o=emveFeeStats(f,c,d),p=emveFeePct(f,c,o);Texp+=p.exp;Tcoll+=Math.min(o.coll,p.exp);});
   var Tp=Texp>0?Math.round(100*Tcoll/Texp):100;
-  w.innerHTML=emveBar(Tp,'संपूर्ण शाळा वसुली',emveRs(Tcoll)+' / '+emveRs(Texp))+'<div class="fee-sum">'+
+  w.innerHTML='<div class="fee-state'+(f.closed?' off':'')+'"><span>'+(f.closed?'⏸ फी भरणे थांबवले आहे — शिक्षकांना दिसत नाही':'● फी भरणे सुरू आहे')+'</span>'+emveFeePauseBtn(f)+'</div>'+
+    emveBar(Tp,'संपूर्ण शाळा वसुली',emveRs(Tcoll)+' / '+emveRs(Texp))+'<div class="fee-sum">'+
     '<div class="fee-k b"><b>'+emveRs(T.coll)+'</b><span>एकूण जमा</span></div>'+
     '<div class="fee-k g"><b>'+emveRs(T.rec)+'</b><span>ऑफिसला मिळाले</span></div>'+
     '<div class="fee-k o"><b>'+emveRs(T.coll-T.rec)+'</b><span>शिक्षकांकडे / पुष्टी बाकी</span></div>'+
@@ -1479,7 +1491,7 @@ function renderFeeNew(){
     w.innerHTML=emveFees.length?emveFees.slice().reverse().map(function(f){
       return '<div class="fee-item'+(f.closed?' closed':'')+'"><div><b>'+emveEsc(f.name)+'</b> · '+emveRs(f.amount)+(Object.keys(f.clsAmt).length?' (काही वर्गांना वेगळी)':'')+
         '<div class="fee-sub">'+f.classes.map(emveClsLabel).join(', ')+' · '+(f.collector?emveEsc(f.collector):'वर्गशिक्षक')+(f.due?' · शेवट '+formatDateIndian(f.due):'')+'</div></div>'+
-        '<button class="btn bo bsm" data-action="feeclose" data-id="'+emveAttr(f.id)+'">'+(f.closed?'पुन्हा सुरू करा':'बंद करा')+'</button></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
+        emveFeePauseBtn(f)+'</div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
   });
 }
 function emveFeeDiffInputs(){
@@ -1507,11 +1519,14 @@ function emveFeeCreate(){
     else{emveFees=emveFees.filter(function(f){return f.id!==id;});if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही. पुन्हा प्रयत्न करा.','err');}}
   });
 }
+function emveFeePauseBtn(f){return f.closed?'<button class="btn bs bsm" data-action="feeclose" data-id="'+emveAttr(f.id)+'">▶ पुन्हा सुरू करा</button>':'<button class="btn bo bsm fee-pause" data-action="feeclose" data-id="'+emveAttr(f.id)+'">⏸ थांबवा</button>';}
 function emveFeeClose(id){
   var f=emveFeeFind(id);if(!f)return;
-  if(!confirm(f.closed?'हे शुल्क पुन्हा सुरू करायचे?':'हे शुल्क बंद करायचे? (शिक्षकांच्या यादीतून जाईल, हिशेब राहील)'))return;
+  if(!confirm(f.closed?'"'+f.name+'" फी भरणे पुन्हा सुरू करायचे? शिक्षकांना ते पुन्हा दिसेल.':'"'+f.name+'" फी भरणे थांबवायचे?\nशिक्षकांना ते दिसणार नाही. आतापर्यंतचा हिशेब सुरक्षित राहील.'))return;
   f.closed=!f.closed;
-  sheetPost('Fees',emveFeeRows(),function(res){if(res&&res.success){toast('झाले ✅');renderFeeNew();}else{f.closed=!f.closed;if(!(res&&(res.auth||res.stale)))toast('जतन झाले नाही.','err');}});
+  sheetPost('Fees',emveFeeRows(),function(res){
+    if(res&&res.success){toast(f.closed?'फी भरणे थांबवले ⏸':'फी भरणे पुन्हा सुरू ▶');emveFeeHomeAt=0;if(document.getElementById('fee-all'))renderFeeNew();if(document.getElementById('fee-sum-t'))renderFeeSumTable(false);}
+    else{f.closed=!f.closed;if(!(res&&(res.auth||res.stale)))toast('जतन झाले नाही.','err');}});
 }
 
 // ---- NOTICEBOARD SECTIONS ----
