@@ -249,8 +249,8 @@ table tbody tr:nth-child(even) { background-color: #f5f5f5; }
   .ntp-list{overflow:auto;padding:0 8px 12px;}
   .ntp-list button{display:block;width:100%;text-align:left;padding:12px;border:0;border-bottom:1px solid #eef2f7;background:#fff;font-size:.98rem;font-family:inherit;color:#0f172a;cursor:pointer;}
   .ntp-list button.on{background:#fef9c3;font-weight:800;}
-  .ejump{position:fixed;right:6px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:800;display:none;flex-direction:column;gap:8px;}
-  .ejump.on{display:flex;}
+  .ejump{position:fixed;right:6px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:800;display:flex;flex-direction:column;gap:8px;opacity:0;pointer-events:none;transform:translateX(12px);transition:opacity .25s,transform .25s;}
+  .ejump.on{opacity:1;pointer-events:auto;transform:none;}
   .ejump button{width:46px;height:46px;border-radius:50%;border:0;background:var(--b);color:#fff;font-size:.8rem;font-weight:900;font-family:inherit;box-shadow:0 4px 14px rgba(15,23,42,.25);cursor:pointer;}
   .ejump-in{position:fixed;right:66px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:801;background:#fff;border-radius:12px;padding:10px;box-shadow:0 6px 20px rgba(15,23,42,.25);display:flex;gap:6px;}
   .ejump-in input{width:80px;padding:8px;font-size:1.1rem;border:1.5px solid var(--bdr);border-radius:8px;text-align:center;}
@@ -1562,6 +1562,8 @@ function emveNtPickFilter(){
 
 /* floating jump buttons: top / bottom / go to roll number (long lists on phones) */
 function emveJumpBox(){var m=document.querySelector('#mk-wrap .mkw');return (m&&m.scrollHeight>m.clientHeight+5)?m:null;}
+var emveJumpAt=0,emveJumpT=null;
+function emveJumpScroll(){emveJumpAt=Date.now();emveJumpCheck();clearTimeout(emveJumpT);emveJumpT=setTimeout(emveJumpCheck,2600);}
 function emveJumpCheck(){
   var j=document.getElementById('ejump');
   if(!j){j=document.createElement('div');j.id='ejump';j.className='ejump no-print';
@@ -1570,7 +1572,9 @@ function emveJumpCheck(){
   var sec=document.getElementById('mod-secs');
   var rows=sec?sec.querySelectorAll('table tbody tr').length:0;
   var long=document.documentElement.scrollHeight>window.innerHeight*1.6||!!emveJumpBox();
-  var on=!!(sec&&sec.offsetParent!==null&&rows>12&&long);
+  /* shown only while the list is being scrolled (or the roll-number box is open), then fades away */
+  var busy=(Date.now()-emveJumpAt<2500)||!!document.getElementById('ejump-in');
+  var on=!!(sec&&sec.offsetParent!==null&&rows>12&&long&&busy);
   j.className='ejump no-print'+(on?' on':'');
   if(!on)emveJumpInClose();
 }
@@ -1586,7 +1590,7 @@ function emveJumpIn(){
   document.body.appendChild(d);
   var n=document.getElementById('ejump-n');if(n)n.focus();
 }
-function emveJumpInClose(){var d=document.getElementById('ejump-in');if(d)d.parentNode.removeChild(d);}
+function emveJumpInClose(){var d=document.getElementById('ejump-in');if(d){d.parentNode.removeChild(d);emveJumpScroll();}}
 function emveJumpGo(){
   var n=String((document.getElementById('ejump-n')||{}).value||'').trim();if(!n)return;
   var trs=document.querySelectorAll('#mod-secs table tbody tr'),hit=null;
@@ -1597,7 +1601,7 @@ function emveJumpGo(){
   hit.className+=' ejump-hit';setTimeout(function(){hit.className=hit.className.replace(/\s*ejump-hit/g,'');},1800);
   var f=hit.querySelector('input');if(f)setTimeout(function(){f.focus();},300);
 }
-window.addEventListener('scroll',emveJumpCheck);
+document.addEventListener('scroll',emveJumpScroll,true);
 window.addEventListener('resize',emveJumpCheck);
 setInterval(emveJumpCheck,1500);
 
