@@ -195,6 +195,7 @@ tr:hover td{background:#f1f5f9;}
 .fee-cb.all{background:#eef2ff;border-color:#c7d2fe;}
 .fee-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #f1f5f9;}
 .fee-item.closed{opacity:.75;}
+.fee-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
 .fee-state{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;font-weight:800;border-radius:12px;padding:8px 12px;margin-bottom:10px;font-size:.88rem;}
 .fee-state.off{background:#fff7ed;border-color:#fed7aa;color:#c2410c;}
 .fee-pause{color:#c2410c!important;border-color:#fdba74!important;}
@@ -1491,7 +1492,7 @@ function renderFeeNew(){
     w.innerHTML=emveFees.length?emveFees.slice().reverse().map(function(f){
       return '<div class="fee-item'+(f.closed?' closed':'')+'"><div><b>'+emveEsc(f.name)+'</b> · '+emveRs(f.amount)+(Object.keys(f.clsAmt).length?' (काही वर्गांना वेगळी)':'')+
         '<div class="fee-sub">'+f.classes.map(emveClsLabel).join(', ')+' · '+(f.collector?emveEsc(f.collector):'वर्गशिक्षक')+(f.due?' · शेवट '+formatDateIndian(f.due):'')+'</div></div>'+
-        emveFeePauseBtn(f)+'</div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
+        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'</span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
   });
 }
 function emveFeeDiffInputs(){
@@ -1517,6 +1518,21 @@ function emveFeeCreate(){
   sheetPost('Fees',emveFeeRows(),function(res){
     if(res&&res.success){syncStatus('ok');toast('शुल्क तयार झाले ✅ शिक्षकांना "फी गोळा करा" मध्ये दिसेल.');renderSec('fnew');}
     else{emveFees=emveFees.filter(function(f){return f.id!==id;});if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही. पुन्हा प्रयत्न करा.','err');}}
+  });
+}
+/* extend the last date: inline date picker in the fee list */
+function emveFeeDueEdit(id){
+  var f=emveFeeFind(id),w=document.getElementById('fdw-'+id);if(!f||!w)return;
+  w.innerHTML='<input type="date" id="fd-'+emveAttr(id)+'" value="'+emveAttr(f.due||today())+'" style="padding:7px;border-radius:9px;border:1px solid var(--bdr);font-family:inherit;"><button class="btn bs bsm" data-action="feeduesave" data-id="'+emveAttr(id)+'">जतन</button><button class="btn bo bsm" data-action="feeduecancel">✕</button>';
+}
+function emveFeeDueSave(id){
+  var f=emveFeeFind(id),v=(document.getElementById('fd-'+id)||{}).value||'';if(!f)return;
+  if(!v){toast('तारीख निवडा.','err');return;}
+  var old=f.due;f.due=v;
+  sheetPost('Fees',emveFeeRows(),function(res){
+    if(res&&res.success){toast('नवीन शेवटची तारीख: '+formatDateIndian(v)+' ✅');}
+    else{f.due=old;if(!(res&&(res.auth||res.stale)))toast('जतन झाले नाही.','err');}
+    renderFeeNew();
   });
 }
 function emveFeePauseBtn(f){return f.closed?'<button class="btn bs bsm" data-action="feeclose" data-id="'+emveAttr(f.id)+'">▶ पुन्हा सुरू करा</button>':'<button class="btn bo bsm fee-pause" data-action="feeclose" data-id="'+emveAttr(f.id)+'">⏸ थांबवा</button>';}
@@ -3506,6 +3522,9 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='feesumprint'){emveFeeSumPrint();break;}
         else if(act==='feesumreload'){renderFeeSumTable(true);break;}
         else if(act==='feecreate'){emveFeeCreate();break;}
+        else if(act==='feedue'){emveFeeDueEdit(el.getAttribute('data-id'));break;}
+        else if(act==='feeduesave'){emveFeeDueSave(el.getAttribute('data-id'));break;}
+        else if(act==='feeduecancel'){renderFeeNew();break;}
         else if(act==='feeclose'){emveFeeClose(el.getAttribute('data-id'));break;}
         else if(act==='feeretry'){emveFeeData={};renderSec(curTab);break;}
         else if(act==='subshare'){emveShareSubs(el.getAttribute('data-d')||today());break;}
