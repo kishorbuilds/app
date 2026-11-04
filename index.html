@@ -862,6 +862,7 @@ function buildTabs(){
     {id:'ttadm',i:'&#x2699;&#xFE0F;',l:'\u0938\u0902\u092A\u093E\u0926\u0928',h:!(curRole==='super'||curRole==='mukh')},
   ]:[
     {id:'rm',i:'&#x270F;&#xFE0F;',l:'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940',h:(curRole==='clerk')},
+    {id:'rnote',i:'&#x1F4DC;',l:'वर्णनात्मक नोंदी',h:(curRole==='clerk')},
     {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:(!isA && curRole!=='clerk')},
     {id:'rgos',i:'&#x1F4CB;',l:'\u0917\u094B\u0937\u0935\u093E\u0930\u093E',h:(!isA && curRole!=='clerk')},
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
@@ -894,6 +895,7 @@ function renderSec(id){
     if(id==='ld')html=secLD();else if(id==='li')html=secLI();else if(id==='lr')html=secLR();
     else if(id==='lc')html=secLC();else if(id==='lrp')html=secLRP();
     else if(id==='rm')html=secRM();
+    else if(id==='rnote')html=secRNote();
     else if(id==='rprog')html=secRProg();else if(id==='rgos')html=secRGos();
     else if(id==='rbook')html=secRBook();else if(id==='rcard')html=secRCard();else if(id==='rnik')html=secRNikal();
     else if(id==='astd')html=secRStd();else if(id==='atch')html=secRTch();
@@ -1410,6 +1412,124 @@ function loadGosawara(){
   wrap.innerHTML=stats+table+'<button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="gos-wrap" data-title="\u0917\u094B\u0937\u0935\u093E\u0930\u093E" data-filters="gos-cls" data-sign="1">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
 }
 
+var EMVE_NOTE_BANK={"मराठी":["आपले विचार, अनुभव, भावना स्पष्ट शब्दात व्यक्त करणे","ऐकलेल्या मजकुरातील आशय स्वत:च्या शब्दात सांगणे","बोलताना शब्दाचा स्पष्ट उच्चार करणे","कोणतीही गोष्ट लक्षपूर्वक ऐकणे","प्रभावीपणे प्रकटवाचन करणे","मजकुराचे वाचन समजपूर्वक करणे","आत्मविश्वासपूर्वक बोलणे","दिलेल्या विषयावर मुद्देसूद बोलणे","लक्षपूर्वक, एकाग्रणेने व समजपुर्वक मुकवाचन करणे","योग्य गतीने व आरोह अवरोहाने वाचन करणे","विविध विषयावरील चर्चेत भाग घेणे","स्वत:हून प्रश्न विचारणे","कविता तालासुरात साभिनय म्हणणे","नाट्यभिनय प्रसंगानुरूप व व्यक्तिनुरूप करणे","नाट्यातील संवाद साभिनय व व्यक्तिनुरूप करणे","दैनंदिन व्यवहारात प्रमाणभाषेचा वापर करणे","विविध बोलीभाषेतील नवीन शब्द समजून घेणे","बोलीभाषा व प्रमाणभाषा यातील फरक जाणणे","व्याकरणानुसार भाषेचा वापर करणे","भाषण, संभाषण, संवाद, चर्चा एकाग्रणेने ऐकणे","बोधकथा, वर्तमानपत्रे, मासिके इ वाचणे व इतरांना माहिती सांगणे","ऐकलेल्या, वाचलेल्या गोष्टीबाबत निष्कर्ष काढणे","मजकूर वाचून प्रश्नाची योग्य उत्तरे देणे","निंबध लेखनात आपल्या भाषेत विचार मांडणे","शब्द, वाक्यप्रचार म्हणी, बोधवाक्ये इ चा लेखनात वापर करणे","अवांतर वाचन करणे","गोष्टी, कविता, लेख वर्णन इ स्वरूपाने लेखन करणे","मुद्देसूद लेखन करणे","शुद्धलेखन अचूक करणे","अचूक अनुलेखन करणे","स्वाध्याय अचूक सोडविणे","स्वयंअध्ययन करणे","अडचणी समस्या शिक्षकाकडे मांडणे","संग्रहवृत्ती जोपासणे","नियम, सुचना, शिस्त यांचे पालन करणे","भाषेतील सौंदर्य लक्षात घेणे","लेखनाचे नियम पाळणे","लेखनात विरामचिन्हाचा योग्य वापर करणे","वाक्यप्रचार व म्हणीचा अर्थ सांगून वाक्यात उपयोग करणे","दिलेल्या वेळेत प्रकटवाचन, मुकवाचन करणे","पाठातील शंका विचारणे","हस्ताक्षर सुंदर व वळणदार आहे","गृहपाठ व स्वाध्याय वेळेवर करणे","वाचनाची आवड आहे","कविता चालीमध्ये म्हणणे","अवांतर वाचन, पाठांतर करणे","सुविचाराचा संग्रह करणे","प्रश्नांची अचूक उत्तरे देणे","दिलेल्या विषयावर निबंध लिहिणे","बोधकथा सांगणे","वाक्यप्रचार व म्हणीचा व्यवहारात उपयोग करणे","अडथळ्याच्या नोंदी","अडखळत वाचन करणे/करणे","दिलेला स्वाध्याय वेळेवर पूर्ण करीत नाही","नियमित वाचन सराव करावा","अवांतर वाचन करावे","कविता गायन मुक्त स्वरात करावे","कविता पाठांतर करावे","शुद्धलेखनाचा अधिक सराव करावा","ऱ्हस्व-दीर्घ लेखन अचूक करावे","वर्गातील चर्चा, उपक्रमांमध्ये सक्रीय सहभाग हवा","जोडाक्षरांचे वाचन योग्य व अचूक करावे","जोडाक्षर लेखनाचा अधिक सराव करावा"],"हिंदी":["सामान्य सूचनाओ को समझता है","स्पष्ट तथा उचित उच्चारण करता है","वर्णोका योग्य उच्चारण करता है","चिंत्रो को देखकर शब्द कहता है","रुचि एवं आनंदपूर्वक कविता सुनता है","सुनी हुई बाणे समझ लेता है और दोहरता है","स्वर तथा व्यंजन के उच्चारण ध्यानपूर्वक करता है","पाठयांश का आशय समझता है","गीत और कविताए कंठस्थ करता है","मातृभाषा और हिंदी के ध्वनीयों का भेद समझता है","अपने विचार हिंदी मे व्यक्त करता है","मित्रो के साथ हिंदी मे वार्तालाप करता है","हिंदी शब्द तथा वाक्यो का मातृभाषा में अनुवाद करता है","मुकवाचन चढाव -उतार और समझतापूर्वक करता है","पाठयांश को समझतापूर्वक पढता है","मौनवाचन समझतापूर्वक करता है","हिंदी कार्यात्मक व्याकरण को समझपूर्वक जान लेता है","लेखन में व्याकरण को समझपूर्वक जान लेता है","नाटयीकरण, वार्तालाप में भाग लेता है","पाठ्येत्तर पुस्तक एवं लिखित सामग्री पढता है","हिंदी समाचारपत्र पढता है","सुसष्ट और शुद्ध लेखन करता है","दिए गए विषयपर स्वयंप्रेरणासे लेखन करता है","परिचित विषयपर निबंध लेखन करता है","दैनंदिन जीवन में हिंदी भाषा का प्रयोग करता है","हिंदी को राष्ट्रभाषा के रूप मे देखता है","हिंदी भाषा के प्रति रुचि रखता है","हिंदी में कहानी सुनाता है","अध्यापको के साथ हिंदी मे बातचीत करता है","शुद्धलेखन समझतापूर्वक करता है","अडथळ्याच्या नोंदी","हिंदी तासिका के दौरान हिंदी मी बातचीत करनी चाहिये","सही हिंदी उच्चारण के लिये हिंदी समाचार एवं कार्यक्रम सुने","हिंदी बोलणे समय मराठी शब्दो का उपयोग ना करे","नियमित रूप से पाठो का प्रकट वाचन करे"],"English":["Solves the written Activity with confience","Copy the Letters and words correctly","Read aloud from textbook","Write correctly on one line","Listen with concentration","Read the poem in rhythm","Read and act accordingly","Read the part in dialougs with understanding","Write the answer of questions","Take part in language game","Read silently by understanding","Recite with enjoys poems and songs","Give responses in various contexts","identify commonly used words","Rearrange the story events","Enjoy the rhythm and understand","Take the dictation of familiar words","Read english daily newspaper","Takes active participation in all classroom activities","Reads aloud with proper pronunciation","participates in conversations","Copy the given text in four lines correctly","sings the poems with action and proper rhythem","Complete the given homework in time","Actively participates in English PARIPATH in school","Always participates in role plays and dramas","Constructs simple sentences in English","Talks about himself in English","Talks about the given subject in English confidently","Listens carefully and follows the instructions","Uses simple and familier engish in day to day conversations","Likes to read simpe English stories in spare time","always willing to know meanings of new words","Vocabulary is good","अडथळ्याच्या नोंदी","Cannot pronounce complex words correctly","Needs more loud reading practice","Cannot spell complex words correctly","Cannot write properly in four lines","Vocabulary is not sufficient for his grade level, needs improvement"],"गणित":["संख्या वाचन करणे","लहान मोठ्या संख्या ओळखणे","संख्याचा क्रम ओळखणे","संख्या चढत्या उतरत्या क्रमाने लिहिणे","बेरीज, वजाबाकी, गुणकार, भागाकार क्रिया समजून घेणे","पाढे पाठांतर करणे","गुणाकाराने पाढे तयार करणे","संख्या अक्षरी लिहिणे","अक्षरी संख्या अंकात मांडणे","संख्याचे प्रकार सांगणे व वाचन करणे","संख्यावरील मूलभूत क्रिया बरोबर करणे","णेंडी उदाहरणाचे अचूक उत्तर देणे","संख्यारेषेवरील अंकाची किंमत सांगणे","विविध भौमितिक संबोध समजून घेणे","विविध भौमितिक रचना प्रमाणबद्ध काढणे","भौमितिक आकृत्याचे गुणधर्म सांगणे","गणितीय चिन्हे ओळखणे","चिन्हाचा उदाहरणात योग्य वापर करून उदाहरण सोडविणे","गणितातील सूत्रे समजून घेणे","सूत्रात किंमती भरून उदाहरण सोडविणे","भौमितिक आकृत्याची परिमिती काढणे","भौमितिक आकृत्याचे क्षेत्रफळ अचूक काढणे","विविध परिमाणे समजून घेणे","परिमाणाचे उदाहरण सोडविताना योग्य परिमाणात रूपांतर करणे","विविध राशिची एकके सांगणे","विविध आकाराचे पृष्ठफळ व घनफळ सांगणे","उदाहरणे गतीने सोडविणे","सांख्यकीय माहितीचे अर्थविवेचन करणे","आलेखाचे वाचन करणे","आलेखावरील माहिती समजून घेऊन अचूक उत्तरे देणे","दिलेल्या माहितीवरून आलेख काढणे","विविध संज्ञाचे अर्थ व माहिती अचूक सांगणे","संख्यातील अंकाची स्थानिक किमत अचूक सांगणे","संख्या विस्तारीत रूपात लिहिणे","समीकरणावर आधारीत सोपी शाब्दिक उदाहरणे सोडविणे","अक्षरी उदाहरणे समजून घेऊन समीकरण मांडणे","क्रमबद्ध मांडणी करून उदाहरण सोडविणे","थोर गणिततज्ञाविषयी माहिती मिळविणे","उदाहरण सोडविण्यासाठी विविध क्लृप्त्याचा वापर करणे","दैनंदिन जीवनात व व्यवहारात गणिताचा वापर करणे","गणितीय कोडी सोडविणे","सारणी व तक्ता तयार करणे","दिलेल्या माहितीवरून अचूक भौमितिक आकृती काढणे","आत्मविश्वासपूर्वक बैजिक समीकरणे सोडवणे","गणिती संबोधांचा व्यवहारात उपयोग करणे","अडथळ्याच्या नोंदी","बेरीज/वजाबाकी करताना कधी कधी हाताचा घेत नाही","भौमितिक आकृत्या काढताना अचूक मापे घेत नाही","पाढे पाठांतर करावे","मुलभूत गणिती क्रिया अधिक अचूक होण्यासाठी सराव अआवाश्यक","ऋण संख्या असलेल्या गणिती क्रिया करताना चुका करणे","संख्या वाचन व लेखन करताना चुका करणे","गणितामध्ये रुची दाखवत नाही"],"विज्ञान":["विज्ञान व तंत्रज्ञानाचे महत्व जाणणे","विज्ञानाचा आपणास होणारा फायदा सांगणे","आधुनिक शोधाची माहिती घेणे","आधुनिक तंत्रज्ञान व उपकरणे यांचे फायदे स्पष्ट करणे","वनस्पती, प्राणी व मानव यांचे परस्परावलंबन सांगणे","विविध पदार्थाचे गुणधर्म सांगणे","वैज्ञानिक राशीची एकके सांगणे","विविध प्रकारच्या बलाची माहिती सांगणे","चुंबकीय व अचुंबकीय पदार्थ ओळखणे","धातू व अधातू सांगणे","नैसर्गिक घटनामधील कार्यकारणभाव लक्षात घेणे","भौतिक राशीचा दैनंदिन जीवनात वापर करणे","मानवी जीवनात विज्ञानाची भूमिका स्पष्ट करणे","जैविक - अजैविक घटकाचे वर्गीकरण करणे","सजीव व निर्जीव वर्गीकरण करणे","मिश्रणातील पदार्थ वेगळे करण्याचे प्रयोग करणे","प्रथमोपचाराची माहिती सांगणे","परिसरात घडणार्‍या घटनांची माहिती घेणे","अवकाशीय घटना समजून घेणे","वैज्ञानिक शोध व तंत्रज्ञानामुळे झालेली प्रगती सांगणे","वैज्ञानिक सोप्या प्रतिकृती तयार करणे","प्रयोगाच्या साहित्याची मांडणी करणे","प्रयोगाचे साहित्य काळजीपूर्वक हाताळणे","प्रयोगाची अचूक आकृत्या काढणे","धोकादायक वस्तु हाताळताना विशेष कळाजी घेणे","पदार्थ्याच्या संज्ञा सांगणे","बदलाचे प्रकार सांगणे","बदलाचे वेगवेगळ्या प्रकारात वर्गीकरण करणे","पारीभाषिक शब्दाचे अर्थ समजून घेणे","नैसर्गिक साधनसंपत्तीचे महत्त्व सांगणे","समणेल आहाराचे महत्व सांगणे","रोगाची माहिती घेणे व लक्षणे सांगणे","रोगावरील उपायाची माहिती करून घेणे","प्रदूषणाचे प्रकार सांगणे","प्रदूषणाचे दुष्परिणाम सांगणे","प्रदूषण टाळण्याचे उपाय सांगणे","वृक्ष संवर्धंनासाठी कार्यशील राहणे","पाण्याचे महत्व जाणणे","पिके, हवामान, जमीन इ विषयी माहिती संकलित करणे","नैसर्गिक आपत्तीची माहिती करून घेणे","वैज्ञानिक दृष्टीकोन जोपासणे","पाणी संवर्धंनासाठी उपाय समजून घेणे","अंधश्रद्धा व गैरसमजुतीबाबत जनजागृती करणे","विज्ञानातील गंमतीजमती सांगणे","टाकाऊ पासून टिकाऊ वस्तु तयार करणे","वैज्ञानिक व संशोधक यांची पुस्तके वाचणे"],"सामाजिक शास्त्रे":["ऐतिहासिक स्थळाची माहिती सांगणे","संविधान व प्रतिज्ञा म्हणणे","समाजसुधारकाची माहिती सांगणे","संविधानाचे महत्व सांगणे","थोर नेत्याची माहिती सांगणे","ऐतिहासिक घटनांची इसवी सन सांगणे","नागरिकाचे मूलभूत अधिकार सांगणे","ऐतिहासिक चित्रपट/मालिका आवडीने पाहणे","रस्त्याने चालताना रहदारीच्या नियमांचे पालन करणे","ऐतिहासिक घटना/ पुरुषांची माहिती लक्षपूर्वक ऐकणे","ऐतिहासिक वास्तू/किल्ले यांची चित्रे जमवणे","चित्र/फोटो पाहून ऐतिहासिक वास्तू/पुरुष ओळखणे","चित्रातील ऐतिहासिक वास्तू/पुरुषाबद्दल माहिती माहिती सांगणे","ऐतिहासिक घटनांचा योग्य क्रम लावणे","आपल्या परिसरातील ऐतिहासिक ठिकाणांची माहिती सांगणे","इतिहासाचे विविध कालखंड सांगणे","ऐतिहासिक घटनांची माहिती स्वतःच्या शब्दात सांगणे","विविध ऐतिहासिक वास्तूची योग्य ठिकाण/शहर सांगणे","ऐतिहासिक कलाकृती रुचीपूर्वक पाहणे","ऐतिहासिक कथा सांगणे","ग्रामपंचायातीची रचना सांगणे","गावातील विविध सामाजिक संस्थांची माहिती सांगणे","भूगोल","प्रादेशिक लोकजीवनाची माहिती घेणे","नकाशे काढणे व भरणे","नकाशा वाचन करणे","नकाशातील स्थाने व ठिकाणे दर्शविणे","नैसर्गिक आपत्तीची माहिती घेणे","पृथ्वी गोलाचा अभ्यास करणे","लोकसंख्येचे दुष्परिणाम सांगणे","लोकसंख्या जनजागृती करणे","क्षेत्रभेटीत सहभागी होणे","सहलीतील निरीक्षणाची नोंद करणे","वृक्षारोपण व संवर्धन करणे","राष्ट्रीय संपत्तीची जोपासना करणे","नैसर्गिक साधनसंपत्तीचा काटकसरीने वापर करणे","पर्यावरण संवर्धंनासाठी क्रियाशील भाग घेणे","पर्यावरण दुष्परिणामाची कारणे समजून घेणे","ऐतिहासिक व भौगोलिक स्थळाची माहिती घेणे"],"कला":["कलेचे विविध प्रकार समजून घेणे","मनातील भाव व कल्पना चित्रात रेखाटणे","चित्रात रंग भरताना रंगसंगती राखणे","चित्रे सुंदर काढणे","प्रमाणबद्ध रेखाटन करणे","मुक्तहस्त कलाकृतीची रचना करणे","रंगाच्या छटातील फरक ओळखणे","चित्राच्या प्रदर्शनात सहभाग घेणे","चित्राच्या स्पर्धेत सहभाग घेणे","कलात्मक दृष्टीकोन ठेवणे","विविध कलाप्रकारातील कौशल्य प्राप्त करणे","कलेविषयी मनापासून प्रेम बाळगणे","वर्ग सजावट करणे","मातीपासून विविध आकार बनविणे","स्व निर्मितीतून आनंद मिळविणे","नृत्त्या मध्ये आवडीने सहभाग घेणे","सप्तस्वरांची सरगम म्हणणे","वाद्यांचे प्रकार व त्यांची नावे सांगणे/ओळखणे","समूहगीणे/प्रार्थना सूर/लयीत गायन करणे","चित्रे/विडीओ पाहून नृत्य प्रकार ओळखणे","उत्तम प्रकारे नृत्य करणे","शालेय स्नेहसंमेलनात सहभाग घेणे","लोकनृत्य/लोकगीणे आवडीने पाहणे","लोकनृत्य लोकगीणे सादर करणे","नृत्यातील विविध मुद्रा सादर करणे","नाट्यीकरणात आवडीने सहभाग घेणे","कविता/गीणे गाताना गायनाचा आनंद घेणे","विविध उत्सवांसाठी मातीच्या सुंदर मूर्ती स्वतः बनवणे","खडू/साबण कोरून त्रिमितीय आकार बनवणे","चित्र प्रदर्शन आवडीने पाहणे","कागदापासून विविध कलाकृती बनवणे","ठशांपासून चित्रकृती बनवणे","नृत्य नाट्य यान सहभाग घेताना संकोच बाळगणे.","मुक्त स्वराने गायन करावे"],"कार्यानुभव":["कार्यशिक्षणाचे महत्व समजून घेणे","कृती, उपक्रम आवडीने करणे","उपक्रमात व कृतीत नाविन्य निर्माण करणे","तयार केलेल्या वस्तूचे प्रदर्शन मांडणे","परिसर स्वच्छ ठेवणे","नैसर्गिक आपत्तीच्या वेळी मदत गोळा करणे","कृती करताना नवीन तंत्राचा व तंत्रज्ञानाचा वापर करणे","आधुनिक साधनाचा वापर करणे","व्यावसायिक कौशल्ये प्राप्त करण्याचा प्रयत्न करणे","चर्चेत सहभागी होणे","समस्या निराकरणासाठी उपाय शोधणे","विविध मुल्याची जोपासना करणे","साहित्य, साधने वापराबाबत कौशल्य प्राप्त करणे","शिक्षकाचे सहकार्य घेणे","आत्मविश्वासाने कृती करणे","समजशील वर्तन करणे","ज्ञानाचा उपयोग उपजीवेकेसाठी करणे","समाजाच्या व राष्ट्राच्या विकासासाठी झटणे","दिलेले प्रात्यक्षिक पूर्ण करणे","प्रकल्प स्वत:च्या सहभागातून पूर्ण करणे","प्रकल्पाचे सादरीकरण चांगले करणे","श्रम करणाऱ्यांचा आदर करणे","शालेय सफाई/वर्ग सजावट या कार्यांमध्ये स्वतः हून सहभाग घेणे","आई वडिलांना कामात मदत करणे","बागकामाची आवड आहे","स्वतः चे साहित्य /यंत्रे यांची चांगली देखभाल करणे","परिपाठात सहभाग घेण्यापूर्वी पूर्वतयारी नसणे","पोशाख निटनेटका व स्वच्छ ठेवावा"],"शारीरिक शिक्षण":["खेळात उस्फूर्तपणे भाग घेणे","आरोग्यासाठी नियमित व्यायाम करणे","तालबद्ध हालचाली करणे","गटाचे नेतृत्व करणे","खेळ व शारीरिक हालचालीतून आनंद मिळवणे","गटातील सहकर्‍यांना मार्गदर्शन करणे","इतराशी खिलाडू वृत्तीने वागणे","विविध खेळात व स्पर्धेत भाग घेणे","खेळाची विविध कौशल्ये आत्मसात करणे","मैदानावरील विविध कामे आवडीने करणे","क्रिडागंणाचे मोजमापे लक्षात घेऊन मैदानाची आखणी करणे","आरोग्यदायी सवयीचे पालन करणे","मनोरंजक खेळात सहभागी होणे","शारीरिक श्रम आनंदाने करणे","मैदानाची स्वच्छता करणे","जय पराजय आनंदाने स्वीकारणे","पंचाच्या निर्णयाचे आदर करणे","खेळातून राष्ट्रभक्ती मुल्याची जोपासना करणे","श्रेष्ठ खेळाडूची माहिती करून घेणे","शिस्तीचे पालन करणे","विविध राष्ट्रीय व आंतरराष्ट्रीय खेळाची माहिती करून घेणे","विविध योगासने व कवायत प्रकाराची माहिती घेणे","विविध योगासने व कवायत प्रकार सादर करणे","कलेविषयी रुचि ठेवणे","दैनंदिन शालेय खेळात भाग घेणे","आरोग्यासाठी व्यायामाचे महत्व सांगणे","राहणीमान स्वच्छ व नीटनेटके ठेवणे","खेळात सहभाग घेताना संकोच बाळगणे"]};
+/* ---------- वर्णनात्मक नोंदी (5-8 वी): each subject teacher, per term ---------- */
+var EMVE_NOTE_SUBJ={'Marathi':'मराठी','Hindi':'हिंदी','English':'English','Math':'गणित','Maths':'गणित',
+  'Science 1':'विज्ञान','Science 2':'विज्ञान','Parisar 1':'विज्ञान',
+  'History':'सामाजिक शास्त्रे','Geography':'सामाजिक शास्त्रे','Samaj A':'सामाजिक शास्त्रे','Parisar 2':'सामाजिक शास्त्रे',
+  'Art':'कला','Arts':'कला','Karya':'कार्यानुभव','Sports':'शारीरिक शिक्षण'};
+var emveNotes={},emveNotesLoaded={},emveNotesErr={};
+function emveNotesTab(cls,sb){return 'notes_'+cls+'_'+sb.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');}
+function emveNote(cls,sb,sId,t){var n=emveNotes[cls+'|'+sb+'|'+sId];return n&&n[t]?n[t]:'';}
+function emveAttr(t){return emveEsc(String(t||'')).replace(/"/g,'&quot;');}
+function emveNoteSubjects(cls,teacher){return emveClassSubjects(cls,teacher).filter(function(sb){return EMVE_NOTE_SUBJ[sb];});}
+/* fetch saved notes of the given subjects; a failed read is remembered so entry can be blocked */
+function emveLoadNotes(cls,subjects,done){
+  var todo=subjects.filter(function(sb){return !emveNotesLoaded[cls+'|'+sb];});
+  if(!todo.length){done();return;}
+  var left=todo.length,failed=false;
+  todo.forEach(function(sb){var tab=emveNotesTab(cls,sb);sheetGet(tab,function(rows){
+    if(emveGetFailed[tab]){failed=true;emveNotesErr[cls+'|'+sb]=1;}
+    else{
+      delete emveNotesErr[cls+'|'+sb];
+      var h=(rows&&rows[0]||[]).map(function(x){return String(x||'').trim();});
+      var i1=h.indexOf('t1'),i2=h.indexOf('t2');
+      (rows||[]).slice(1).forEach(function(r){var id=parseInt(r[0],10)||0;if(!id)return;
+        emveNotes[cls+'|'+sb+'|'+id]={t1:i1>=0&&r[i1]!=null?String(r[i1]):'',t2:i2>=0&&r[i2]!=null?String(r[i2]):''};});
+      emveNotesLoaded[cls+'|'+sb]=1;
+    }
+    left--;if(left)return;
+    if(failed)toast('काही नोंदी Sheet मधून आणता आल्या नाहीत. Internet तपासा.','err');
+    done();
+  });});
+}
+function secRNote(){
+  var isA=(curRole==='super'||curRole==='mukh');
+  if(!isA&&!(curRole==='shik'&&curTc))return noAccess();
+  if(settings.marksLocked&&curRole==='shik')return '<div class="alert aw"><div>&#x1F512;</div><div><strong>गुण नोंदणी बंद आहे</strong></div></div>';
+  if(!emveWorkload){emveWithWorkload(function(){var el=document.getElementById('mod-secs');if(el&&curTab==='rnote')el.innerHTML=secRNote();});return '<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ लोड होत आहे…</div>';}
+  var tCls=isA?null:emveTeacherClasses(curTc.ttName||curTc.name);
+  var avail=CLASSES.filter(function(c){return c.type!=='high'&&(isA||tCls.indexOf(c.id)>=0);});
+  if(!avail.length)return '<div class="alert ai"><div>&#x2139;&#xFE0F;</div><div>वर्णनात्मक नोंदी फक्त 5 ते 8 वी साठी आहेत. तुमचे या वर्गांचे विषय नाहीत.</div></div>';
+  var clsOpts=avail.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
+  return '<div class="card"><div class="ct">&#x1F4DC; वर्णनात्मक नोंदी</div>'+
+    '<div class="fg2">'+
+    '<div class="fg"><label>वर्ग</label><select id="nt-cls"><option value="">निवडा</option>'+clsOpts+'</select></div>'+
+    '<div class="fg"><label>सत्र</label><select id="nt-term"><option value="">निवडा</option><option value="1">सत्र-1 (प्रथम)</option><option value="2">सत्र-2 (द्वितीय)</option></select></div>'+
+    '<div class="fg"><label>विषय</label><select id="nt-subj"><option value="">निवडा</option></select></div>'+
+    '</div><div id="nt-wrap"></div></div>';
+}
+function onNtCls(){
+  var cls=(document.getElementById('nt-cls')||{}).value||'';var sel=document.getElementById('nt-subj');if(!sel)return;
+  var subjs=cls?emveNoteSubjects(cls,(curRole==='shik'&&curTc)?(curTc.ttName||curTc.name):''):[];
+  sel.innerHTML='<option value="">निवडा</option>'+subjs.map(function(s){return '<option value="'+s+'">'+emveSubjLabel(cls,s)+'</option>';}).join('');
+  var w=document.getElementById('nt-wrap');if(w)w.innerHTML='';
+}
+function loadNoteTable(){
+  var cls=(document.getElementById('nt-cls')||{}).value||'',subj=(document.getElementById('nt-subj')||{}).value||'',term=(document.getElementById('nt-term')||{}).value||'';
+  var wrap=document.getElementById('nt-wrap');if(!wrap)return;
+  if(!cls||!subj||!term){wrap.innerHTML='';return;}
+  var k=cls+'|'+subj;
+  if(emveNotesErr[k]){wrap.innerHTML='<div class="alert aw"><div>⚠️ जतन केलेल्या नोंदी Sheet मधून आणता आल्या नाहीत (Internet कमकुवत?). जुन्या नोंदी पुसल्या जाऊ नयेत म्हणून नोंदणी थांबवली आहे.<br><button class="btn bp" style="margin-top:10px;" data-action="ntretry">पुन्हा प्रयत्न करा</button></div></div>';return;}
+  if(!emveNotesLoaded[k]){
+    wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ जतन केलेल्या नोंदी आणत आहे…</div>';
+    emveLoadNotes(cls,[subj],function(){var c2=(document.getElementById('nt-cls')||{}).value,s2=(document.getElementById('nt-subj')||{}).value;if(c2===cls&&s2===subj)loadNoteTable();});
+    return;
+  }
+  var stds2=getStds(cls);
+  if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
+  var bank=EMVE_NOTE_BANK[EMVE_NOTE_SUBJ[subj]]||[];
+  var opts=bank.map(function(p){return '<option value="'+emveAttr(p)+'">';}).join('');
+  var t='t'+term;
+  var rows=stds2.map(function(s){
+    return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-weight:700;font-size:.9rem;">'+s.name+'</td>'+
+      '<td style="min-width:240px;"><input class="nti" list="nt-bank" maxlength="200" autocomplete="off" enterkeyhint="next" data-sid="'+s.id+'" value="'+emveAttr(emveNote(cls,subj,s.id,t))+'" placeholder="नोंद निवडा किंवा लिहा" style="width:100%;padding:10px;font-size:.95rem;border:1.5px solid var(--bdr);border-radius:8px;"></td></tr>';
+  }).join('');
+  wrap.innerHTML='<datalist id="nt-bank">'+opts+'</datalist>'+
+    '<div class="alert ai no-print"><div>&#x2139;&#xFE0F;</div><div>चौकटीत टॅप करा: यादीतील तयार वाक्य निवडा किंवा स्वतः लिहा.</div></div>'+
+    '<div class="print-header" style="text-align:center;margin-bottom:10px;"><strong>वर्णनात्मक नोंदी</strong><br><span>इयत्ता: '+getCls(cls).label+' | सत्र: '+(term==='2'?'द्वितीय':'प्रथम')+' | विषय: '+emveSubjLabel(cls,subj)+'</span></div>'+
+    '<div class="tw"><table><thead><tr><th>ह.क्र.</th><th>नाव</th><th>नोंद</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="savenotes">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="nt-wrap" data-title="वर्णनात्मक नोंदी">🖨️ प्रिंट करा</button></div>';
+}
+function saveNotes(){
+  if(settings.marksLocked&&curRole==='shik'){toast('गुण नोंदणी बंद आहे!','err');return;}
+  var cls=(document.getElementById('nt-cls')||{}).value||'',subj=(document.getElementById('nt-subj')||{}).value||'',term=(document.getElementById('nt-term')||{}).value||'';
+  if(!cls||!subj||!term||!emveNotesLoaded[cls+'|'+subj])return;
+  var t='t'+term,count=0;
+  var ins=document.querySelectorAll('#nt-wrap input.nti');
+  for(var i=0;i<ins.length;i++){
+    var id=parseInt(ins[i].getAttribute('data-sid'),10)||0;if(!id)continue;
+    var key=cls+'|'+subj+'|'+id;if(!emveNotes[key])emveNotes[key]={t1:'',t2:''};
+    emveNotes[key][t]=String(ins[i].value||'').replace(/\s+/g,' ').trim();
+    if(emveNotes[key][t])count++;
+  }
+  var rows=[['sId','नाव','t1','t2']];
+  getStds(cls).forEach(function(s){rows.push([s.id,s.name,emveNote(cls,subj,s.id,'t1'),emveNote(cls,subj,s.id,'t2')]);});
+  syncStatus('ing');
+  sheetPost(emveNotesTab(cls,subj),rows,function(res){
+    if(res&&res.success){syncStatus('ok');toast('नोंदी सेव्ह! ('+count+') ✅');}
+    else if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('नोंदी सेव्ह झाल्या नाहीत. पुन्हा प्रयत्न करा.','err');}
+  });
+}
+/* result book: notes of every subject, both terms (5-8 वी only) */
+function emveRBookNotes(cls,stds2){
+  if(getCtype(cls)==='high')return '';
+  var subs=emveNoteSubjects(cls);if(!subs.length)return '';
+  var miss=subs.filter(function(sb){return emveNotesErr[cls+'|'+sb];});
+  /* let the next opening of the result book try the failed subjects again */
+  miss.forEach(function(sb){delete emveNotesErr[cls+'|'+sb];});
+  var rows=stds2.map(function(s){
+    return subs.map(function(sb,i){
+      var a=emveNote(cls,sb,s.id,'t1'),b=emveNote(cls,sb,s.id,'t2');
+      return '<tr'+(i===0?' style="border-top:2px solid #94a3b8;"':'')+'><td>'+(i===0?'<strong>'+s.roll+'</strong>':'')+'</td><td style="white-space:nowrap;font-weight:700;">'+(i===0?s.name:'')+'</td>'+
+        '<td style="white-space:nowrap;">'+emveSubjLabel(cls,sb)+'</td><td>'+(a?emveEsc(a):'-')+'</td><td>'+(b?emveEsc(b):'-')+'</td></tr>';
+    }).join('');
+  }).join('');
+  return '<div style="margin-top:24px;font-weight:900;font-size:1.05rem;">वर्णनात्मक नोंदी</div>'+
+    (miss.length?'<div class="alert aw no-print"><div>⚠️ काही विषयांच्या नोंदी आणता आल्या नाहीत. पान पुन्हा उघडा.</div></div>':'')+
+    '<div class="tw" style="font-size:.85rem;margin-top:8px;"><table><thead><tr><th>ह.क्र.</th><th>नाव</th><th>विषय</th><th>प्रथम सत्र</th><th>द्वितीय सत्र</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
 function secRBook(){
   if(curRole!=='super'&&curRole!=='mukh'&&curRole!=='clerk')return noAccess();
   var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
@@ -1419,12 +1539,13 @@ function loadRBook(){
   var cls=(document.getElementById('rb-cls')||{}).value||'';var wrap=document.getElementById('rb-wrap');if(!wrap)return;
   if(!cls){wrap.innerHTML='';return;}
   if(!emveMarksReady(cls)){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ गुण आणत आहे…</div>';emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;loadRBook();});return;}
+  if(getCtype(cls)!=='high'){var ntPend=emveNoteSubjects(cls).filter(function(sb){return !emveNotesLoaded[cls+'|'+sb]&&!emveNotesErr[cls+'|'+sb];});if(ntPend.length){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ नोंदी आणत आहे…</div>';emveLoadNotes(cls,ntPend,function(){if(((document.getElementById('rb-cls')||{}).value||'')===cls)loadRBook();});return;}}
   var stds2=getStds(cls);if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
   var subjs=getSubjs(cls);var exams=getExams(cls);
   var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.7rem;padding:10px;">'+s+'</th>';}).join('');
   var thExams=subjs.map(function(){return exams.map(function(e){return '<th style="font-size:.65rem;text-align:center;font-weight:700;">'+e.key.toUpperCase()+'</th>';}).join('');}).join('');
   var rows=stds2.map(function(s){var r=calcStudentTotal(s.id,cls);var cells=subjs.map(function(subj){return exams.map(function(exam){var v=getMk(s.id,cls,subj,exam.key);return '<td style="text-align:center;font-size:.85rem;font-weight:600;">'+(v!==''?v:'-')+'</td>';}).join('');}).join('');var gr=r.hasData?grade(r.pct,cls):'-';var pf=r.pct>=33?'<span class="bdg bgg">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':'<span class="bdg bgr">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-weight:700;font-size:.9rem;">'+s.name+'</td>'+cells+'<td style="font-weight:900;text-align:center;font-size:1rem;color:var(--b);">'+r.pct+'%</td><td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td><td>'+pf+'</td></tr>';}).join('');
-  wrap.innerHTML='<div class="tw" style="font-size:.85rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div><button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="rb-wrap" data-title="\u0928\u093F\u0915\u093E\u0932 \u092A\u0941\u0938\u094D\u0924\u093F\u0915\u093E" data-filters="rb-cls" data-orient="landscape" data-sign="1">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
+  wrap.innerHTML='<div class="tw" style="font-size:.85rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div>'+emveRBookNotes(cls,stds2)+'<button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="rb-wrap" data-title="\u0928\u093F\u0915\u093E\u0932 \u092A\u0941\u0938\u094D\u0924\u093F\u0915\u093E" data-filters="rb-cls" data-orient="landscape" data-sign="1">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
 }
 
 function secRCard(){
@@ -2511,6 +2632,8 @@ document.addEventListener('DOMContentLoaded',function(){
     else if(id==='is-cls')refreshIssued();
     else if(id==='rt-cls')filterReturn();
     else if(id==='rb-cls')loadRBook();
+    else if(id==='nt-cls')onNtCls();
+    else if(id==='nt-subj'||id==='nt-term')loadNoteTable();
     else if(id==='pc-cls')loadStdsForCard();
     else if(id==='gos-cls')loadGosawara();
     else if(id==='nikal-term'){if(curTc&&curTc.classOf)renderNikal(curTc.classOf,(document.getElementById('nikal-term')||{}).value||'1');}
@@ -2580,6 +2703,8 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='removeteacher')removeTeacher(parseInt(el.getAttribute('data-tcid')||0));
         else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
         else if(act==='mkretry'){var rc=(document.getElementById('m-cls')||{}).value||'',rs=(document.getElementById('m-subj')||{}).value||'';delete emveMarksErr[rc+'|'+rs];loadMkTable();}
+        else if(act==='savenotes')saveNotes();
+        else if(act==='ntretry'){var nc=(document.getElementById('nt-cls')||{}).value||'',ns=(document.getElementById('nt-subj')||{}).value||'';delete emveNotesErr[nc+'|'+ns];loadNoteTable();}
         else if(act==='saveallmk'){var mc=el.getAttribute('data-cls')||'';var ms=el.getAttribute('data-subj')||'';if(!mc)mc=(document.getElementById('m-cls')||{}).value||'';if(!ms)ms=(document.getElementById('m-subj')||{}).value||'';if(mc&&ms)saveAllMk(mc,ms);}
         else if(act==='save5mk'){var mc5=el.getAttribute('data-cls')||'';var ms5=el.getAttribute('data-subj')||'';var mt5=el.getAttribute('data-term')||'';if(mc5&&ms5&&mt5)save5Marks(mc5,ms5,mt5);}
         else if(act==='gencard')genCard();
