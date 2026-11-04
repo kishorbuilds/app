@@ -101,6 +101,9 @@ header{background:linear-gradient(90deg, #1e293b 0%, #3b82f6 100%);color:#fff;po
 
 nav{background:rgba(255, 255, 255, 0.95);backdrop-filter: blur(10px);border-bottom:1px solid var(--bdr);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 nav::-webkit-scrollbar{display:none;}
+nav.mnav{display:flex;align-items:center;}
+.nav-home{position:sticky;left:0;z-index:2;flex:none;margin:6px 2px 6px 8px;padding:8px 12px;border-radius:12px;border:1.5px solid #c7d2fe;background:#eef2ff;color:#3730a3;font-weight:800;font-size:.88rem;font-family:inherit;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:6px 0 10px rgba(255,255,255,.95);}
+.nav-home:active{transform:scale(.97);}
 .ni{display:flex;max-width:1400px;margin:0 auto;padding:0 10px;}
 .tab{padding:16px 20px;cursor:pointer;white-space:nowrap;font-size:1rem;font-weight:800;color:var(--mt);border-bottom:4px solid transparent;transition:all .2s;display:flex;align-items:center;gap:8px;}
 .tab:hover{color:var(--b);}
@@ -637,9 +640,8 @@ main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs 
 </main>
 </div>
 <div id="mod-view" style="display:none;">
-  <nav><div class="ni" id="nav-tabs"></div></nav>
+  <nav class="mnav"><button class="nav-home no-print" id="back-btn" data-action="goback" aria-label="मुख्यपृष्ठ"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>मुख्यपृष्ठ</span></button><div class="ni" id="nav-tabs"></div></nav>
   <main>
-    <button class="bbtn no-print" id="back-btn" data-action="goback">&#x2190; &#x092E;&#x0941;&#x0916;&#x094D;&#x092F;&#x092A;&#x0943;&#x0937;&#x094D;&#x0920;</button>
     <button class="bbtn no-print ep-top-print" style="float:right;" data-action="emve-print-sec">🖨️ प्रिंट</button>
     <div id="mod-secs"></div>
   </main>
@@ -885,11 +887,65 @@ function emveSubShareText(dt){
   });
   return L.join('\n');
 }
+/* draws the day's plan on a canvas (synchronous, so phone share stays inside the tap) */
+function emveSubCanvas(dt){
+  var list=substitutions.filter(function(s){return s.date===dt;});
+  var groups=emveSubGroups(list);
+  var W=1080,PAD=48,F='-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans Devanagari",Arial,sans-serif';
+  var HEAD=250,GH=84,RH=88,GAP=28,FOOT=90;
+  var H=HEAD+GAP;groups.forEach(function(g){H+=GH+g.list.length*RH+GAP;});H+=FOOT;
+  var c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+  function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+  function fit(t,max,size,weight){size=size||34;x.font=(weight||'700')+' '+size+'px '+F;while(x.measureText(t).width>max&&size>18){size-=2;x.font=(weight||'700')+' '+size+'px '+F;}return t;}
+  x.fillStyle='#f1f5f9';x.fillRect(0,0,W,H);
+  var g0=x.createLinearGradient(0,0,W,HEAD);g0.addColorStop(0,'#1e3a8a');g0.addColorStop(1,'#4f46e5');x.fillStyle=g0;x.fillRect(0,0,W,HEAD);
+  x.textAlign='center';x.textBaseline='middle';
+  x.fillStyle='#c7d2fe';x.font='600 30px '+F;x.fillText('समता जोगेश्वरी मंडळाचे',W/2,48);
+  x.fillStyle='#fff';fit('एकनाथ माध्यमिक विद्यालय, एरंडगाव',W-2*PAD,48,'800');x.fillText('एकनाथ माध्यमिक विद्यालय, एरंडगाव',W/2,102);
+  x.fillStyle='#fbbf24';x.font='800 40px '+F;x.fillText('तासिका समायोजन',W/2,162);
+  x.fillStyle='#e0e7ff';x.font='700 32px '+F;x.fillText(emveDayOfDate(dt)+', '+formatDateIndian(dt),W/2,212);
+  var y=HEAD+GAP;
+  groups.forEach(function(g){
+    var bh=GH+g.list.length*RH;
+    x.save();x.shadowColor='rgba(15,23,42,.10)';x.shadowBlur=18;x.shadowOffsetY=4;rr(PAD,y,W-2*PAD,bh,26);x.fillStyle='#fff';x.fill();x.restore();
+    x.save();rr(PAD,y,W-2*PAD,bh,26);x.clip();x.fillStyle='#fff7ed';x.fillRect(PAD,y,W-2*PAD,GH);x.fillStyle='#fed7aa';x.fillRect(PAD,y+GH-2,W-2*PAD,2);x.restore();
+    x.textAlign='left';
+    rr(PAD+24,y+22,118,40,20);x.fillStyle='#ea580c';x.fill();x.fillStyle='#fff';x.font='800 24px '+F;x.textAlign='center';x.fillText('रजेवर',PAD+83,y+43);
+    x.textAlign='left';x.fillStyle='#0f172a';fit(g.name,W-2*PAD-330,36,'800');x.fillText(g.name,PAD+162,y+43);
+    x.textAlign='right';x.fillStyle='#9a3412';x.font='800 28px '+F;x.fillText(g.list.length+' तास',W-PAD-28,y+43);
+    var ry=y+GH;
+    g.list.forEach(function(s,i){
+      if(i)x.fillStyle='#e2e8f0',x.fillRect(PAD+24,ry,W-2*PAD-48,2);
+      var cy=ry+RH/2;
+      x.beginPath();x.arc(PAD+58,cy,28,0,Math.PI*2);x.fillStyle='#eef2ff';x.fill();
+      x.fillStyle='#3730a3';x.font='900 30px '+F;x.textAlign='center';x.fillText(String(s.period),PAD+58,cy+1);
+      var left=emveClsLabel(s.cls)+' · '+emveSubjName(s.subj);
+      x.textAlign='left';x.fillStyle='#334155';fit(left,430,32,'700');x.fillText(left,PAD+106,cy);
+      x.textAlign='right';x.fillStyle='#15803d';fit('→ '+s.subTcName,W-2*PAD-600,32,'800');x.fillText('→ '+s.subTcName,W-PAD-28,cy);
+      ry+=RH;
+    });
+    y+=bh+GAP;
+  });
+  x.textAlign='center';x.fillStyle='#64748b';x.font='600 26px '+F;x.fillText('EMVE School App · '+list.length+' तास समायोजित',W/2,H-FOOT/2);
+  return c;
+}
+function emveDataUrlBlob(u){var p=u.split(','),b=atob(p[1]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:'image/png'});}
 function emveShareSubs(dt){
   if(!substitutions.some(function(s){return s.date===dt;})){toast('या दिवशी समायोजन नाही.','err');return;}
-  var t=emveSubShareText(dt);
-  if(navigator.share){navigator.share({text:t}).catch(function(){});return;}
-  window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');
+  var name='samayojan-'+dt+'.png',blob=null,file=null;
+  try{blob=emveDataUrlBlob(emveSubCanvas(dt).toDataURL('image/png'));file=new File([blob],name,{type:'image/png'});}catch(e){}
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file]}).catch(function(err){if(err&&err.name!=='AbortError')emveSubDownload(blob,name);});
+    return;
+  }
+  if(blob){emveSubDownload(blob,name);return;}
+  /* last resort: text message */
+  window.open('https://wa.me/?text='+encodeURIComponent(emveSubShareText(dt)),'_blank');
+}
+function emveSubDownload(blob,name){
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.parentNode.removeChild(a);},1500);
+  toast('चित्र download झाले. ते WhatsApp मध्ये पाठवा.');
 }
 function emvePrintSubs(dt){
   var list=substitutions.filter(function(s){return s.date===dt;});
@@ -922,7 +978,7 @@ function emveRenderSubPlan(){
   if(!dt||!list.length){w.innerHTML='';return;}
   w.innerHTML='<div class="sp-day"><div class="sp-dh">📋 '+emveDayOfDate(dt)+', '+formatDateIndian(dt)+' — आजचे नियोजन <span class="ctag">'+list.length+'</span></div>'+
     emveSubPlanHtml(list,{cancel:true})+
-    '<div class="sp-act"><button class="btn bs bsm" data-action="subshare" data-d="'+dt+'">WhatsApp वर पाठवा</button><button class="btn bo bsm" data-action="subprint" data-d="'+dt+'">PDF / Print</button></div>'+
+    '<div class="sp-act"><button class="btn bs bsm" data-action="subshare" data-d="'+dt+'">WhatsApp वर चित्र पाठवा</button><button class="btn bo bsm" data-action="subprint" data-d="'+dt+'">PDF / Print</button></div>'+
     '<div style="font-size:.75rem;color:var(--mt);margin-top:6px;">सर्व शिक्षकांना हे नियोजन app च्या मुख्य पानावर आपोआप दिसते.</div></div>';
 }
 function renderNoticeBoard(){
@@ -938,7 +994,7 @@ function renderNoticeBoard(){
   var mine=me?todaySubs.filter(function(s){return emveSubIsMe(s,me);}).length:0;
   var subRows=todaySubs.length?
     ((me&&mine)?'<div class="sp-mine">आज तुम्हाला '+mine+' तास समायोजित केले आहेत (पिवळ्या ओळी).</div>':'')+emveSubPlanHtml(todaySubs,{me:me})+
-    ((curRole==='super'||curRole==='mukh')?'<div class="sp-act"><button class="btn bs bsm" data-action="subshare" data-d="'+today()+'">WhatsApp वर पाठवा</button></div>':'')
+    ((curRole==='super'||curRole==='mukh')?'<div class="sp-act"><button class="btn bs bsm" data-action="subshare" data-d="'+today()+'">WhatsApp वर चित्र पाठवा</button></div>':'')
     :'<div style="padding:16px 0;font-size:.85rem;color:var(--mt);text-align:center;font-weight:600;">आज कोणतेही तासिका समायोजन नाही.</div>';
   var subW = '<div class="card" style="border-top:5px solid var(--gold); margin-bottom: 0;"><div class="ct">🔄 आजचे तासिका समायोजन <span class="ctag">'+todaySubs.length+'</span></div>'+subRows+'</div>';
 
