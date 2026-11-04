@@ -234,6 +234,29 @@ tr:hover td{background:#f1f5f9;}
   input[type="number"] { border: none !important; box-shadow: none !important; -webkit-appearance: none !important; width: auto !important; }
 }
 table tbody tr:nth-child(even) { background-color: #f5f5f5; }
+/* notes: phrase picker sheet + floating jump buttons (screen only) */
+@media screen{
+  table.ntt{min-width:0;table-layout:fixed;}
+  table.ntt th:first-child,table.ntt td:first-child{width:48px;}
+  .ntr{display:flex;gap:6px;align-items:stretch;}
+  .ntr input.nti{flex:1;min-width:0;}
+  .ntb{flex:none;padding:0 12px;border:1.5px solid var(--b);background:#eff6ff;color:var(--b);border-radius:8px;font-weight:800;font-size:.9rem;font-family:inherit;white-space:nowrap;cursor:pointer;}
+  .ntp{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:9000;display:flex;align-items:flex-end;justify-content:center;}
+  .ntp-box{background:#fff;width:100%;max-width:640px;max-height:80vh;border-radius:16px 16px 0 0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom);}
+  .ntp-h{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px;font-weight:900;}
+  .ntp-h button{border:0;background:#f1f5f9;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;}
+  .ntp-q{margin:0 16px 8px;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:10px;font-size:1rem;font-family:inherit;}
+  .ntp-list{overflow:auto;padding:0 8px 12px;}
+  .ntp-list button{display:block;width:100%;text-align:left;padding:12px;border:0;border-bottom:1px solid #eef2f7;background:#fff;font-size:.98rem;font-family:inherit;color:#0f172a;cursor:pointer;}
+  .ntp-list button.on{background:#fef9c3;font-weight:800;}
+  .ejump{position:fixed;right:6px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:800;display:none;flex-direction:column;gap:8px;}
+  .ejump.on{display:flex;}
+  .ejump button{width:46px;height:46px;border-radius:50%;border:0;background:var(--b);color:#fff;font-size:.8rem;font-weight:900;font-family:inherit;box-shadow:0 4px 14px rgba(15,23,42,.25);cursor:pointer;}
+  .ejump-in{position:fixed;right:66px;bottom:calc(70px + env(safe-area-inset-bottom));z-index:801;background:#fff;border-radius:12px;padding:10px;box-shadow:0 6px 20px rgba(15,23,42,.25);display:flex;gap:6px;}
+  .ejump-in input{width:80px;padding:8px;font-size:1.1rem;border:1.5px solid var(--bdr);border-radius:8px;text-align:center;}
+  tr.ejump-hit td{background:#fef08a!important;transition:background .3s;}
+}
+@media print{.ejump,.ejump-in,.ntp{display:none!important;}}
 /* Marks entry: big boxes, name column stays visible while scrolling, current row highlighted */
 @media screen{
   .mkw{max-height:75vh;overflow:auto;}
@@ -1479,16 +1502,14 @@ function loadNoteTable(){
   var stds2=getStds(cls);
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
   var bank=EMVE_NOTE_BANK[EMVE_NOTE_SUBJ[subj]]||[];
-  var opts=bank.map(function(p){return '<option value="'+emveAttr(p)+'">';}).join('');
   var t='t'+term;
   var rows=stds2.map(function(s){
-    return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-weight:700;font-size:.9rem;">'+s.name+'</td>'+
-      '<td style="min-width:240px;"><input class="nti" list="nt-bank" maxlength="200" autocomplete="off" enterkeyhint="next" data-sid="'+s.id+'" value="'+emveAttr(emveNote(cls,subj,s.id,t))+'" placeholder="नोंद निवडा किंवा लिहा" style="width:100%;padding:10px;font-size:.95rem;border:1.5px solid var(--bdr);border-radius:8px;"></td></tr>';
+    return '<tr><td style="vertical-align:top;"><strong>'+s.roll+'</strong></td><td style="width:100%;"><div style="font-weight:700;font-size:.92rem;margin-bottom:6px;">'+s.name+'</div><div class="ntr"><input class="nti" maxlength="200" autocomplete="off" enterkeyhint="next" data-sid="'+s.id+'" value="'+emveAttr(emveNote(cls,subj,s.id,t))+'" placeholder="नोंद लिहा…" style="width:0;padding:10px;font-size:.95rem;border:1.5px solid var(--bdr);border-radius:8px;"><button type="button" class="ntb no-print" data-action="ntpick" data-sid="'+s.id+'">यादी ▾</button></div></td></tr>';
   }).join('');
-  wrap.innerHTML='<datalist id="nt-bank">'+opts+'</datalist>'+
-    '<div class="alert ai no-print"><div>&#x2139;&#xFE0F;</div><div>चौकटीत टॅप करा: यादीतील तयार वाक्य निवडा किंवा स्वतः लिहा.</div></div>'+
+  var filled=stds2.filter(function(s){return emveNote(cls,subj,s.id,t);}).length;
+  wrap.innerHTML='<div class="alert ai no-print"><div>&#x2139;&#xFE0F;</div><div><strong>"यादी ▾"</strong> दाबा: तयार वाक्ये दिसतील, एक निवडा. किंवा चौकटीत स्वतः लिहा.<br>आधी भरलेल्या नोंदी चौकटीतच दिसतात. भरलेल्या: <strong>'+filled+' / '+stds2.length+'</strong></div></div>'+
     '<div class="print-header" style="text-align:center;margin-bottom:10px;"><strong>वर्णनात्मक नोंदी</strong><br><span>इयत्ता: '+getCls(cls).label+' | सत्र: '+(term==='2'?'द्वितीय':'प्रथम')+' | विषय: '+emveSubjLabel(cls,subj)+'</span></div>'+
-    '<div class="tw"><table><thead><tr><th>ह.क्र.</th><th>नाव</th><th>नोंद</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div class="tw"><table class="ntt"><thead><tr><th>ह.क्र.</th><th>नाव व नोंद</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="savenotes">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="nt-wrap" data-title="वर्णनात्मक नोंदी">🖨️ प्रिंट करा</button></div>';
 }
 function saveNotes(){
@@ -1511,6 +1532,75 @@ function saveNotes(){
     else if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('नोंदी सेव्ह झाल्या नाहीत. पुन्हा प्रयत्न करा.','err');}
   });
 }
+/* phrase picker: bottom sheet listing the subject's ready phrases */
+var emveNtPickSid=0;
+function emveNtPick(sid){
+  var subj=(document.getElementById('nt-subj')||{}).value||'';
+  var bank=EMVE_NOTE_BANK[EMVE_NOTE_SUBJ[subj]]||[];
+  var inp=document.querySelector('#nt-wrap input.nti[data-sid="'+sid+'"]');if(!inp)return;
+  emveNtPickSid=sid;emveNtPickClose();
+  var cur=String(inp.value||'').trim();
+  var list=bank.map(function(p,i){return '<button type="button" data-action="ntpickset" data-i="'+i+'"'+(p===cur?' class="on"':'')+'>'+emveEsc(p)+'</button>';}).join('');
+  var d=document.createElement('div');d.className='ntp';d.id='nt-pick';d.setAttribute('data-action','ntpickbg');
+  d.innerHTML='<div class="ntp-box"><div class="ntp-h"><span>नोंद निवडा</span><button type="button" data-action="ntpickclose">✕</button></div>'+
+    '<input class="ntp-q" id="ntp-q" placeholder="शोधा… (उदा. वाचन)" autocomplete="off"><div class="ntp-list">'+list+'</div></div>';
+  document.body.appendChild(d);
+}
+function emveNtPickClose(){var d=document.getElementById('nt-pick');if(d)d.parentNode.removeChild(d);}
+function emveNtPickSet(i){
+  var subj=(document.getElementById('nt-subj')||{}).value||'';
+  var p=(EMVE_NOTE_BANK[EMVE_NOTE_SUBJ[subj]]||[])[i];
+  var inp=document.querySelector('#nt-wrap input.nti[data-sid="'+emveNtPickSid+'"]');
+  if(p&&inp){inp.value=p;inp.style.borderColor='var(--g)';}
+  emveNtPickClose();
+}
+function emveNtPickFilter(){
+  var q=String((document.getElementById('ntp-q')||{}).value||'').trim();
+  var b=document.querySelectorAll('#nt-pick .ntp-list button');
+  for(var i=0;i<b.length;i++)b[i].style.display=(!q||b[i].textContent.indexOf(q)>=0)?'':'none';
+}
+
+/* floating jump buttons: top / bottom / go to roll number (long lists on phones) */
+function emveJumpBox(){var m=document.querySelector('#mk-wrap .mkw');return (m&&m.scrollHeight>m.clientHeight+5)?m:null;}
+function emveJumpCheck(){
+  var j=document.getElementById('ejump');
+  if(!j){j=document.createElement('div');j.id='ejump';j.className='ejump no-print';
+    j.innerHTML='<button type="button" data-action="jtop" aria-label="वर">▲</button><button type="button" data-action="jroll" aria-label="क्रमांकावर जा">क्र.</button><button type="button" data-action="jbot" aria-label="खाली">▼</button>';
+    document.body.appendChild(j);}
+  var sec=document.getElementById('mod-secs');
+  var rows=sec?sec.querySelectorAll('table tbody tr').length:0;
+  var long=document.documentElement.scrollHeight>window.innerHeight*1.6||!!emveJumpBox();
+  var on=!!(sec&&sec.offsetParent!==null&&rows>12&&long);
+  j.className='ejump no-print'+(on?' on':'');
+  if(!on)emveJumpInClose();
+}
+function emveJumpEnd(bottom){
+  var b=emveJumpBox();
+  if(b)b.scrollTop=bottom?b.scrollHeight:0;
+  window.scrollTo(0,bottom?document.documentElement.scrollHeight:0);
+}
+function emveJumpIn(){
+  if(document.getElementById('ejump-in')){emveJumpInClose();return;}
+  var d=document.createElement('div');d.id='ejump-in';d.className='ejump-in no-print';
+  d.innerHTML='<input type="number" inputmode="numeric" id="ejump-n" placeholder="क्र." enterkeyhint="go"><button type="button" class="btn bp" data-action="jrollgo">जा</button>';
+  document.body.appendChild(d);
+  var n=document.getElementById('ejump-n');if(n)n.focus();
+}
+function emveJumpInClose(){var d=document.getElementById('ejump-in');if(d)d.parentNode.removeChild(d);}
+function emveJumpGo(){
+  var n=String((document.getElementById('ejump-n')||{}).value||'').trim();if(!n)return;
+  var trs=document.querySelectorAll('#mod-secs table tbody tr'),hit=null;
+  for(var i=0;i<trs.length;i++){var c=trs[i].cells&&trs[i].cells[0];if(c&&String(c.textContent||'').trim()===n){hit=trs[i];break;}}
+  if(!hit){toast('ह.क्र. '+n+' सापडला नाही','err');return;}
+  emveJumpInClose();
+  hit.scrollIntoView({block:'center'});
+  hit.className+=' ejump-hit';setTimeout(function(){hit.className=hit.className.replace(/\s*ejump-hit/g,'');},1800);
+  var f=hit.querySelector('input');if(f)setTimeout(function(){f.focus();},300);
+}
+window.addEventListener('scroll',emveJumpCheck);
+window.addEventListener('resize',emveJumpCheck);
+setInterval(emveJumpCheck,1500);
+
 /* result book: notes of every subject, both terms (5-8 वी only) */
 function emveRBookNotes(cls,stds2){
   if(getCtype(cls)==='high')return '';
@@ -2668,7 +2758,7 @@ document.addEventListener('DOMContentLoaded',function(){
     }
   });
 
-  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();});
+  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();});
 
   document.addEventListener('click',function(ev){
     var el=ev.target;
@@ -2704,6 +2794,14 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
         else if(act==='mkretry'){var rc=(document.getElementById('m-cls')||{}).value||'',rs=(document.getElementById('m-subj')||{}).value||'';delete emveMarksErr[rc+'|'+rs];loadMkTable();}
         else if(act==='savenotes')saveNotes();
+        else if(act==='ntpick'){emveNtPick(parseInt(el.getAttribute('data-sid'),10)||0);break;}
+        else if(act==='ntpickset'){emveNtPickSet(parseInt(el.getAttribute('data-i'),10));break;}
+        else if(act==='ntpickclose'){emveNtPickClose();break;}
+        else if(act==='ntpickbg'){if(ev.target===el)emveNtPickClose();break;}
+        else if(act==='jtop'){emveJumpEnd(false);break;}
+        else if(act==='jbot'){emveJumpEnd(true);break;}
+        else if(act==='jroll'){emveJumpIn();break;}
+        else if(act==='jrollgo'){emveJumpGo();break;}
         else if(act==='ntretry'){var nc=(document.getElementById('nt-cls')||{}).value||'',ns=(document.getElementById('nt-subj')||{}).value||'';delete emveNotesErr[nc+'|'+ns];loadNoteTable();}
         else if(act==='saveallmk'){var mc=el.getAttribute('data-cls')||'';var ms=el.getAttribute('data-subj')||'';if(!mc)mc=(document.getElementById('m-cls')||{}).value||'';if(!ms)ms=(document.getElementById('m-subj')||{}).value||'';if(mc&&ms)saveAllMk(mc,ms);}
         else if(act==='save5mk'){var mc5=el.getAttribute('data-cls')||'';var ms5=el.getAttribute('data-subj')||'';var mt5=el.getAttribute('data-term')||'';if(mc5&&ms5&&mt5)save5Marks(mc5,ms5,mt5);}
