@@ -149,7 +149,29 @@ tr:hover td{background:#f1f5f9;}
 
 /* Timetable Scroll Fix */
 .tt-grid{display:grid;border:2px solid var(--bdr);border-radius:12px;overflow:hidden;margin-top:10px;min-width:max-content;background:#fff;}
-.tt-hdr{background:var(--d);color:#fff;padding:10px 12px;font-size:.8rem;font-weight:800;text-align:center;}
+.tt-hdr{background:linear-gradient(135deg,#1e3a8a,#4f46e5);color:#fff;padding:10px 12px;font-size:.8rem;font-weight:800;text-align:center;}
+.tt-filled{border-left:4px solid var(--tc,#94a3b8);background:var(--tb,#f8fafc);}
+.tt-filled .tt-s{font-size:.84rem;font-weight:900;color:var(--tc,#0f172a);}
+.tt-filled .tt-t{font-size:.72rem;color:#475569;font-weight:700;margin-top:4px;}
+.ts-mr{--tb:#fff7e6;--tc:#c2410c;}.ts-hi{--tb:#fff1f2;--tc:#be123c;}.ts-en{--tb:#eff6ff;--tc:#1d4ed8;}.ts-ma{--tb:#f5f3ff;--tc:#6d28d9;}
+.ts-sc{--tb:#ecfdf5;--tc:#047857;}.ts-so{--tb:#fdf4ff;--tc:#a21caf;}.ts-ar{--tb:#fefce8;--tc:#a16207;}.ts-ka{--tb:#f7fee7;--tc:#4d7c0f;}
+.ts-ja{--tb:#ecfeff;--tc:#0e7490;}.ts-pe{--tb:#f0fdfa;--tc:#0f766e;}
+.tt-period.tt-today{background:#fef3c7!important;color:#92400e!important;box-shadow:inset 4px 0 0 #f59e0b;}
+.sp-g{border:1px solid var(--bdr);border-radius:14px;overflow:hidden;margin:10px 0;background:#fff;}
+.sp-h{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#fff7ed;border-bottom:1px solid #fed7aa;font-size:.92rem;}
+.sp-b{background:#ea580c;color:#fff;font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:999px;}
+.sp-n{margin-left:auto;font-size:.75rem;color:#9a3412;font-weight:800;}
+.sp-r{display:flex;align-items:center;gap:10px;padding:9px 12px;border-top:1px solid #f1f5f9;font-size:.86rem;}
+.sp-r:first-of-type{border-top:0;}
+.sp-r.me{background:#fef9c3;}
+.sp-p{flex:none;width:30px;height:30px;border-radius:50%;background:#eef2ff;color:#3730a3;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:.85rem;}
+.sp-c{flex:1;min-width:0;color:#334155;}
+.sp-t{flex:none;font-weight:800;color:#15803d;text-align:right;max-width:42%;}
+.sp-x{flex:none;border:1px solid #fecaca;background:#fff;color:#dc2626;border-radius:8px;width:30px;height:30px;font-weight:900;cursor:pointer;}
+.sp-mine{background:#fef9c3;border:1px solid #fde047;color:#854d0e;font-weight:800;font-size:.85rem;border-radius:10px;padding:8px 12px;margin:8px 0;}
+.sp-act{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.sp-day{border:2px solid #c7d2fe;border-radius:16px;padding:12px;background:#f8faff;}
+.sp-dh{font-weight:900;color:#1e3a8a;font-size:1rem;display:flex;align-items:center;gap:8px;}
 .tt-cell{padding:8px 10px;border-bottom:1px solid var(--bdr);border-right:1px solid var(--bdr);font-size:.85rem;min-height:64px;vertical-align:top;}
 .tt-period{background:#f8fafc!important;color:var(--d)!important;font-weight:900;font-size:.85rem;display:flex;align-items:center;justify-content:center;border-right:3px solid var(--bdr);}
 
@@ -831,6 +853,78 @@ function doLogin(){
 function setupHeader(){document.getElementById('uname').textContent=curUser;var chip=document.getElementById('rchip');var map={super:'\u0938\u0902\u0938\u094D\u0925\u093E\u091A\u093E\u0932\u0915',mukh:'\u092E\u0941\u0916\u094D\u092F\u093E\u0927\u094D\u092F\u093E\u092A\u0915',shik:'\u0936\u093F\u0915\u094D\u0937\u0915'};chip.textContent=map[curRole]||'';chip.className='rchip r'+curRole[0];}
 
 // ---- DASHBOARD (NOTICE BOARD) ----
+/* ---- substitution plan (dashboard + substitution page + WhatsApp) ---- */
+function emveParseSubLog(slR){var out=[];if(slR&&slR.length>1)slR.slice(1).forEach(function(r){if(!r[0])return;out.push({id:parseInt(r[0])||0,date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2])||0,absTcName:String(r[3]||''),subTcId:parseInt(r[4])||0,subTcName:String(r[5]||''),cls:String(r[6]||''),period:String(r[7]||''),subj:String(r[8]||'')});});return out;}
+function emveRefreshSubs(){if(!curRole)return;sheetGet('SubLog',function(r,ok){if(ok===false||!r||!r.length)return;substitutions=emveParseSubLog(r);if(!curMod)renderNoticeBoard();});}
+function emveSubIsMe(s,me){return !!me&&(parseInt(s.subTcId)===parseInt(me.id)||s.subTcName===me.name);}
+function emveSubjName(sb){return (typeof EMVE_SUBJ_MR!=='undefined'&&EMVE_SUBJ_MR[sb])||sb||'';}
+function emveClsLabel(c){return (getCls(c)||{}).label||c;}
+/* group a day's substitutions by absent teacher, periods in order */
+function emveSubGroups(list){
+  var g={},order=[];
+  list.slice().sort(function(a,b){return (parseInt(a.period)||0)-(parseInt(b.period)||0);}).forEach(function(s){var k=s.absTcName||String(s.absTcId);if(!g[k]){g[k]=[];order.push(k);}g[k].push(s);});
+  return order.map(function(k){return {name:k,list:g[k]};});
+}
+function emveSubPlanHtml(list,o){
+  o=o||{};
+  return emveSubGroups(list).map(function(gr){
+    return '<div class="sp-g"><div class="sp-h"><span class="sp-b">रजेवर</span><b>'+emveEsc(gr.name)+'</b><span class="sp-n">'+gr.list.length+' तास</span></div>'+
+      gr.list.map(function(s){var m=emveSubIsMe(s,o.me);
+        return '<div class="sp-r'+(m?' me':'')+'"><span class="sp-p">'+emveEsc(s.period)+'</span><span class="sp-c"><b>'+emveEsc(emveClsLabel(s.cls))+'</b> · '+emveEsc(emveSubjName(s.subj))+'</span><span class="sp-t">'+emveEsc(s.subTcName)+(m?' (तुम्ही)':'')+'</span>'+
+          (o.cancel?'<button type="button" class="sp-x" data-action="subcancel" data-id="'+s.id+'" data-cls="'+emveAttr(s.cls)+'" data-p="'+emveAttr(s.period)+'" data-d="'+emveAttr(s.date)+'" title="रद्द करा">✕</button>':'')+'</div>';
+      }).join('')+'</div>';
+  }).join('');
+}
+function emveSubShareText(dt){
+  var list=substitutions.filter(function(s){return s.date===dt;});
+  var L=['*एकनाथ माध्यमिक विद्यालय, एरंडगाव*','*तासिका समायोजन — '+emveDayOfDate(dt)+', '+formatDateIndian(dt)+'*',''];
+  emveSubGroups(list).forEach(function(gr){
+    L.push('*रजेवर: '+gr.name+'*');
+    gr.list.forEach(function(s){L.push('तास '+s.period+' · '+emveClsLabel(s.cls)+' · '+emveSubjName(s.subj)+' → *'+s.subTcName+'*');});
+    L.push('');
+  });
+  return L.join('\n');
+}
+function emveShareSubs(dt){
+  if(!substitutions.some(function(s){return s.date===dt;})){toast('या दिवशी समायोजन नाही.','err');return;}
+  var t=emveSubShareText(dt);
+  if(navigator.share){navigator.share({text:t}).catch(function(){});return;}
+  window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');
+}
+function emvePrintSubs(dt){
+  var list=substitutions.filter(function(s){return s.date===dt;});
+  if(!list.length){toast('या दिवशी समायोजन नाही.','err');return;}
+  var rows='';emveSubGroups(list).forEach(function(gr){gr.list.forEach(function(s,i){rows+='<tr>'+(i===0?'<td rowspan="'+gr.list.length+'" style="font-weight:800;">'+emveEsc(gr.name)+'</td>':'')+'<td style="text-align:center;">'+emveEsc(s.period)+'</td><td>'+emveEsc(emveClsLabel(s.cls))+'</td><td>'+emveEsc(emveSubjName(s.subj))+'</td><td style="font-weight:800;">'+emveEsc(s.subTcName)+'</td></tr>';});});
+  emvePrint('<table><thead><tr><th>रजेवरील शिक्षक</th><th>तास</th><th>वर्ग</th><th>विषय</th><th>समायोजित शिक्षक</th></tr></thead><tbody>'+rows+'</tbody></table>',
+    {title:'तासिका समायोजन — '+emveDayOfDate(dt)+', '+formatDateIndian(dt),orient:'portrait',sign:['मुख्याध्यापक']});
+}
+function emveCancelSub(id,cls,p,dt){
+  var s0=substitutions.find(function(s){return String(s.id)===String(id)&&s.cls===cls&&String(s.period)===String(p)&&s.date===dt;});
+  if(!s0)return;
+  if(!confirm('हे समायोजन रद्द करायचे?\n'+emveClsLabel(cls)+', तास '+p+' → '+s0.subTcName))return;
+  syncStatus('ing');
+  var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4)return;
+    var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}
+    if(res.auth){emveAuthExpired();return;}
+    if(res.success){syncStatus('ok');substitutions=substitutions.filter(function(s){return s!==s0;});toast('समायोजन रद्द केले.');}
+    else{syncStatus('err');toast(res.error==='Invalid Payload'?'रद्द करण्यासाठी नवीन Apps Script deploy करा.':'रद्द झाले नाही. पुन्हा प्रयत्न करा.','err');}
+    if(document.getElementById('ttsub-wrap'))renderTTSub();else if(!curMod)renderNoticeBoard();
+  };
+  xhr.send(JSON.stringify({action:'cancelSub',token:emveToken,items:[{id:s0.id,cls:s0.cls,period:s0.period}]}));
+}
+/* the chosen date's full plan, under the substitution table */
+function emveRenderSubPlan(){
+  var w=document.getElementById('ttsub-plan');if(!w)return;
+  var dt=(document.getElementById('ttsub-date')||{}).value||'';
+  var list=substitutions.filter(function(s){return s.date===dt;});
+  if(!dt||!list.length){w.innerHTML='';return;}
+  w.innerHTML='<div class="sp-day"><div class="sp-dh">📋 '+emveDayOfDate(dt)+', '+formatDateIndian(dt)+' — आजचे नियोजन <span class="ctag">'+list.length+'</span></div>'+
+    emveSubPlanHtml(list,{cancel:true})+
+    '<div class="sp-act"><button class="btn bs bsm" data-action="subshare" data-d="'+dt+'">WhatsApp वर पाठवा</button><button class="btn bo bsm" data-action="subprint" data-d="'+dt+'">PDF / Print</button></div>'+
+    '<div style="font-size:.75rem;color:var(--mt);margin-top:6px;">सर्व शिक्षकांना हे नियोजन app च्या मुख्य पानावर आपोआप दिसते.</div></div>';
+}
 function renderNoticeBoard(){
   var dtEl = document.getElementById('dash-date');
   if(dtEl) dtEl.innerHTML = 'आजची तारीख: <strong>'+formatDateIndian(today())+'</strong>';
@@ -838,22 +932,14 @@ function renderNoticeBoard(){
   var db = document.getElementById('dashboard-widgets');
   if(!db) return;
 
-  var todaySubs = substitutions.filter(function(s){
-    if(s.date !== today()) return false;
-    if(curRole === 'shik' && curTc){
-      return parseInt(s.subTcId)===parseInt(curTc.id) || s.subTcName===curTc.name;
-    }
-    return true;
-  });
-  var subRows = '';
-  if(todaySubs.length === 0){
-    subRows = '<div style="padding:16px 0;font-size:.85rem;color:var(--mt);text-align:center;font-weight:600;">'+(curRole==='shik' ? 'आज तुमचे कोणतेही समायोजित तास नाहीत.' : 'आज कोणतेही तासिका समायोजन नाही.')+'</div>';
-  } else {
-    subRows = todaySubs.map(function(s){
-      return '<div class="notice-row"><div><strong>वर्ग '+s.cls+'</strong> ('+s.subj+') - तास '+s.period+'</div><div style="text-align:right;"><span style="color:var(--g);font-weight:800;">'+s.subTcName+'</span> <span style="font-size:.75rem;color:var(--mt);">('+s.absTcName+')</span></div></div>';
-    }).join('');
-  }
-  
+  /* everyone sees today's whole plan; the logged-in teacher's own periods are highlighted */
+  var todaySubs = substitutions.filter(function(s){return s.date===today();});
+  var me=(curRole==='shik'&&curTc)?curTc:null;
+  var mine=me?todaySubs.filter(function(s){return emveSubIsMe(s,me);}).length:0;
+  var subRows=todaySubs.length?
+    ((me&&mine)?'<div class="sp-mine">आज तुम्हाला '+mine+' तास समायोजित केले आहेत (पिवळ्या ओळी).</div>':'')+emveSubPlanHtml(todaySubs,{me:me})+
+    ((curRole==='super'||curRole==='mukh')?'<div class="sp-act"><button class="btn bs bsm" data-action="subshare" data-d="'+today()+'">WhatsApp वर पाठवा</button></div>':'')
+    :'<div style="padding:16px 0;font-size:.85rem;color:var(--mt);text-align:center;font-weight:600;">आज कोणतेही तासिका समायोजन नाही.</div>';
   var subW = '<div class="card" style="border-top:5px solid var(--gold); margin-bottom: 0;"><div class="ct">🔄 आजचे तासिका समायोजन <span class="ctag">'+todaySubs.length+'</span></div>'+subRows+'</div>';
 
   db.innerHTML = subW;
@@ -866,6 +952,7 @@ function showHome(){
   var admCard=document.getElementById('mod-adm');
   if(admCard)admCard.style.display=(curRole==='super'||curRole==='mukh'||curRole==='clerk')?'block':'none';
   renderNoticeBoard();
+  emveRefreshSubs();
 }
 function openMod(mod){curMod=mod;document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='block';buildTabs();}
 
@@ -2113,6 +2200,11 @@ function secTTCls(){
   }else clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
   return '<div class="card"><div class="ct">📚 वर्गनिहाय वेळापत्रक</div><div class="fg2"><div class="fg"><label>वर्ग</label><select id="tt-cls-sel"><option value="">निवडा</option>'+clsOpts+'</select></div></div><div id="tt-cls-wrap"></div></div>';
 }
+/* subject -> colour family for timetable cells */
+function emveSubjCls(sb){var x=String(sb||'').toLowerCase();
+  if(/marathi/.test(x))return 'ts-mr';if(/hindi/.test(x))return 'ts-hi';if(/english/.test(x))return 'ts-en';if(/math/.test(x))return 'ts-ma';
+  if(/science|parisar 1/.test(x))return 'ts-sc';if(/history|geography|samaj|parisar 2/.test(x))return 'ts-so';
+  if(/art/.test(x))return 'ts-ar';if(/karya/.test(x))return 'ts-ka';if(/jalsu/.test(x))return 'ts-ja';return 'ts-pe';}
 function renderTTCls(){
   var cls=(document.getElementById('tt-cls-sel')||{}).value||'';var wrap=document.getElementById('tt-cls-wrap');if(!wrap)return;if(!cls){wrap.innerHTML='';return;}
   var cols='100px '+PERIODS.map(function(){return 'minmax(130px,1fr)';}).join(' ');
@@ -2122,10 +2214,10 @@ function renderTTCls(){
       if(day==='शनिवार'&&i===2){cells+='<div class="tt-cell" style="background:#e0f2fe;border-left:4px solid #38bdf8;"><div style="font-size:.72rem;font-weight:900;color:#0369a1;text-align:center;">COMMON PT</div></div>';continue;}
       if(day==='शनिवार'&&i>6){cells+='<div class="tt-cell" style="background:#f8fafc;"><span class="tt-empty">—</span></div>';continue;}
       var sl=getTTSlot(cls,day,'P'+i)||getTTSlot(cls,day,String(i));
-      if(sl)cells+='<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.84rem;font-weight:900;">'+ttTeacherDisplayName(sl.tcName||sl.teacher||'')+'</div><div style="font-size:.7rem;color:var(--mt);font-weight:700;margin-top:4px;">'+(sl.subj||sl.subject||'')+'</div></div></div>';
+      if(sl)cells+='<div class="tt-cell tt-filled '+emveSubjCls(sl.subj||sl.subject)+'"><div class="tt-view-cell"><div class="tt-s">'+emveEsc(emveSubjName(sl.subj||sl.subject||''))+'</div><div class="tt-t">'+emveEsc(ttTeacherDisplayName(sl.tcName||sl.teacher||''))+'</div></div></div>';
       else cells+='<div class="tt-cell"><span class="tt-empty">—</span></div>';
     }
-    return '<div class="tt-cell tt-period">'+day+'</div>'+cells;
+    return '<div class="tt-cell tt-period'+(day===emveDayOfDate(today())?' tt-today':'')+'">'+day+'</div>'+cells;
   }).join('');
   wrap.innerHTML='<div class="tw"><div class="tt-grid" style="display:grid;grid-template-columns:'+cols+';">'+hdr+body+'</div></div>';
 }
@@ -2145,8 +2237,8 @@ function renderTTTc(){
     if(day==='शनिवार'&&i===2){cells+='<div class="tt-cell" style="background:#e0f2fe;border-left:4px solid #38bdf8;"><div style="font-size:.72rem;font-weight:900;color:#0369a1;text-align:center;">COMMON PT</div></div>';continue;}
     if(day==='शनिवार'&&i>6){cells+='<div class="tt-cell" style="background:#f8fafc;"><span class="tt-empty">—</span></div>';continue;}
     var p='P'+i,slot=null;for(var j=0;j<mySlots.length;j++){if(mySlots[j].day===day&&String(mySlots[j].period).replace('P','')===String(i)){slot=mySlots[j];break;}}
-    if(slot)cells+='<div class="tt-cell tt-filled"><div class="tt-view-cell"><div style="font-size:.9rem;font-weight:900;color:var(--b);">'+((getCls(slot.cls)||{}).label||slot.cls)+'</div><div style="font-size:.75rem;color:var(--mt);font-weight:700;margin-top:4px;">'+(slot.subject||'')+'</div></div></div>';else cells+='<div class="tt-cell"><span class="tt-empty">—</span></div>';
-  }return '<div class="tt-cell tt-period">'+day+'</div>'+cells;}).join('');
+    if(slot)cells+='<div class="tt-cell tt-filled '+emveSubjCls(slot.subject)+'"><div class="tt-view-cell"><div class="tt-s">'+emveEsc(emveClsLabel(slot.cls))+'</div><div class="tt-t">'+emveEsc(emveSubjName(slot.subject||''))+'</div></div></div>';else cells+='<div class="tt-cell"><span class="tt-empty">—</span></div>';
+  }return '<div class="tt-cell tt-period'+(day===emveDayOfDate(today())?' tt-today':'')+'">'+day+'</div>'+cells;}).join('');
   wrap.innerHTML='<div style="display:flex;justify-content:flex-end;margin:0 0 10px;"><button class="btn bo bsm no-print" data-action="tt-print-teacher">🖨️ Print / Download PDF</button></div><div class="tw"><div class="tt-grid" style="display:grid;grid-template-columns:'+cols+';">'+hdr+body+'</div></div>';
 }
 function ttPrintTeacher(name){
@@ -2163,7 +2255,7 @@ function secTTSub(){
     '<div class="fg2"><div class="fg"><label>तारीख</label><input type="date" id="ttsub-date" value="'+today()+'"></div>'+
     '<div class="fg"><label>गैरहजर शिक्षक</label><select id="ttsub-tc">'+tcOpts+'</select></div>'+
     '<div class="fg"><label>दिवस (तारखेवरून आपोआप)</label><select id="ttsub-day" disabled>'+dayOpts+'</select></div></div>'+
-    '<div id="ttsub-wrap" style="margin-top:20px;"></div></div>';
+    '<div id="ttsub-wrap" style="margin-top:20px;"></div><div id="ttsub-plan" style="margin-top:18px;"></div></div>';
 }
 
 /* date 'YYYY-MM-DD' -> app day name ('' on Sunday) */
@@ -2175,6 +2267,7 @@ function renderTTSub(){
   var dt=(document.getElementById('ttsub-date')||{}).value||'';
   var day=emveDayOfDate(dt);
   var ds=document.getElementById('ttsub-day');if(ds)ds.value=day;
+  emveRenderSubPlan();
   var wrap=document.getElementById('ttsub-wrap');if(!wrap)return;
   if(!dt||!tcId){wrap.innerHTML='';return;}
   if(!day){wrap.innerHTML='<div class="alert ai"><div>ℹ️</div><div>ही तारीख रविवार आहे. वेळापत्रक नाही.</div></div>';return;}
@@ -2201,7 +2294,7 @@ function renderTTSub(){
     var cl=getCls(slot.cls);var clL=cl?cl.label:slot.cls;
     var existingSub=substitutions.find(function(s){return s.date===dt&&s.cls===slot.cls&&String(s.period)===slot.period;});
     if(existingSub){done++;
-      return '<tr><td style="font-weight:700;">तास '+slot.period+'</td><td><strong style="color:var(--b);">'+clL+'</strong></td><td style="font-weight:600;">'+emveEsc(slot.subj)+'</td>'+
+      return '<tr><td style="font-weight:700;">तास '+slot.period+'</td><td><strong style="color:var(--b);">'+clL+'</strong></td><td style="font-weight:600;">'+emveEsc(emveSubjName(slot.subj))+'</td>'+
         '<td colspan="2"><span style="color:var(--g);font-weight:800;">&#x2705; '+emveEsc(existingSub.subTcName)+'</span></td></tr>';
     }
     var freeTcs=TEACHERS.filter(function(t){
@@ -2211,9 +2304,9 @@ function renderTTSub(){
     }).map(function(t){return {t:t,load:emveSubDayLoad(getMyTTName(t),day)+(subsToday[t.id]||0)};});
     /* least busy teacher first (fair sharing) */
     freeTcs.sort(function(a,b){return a.load-b.load;});
-    if(!freeTcs.length)return '<tr><td style="font-weight:700;">तास '+slot.period+'</td><td><strong style="color:var(--b);">'+clL+'</strong></td><td style="font-weight:600;">'+emveEsc(slot.subj)+'</td><td colspan="2"><span style="color:#dc2626;font-weight:800;">या तासाला कोणीही शिक्षक मोकळे नाहीत</span></td></tr>';
+    if(!freeTcs.length)return '<tr><td style="font-weight:700;">तास '+slot.period+'</td><td><strong style="color:var(--b);">'+clL+'</strong></td><td style="font-weight:600;">'+emveEsc(emveSubjName(slot.subj))+'</td><td colspan="2"><span style="color:#dc2626;font-weight:800;">या तासाला कोणीही शिक्षक मोकळे नाहीत</span></td></tr>';
     var freeOpts=freeTcs.map(function(x,k){return '<option value="'+x.t.id+'"'+(k===0?' selected':'')+'>'+emveEsc(x.t.name)+' (आज '+x.load+' तास)</option>';}).join('');
-    return '<tr><td style="font-weight:700;">तास '+slot.period+'</td><td><strong style="color:var(--b);">'+clL+'</strong></td><td style="font-weight:600;">'+emveEsc(slot.subj)+'</td>'+
+    return '<tr><td style="font-weight:700;">तास '+slot.period+'</td><td><strong style="color:var(--b);">'+clL+'</strong></td><td style="font-weight:600;">'+emveEsc(emveSubjName(slot.subj))+'</td>'+
       '<td><select class="tt-sel" style="padding:8px 10px;border-radius:10px;font-size:.9rem;" id="sub-'+slot.cls+'-'+slot.period+'">'+freeOpts+'</select></td>'+
       '<td><button class="btn bp bsm" data-action="assignttsub" data-cls="'+slot.cls+'" data-p="'+slot.period+'" data-subj="'+emveAttr(slot.subj)+'" data-day="'+day+'">&#x2705; द्या</button></td></tr>';
   }).join('');
@@ -2668,11 +2761,7 @@ function loadTransactionsAndSettings(){
           parseTimetableRows(ttR);
           loadTTMasterData(function(){
             sheetGet('SubLog',function(slR){
-              substitutions=[];
-              if(slR.length>1)slR.slice(1).forEach(function(r){
-                if(!r[0])return;
-                substitutions.push({id:parseInt(r[0])||0,date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2])||0,absTcName:String(r[3]||''),subTcId:parseInt(r[4])||0,subTcName:String(r[5]||''),cls:String(r[6]||''),period:String(r[7]||''),subj:String(r[8]||'')});
-              });
+              substitutions=emveParseSubLog(slR);
               sheetGet('Notices',function(ntRes){
                 notices=[];
                 if(ntRes.length>1)ntRes.slice(1).forEach(function(r){
@@ -2741,11 +2830,7 @@ function loadAll(){
   sheetGet(TT_WORKLOAD_SHEET,step(emveParseWorkload));
   loadTTMasterData(step(function(){}));
   sheetGet('SubLog',step(function(slR){
-    substitutions=[];
-    if(slR.length>1)slR.slice(1).forEach(function(r){
-      if(!r[0])return;
-      substitutions.push({id:parseInt(r[0])||0,date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2])||0,absTcName:String(r[3]||''),subTcId:parseInt(r[4])||0,subTcName:String(r[5]||''),cls:String(r[6]||''),period:String(r[7]||''),subj:String(r[8]||'')});
-    });
+    substitutions=emveParseSubLog(slR);
   }));
   sheetGet('Notices',step(function(ntRes){
     notices=[];
@@ -2911,6 +2996,9 @@ document.addEventListener('DOMContentLoaded',function(){
         }
         else if(act==='loadnikal')loadAndRenderNikal();
         else if(act==='savett')saveTimetable();
+        else if(act==='subshare'){emveShareSubs(el.getAttribute('data-d')||today());break;}
+        else if(act==='subprint'){emvePrintSubs(el.getAttribute('data-d')||today());break;}
+        else if(act==='subcancel'){emveCancelSub(el.getAttribute('data-id'),el.getAttribute('data-cls'),el.getAttribute('data-p'),el.getAttribute('data-d'));break;}
         else if(act==='assignttsub')assignTTSub(el.getAttribute('data-cls'),el.getAttribute('data-day'),el.getAttribute('data-p'),el.getAttribute('data-subj'));
         else if(act==='filtersublog')renderSubLog();
         else if(act==='printsublog')printSubLog();
