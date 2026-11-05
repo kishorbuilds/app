@@ -212,6 +212,15 @@ tr:hover td{background:#f1f5f9;}
 .fee-state.off{background:#fff7ed;border-color:#fed7aa;color:#c2410c;}
 .fee-pause{color:#c2410c!important;border-color:#fdba74!important;}
 @media (max-width:480px){.fee-pay{padding:9px 10px;}.fee-mini{padding:7px 6px;}}
+.sub-det{padding:0;overflow:hidden;border-top:5px solid var(--gold);margin-bottom:0;}
+.sub-det>summary{list-style:none;display:flex;align-items:center;gap:8px;padding:14px 18px;cursor:pointer;font-weight:900;color:var(--d);}
+.sub-det>summary::-webkit-details-marker{display:none;}
+.sub-det .sd-t{flex:1;}.sub-det .ctag{margin-left:0;}
+.sub-det .sd-me{background:#fef08a;color:#854d0e;font-size:.75rem;font-weight:900;padding:4px 9px;border-radius:999px;}
+.sub-det .sd-arr{transition:transform .2s;color:var(--mt);}.sub-det[open] .sd-arr{transform:rotate(180deg);}
+.sub-det[open]>summary{border-bottom:1px solid var(--bdr);}
+.sub-det>.sp-g,.sub-det>.sp-act{margin-left:14px;margin-right:14px;}.sub-det>.sp-act{margin-bottom:14px;}
+.sub-none{padding:14px 18px;font-weight:700;color:var(--mt);font-size:.88rem;border-top:5px solid var(--gold);margin-bottom:0;}
 .sp-g{border:1px solid var(--bdr);border-radius:14px;overflow:hidden;margin:10px 0;background:#fff;}
 .sp-h{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#fff7ed;border-bottom:1px solid #fed7aa;font-size:.92rem;}
 .sp-b{background:#ea580c;color:#fff;font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:999px;}
@@ -244,7 +253,14 @@ tr:hover td{background:#f1f5f9;}
 @media(max-width:600px){
   .hi{padding:12px 16px;}
   main{padding:12px;}
-  .modules{grid-template-columns:1fr;gap:16px;}
+  .modules{grid-template-columns:repeat(3,1fr);gap:10px;margin:14px auto;padding:0;}
+  .mcard{padding:14px 6px;border-radius:18px;}
+  .mcard .micon{width:48px;height:48px;border-radius:14px;font-size:1.5rem;margin-bottom:8px;}
+  .mcard .micon .ei{width:26px;height:26px;}
+  .mtit{font-size:.88rem;line-height:1.25;}
+  .mdesc{display:none;}
+  .dhero{padding:16px 18px!important;margin-bottom:0!important;}
+  #dash-greeting{font-size:1.3rem!important;margin:4px 0 2px!important;}
   .lbox{padding:32px 20px;}
   .fg2{grid-template-columns:1fr;}
   body{overflow-x:hidden;}
@@ -688,7 +704,6 @@ main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs 
     </div>
   </div>
   
-  <div id="dashboard-widgets"></div>
 
   <div class="modules" style="margin-top:24px;">
     <div class="mcard notice" id="mod-notice" data-action="openmod" data-mod="notice" style="border-top-color:var(--b);"><div class="micon">📢</div><div class="mtit">सूचना फलक</div><div class="mdesc">शालेय परिपत्रके</div></div>
@@ -699,6 +714,7 @@ main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs 
     <div class="mcard" id="mod-fee" data-action="openmod" data-mod="fee" style="border-top-color:#16a34a;"><div class="micon">₹</div><div class="mtit">शुल्क संकलन</div><div class="mdesc">फी नोंद व हिशेब</div></div>
     <div class="mcard adm" id="mod-adm" data-action="openmod" data-mod="adm" style="border-top-color:var(--pur);display:none;"><div class="micon">&#x2699;&#xFE0F;</div><div class="mtit">व्यवस्थापन</div><div class="mdesc">विद्यार्थी, शिक्षक</div></div>
   </div>
+  <div id="dashboard-widgets"></div>
 </main>
 </div>
 <div id="mod-view" style="display:none;">
@@ -1043,6 +1059,7 @@ function emveRenderSubPlan(){
     '<div class="sp-act"><button class="btn bs bsm" data-action="subshare" data-d="'+dt+'">WhatsApp वर चित्र पाठवा</button><button class="btn bo bsm" data-action="subprint" data-d="'+dt+'">PDF / Print</button></div>'+
     '<div style="font-size:.75rem;color:var(--mt);margin-top:6px;">सर्व शिक्षकांना हे नियोजन app च्या मुख्य पानावर आपोआप दिसते.</div></div>';
 }
+var emveSubOpen=false;
 function renderNoticeBoard(){
   var dtEl = document.getElementById('dash-date');
   if(dtEl) dtEl.innerHTML = 'आजची तारीख: <strong>'+formatDateIndian(today())+'</strong>';
@@ -1058,7 +1075,9 @@ function renderNoticeBoard(){
     ((me&&mine)?'<div class="sp-mine">आज तुम्हाला '+mine+' तास समायोजित केले आहेत (पिवळ्या ओळी).</div>':'')+emveSubPlanHtml(todaySubs,{me:me})+
     ((curRole==='super'||curRole==='mukh')?'<div class="sp-act"><button class="btn bs bsm" data-action="subshare" data-d="'+today()+'">WhatsApp वर चित्र पाठवा</button></div>':'')
     :'<div style="padding:16px 0;font-size:.85rem;color:var(--mt);text-align:center;font-weight:600;">आज कोणतेही तासिका समायोजन नाही.</div>';
-  var subW = '<div class="card" style="border-top:5px solid var(--gold); margin-bottom: 0;"><div class="ct">🔄 आजचे तासिका समायोजन <span class="ctag">'+todaySubs.length+'</span></div>'+subRows+'</div>';
+  var subW = todaySubs.length?
+    '<details class="card sub-det" id="sub-det"'+(emveSubOpen?' open':'')+'><summary><span class="sd-t">🔄 आजचे तासिका समायोजन</span>'+(mine?'<span class="sd-me">तुम्हाला '+mine+' तास</span>':'')+'<span class="ctag">'+todaySubs.length+'</span><span class="sd-arr">▾</span></summary>'+subRows.replace('<div class="sp-mine">','<div class="sp-mine" style="display:none">')+'</details>'
+    :'<div class="card sub-none">🔄 आज कोणतेही तासिका समायोजन नाही.</div>';
 
   db.innerHTML = subW+'<div id="fee-home"></div>';
   emveFeeHome(false);
@@ -3606,6 +3625,7 @@ document.addEventListener('DOMContentLoaded',function(){
     }
   });
 
+  document.addEventListener('toggle',function(ev){if(ev.target&&ev.target.id==='sub-det')emveSubOpen=ev.target.open;},true);
   document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();else if((ev.target.className||'').indexOf('atti')>=0)emveAttCheck();});
 
   document.addEventListener('click',function(ev){
