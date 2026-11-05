@@ -336,6 +336,15 @@ table tbody tr:nth-child(even) { background-color: #f5f5f5; }
 table.rbn{min-width:0;}
 table.rbn td,table.rbn th{white-space:normal;}
 .rbn-x{max-width:230px;}
+.ntn{flex:none;width:24px;height:24px;margin-top:8px;border-radius:50%;background:#eef2ff;color:#3730a3;font-weight:900;font-size:.8rem;display:inline-flex;align-items:center;justify-content:center;}
+.ntr+.ntr{margin-top:6px;}
+@media(max-width:480px){
+  #logout-btn{display:inline-flex;flex-direction:column;align-items:center;gap:1px;padding:6px 8px;font-size:.62rem;line-height:1.1;}
+  #logout-btn svg{margin:0!important;width:18px;height:18px;}
+}
+#emve-print-root .ntr{display:flex;gap:6px;align-items:baseline;}
+#emve-print-root .ntn{margin-top:0;width:auto;height:auto;background:none;font-size:inherit;}
+#emve-print-root .ntn:after{content:'.';}
 @media screen{
   table.ntt th:first-child,table.ntt td:first-child{width:48px;}
   .ntr{display:flex;gap:6px;align-items:stretch;}
@@ -2258,6 +2267,17 @@ function emveIsCT(cls){return curRole==='super'||curRole==='mukh'||(curRole==='s
 function emveNtLabel(cls,sb){return sb===EMVE_CT?'वर्गशिक्षक नोंदी':emveSubjLabel(cls,sb);}
 var emveNotes={},emveNotesLoaded={},emveNotesErr={};
 function emveNotesTab(cls,sb){return 'notes_'+cls+'_'+sb.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');}
+/* split a saved subject note into [note1, note2]; old notes joined with ". " are split only on known phrases */
+function emveNtSplit(subj,txt){
+  txt=String(txt||'');
+  var nl=txt.indexOf('\n');if(nl>=0)return [txt.slice(0,nl).trim(),txt.slice(nl+1).trim()];
+  var key=EMVE_NOTE_SUBJ[subj],banks=[EMVE_NOTE_BANK[key],(typeof EMVE_NOTE_MR!=='undefined'?EMVE_NOTE_MR[key]:null)],all=[];
+  banks.forEach(function(b){if(b){all=all.concat(b.g||[],b.s||[]);}});
+  for(var i=0;i<all.length;i++){var p=all[i];if(txt.indexOf(p+'. ')===0){var rest=txt.slice(p.length+2).trim().replace(/[.।]$/,'');if(all.indexOf(rest)>=0)return [p,rest];}}
+  return [txt.trim(),''];
+}
+/* shown as numbered lines (result book) */
+function emveNtLines(txt,subj){var p=subj?emveNtSplit(subj,txt).filter(Boolean):String(txt||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);if(p.length<2)return emveEsc(p[0]||'');return p.map(function(x,i){return (i+1)+'. '+emveEsc(x);}).join('<br>');}
 function emveNote(cls,sb,sId,t){var n=emveNotes[cls+'|'+sb+'|'+sId];return n&&n[t]?n[t]:'';}
 function emveAttr(t){return emveEsc(String(t||'')).replace(/"/g,'&quot;');}
 function emveNoteSubjects(cls,teacher){return emveClassSubjects(cls,teacher).filter(function(sb){return EMVE_NOTE_SUBJ[sb];});}
@@ -2319,13 +2339,14 @@ function loadNoteTable(){
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
   var t='t'+term;
   var isCT=subj===EMVE_CT;
-  var box=function(s,f,ph){var key=f?t+'_'+f:t;return '<div class="ntr"><input class="nti" maxlength="300" autocomplete="off" enterkeyhint="next" data-sid="'+s.id+'"'+(f?' data-f="'+f+'"':'')+' value="'+emveAttr(emveNote(cls,subj,s.id,key))+'" placeholder="'+ph+'" style="width:0;padding:10px;font-size:.95rem;border:1.5px solid var(--bdr);border-radius:8px;"><button type="button" class="ntb no-print" data-action="ntpick" data-sid="'+s.id+'"'+(f?' data-f="'+f+'"':'')+'>यादी ▾</button></div>';};
+  var box=function(s,f,ph,n,val){var key=f?t+'_'+f:t;return '<div class="ntr">'+(n?'<span class="ntn">'+n+'</span>':'')+'<input class="nti" maxlength="300" autocomplete="off" enterkeyhint="next" data-sid="'+s.id+'"'+(f?' data-f="'+f+'"':'')+(n?' data-n="'+n+'"':'')+' value="'+emveAttr(n?val:emveNote(cls,subj,s.id,key))+'" placeholder="'+ph+'" style="width:0;padding:10px;font-size:.95rem;border:1.5px solid var(--bdr);border-radius:8px;"><button type="button" class="ntb no-print" data-action="ntpick" data-sid="'+s.id+'"'+(f?' data-f="'+f+'"':'')+(n?' data-n="'+n+'"':'')+'>यादी ▾</button></div>';};
   var rows=stds2.map(function(s){
-    var body=isCT?EMVE_CT_F.map(function(f){return '<div class="ntl">'+f[1]+'</div>'+box(s,f[0],f[1]+'…');}).join(''):box(s,'','नोंद लिहा…');
+    var two=isCT?null:emveNtSplit(subj,emveNote(cls,subj,s.id,t));
+    var body=isCT?EMVE_CT_F.map(function(f){return '<div class="ntl">'+f[1]+'</div>'+box(s,f[0],f[1]+'…');}).join(''):box(s,'','नोंद 1 — विशेष प्रगती…','1',two[0])+box(s,'','नोंद 2 — सुधारणा आवश्यक…','2',two[1]);
     return '<tr><td style="vertical-align:top;"><strong>'+s.roll+'</strong></td><td style="width:100%;"><div style="font-weight:700;font-size:.92rem;margin-bottom:6px;">'+s.name+'</div>'+body+'</td></tr>';
   }).join('');
   var filled=stds2.filter(function(s){return isCT?EMVE_CT_F.some(function(f){return emveNote(cls,subj,s.id,t+'_'+f[0]);}):emveNote(cls,subj,s.id,t);}).length;
-  wrap.innerHTML='<div class="alert ai no-print"><div>&#x2139;&#xFE0F;</div><div><strong>"यादी ▾"</strong> दाबा: तयार वाक्ये दिसतील, एक निवडा. किंवा चौकटीत स्वतः लिहा.<br>आधी भरलेल्या नोंदी चौकटीतच दिसतात. भरलेल्या: <strong>'+filled+' / '+stds2.length+'</strong></div></div>'+
+  wrap.innerHTML='<div class="alert ai no-print"><div>&#x2139;&#xFE0F;</div><div>'+(isCT?'<strong>"यादी ▾"</strong> दाबा: तयार वाक्ये दिसतील, एक निवडा. किंवा चौकटीत स्वतः लिहा.':'प्रत्येक विद्यार्थ्याला दोन नोंदी: <strong>1 = विशेष प्रगती</strong>, <strong>2 = सुधारणा आवश्यक</strong>. "यादी ▾" दाबून वाक्य निवडा किंवा स्वतः लिहा.')+'<br>आधी भरलेल्या नोंदी चौकटीतच दिसतात. भरलेल्या: <strong>'+filled+' / '+stds2.length+'</strong></div></div>'+
     '<div class="print-header" style="text-align:center;margin-bottom:10px;"><strong>वर्णनात्मक नोंदी</strong><br><span>इयत्ता: '+getCls(cls).label+' | सत्र: '+(term==='2'?'द्वितीय':'प्रथम')+' | '+(isCT?'':'विषय: ')+emveNtLabel(cls,subj)+'</span></div>'+
     '<div class="tw"><table class="ntt"><thead><tr><th>ह.क्र.</th><th>नाव व नोंद</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:20px;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="savenotes">&#x1F4BE; सर्व सेव्ह करा</button><button class="btn no-print" style="margin-left:10px;" data-action="emve-print" data-target="nt-wrap" data-title="वर्णनात्मक नोंदी">🖨️ प्रिंट करा</button></div>';
@@ -2335,14 +2356,21 @@ function saveNotes(){
   var cls=(document.getElementById('nt-cls')||{}).value||'',subj=(document.getElementById('nt-subj')||{}).value||'',term=(document.getElementById('nt-term')||{}).value||'';
   if(!cls||!subj||!term||!emveNotesLoaded[cls+'|'+subj])return;
   var t='t'+term,count=0;
-  var ins=document.querySelectorAll('#nt-wrap input.nti'),seen={};
+  var ins=document.querySelectorAll('#nt-wrap input.nti'),seen={},pair={};
   for(var i=0;i<ins.length;i++){
     var id=parseInt(ins[i].getAttribute('data-sid'),10)||0;if(!id)continue;
+    var nn=ins[i].getAttribute('data-n');
+    if(nn){if(!pair[id])pair[id]=['',''];pair[id][nn==='2'?1:0]=String(ins[i].value||'').replace(/\s+/g,' ').trim();continue;}
     var f=ins[i].getAttribute('data-f')||'',fk=f?t+'_'+f:t;
     var key=cls+'|'+subj+'|'+id;if(!emveNotes[key])emveNotes[key]={};
     emveNotes[key][fk]=String(ins[i].value||'').replace(/\s+/g,' ').trim();
     if(emveNotes[key][fk]&&!seen[id]){seen[id]=1;count++;}
   }
+  Object.keys(pair).forEach(function(id){
+    var key=cls+'|'+subj+'|'+id;if(!emveNotes[key])emveNotes[key]={};
+    var v=pair[id][1]?pair[id][0]+'\n'+pair[id][1]:pair[id][0];
+    emveNotes[key][t]=v;if(v&&!seen[id]){seen[id]=1;count++;}
+  });
   var cols=subj===EMVE_CT?[]:['t1','t2'];
   if(subj===EMVE_CT)['t1','t2'].forEach(function(tt){EMVE_CT_F.forEach(function(f){cols.push(tt+'_'+f[0]);});});
   var rows=[['sId','नाव'].concat(cols)];
@@ -2358,22 +2386,24 @@ var emveNtPickSid=0;
 /* bank per subject: g = विशेष प्रगती (good), s = सुधारणा आवश्यक (to improve) */
 var emveNtPickF='';
 function emveNtBank(f){if(f)return {g:EMVE_NOTE_CT[f]||[],s:[]};var subj=(document.getElementById('nt-subj')||{}).value||'';var key=EMVE_NOTE_SUBJ[subj];if(EMVE_NOTE_MR[key]&&emveNtLang(key)==='mr')return EMVE_NOTE_MR[key];return EMVE_NOTE_BANK[key]||{g:[],s:[]};}
-function emveNtInp(sid,f){return document.querySelector('#nt-wrap input.nti[data-sid="'+sid+'"]'+(f?'[data-f="'+f+'"]':':not([data-f])'));}
-function emveNtPick(sid,f){
-  f=f||'';var bank=emveNtBank(f);
-  var inp=emveNtInp(sid,f);if(!inp)return;
-  emveNtPickClose();emveNtPickSid=sid;emveNtPickF=f;
+var emveNtPickN='';
+function emveNtInp(sid,f,n){return document.querySelector('#nt-wrap input.nti[data-sid="'+sid+'"]'+(f?'[data-f="'+f+'"]':':not([data-f])')+(n?'[data-n="'+n+'"]':''));}
+function emveNtPick(sid,f,n){
+  f=f||'';n=n||'';var bank=emveNtBank(f);
+  var inp=emveNtInp(sid,f,n);if(!inp)return;
+  emveNtPickClose();emveNtPickSid=sid;emveNtPickF=f;emveNtPickN=n;
   var fl='';EMVE_CT_F.forEach(function(x){if(x[0]===f)fl=x[1];});
   var cur=String(inp.value||'').trim();
   var tab=bank.s.indexOf(cur)>=0?'s':'g';
   if(!f&&cur){var hasG=bank.g.some(function(p){return cur.indexOf(p)>=0;}),hasS=bank.s.some(function(p){return cur.indexOf(p)>=0;});if(hasG&&!hasS)tab='s';else if(hasS&&!hasG)tab='g';}
   /* a box with one sentence: the next pick is added after it (that is what teachers do); two or more: replace */
   var addDef=f==='av'||(cur&&cur.split(/[.।]\s+/).length<2);
+  if(n){tab=n==='2'?'s':'g';addDef=false;}
   var lk=f?'':EMVE_NOTE_SUBJ[(document.getElementById('nt-subj')||{}).value||''];var lg=EMVE_NOTE_MR[lk]?emveNtLang(lk):'';
   var list=function(k){return '<div class="ntp-list" data-k="'+k+'"'+(k===tab?'':' style="display:none"')+'>'+bank[k].map(function(p,i){return '<button type="button" data-action="ntpickset" data-k="'+k+'" data-i="'+i+'"'+(cur.indexOf(p)>=0?' class="on"':'')+'>'+emveEsc(p)+'</button>';}).join('')+'</div>';};
   var d=document.createElement('div');d.className='ntp';d.id='nt-pick';d.setAttribute('data-action','ntpickbg');
   d.innerHTML='<div class="ntp-box"><div class="ntp-h"><span>'+(fl||'नोंद निवडा')+'</span><button type="button" data-action="ntpickclose">✕</button></div>'+
-    (cur?'<div class="ntp-mode"><div class="ntp-cur">आधीची: '+emveEsc(cur)+'</div><div class="ntp-mb">'+
+    (cur&&!n?'<div class="ntp-mode"><div class="ntp-cur">आधीची: '+emveEsc(cur)+'</div><div class="ntp-mb">'+
       '<button type="button" class="ntp-m'+(addDef?' on':'')+'" data-action="ntpickmode" data-m="add">➕ '+(f==='av'?'आवड जोडा':'नंतर जोडा')+'</button>'+
       '<button type="button" class="ntp-m'+(addDef?'':' on')+'" data-action="ntpickmode" data-m="rep">🔄 आधीची बदला</button></div>'+
       '<input type="checkbox" id="ntp-add" style="display:none"'+(addDef?' checked':'')+'></div>':'')+
@@ -2391,7 +2421,7 @@ function emveNtPickLang(l){
   var k=EMVE_NOTE_SUBJ[(document.getElementById('nt-subj')||{}).value||''];if(!EMVE_NOTE_MR[k])return;
   try{localStorage.setItem('emveNtLang_'+k,l==='mr'?'mr':'own');}catch(e){}
   var on=document.querySelector('#nt-pick .ntp-t.on');var t=on?on.getAttribute('data-k'):'g';
-  emveNtPick(emveNtPickSid,emveNtPickF);emveNtPickTab(t);
+  emveNtPick(emveNtPickSid,emveNtPickF,emveNtPickN);emveNtPickTab(t);
 }
 function emveNtPickMode(m){
   var c=document.getElementById('ntp-add');if(c)c.checked=(m==='add');
@@ -2400,7 +2430,7 @@ function emveNtPickMode(m){
 function emveNtPickClose(){var d=document.getElementById('nt-pick');if(d)d.parentNode.removeChild(d);}
 function emveNtPickSet(k,i){
   var p=(emveNtBank(emveNtPickF)[k]||[])[i];
-  var inp=emveNtInp(emveNtPickSid,emveNtPickF);
+  var inp=emveNtInp(emveNtPickSid,emveNtPickF,emveNtPickN);
   var add=document.getElementById('ntp-add');
   if(p&&inp){
     var old=String(inp.value||'').trim().replace(/[.।,]$/,'');
@@ -2468,11 +2498,11 @@ function emveRBookNotes(cls,stds2){
   /* let the next opening of the result book try the failed subjects again */
   miss.forEach(function(sb){delete emveNotesErr[cls+'|'+sb];});
   var rows=stds2.map(function(s){
-    var lines=subs.map(function(sb){return [emveSubjLabel(cls,sb),emveNote(cls,sb,s.id,'t1'),emveNote(cls,sb,s.id,'t2')];});
+    var lines=subs.map(function(sb){return [emveSubjLabel(cls,sb),emveNote(cls,sb,s.id,'t1'),emveNote(cls,sb,s.id,'t2'),sb];});
     EMVE_CT_F.forEach(function(f){lines.push([f[1],emveNote(cls,EMVE_CT,s.id,'t1_'+f[0]),emveNote(cls,EMVE_CT,s.id,'t2_'+f[0])]);});
     return lines.map(function(x,i){
       return '<tr'+(i===0?' style="border-top:2px solid #94a3b8;"':'')+'><td>'+(i===0?'<strong>'+s.roll+'</strong>':'')+'</td><td style="white-space:nowrap;font-weight:700;">'+(i===0?s.name:'')+'</td>'+
-        '<td style="white-space:nowrap;'+(i>=subs.length?'color:var(--b);font-weight:700;':'')+'">'+x[0]+'</td><td><div class="rbn-x">'+(x[1]?emveEsc(x[1]):'-')+'</div></td><td><div class="rbn-x">'+(x[2]?emveEsc(x[2]):'-')+'</div></td></tr>';
+        '<td style="white-space:nowrap;'+(i>=subs.length?'color:var(--b);font-weight:700;':'')+'">'+x[0]+'</td><td><div class="rbn-x">'+(x[1]?emveNtLines(x[1],x[3]):'-')+'</div></td><td><div class="rbn-x">'+(x[2]?emveNtLines(x[2],x[3]):'-')+'</div></td></tr>';
     }).join('');
   }).join('');
   return '<div id="rb-notes"><div style="margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-weight:900;font-size:1.05rem;">वर्णनात्मक नोंदी — '+((getCls(cls)||{}).label||cls)+'</span><button class="btn bo bsm no-print" data-action="emve-print" data-part="1" data-target="rb-notes" data-title="वर्णनात्मक नोंदी — '+((getCls(cls)||{}).label||cls)+'" data-orient="portrait">🖨️ फक्त नोंदी print</button></div>'+
@@ -3723,7 +3753,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='stdaction')stdAction(parseInt(el.getAttribute('data-sid')||0));
         else if(act==='mkretry'){var rc=(document.getElementById('m-cls')||{}).value||'',rs=(document.getElementById('m-subj')||{}).value||'';delete emveMarksErr[rc+'|'+rs];loadMkTable();}
         else if(act==='savenotes')saveNotes();
-        else if(act==='ntpick'){emveNtPick(parseInt(el.getAttribute('data-sid'),10)||0,el.getAttribute('data-f')||'');break;}
+        else if(act==='ntpick'){emveNtPick(parseInt(el.getAttribute('data-sid'),10)||0,el.getAttribute('data-f')||'',el.getAttribute('data-n')||'');break;}
         else if(act==='ntpickset'){emveNtPickSet(el.getAttribute('data-k')||'g',parseInt(el.getAttribute('data-i'),10));break;}
         else if(act==='ntpicklang'){emveNtPickLang(el.getAttribute('data-l')||'own');break;}
         else if(act==='ntpickmode'){emveNtPickMode(el.getAttribute('data-m')||'add');break;}
