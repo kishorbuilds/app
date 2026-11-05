@@ -1175,6 +1175,7 @@ function showTab(id){document.querySelectorAll('.tab').forEach(function(t){t.cla
 
 function renderSec(id){
   var el=document.getElementById('mod-secs');if(!el)return;
+  emveDirty=false;
   var tp=document.querySelector('.ep-top-print');
   if(tp)tp.style.display=({astd:1,atch:1,ld:1,lc:1,lrp:1,ntview:1,rprog:1,ttcls:1,tttc:1,ttslg:1})[id]?'':'none';
   var html='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>Not found: '+id+'</div></div>';
@@ -1722,7 +1723,7 @@ function emveAttFull(){
   var m=(document.getElementById('att-m')||{}).value,wd=emveWD[m];if(!wd)return;
   var ins=document.querySelectorAll('input.atti'),has=[].slice.call(ins).some(function(x){return String(x.value).trim()!=='';});
   if(has&&!confirm('आधी भरलेले आकडे बदलून सर्वांना '+wd+' भरायचे?'))return;
-  [].slice.call(ins).forEach(function(x){x.value=wd;});emveAttCheck();
+  [].slice.call(ins).forEach(function(x){x.value=wd;});emveAttCheck();emveDirty=true;
 }
 function emveAttSave(){
   var cls=(document.getElementById('att-cls')||{}).value||'',m=(document.getElementById('att-m')||{}).value||'';
@@ -2435,7 +2436,7 @@ function emveNtPickSet(k,i){
   if(p&&inp){
     var old=String(inp.value||'').trim().replace(/[.।,]$/,'');
     inp.value=(add&&add.checked&&old&&old.indexOf(p)<0)?old+(emveNtPickF==='av'?', ':'. ')+p:p;
-    inp.style.borderColor='var(--g)';
+    inp.style.borderColor='var(--g)';emveDirty=true;
   }
   emveNtPickClose();
 }
@@ -3717,7 +3718,7 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 
   document.addEventListener('toggle',function(ev){if(ev.target&&ev.target.id==='sub-det')emveSubOpen=ev.target.open;},true);
-  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();else if((ev.target.className||'').indexOf('atti')>=0)emveAttCheck();});
+  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();else if((ev.target.className||'').indexOf('atti')>=0)emveAttCheck();var cn=' '+(ev.target.className||'')+' ';if(/ (mi|nti|atti|att-wdi) /.test(cn))emveDirty=true;});
 
   document.addEventListener('click',function(ev){
     var el=ev.target;
@@ -3725,7 +3726,7 @@ document.addEventListener('DOMContentLoaded',function(){
       var act=(el.getAttribute&&el.getAttribute('data-action'))||'';
       if(act){
         if(act==='login')doLogin();
-        else if(act==='logout'){if(confirm('लॉगआउट करायचे?\nSave न केलेले काम जाईल.'))doLogout();}
+        else if(act==='logout'){if(confirm(emveDirty?'⚠️ तुम्ही भरलेले काही बदल अजून Save केलेले नाहीत.\nतरीही लॉगआउट केले तर ते जातील.\n\nलॉगआउट करायचे?':'लॉगआउट करायचे?'))doLogout();}
         else if(act==='goback'){if(history.state&&history.state.emve){history.back();}else{curMod=null;showHome();}}
         else if(act==='closemodal')closeM('cm');
         else if(act==='toggleLock'){settings.marksLocked=!settings.marksLocked;syncSettings();toast(settings.marksLocked?'गुण नोंदणी बंद!':'गुण नोंदणी सुरू!');var btn=document.getElementById('tg-lk2');if(btn){btn.style.background=settings.marksLocked?'#dc2626':'#16a34a';btn.textContent=settings.marksLocked?'🔒 गुण नोंदणी बंद आहे — सुरू करा':'🔓 गुण नोंदणी सुरू आहे — बंद करा';}if(document.getElementById('mk-wrap')) document.getElementById('mk-wrap').innerHTML='';}
@@ -4286,8 +4287,10 @@ function loginErr(msg){toast(msg,'err');}
 function emveAuthExpired(){if(!curRole)return;toast('Login ची वेळ संपली. पुन्हा login करा.','err');doLogout();}
 function emveNoteLoad(name,p){if(!p)return;if(p.error==='auth')emveAuthExpired();if(p.ts){emveLoadedAt[name]=p.ts;if(!emveLoadedAt._first)emveLoadedAt._first=p.ts;}}
 var emveReloading=false;
+var emveDirty=false;
 function emveAfterWrite(name,res){
   if(!res)return;
+  if(res.success&&/^(marks_|mk5_|notes_|att_|Attendance_)/.test(String(name)))emveDirty=false;
   if(res.ts)emveLoadedAt[name]=res.ts;
   if(res.auth){emveAuthExpired();return;}
   /* sheet was changed by someone else: reload instead of overwriting it */
