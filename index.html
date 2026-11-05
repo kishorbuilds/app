@@ -3937,7 +3937,32 @@ function emvePrintClean(src){
   txt.forEach(function(t){if(EMVE_PRINT_STRIP.test(t.nodeValue))t.nodeValue=t.nodeValue.replace(EMVE_PRINT_STRIP,'');EMVE_PRINT_STRIP.lastIndex=0;});
   return {node:c,filters:filters,hdrSub:hdrSub};
 }
+/* PDF file name: class, subject, list name, term, date (e.g. "इ. 8 वी मराठी वर्णनात्मक नोंदी प्रथम सत्र 06-11-2026") */
+function emvePdfName(title,sub){
+  var parts=[];
+  String(sub||'').split('|').forEach(function(p){p=emvePrintText(p);if(p){var k=p.indexOf(':');parts.push(k>=0?[p.slice(0,k).trim(),p.slice(k+1).trim()]:['',p]);}});
+  if(!parts.length){
+    var sc=document.getElementById('mod-secs');
+    if(sc)[].slice.call(sc.querySelectorAll('.fg')).forEach(function(fg){
+      var lb=fg.querySelector('label'),f=fg.querySelector('select');
+      if(lb&&f&&f.value&&f.options[f.selectedIndex]&&f.offsetParent!==null)parts.push([emvePrintText(lb.textContent),emvePrintText(f.options[f.selectedIndex].text)]);
+    });
+  }
+  var t=emvePrintText(title),cls=[],subj=[],rest=[];
+  parts.forEach(function(p){
+    var l=p[0],v=p[1];if(!v||v==='निवडा'||t.indexOf(v)>=0)return;
+    if(/इयत्ता|वर्ग/.test(l)&&!/शिक्षक/.test(l))cls.push(/^\d+\s*वी/.test(v)?'इ. '+v:v);
+    else if(!l||/विषय/.test(l))subj.push(v);
+    else if(/सत्र/.test(l)&&v.indexOf('सत्र')<0)rest.push(v+' सत्र');
+    else rest.push(v);
+  });
+  var d=new Date(),dd=function(n){return (n<10?'0':'')+n;};
+  var nm=cls.concat(subj,[t||'EMVE'],rest,[dd(d.getDate())+'-'+dd(d.getMonth()+1)+'-'+d.getFullYear()]).join(' ');
+  return nm.replace(/[\\\/:*?"<>|#%{}~&]+/g,' ').replace(/[—–]/g,'-').replace(/\s+/g,' ').trim().slice(0,120)||'EMVE';
+}
+var emveOldTitle='';
 function emvePrintDone(){
+  if(emveOldTitle){document.title=emveOldTitle;emveOldTitle='';}
   document.body.classList.remove('emve-printing');
   var st=document.getElementById('emve-page-style');if(st)st.parentNode.removeChild(st);
 }
@@ -3978,8 +4003,10 @@ function emvePrint(src,opts){
   var imgs=root.querySelectorAll('img'),wait=0;
   for(var k=0;k<imgs.length;k++){if(!imgs[k].complete)wait++;}
   emvePrintAt=Date.now();
-  var fname=emvePrintText(opts.title||'EMVE')||'EMVE';
+  var fname=emvePdfName(opts.title,sub);
   if(opts.noPrint)return;
+  /* browser "Save as PDF" names the file after the page title */
+  if(!emveOldTitle)emveOldTitle=document.title;document.title=fname;
   setTimeout(function(){emveDoPrint(orient,fname);},wait?400:60);
 }
 /* Cmd+P / Ctrl+P / browser menu: still give the clean page, not the app screen */
