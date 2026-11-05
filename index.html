@@ -330,6 +330,13 @@ table tbody tr:nth-child(even) { background-color: #f5f5f5; }
 /* notes: phrase picker sheet + floating jump buttons (screen only) */
 @media screen{
   table.ntt{min-width:0;table-layout:fixed;}
+  #emve-print-root table.ntt{table-layout:auto;}
+}
+/* result-book notes: long notes wrap instead of widening the page */
+table.rbn{min-width:0;}
+table.rbn td,table.rbn th{white-space:normal;}
+.rbn-x{max-width:230px;}
+@media screen{
   table.ntt th:first-child,table.ntt td:first-child{width:48px;}
   .ntr{display:flex;gap:6px;align-items:stretch;}
   .ntr input.nti{flex:1;min-width:0;}
@@ -2450,12 +2457,12 @@ function emveRBookNotes(cls,stds2){
     EMVE_CT_F.forEach(function(f){lines.push([f[1],emveNote(cls,EMVE_CT,s.id,'t1_'+f[0]),emveNote(cls,EMVE_CT,s.id,'t2_'+f[0])]);});
     return lines.map(function(x,i){
       return '<tr'+(i===0?' style="border-top:2px solid #94a3b8;"':'')+'><td>'+(i===0?'<strong>'+s.roll+'</strong>':'')+'</td><td style="white-space:nowrap;font-weight:700;">'+(i===0?s.name:'')+'</td>'+
-        '<td style="white-space:nowrap;'+(i>=subs.length?'color:var(--b);font-weight:700;':'')+'">'+x[0]+'</td><td>'+(x[1]?emveEsc(x[1]):'-')+'</td><td>'+(x[2]?emveEsc(x[2]):'-')+'</td></tr>';
+        '<td style="white-space:nowrap;'+(i>=subs.length?'color:var(--b);font-weight:700;':'')+'">'+x[0]+'</td><td><div class="rbn-x">'+(x[1]?emveEsc(x[1]):'-')+'</div></td><td><div class="rbn-x">'+(x[2]?emveEsc(x[2]):'-')+'</div></td></tr>';
     }).join('');
   }).join('');
-  return '<div style="margin-top:24px;font-weight:900;font-size:1.05rem;">वर्णनात्मक नोंदी</div>'+
+  return '<div id="rb-notes"><div style="margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-weight:900;font-size:1.05rem;">वर्णनात्मक नोंदी — '+((getCls(cls)||{}).label||cls)+'</span><button class="btn bo bsm no-print" data-action="emve-print" data-part="1" data-target="rb-notes" data-title="वर्णनात्मक नोंदी — '+((getCls(cls)||{}).label||cls)+'" data-orient="portrait">🖨️ फक्त नोंदी print</button></div>'+
     (miss.length?'<div class="alert aw no-print"><div>⚠️ काही विषयांच्या नोंदी आणता आल्या नाहीत. पान पुन्हा उघडा.</div></div>':'')+
-    '<div class="tw" style="font-size:.85rem;margin-top:8px;"><table><thead><tr><th>ह.क्र.</th><th>नाव</th><th>विषय</th><th>प्रथम सत्र</th><th>द्वितीय सत्र</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    '<div class="tw" style="font-size:.85rem;margin-top:8px;"><table class="rbn"><thead><tr><th>ह.क्र.</th><th>नाव</th><th>विषय</th><th class="rbn-t">प्रथम सत्र</th><th class="rbn-t">द्वितीय सत्र</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
 function secRBook(){
@@ -3924,7 +3931,7 @@ function emvePrint(src,opts){
 function emvePrintForMenu(){
   if(document.body.classList.contains('emve-printing'))return;
   var mv=document.getElementById('mod-view');if(!mv||mv.style.display==='none')return;
-  var b=document.querySelector('#mod-secs [data-action="emve-print"]');
+  var b=document.querySelector('#mod-secs [data-action="emve-print"]:not([data-part])');
   try{
     if(b)emvePrint(b.getAttribute('data-target'),{title:b.getAttribute('data-title')||'',orient:b.getAttribute('data-orient')||'',raw:b.getAttribute('data-raw')==='1',sign:b.getAttribute('data-sign')==='1'?['वर्गशिक्षक','मुख्याध्यापक']:null,noPrint:true});
     else{var tb=document.querySelector('#nav-tabs .tab.on');emvePrint(document.getElementById('mod-secs'),{title:tb?tb.textContent:'',noPrint:true});}
