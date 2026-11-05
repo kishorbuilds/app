@@ -169,6 +169,7 @@ tr:hover td{background:#f1f5f9;}
 .fee-home{cursor:pointer;}.fh-f{padding:4px 0 8px;border-bottom:1px solid #f1f5f9;margin-bottom:6px;}
 .fh-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:-4px;}
 .fh-c{font-size:.75rem;font-weight:800;padding:3px 8px;border-radius:999px;}.fh-c.g{background:#dcfce7;color:#15803d;}.fh-c.o{background:#fef3c7;color:#b45309;}.fh-c.r{background:#fee2e2;color:#b91c1c;}
+#mod-att .micon{background:#e0f2fe;color:#0369a1;}
 #mod-fee .micon{background:#dcfce7;color:#15803d;font-weight:900;}
 .fee-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:6px 0 12px;}
 .fee-k{background:#f8fafc;border:1px solid var(--bdr);border-radius:14px;padding:10px 12px;}
@@ -694,6 +695,7 @@ main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs 
     <div class="mcard lib" id="mod-lib" data-action="openmod" data-mod="lib"><div class="micon">&#x1F4D6;</div><div class="mtit">ग्रंथालय</div><div class="mdesc">पुस्तके व नोंदी</div></div>
     <div class="mcard res" id="mod-res" data-action="openmod" data-mod="res"><div class="micon">&#x1F4CA;</div><div class="mtit">निकाल</div><div class="mdesc">गुण व प्रगतिपत्रक</div></div>
     <div class="mcard" id="mod-tt" data-action="openmod" data-mod="tt" style="border-top-color:var(--gold);"><div class="micon">&#x1F4C5;</div><div class="mtit">वेळापत्रक</div><div class="mdesc">तासिका समायोजन</div></div>
+    <div class="mcard" id="mod-att" data-action="openmod" data-mod="att" style="border-top-color:#0ea5e9;display:none;"><div class="micon">🗓️</div><div class="mtit">हजेरी</div><div class="mdesc">महिन्याचे हजर दिवस</div></div>
     <div class="mcard" id="mod-fee" data-action="openmod" data-mod="fee" style="border-top-color:#16a34a;"><div class="micon">₹</div><div class="mtit">शुल्क संकलन</div><div class="mdesc">फी नोंद व हिशेब</div></div>
     <div class="mcard adm" id="mod-adm" data-action="openmod" data-mod="adm" style="border-top-color:var(--pur);display:none;"><div class="micon">&#x2699;&#xFE0F;</div><div class="mtit">व्यवस्थापन</div><div class="mdesc">विद्यार्थी, शिक्षक</div></div>
   </div>
@@ -1068,6 +1070,8 @@ function showHome(){
   curMod=null;
   var admCard=document.getElementById('mod-adm');
   if(admCard)admCard.style.display=(curRole==='super'||curRole==='mukh'||curRole==='clerk')?'block':'none';
+  var attCard=document.getElementById('mod-att');
+  if(attCard)attCard.style.display=(emveAttIsAdm()||(curRole==='shik'&&curTc&&curTc.classOf))?'block':'none';
   renderNoticeBoard();
   emveRefreshSubs();
 }
@@ -1091,6 +1095,8 @@ function buildTabs(){
   ]:curMod==='notice'?[
     {id:'ntview', i:'📢', l:'सर्व सूचना'},
     {id:'ntadd', i:'➕', l:'नवीन सूचना', h:!isA}
+  ]:curMod==='att'?[
+    {id:'ratt',i:'🗓️',l:'हजेरी'},
   ]:curMod==='fee'?[
     {id:'fcol',i:'₹',l:'फी गोळा करा'},
     {id:'fsum',i:'📒',l:'हिशेब',h:!emveFeeIsAdm()},
@@ -1107,7 +1113,6 @@ function buildTabs(){
     {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:(!isA && curRole!=='clerk')},
     {id:'rgos',i:'&#x1F4CB;',l:'\u0917\u094B\u0937\u0935\u093E\u0930\u093E',h:(!isA && curRole!=='clerk')},
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
-    {id:'ratt',i:'🗓️',l:'हजेरी',h:!(emveAttIsAdm()||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='super'||curRole==='mukh'||curRole==='clerk'||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rnik',i:'&#x1F4CA;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='shik'&&curTc&&curTc.classOf)},
   ];
