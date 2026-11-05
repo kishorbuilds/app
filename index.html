@@ -701,7 +701,7 @@ main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs 
         <span id="uname" style="font-size:clamp(0.85rem,2.5vw,1.1rem);white-space:nowrap;">&#x2014;</span>
         <span class="rchip" id="rchip"></span>
       </div>
-      <button class="sbtn" id="logout-btn" data-action="logout">&#x092C;&#x093E;&#x0939;&#x0947;&#x0930;</button>
+      <button class="sbtn" id="logout-btn" data-action="logout" aria-label="लॉगआउट"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:4px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>लॉगआउट</button>
     </div>
   </div>
 </header>
@@ -1106,7 +1106,7 @@ function showHome(){
   renderNoticeBoard();
   emveRefreshSubs();
 }
-function openMod(mod){curMod=mod;document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='block';buildTabs();}
+function openMod(mod){if(!(history.state&&history.state.emve)){try{history.pushState({emve:'mod'},'');}catch(e){}}curMod=mod;document.getElementById('home-view').style.display='none';document.getElementById('mod-view').style.display='block';buildTabs();}
 
 function buildTabs(){
   var isA=(curRole==='super'||curRole==='mukh');
@@ -3695,8 +3695,8 @@ document.addEventListener('DOMContentLoaded',function(){
       var act=(el.getAttribute&&el.getAttribute('data-action'))||'';
       if(act){
         if(act==='login')doLogin();
-        else if(act==='logout')doLogout();
-        else if(act==='goback'){curMod=null;showHome();}
+        else if(act==='logout'){if(confirm('लॉगआउट करायचे?\nSave न केलेले काम जाईल.'))doLogout();}
+        else if(act==='goback'){if(history.state&&history.state.emve){history.back();}else{curMod=null;showHome();}}
         else if(act==='closemodal')closeM('cm');
         else if(act==='toggleLock'){settings.marksLocked=!settings.marksLocked;syncSettings();toast(settings.marksLocked?'गुण नोंदणी बंद!':'गुण नोंदणी सुरू!');var btn=document.getElementById('tg-lk2');if(btn){btn.style.background=settings.marksLocked?'#dc2626':'#16a34a';btn.textContent=settings.marksLocked?'🔒 गुण नोंदणी बंद आहे — सुरू करा':'🔓 गुण नोंदणी सुरू आहे — बंद करा';}if(document.getElementById('mk-wrap')) document.getElementById('mk-wrap').innerHTML='';}
         else if(act==='openmod')openMod(el.getAttribute('data-mod')||'');
@@ -3954,6 +3954,14 @@ function emvePrintForMenu(){
   }catch(e){}
 }
 window.addEventListener('beforeprint',emvePrintForMenu);
+window.addEventListener('popstate',function(){
+  var mv=document.getElementById('mod-view'),inMod=mv&&mv.style.display!=='none';
+  var stay=function(){try{history.pushState({emve:'mod'},'');}catch(e){}};
+  if(document.getElementById('nt-pick')){emveNtPickClose();if(inMod)stay();return;}
+  if(document.body.classList.contains('emve-printing')){emvePrintDone();if(inMod)stay();return;}
+  var ov=document.querySelector('.mov.show,.mov.open');if(ov){ov.classList.remove('show');ov.classList.remove('open');if(inMod)stay();return;}
+  if(inMod){curMod=null;showHome();}
+});
 /* print stays ready until the user touches the app again (Chrome may re-render the preview) */
 var emvePrintAt=0;
 function emvePrintTouch(){if(document.body.classList.contains('emve-printing')&&Date.now()-emvePrintAt>2000)emvePrintDone();}
@@ -3968,8 +3976,10 @@ document.addEventListener('touchstart',emvePrintTouch,true);
 document.addEventListener('keydown',emvePrintTouch,true);
 /* Home-screen app / WhatsApp browser: print() does nothing there -> make a PDF instead */
 function emveIsIOSApp(){return window.navigator.standalone===true;}
+/* app opened from the home-screen icon (any phone): browser printing is unreliable there */
+function emveIsInstalled(){try{return emveIsIOSApp()||window.matchMedia('(display-mode: standalone)').matches||window.matchMedia('(display-mode: fullscreen)').matches;}catch(e){return emveIsIOSApp();}}
 function emveDoPrint(orient,fname){
-  if(emveIsIOSApp()){emvePdf(orient,fname);return;}
+  if(emveIsInstalled()){emvePdf(orient,fname);return;}
   var opened=false,mark=function(){opened=true;};
   window.addEventListener('beforeprint',mark);
   var t0=Date.now();
@@ -4055,7 +4065,7 @@ function emvePdf(orient,fname){
         var blob=pdf.output('blob');
         done();
         if(emveIsIOSApp())emvePdfReady(blob,fname);
-        else{var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'.pdf';document.body.appendChild(a);a.click();setTimeout(function(){a.parentNode.removeChild(a);},1000);toast('PDF download झाली ✅');}
+        else{var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'.pdf';document.body.appendChild(a);a.click();setTimeout(function(){a.parentNode.removeChild(a);},1000);toast(emveIsInstalled()?'PDF download झाली ✅ वरच्या notification मधून उघडून print करा.':'PDF download झाली ✅');}
       }catch(e){done();fail();}
     },function(){done();fail();});
   },fail);
