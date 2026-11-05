@@ -472,6 +472,24 @@ table.pc2-tbl{width:100%!important;max-width:100%!important;margin:0;border-coll
 .pc2-rem i{flex:1;border-bottom:1.5px dotted #94a3b8;height:18px;}
 .pc2-sign{display:flex;justify-content:space-between;gap:20px;padding:46px 20px 0;}
 .pc2-sign div{flex:1;text-align:center;border-top:1.5px solid #1e3a8a;padding-top:5px;font-weight:800;font-size:12.5px;color:#1e3a8a;}
+/* printed card: tighter top part so the whole card fits one A4 page */
+#emve-print-root .pc2{padding-bottom:12px;}
+#emve-print-root .pc2-head{padding:9px 18px 8px;}
+#emve-print-root .pc2-logo{width:62px;height:62px;}
+#emve-print-root .pc2-ht{padding-right:62px;}
+#emve-print-root .pc2-school{font-size:21px;}
+#emve-print-root .pc2-ribbon{padding:5px 10px;}
+#emve-print-root .pc2-info{grid-template-columns:repeat(4,1fr);gap:6px;padding:9px 18px 2px;}
+#emve-print-root .pc2-f{padding:4px 8px;}
+#emve-print-root .pc2-f:first-child{grid-column:span 2;}
+#emve-print-root .pc2-tw{padding:8px 18px 0;}
+#emve-print-root .pc2-tbl th{padding:6px 8px;}
+#emve-print-root .pc2-tbl td{padding:5px 8px;}
+#emve-print-root .pc2-sum{grid-template-columns:repeat(4,1fr);gap:8px;padding:9px 18px 0;}
+#emve-print-root .pc2-tile{padding:6px 8px;}
+#emve-print-root .pc2-att{padding:8px 18px 0;}
+#emve-print-root .pc2-rem{padding:10px 18px 0;}
+#emve-print-root .pc2-sign{padding:34px 18px 0;}
 @media screen and (max-width:640px){
   .pc2-info{grid-template-columns:1fr 1fr;}.pc2-sum{grid-template-columns:1fr 1fr;}
   .pc2-school{font-size:17px;}.pc2-ht{padding-right:0;}.pc2-logo{width:56px;height:56px;}
@@ -2612,7 +2630,7 @@ function genCard(){
     '<div class="pc2-sign"><div>वर्गशिक्षक</div><div>पालक</div><div>मुख्याध्यापक</div></div>'+
     '</div>'+
     '<div class="no-print" style="margin-top:16px;display:flex;gap:12px;">'+
-    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="pc-wrap" data-title="प्रगतिपत्रक" data-raw="1" data-orient="portrait">🖨️ प्रिंट करा</button>'+
+    '<button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="pc-wrap" data-title="प्रगतिपत्रक" data-raw="1" data-orient="portrait" data-onepage="1">🖨️ प्रिंट करा</button>'+
     '<button class="btn bd" style="font-size:1rem;padding:12px 24px;" onclick="document.getElementById(\'pc-wrap\').innerHTML=\'\'">❌ बंद करा</button>'+
     '</div>';
 }
@@ -3796,7 +3814,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='emve-pdf-close')emvePdfClose();
         else if(act==='emve-print'){
           var pf=[];(el.getAttribute('data-filters')||'').split(',').forEach(function(fid){var fe=document.getElementById(fid);if(fe&&fe.tagName==='SELECT'&&fe.value&&fe.options[fe.selectedIndex]){var lb=fe.parentNode&&fe.parentNode.querySelector('label');pf.push((lb?emvePrintText(lb.textContent)+': ':'')+fe.options[fe.selectedIndex].text);}});
-          emvePrint(el.getAttribute('data-target'),{title:el.getAttribute('data-title')||'',sub:pf.join('  |  '),orient:el.getAttribute('data-orient')||'',raw:el.getAttribute('data-raw')==='1',sign:el.getAttribute('data-sign')==='1'?['वर्गशिक्षक','मुख्याध्यापक']:null});
+          emvePrint(el.getAttribute('data-target'),{title:el.getAttribute('data-title')||'',sub:pf.join('  |  '),orient:el.getAttribute('data-orient')||'',raw:el.getAttribute('data-raw')==='1',onePage:el.getAttribute('data-onepage')==='1',sign:el.getAttribute('data-sign')==='1'?['वर्गशिक्षक','मुख्याध्यापक']:null});
         }
         else if(act==='loadnikal')loadAndRenderNikal();
         else if(act==='savett')saveTimetable();
@@ -3994,6 +4012,12 @@ function emvePrint(src,opts){
   var ratio=fit(orient);
   if(!opts.orient&&ratio>1.02){orient='landscape';ratio=fit(orient);}
   if(ratio>1.01)body.style.zoom=String(Math.max(0.45,Math.floor(100/ratio)/100));
+  if(opts.onePage){
+    root.setAttribute('data-one','1');
+    var zz=parseFloat(body.style.zoom)||1,pg1=root.querySelector('.ep-page');
+    var hNeed=pg1?pg1.offsetHeight:body.scrollHeight,hHave=root.clientWidth*(orient==='landscape'?190/277:277/190)*0.98;
+    if(hNeed>hHave)body.style.zoom=String(Math.max(0.6,Math.floor(100*zz*hHave/hNeed)/100));
+  }
   root.className=(opts.raw?'ep-raw ':'')+(orient==='landscape'?'ep-land':'ep-port');
   if(emveWebKit)root.className+=' ep-wk';
   var st=document.createElement('style');st.id='emve-page-style';
@@ -4107,6 +4131,7 @@ function emvePdf(orient,fname){
     var tables=[],tl=body.querySelectorAll('table');
     for(i=0;i<tl.length;i++){var th=tl[i].querySelector('thead');if(th)tables.push({t:top(tl[i]),b:bot(tl[i]),ht:top(th),hb:bot(th)});}
     var f=Math.min(CW/w,1/PX);           /* mm per css px */
+    if(root.getAttribute('data-one')==='1'&&H*f>CH)f=CH/H;
     var pageH=CH/f;
     var sc=Math.min(2,Math.sqrt(12e6/Math.max(1,w*H)));
     window.html2canvas(root,{scale:sc,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:w+40,width:w,height:H}).then(function(cv){
