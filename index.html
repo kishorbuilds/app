@@ -195,6 +195,17 @@ tr:hover td{background:#f1f5f9;}
 .fee-cb.all{background:#eef2ff;border-color:#c7d2fe;}
 .fee-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #f1f5f9;}
 .fee-item.closed{opacity:.75;}
+.att-wd{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;}
+.att-wdc{display:flex;flex-direction:column;gap:4px;border:1px solid var(--bdr);border-radius:12px;padding:8px;background:#f8fafc;font-weight:800;font-size:.82rem;color:#334155;}
+.att-wdc input{width:100%;padding:8px;border-radius:9px;border:1px solid var(--bdr);font-size:1rem;font-weight:800;text-align:center;font-family:inherit;}
+.att-wdc b{font-size:1.1rem;text-align:center;}.att-wdc.tot{background:#eef2ff;border-color:#c7d2fe;}
+.att-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.88rem;margin-top:6px;}
+.att-r{display:flex;align-items:center;gap:8px;padding:7px 10px;border-top:1px solid #f1f5f9;}.att-r:first-child{border-top:0;}
+.att-in{flex:none;display:flex;align-items:center;gap:5px;}
+.att-in input{width:64px;padding:9px 6px;border-radius:10px;border:1.5px solid var(--bdr);font-size:1.05rem;font-weight:800;text-align:center;font-family:inherit;}
+.att-in input.bad{border-color:#ef4444;background:#fef2f2;color:#b91c1c;}
+.att-in small{color:var(--mt);font-weight:700;}
+.att-year{font-size:.8rem;}.att-year th,.att-year td{text-align:center;padding:6px 5px;}.att-year .att-nm{text-align:left;white-space:nowrap;}.att-wdr td{background:#eef2ff;font-weight:800;}
 .fee-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
 .fee-state{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;font-weight:800;border-radius:12px;padding:8px 12px;margin-bottom:10px;font-size:.88rem;}
 .fee-state.off{background:#fff7ed;border-color:#fed7aa;color:#c2410c;}
@@ -408,6 +419,14 @@ table.pc2-tbl{width:100%!important;max-width:100%!important;margin:0;border-coll
 .pc2-pass{background:linear-gradient(160deg,#dcfce7,#bbf7d0);border-color:#86efac;}.pc2-pass b,.pc2-pass>small{color:#15803d;}
 .pc2-fail{background:linear-gradient(160deg,#fee2e2,#fecaca);border-color:#fca5a5;}.pc2-fail b,.pc2-fail>small{color:#b91c1c;}
 .pc2-rem{padding:12px 20px 0;display:grid;grid-template-columns:1fr 3fr;gap:14px;}
+.pc2-rem.one{grid-template-columns:1fr;}
+.pc2-att{padding:12px 20px 0;}
+.pc2-att-h{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:12px;color:#475569;margin-bottom:4px;}
+.pc2-att-h b{color:#1e3a8a;font-size:13px;}
+.pc2-att-t{width:100%;border-collapse:collapse;table-layout:fixed;font-size:10.5px;}
+.pc2-att-t th,.pc2-att-t td{border:1px solid #cbd5e1;text-align:center;padding:4px 1px;}
+.pc2-att-t th{background:#eef2ff;color:#1e3a8a;font-weight:800;font-size:10px;}
+.pc2-att-t th:first-child,.pc2-att-t td:first-child{width:72px;font-weight:800;text-align:left;padding-left:5px;}
 .pc2-rem div{display:flex;align-items:flex-end;gap:8px;}
 .pc2-rem span{font-weight:800;font-size:12px;color:#475569;white-space:nowrap;}
 .pc2-rem i{flex:1;border-bottom:1.5px dotted #94a3b8;height:18px;}
@@ -1088,6 +1107,7 @@ function buildTabs(){
     {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:(!isA && curRole!=='clerk')},
     {id:'rgos',i:'&#x1F4CB;',l:'\u0917\u094B\u0937\u0935\u093E\u0930\u093E',h:(!isA && curRole!=='clerk')},
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
+    {id:'ratt',i:'🗓️',l:'हजेरी',h:!(emveAttIsAdm()||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='super'||curRole==='mukh'||curRole==='clerk'||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rnik',i:'&#x1F4CA;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='shik'&&curTc&&curTc.classOf)},
   ];
@@ -1118,6 +1138,7 @@ function renderSec(id){
     else if(id==='lc')html=secLC();else if(id==='lrp')html=secLRP();
     else if(id==='rm')html=secRM();
     else if(id==='rnote')html=secRNote();
+    else if(id==='ratt')html=secRAtt();
     else if(id==='rprog')html=secRProg();else if(id==='rgos')html=secRGos();
     else if(id==='rbook')html=secRBook();else if(id==='rcard')html=secRCard();else if(id==='rnik')html=secRNikal();
     else if(id==='astd')html=secRStd();else if(id==='atch')html=secRTch();
@@ -1131,6 +1152,7 @@ function renderSec(id){
   if(id==='lr')filterReturn();
   if(id==='lrp')buildLibReport();
   if(id==='rnik')loadAndRenderNikal();
+  if(id==='ratt')renderRAtt();
   if(id==='ttcls')renderTTCls();
   if(id==='tttc'){if(curRole==='shik'&&curTc)renderTTTc();}
   if(id==='ttsub')renderTTSub();
@@ -1543,6 +1565,143 @@ function emveFeeClose(id){
   sheetPost('Fees',emveFeeRows(),function(res){
     if(res&&res.success){toast(f.closed?'फी भरणे थांबवले ⏸':'फी भरणे पुन्हा सुरू ▶');emveFeeHomeAt=0;if(document.getElementById('fee-all'))renderFeeNew();if(document.getElementById('fee-sum-t'))renderFeeSumTable(false);}
     else{f.closed=!f.closed;if(!(res&&(res.auth||res.stale)))toast('जतन झाले नाही.','err');}});
+}
+
+
+// ---- हजेरी (attendance): working days for the school + present days per student, June-April ----
+/* Sheet tabs: Attendance_WorkDays [key,महिना,दिवस]; att_<cls> [sId,नाव,jun..apr] */
+var EMVE_ATT_M=[['jun','जून','जून'],['jul','जुलै','जुलै'],['aug','ऑगस्ट','ऑग.'],['sep','सप्टेंबर','सप्टें.'],['oct','ऑक्टोबर','ऑक्टो.'],['nov','नोव्हेंबर','नोव्हें.'],['dec','डिसेंबर','डिसें.'],['jan','जानेवारी','जाने.'],['feb','फेब्रुवारी','फेब्रु.'],['mar','मार्च','मार्च'],['apr','एप्रिल','एप्रि.']];
+var EMVE_ATT_WD='Attendance_WorkDays';
+var emveWD={},emveWDLoaded=false,emveAtt={},emveAttLoaded={},emveAttErr={};
+function emveAttIsAdm(){return curRole==='super'||curRole==='mukh'||curRole==='clerk';}
+function emveAttCanCls(cls){return emveAttIsAdm()||(curRole==='shik'&&curTc&&normalizeClass(curTc.classOf)===cls);}
+function emveAttCurMonth(){var m=new Date().getMonth();var k=['jan','feb','mar','apr','apr','jun','jul','aug','sep','oct','nov','dec'][m];return k;}
+function emveAttLoadWD(done){
+  sheetGet(EMVE_ATT_WD,function(rows){
+    if(emveGetFailed[EMVE_ATT_WD]){done(false);return;}
+    emveWD={};(rows||[]).slice(1).forEach(function(r){var k=String(r[0]||'').trim();if(k)emveWD[k]=r[2]===''||r[2]==null?'':emveNum(r[2]);});
+    emveWDLoaded=true;done(true);
+  });
+}
+function emveAttLoadCls(cls,done){
+  var tab='att_'+cls;
+  sheetGet(tab,function(rows){
+    if(emveGetFailed[tab]){emveAttErr[cls]=1;done(false);return;}
+    delete emveAttErr[cls];
+    var h=(rows&&rows[0]||[]).map(function(x){return String(x||'').trim();});
+    (rows||[]).slice(1).forEach(function(r){var id=parseInt(r[0],10)||0;if(!id)return;var o={};
+      for(var i=2;i<h.length;i++){if(h[i])o[h[i]]=r[i]===''||r[i]==null?'':emveNum(r[i]);}
+      emveAtt[cls+'|'+id]=o;});
+    emveAttLoaded[cls]=1;done(true);
+  });
+}
+function emveAttGet(cls,id,k){var o=emveAtt[cls+'|'+id];return o&&o[k]!=null?o[k]:'';}
+/* both loads (for the card and the screen) */
+function emveAttEnsure(cls,done){
+  var left=2,ok=true;function fin(x){if(!x)ok=false;left--;if(!left)done(ok);}
+  if(emveWDLoaded)fin(true);else emveAttLoadWD(fin);
+  if(emveAttLoaded[cls])fin(true);else emveAttLoadCls(cls,fin);
+}
+function secRAtt(){
+  var isA=emveAttIsAdm(),mine=curTc?normalizeClass(curTc.classOf):'';
+  if(!isA&&!mine)return noAccess();
+  var cl=isA?CLASSES:CLASSES.filter(function(c){return c.id===mine;});
+  var cur=emveAttCurMonth();
+  return '<div class="card"><div class="ct">🗓️ कामाचे दिवस (सर्व वर्गांना सारखे)</div><div id="att-wd">⏳</div></div>'+
+    '<div class="card"><div class="ct">✅ विद्यार्थ्यांचे हजर दिवस</div>'+
+    '<div class="fg2"><div class="fg"><label>वर्ग</label><select id="att-cls">'+cl.map(function(c){return '<option value="'+c.id+'"'+(c.id===mine?' selected':'')+'>'+c.label+'</option>';}).join('')+'</select></div>'+
+    '<div class="fg"><label>महिना</label><select id="att-m">'+EMVE_ATT_M.map(function(m){return '<option value="'+m[0]+'"'+(m[0]===cur?' selected':'')+'>'+m[1]+'</option>';}).join('')+'<option value="all">संपूर्ण वर्ष (फक्त पाहणे)</option></select></div></div>'+
+    '<div id="att-wrap"></div></div>';
+}
+function renderRAtt(){
+  var w=document.getElementById('att-wd');if(!w)return;
+  emveWDLoaded=false;emveAttLoaded={};emveAtt={};
+  emveAttLoadWD(function(ok){
+    if(!ok){w.innerHTML='<div class="alert aw"><div>⚠️ कामाचे दिवस आणता आले नाहीत (Internet?).</div></div><button class="btn bp" data-action="attretry">पुन्हा प्रयत्न करा</button>';return;}
+    var ed=emveAttIsAdm();
+    w.innerHTML='<div class="att-wd">'+EMVE_ATT_M.map(function(m){var v=emveWD[m[0]];
+      return '<label class="att-wdc"><span>'+m[1]+'</span>'+(ed?'<input type="number" inputmode="numeric" min="0" max="31" class="att-wdi" data-k="'+m[0]+'" value="'+(v===''||v==null?'':v)+'">':'<b>'+(v===''||v==null?'—':v)+'</b>')+'</label>';}).join('')+
+      '<label class="att-wdc tot"><span>एकूण</span><b id="att-wdt">'+emveAttWDTotal()+'</b></label></div>'+
+      (ed?'<button class="btn bp bsm" data-action="attwdsave" style="margin-top:10px;">कामाचे दिवस जतन करा</button>':'<div style="font-size:.78rem;color:var(--mt);margin-top:6px;">कामाचे दिवस मुख्याध्यापक / लिपिक भरतात.</div>');
+    renderAttList();
+  });
+}
+function emveAttWDTotal(){var t=0;EMVE_ATT_M.forEach(function(m){t+=emveNum(emveWD[m[0]]);});return t;}
+function emveAttWDSave(){
+  var ins=document.querySelectorAll('.att-wdi'),bad='';
+  [].slice.call(ins).forEach(function(x){var v=String(x.value).trim();if(v!==''&&(emveNum(v)>31||emveNum(v)<0))bad=x.getAttribute('data-k');});
+  if(bad){toast('महिन्याचे कामाचे दिवस 0 ते 31 असावेत.','err');return;}
+  var old=JSON.stringify(emveWD);
+  [].slice.call(ins).forEach(function(x){var v=String(x.value).trim();emveWD[x.getAttribute('data-k')]=v===''?'':emveNum(v);});
+  var rows=[['key','महिना','कामाचे दिवस']].concat(EMVE_ATT_M.map(function(m){return [m[0],m[1],emveWD[m[0]]];}));
+  syncStatus('ing');
+  sheetPost(EMVE_ATT_WD,rows,function(res){
+    if(res&&res.success){syncStatus('ok');toast('कामाचे दिवस जतन झाले ✅');var t=document.getElementById('att-wdt');if(t)t.textContent=emveAttWDTotal();renderAttList();}
+    else{emveWD=JSON.parse(old);if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही. पुन्हा प्रयत्न करा.','err');}}
+  });
+}
+function renderAttList(){
+  var w=document.getElementById('att-wrap');if(!w)return;
+  var cls=(document.getElementById('att-cls')||{}).value||'',m=(document.getElementById('att-m')||{}).value||'';
+  if(!cls||!m){w.innerHTML='';return;}
+  if(emveAttErr[cls]){w.innerHTML='<div class="alert aw"><div>⚠️ जतन केलेली हजेरी आणता आली नाही. जुनी नोंद पुसली जाऊ नये म्हणून नोंद थांबवली आहे.</div></div><button class="btn bp" data-action="attretry">पुन्हा प्रयत्न करा</button>';return;}
+  if(!emveAttLoaded[cls]){w.innerHTML='<div style="padding:24px;text-align:center;color:var(--mt);font-weight:700;">⏳ हजेरी आणत आहे…</div>';emveAttLoadCls(cls,function(){if((document.getElementById('att-cls')||{}).value===cls)renderAttList();});return;}
+  var st=getStds(cls);if(!st.length){w.innerHTML='<div class="alert aw"><div>विद्यार्थी नाहीत</div></div>';return;}
+  if(m==='all'){
+    w.innerHTML='<div class="tw"><table class="att-year"><thead><tr><th>क्र.</th><th>नाव</th>'+EMVE_ATT_M.map(function(x){return '<th>'+x[2]+'</th>';}).join('')+'<th>एकूण</th><th>%</th></tr></thead><tbody>'+
+      '<tr class="att-wdr"><td></td><td>कामाचे दिवस</td>'+EMVE_ATT_M.map(function(x){var v=emveWD[x[0]];return '<td>'+(v===''||v==null?'':v)+'</td>';}).join('')+'<td>'+emveAttWDTotal()+'</td><td></td></tr>'+
+      st.map(function(s){var t=0,wd=0;var cells=EMVE_ATT_M.map(function(x){var v=emveAttGet(cls,s.id,x[0]);if(v!==''){t+=v;wd+=emveNum(emveWD[x[0]]);}return '<td>'+(v===''?'':v)+'</td>';}).join('');
+        return '<tr><td>'+emveEsc(String(s.roll||''))+'</td><td class="att-nm">'+emveEsc(s.name)+'</td>'+cells+'<td><b>'+t+'</b></td><td>'+(wd?Math.round(100*t/wd)+'%':'')+'</td></tr>';}).join('')+
+      '</tbody></table></div>';
+    return;
+  }
+  var wd=emveWD[m],ml=(EMVE_ATT_M.filter(function(x){return x[0]===m;})[0]||[])[1];
+  var can=emveAttCanCls(cls),filled=0;
+  var rows=st.map(function(s){var v=emveAttGet(cls,s.id,m);if(v!=='')filled++;
+    return '<div class="att-r"><span class="fee-roll">'+emveEsc(String(s.roll||''))+'</span><span class="fee-nm">'+emveEsc(s.name)+'</span>'+
+      '<span class="att-in"><input type="number" inputmode="numeric" min="0" max="31" class="atti" data-action="attin" data-sid="'+s.id+'" value="'+(v===''?'':v)+'"'+(can?'':' disabled')+'><small>/ '+(wd===''||wd==null?'?':wd)+'</small></span></div>';}).join('');
+  w.innerHTML=(wd===''||wd==null?'<div class="alert aw"><div>⚠️ '+ml+' महिन्याचे कामाचे दिवस अजून भरलेले नाहीत (वर भरा).</div></div>':'')+
+    '<div class="att-top"><span><b>'+ml+'</b> · कामाचे दिवस <b>'+(wd===''||wd==null?'—':wd)+'</b> · भरलेले '+filled+' / '+st.length+'</span>'+
+    (can&&wd?'<button class="btn bo bsm" data-action="attfull">सर्वांना '+wd+' भरा</button>':'')+'</div>'+
+    '<div style="font-size:.78rem;color:var(--mt);margin:4px 0 8px;">सोपी पद्धत: "सर्वांना '+(wd||'…')+' भरा" दाबा, मग फक्त गैरहजर राहिलेल्यांचे दिवस बदला. Enter = पुढचा विद्यार्थी.</div>'+
+    '<div class="fee-rows">'+rows+'</div>'+
+    (can?'<button class="btn bp" data-action="attsave" style="margin-top:12px;width:100%;">हजेरी जतन करा</button>':'');
+  emveAttCheck();
+}
+function emveAttCheck(){
+  var m=(document.getElementById('att-m')||{}).value,wd=emveNum(emveWD[m]),bad=0;
+  [].slice.call(document.querySelectorAll('input.atti')).forEach(function(x){var v=String(x.value).trim();var over=v!==''&&((wd&&emveNum(v)>wd)||emveNum(v)>31);x.classList.toggle('bad',over);if(over)bad++;});
+  return bad;
+}
+function emveAttFull(){
+  var m=(document.getElementById('att-m')||{}).value,wd=emveWD[m];if(!wd)return;
+  var ins=document.querySelectorAll('input.atti'),has=[].slice.call(ins).some(function(x){return String(x.value).trim()!=='';});
+  if(has&&!confirm('आधी भरलेले आकडे बदलून सर्वांना '+wd+' भरायचे?'))return;
+  [].slice.call(ins).forEach(function(x){x.value=wd;});emveAttCheck();
+}
+function emveAttSave(){
+  var cls=(document.getElementById('att-cls')||{}).value||'',m=(document.getElementById('att-m')||{}).value||'';
+  if(!cls||!m||m==='all'||!emveAttLoaded[cls]||!emveAttCanCls(cls))return;
+  if(emveAttCheck()){toast('लाल चौकटीतील हजर दिवस कामाच्या दिवसांपेक्षा जास्त आहेत. दुरुस्त करा.','err');return;}
+  [].slice.call(document.querySelectorAll('input.atti')).forEach(function(x){var id=parseInt(x.getAttribute('data-sid'),10);var k=cls+'|'+id;if(!emveAtt[k])emveAtt[k]={};var v=String(x.value).trim();emveAtt[k][m]=v===''?'':emveNum(v);});
+  var rows=[['sId','नाव'].concat(EMVE_ATT_M.map(function(x){return x[0];}))];
+  getStds(cls).forEach(function(s){rows.push([s.id,s.name].concat(EMVE_ATT_M.map(function(x){return emveAttGet(cls,s.id,x[0]);})));});
+  syncStatus('ing');
+  sheetPost('att_'+cls,rows,function(res){
+    if(res&&res.success){syncStatus('ok');toast('हजेरी जतन झाली ✅');renderAttList();}
+    else if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('हजेरी जतन झाली नाही. पुन्हा प्रयत्न करा.','err');}
+  });
+}
+/* progress-card table */
+function emveAttCardHtml(cls,id){
+  var tw=0,tp=0,any=false;
+  var wdc=EMVE_ATT_M.map(function(m){var v=emveWD[m[0]];if(v!==''&&v!=null)tw+=v;return '<td>'+(v===''||v==null?'':v)+'</td>';}).join('');
+  var pc=EMVE_ATT_M.map(function(m){var v=emveAttGet(cls,id,m[0]);if(v!==''){tp+=v;any=true;}return '<td>'+(v===''?'':v)+'</td>';}).join('');
+  var pct=any&&tw?Math.round(100*tp/tw):'';
+  return '<div class="pc2-att"><div class="pc2-att-h"><span>उपस्थिती</span>'+(pct!==''?'<b>'+pct+'%</b>':'')+'</div>'+
+    '<table class="ep-plain pc2-att-t"><thead><tr><th>महिना</th>'+EMVE_ATT_M.map(function(m){return '<th>'+m[2]+'</th>';}).join('')+'<th>एकूण</th></tr></thead><tbody>'+
+    '<tr><td>कामाचे दिवस</td>'+wdc+'<td><b>'+(tw||'')+'</b></td></tr>'+
+    '<tr><td>हजर दिवस</td>'+pc+'<td><b>'+(any?tp:'')+'</b></td></tr></tbody></table></div>';
 }
 
 // ---- NOTICEBOARD SECTIONS ----
@@ -2309,6 +2468,7 @@ function genCard(){
   if(!cls||!sId){toast('वर्ग व विद्यार्थी निवडा!','err');return;}
   var s=students.find(function(x){return x.id===sId;});if(!s)return;
   if(!emveMarksReady(cls)){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ गुण आणत आहे…</div>';emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;genCard();});return;}
+  if(!emveWDLoaded||!emveAttLoaded[cls]){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ हजेरी आणत आहे…</div>';emveAttEnsure(cls,function(ok){if(!ok){emveWDLoaded=true;emveAttLoaded[cls]=1;toast('हजेरी आणता आली नाही; प्रगतिपत्रकावर ती रिकामी दिसेल.','err');}genCard();});return;}
   var c=getCls(cls);var subjs=getSubjs(cls);
   var grandTotal=0;var grandMax=0;
   var subjCodes={'प्रथम भाषा':'01','द्वितीय भाषा':'02','तृतीय भाषा':'03','गणित':'04','सा.विज्ञान/परिसर अ.1':'05','सामाजिक शास्त्रे/परिसर अ.2':'06','कला':'07','कार्यानुभव':'08','शा.शिक्षण':'09'};
@@ -2364,7 +2524,8 @@ function genCard(){
       '<div class="pc2-tile"><span>एकूण श्रेणी</span><b class="pc2-gt '+(totalGr!=='-'?gCls(totalGr):'')+'">'+(totalGr!=='-'?totalGr:'—')+'</b></div>'+
       '<div class="pc2-tile '+(pf==='उत्तीर्ण'?'pc2-pass':'pc2-fail')+'"><span>निकाल</span><b>'+pf+'</b><small>'+nextCls+'</small></div>'+
     '</div>'+
-    '<div class="pc2-rem"><div><span>उपस्थिती</span><i></i></div><div><span>शेरा</span><i></i></div></div>'+
+    emveAttCardHtml(cls,sId)+
+    '<div class="pc2-rem one"><div><span>शेरा</span><i></i></div></div>'+
     '<div class="pc2-sign"><div>वर्गशिक्षक</div><div>पालक</div><div>मुख्याध्यापक</div></div>'+
     '</div>'+
     '<div class="no-print" style="margin-top:16px;display:flex;gap:12px;">'+
@@ -3375,6 +3536,7 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('keydown',function(ev){
     var act=(ev.target.getAttribute&&ev.target.getAttribute('data-action'))||'';
     if(act==='login-key'&&ev.key==='Enter')doLogin();
+    if(act==='attin'&&ev.key==='Enter'){ev.preventDefault();var al=[].slice.call(document.querySelectorAll('input.atti'));var ai=al.indexOf(ev.target);if(al[ai+1]){al[ai+1].focus();al[ai+1].select();}else ev.target.blur();}
     if((act==='setmk'||act==='setmk5')&&ev.key==='Enter'){
       ev.preventDefault();
       var td=ev.target.parentNode,tr=td&&td.parentNode,col=-1;
@@ -3399,6 +3561,7 @@ document.addEventListener('DOMContentLoaded',function(){
     else if(id==='nt-cls')onNtCls();
     else if(id==='nt-subj'||id==='nt-term')loadNoteTable();
     else if(id==='pc-cls')loadStdsForCard();
+    else if(id==='att-cls'||id==='att-m')renderAttList();
     else if(id==='gos-cls')loadGosawara();
     else if(id==='nikal-term'){if(curTc&&curTc.classOf)renderNikal(curTc.classOf,(document.getElementById('nikal-term')||{}).value||'1');}
     else if(id==='tt-cls-sel')renderTTCls();
@@ -3438,7 +3601,7 @@ document.addEventListener('DOMContentLoaded',function(){
     }
   });
 
-  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();});
+  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();else if((ev.target.className||'').indexOf('atti')>=0)emveAttCheck();});
 
   document.addEventListener('click',function(ev){
     var el=ev.target;
@@ -3522,6 +3685,10 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='feesumprint'){emveFeeSumPrint();break;}
         else if(act==='feesumreload'){renderFeeSumTable(true);break;}
         else if(act==='feecreate'){emveFeeCreate();break;}
+        else if(act==='attwdsave'){emveAttWDSave();break;}
+        else if(act==='attfull'){emveAttFull();break;}
+        else if(act==='attsave'){emveAttSave();break;}
+        else if(act==='attretry'){emveAttErr={};renderSec('ratt');break;}
         else if(act==='feedue'){emveFeeDueEdit(el.getAttribute('data-id'));break;}
         else if(act==='feeduesave'){emveFeeDueSave(el.getAttribute('data-id'));break;}
         else if(act==='feeduecancel'){renderFeeNew();break;}
