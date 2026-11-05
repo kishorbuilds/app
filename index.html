@@ -440,7 +440,7 @@ table.pc2-tbl{width:100%!important;max-width:100%!important;margin:0;border-coll
 .pc2-att{padding:12px 20px 0;}
 .pc2-att-h{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:12px;color:#475569;margin-bottom:4px;}
 .pc2-att-h b{color:#1e3a8a;font-size:13px;}
-.pc2-att-t{width:100%;border-collapse:collapse;table-layout:fixed;font-size:10.5px;}
+.pc2-att-t{width:100%;min-width:0!important;border-collapse:collapse;font-size:10.5px;}
 .pc2-att-t th,.pc2-att-t td{border:1px solid #cbd5e1;text-align:center;padding:4px 1px;}
 .pc2-att-t th{background:#eef2ff;color:#1e3a8a;font-weight:800;font-size:10px;}
 .pc2-att-t th:first-child,.pc2-att-t td:first-child{width:72px;font-weight:800;text-align:left;padding-left:5px;}
@@ -935,7 +935,7 @@ function setupHeader(){document.getElementById('uname').textContent=curUser;var 
 // ---- DASHBOARD (NOTICE BOARD) ----
 /* ---- substitution plan (dashboard + substitution page + WhatsApp) ---- */
 function emveParseSubLog(slR){var out=[];if(slR&&slR.length>1)slR.slice(1).forEach(function(r){if(!r[0])return;out.push({id:parseInt(r[0])||0,date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2])||0,absTcName:String(r[3]||''),subTcId:parseInt(r[4])||0,subTcName:String(r[5]||''),cls:String(r[6]||''),period:String(r[7]||''),subj:String(r[8]||'')});});return out;}
-function emveRefreshSubs(){if(!curRole)return;sheetGet('SubLog',function(r,ok){if(ok===false||!r||!r.length)return;substitutions=emveParseSubLog(r);if(!curMod)renderNoticeBoard();});}
+function emveRefreshSubs(){if(!curRole||!emveAllLoaded)return;sheetGet('SubLog',function(r,ok){if(ok===false||!r||!r.length)return;substitutions=emveParseSubLog(r);if(!curMod)renderNoticeBoard();});}
 function emveSubIsMe(s,me){return !!me&&(parseInt(s.subTcId)===parseInt(me.id)||s.subTcName===me.name);}
 function emveSubjName(sb){return (typeof EMVE_SUBJ_MR!=='undefined'&&EMVE_SUBJ_MR[sb])||sb||'';}
 function emveClsLabel(c){return (getCls(c)||{}).label||c;}
@@ -1318,14 +1318,14 @@ function emveFeeHomeTargets(){
   var out=[];emveFees.forEach(function(f){if(f.closed)return;f.classes.forEach(function(c){if(emveFeeMine(f,c))out.push({f:f,cls:c});});});return out;
 }
 function emveFeeHome(force){
-  var w=document.getElementById('fee-home');if(!w||!curRole)return;
+  var w=document.getElementById('fee-home');if(!w||!curRole||!emveAllLoaded)return;
   if(!force&&Date.now()-emveFeeHomeAt<300000&&emveFeesLoaded){emveFeeHomeRender();return;}
   if(emveFeeHomeBusy)return;emveFeeHomeBusy=true;
   emveFeeLoad(function(ok){
     if(!ok){emveFeeHomeBusy=false;return;}
     var t=emveFeeHomeTargets(),left=t.length;
     if(!left){emveFeeHomeBusy=false;emveFeeHomeAt=Date.now();emveFeeHomeRender();return;}
-    t.forEach(function(x){emveFeeDataLoad(x.f.id,x.cls,function(){left--;if(!left){emveFeeHomeBusy=false;emveFeeHomeAt=Date.now();emveFeeHomeRender();}});});
+    var i=0;(function nx(){if(i>=t.length){emveFeeHomeBusy=false;emveFeeHomeAt=Date.now();emveFeeHomeRender();return;}var x=t[i++];emveFeeDataLoad(x.f.id,x.cls,nx);})();
   });
 }
 function emveFeeHomeRender(){
@@ -3329,38 +3329,46 @@ function sheetGet(name, cb) {
     '&t=' +
     Date.now();
 
-  var xhr = new XMLHttpRequest();
   var answered = false;
   var cb0 = cb;
   /* remember failed reads so callers can tell "load failed" from "empty tab" */
   cb = function(r, ok) { if (answered) return; answered = true; if (ok) delete emveGetFailed[name]; else emveGetFailed[name] = 1; cb0(r); };
-
-  xhr.open('GET', url, true);
-  xhr.timeout = 25000;
-  xhr.ontimeout = function() { cb([]); };
-
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState !== 4) return;
-
-    try {
-      var payload = JSON.parse(xhr.responseText || '{}');
-      emveNoteLoad(name, payload);
-      cb(
-        payload && Array.isArray(payload.rows)
-          ? payload.rows
-          : [],
-        xhr.status === 200 && payload && Array.isArray(payload.rows) && !payload.error
-      );
-    } catch (e) {
-      cb([]);
-    }
+  /* many phones open the app together: send at most a few reads at a time, retry a failed read once */
+  var attempt = function(n) {
+    emveQueue(function(release) {
+      var xhr = new XMLHttpRequest(), fin = false;
+      var end = function(rows, ok, retry) {
+        if (fin) return; fin = true; release();
+        if (!ok && retry && n === 0) { setTimeout(function() { attempt(1); }, 1200 + Math.floor(Math.random() * 1500)); return; }
+        cb(rows, ok);
+      };
+      xhr.open('GET', url.replace(/&t=\d+$/, '&t=' + Date.now()), true);
+      xhr.timeout = 25000;
+      xhr.ontimeout = function() { end([], false, true); };
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 0) return;   /* network error / timeout: handled by onerror / ontimeout */
+        try {
+          var payload = JSON.parse(xhr.responseText || '{}');
+          emveNoteLoad(name, payload);
+          var good = xhr.status === 200 && payload && Array.isArray(payload.rows) && !payload.error;
+          /* auth / denied answers are final; server hiccups are retried */
+          end(payload && Array.isArray(payload.rows) ? payload.rows : [], good, !good && !(payload && (payload.error === 'auth' || payload.error === 'denied')));
+        } catch (e) { end([], false, true); }
+      };
+      xhr.onerror = function() { end([], false, true); };
+      xhr.send();
+    });
   };
-
-  xhr.onerror = function() {
-    cb([]);
-  };
-
-  xhr.send();
+  attempt(0);
+}
+var emveQ = [], emveQActive = 0, EMVE_QMAX = 4;
+function emveQueue(job) { emveQ.push(job); emveQRun(); }
+function emveQRun() {
+  while (emveQActive < EMVE_QMAX && emveQ.length) {
+    var job = emveQ.shift(); emveQActive++;
+    (function(j) { var done = false; try { j(function() { if (done) return; done = true; emveQActive--; emveQRun(); }); } catch (e) { if (!done) { done = true; emveQActive--; emveQRun(); } } })(job);
+  }
 }
 function syncAll(){
   syncStatus('ing');
@@ -3477,14 +3485,17 @@ function loadTransactionsAndSettings(){
   });
 }
 
+var emveAllLoaded=false;
 function loadAll(){
+  emveAllLoaded=false;
   syncStatus('ing');
   /* all sheets are requested together; the screen is ready when every one has answered */
   var left=10;
   function done(){
     left--;if(left>0)return;
-    syncStatus('ok');
-    toast('डेटा लोड झाला! ✅');
+    syncStatus('ok');emveAllLoaded=true;
+    if(emveGetFailed.Students)toast('विद्यार्थी यादी Sheet मधून आली नाही. Internet तपासून app पुन्हा उघडा.','err');
+    else toast('डेटा लोड झाला! ✅');
     emveHideLoader();
     renderNoticeBoard();
     if(curTab==='tttc')renderSec('tttc');
@@ -3497,6 +3508,7 @@ function loadAll(){
   }));
   sheetGet('Students',function(sR){
     if(sR&&sR.length>1)step(parseAndLoadStudents)(sR);
+    else if(emveGetFailed.Students){students=[];toast('विद्यार्थी यादी Sheet मधून आली नाही. Internet तपासून app पुन्हा उघडा.','err');done();}
     else sheetGet('vidyarthi',step(parseAndLoadStudents));
   });
   sheetGet('BonafideLog',step(function(rows){
