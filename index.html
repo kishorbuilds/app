@@ -2519,7 +2519,7 @@ function save5Marks(cls,subj,term){
   var header=['sId','cls','subj'].concat(allFields.map(function(f){return pfx+f.key;}));
   var rows=[header];
   getStds(cls).forEach(function(s){var row=[s.id,cls,subj];allFields.forEach(function(f){row.push(getMk(s.id,cls,subj,pfx+f.key));});rows.push(row);});
-  sheetPost('mk5_t'+term+'_'+cls+'_'+subj.replace(/[^a-zA-Z0-9]/g,'X'),rows,function(){syncStatus('ok');});
+  emveAsPost('mk5_t'+term+'_'+cls+'_'+subj.replace(/[^a-zA-Z0-9]/g,'X'),rows,'#mk-none',true,null);
 }
 function secRProg(){
   var isA=(curRole==='super'||curRole==='mukh');
@@ -3915,7 +3915,7 @@ function syncMks(cls,subj){
     rows.push(row);
   });
   var shName='marks_'+cls+'_'+subj.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');
-  sheetPost(shName,rows,function(){syncStatus('ok');});
+  emveAsPost(shName,rows,'#mk-none',true,null);
 }
 
 function syncSettings(){sheetPost('settings',[['key','value'],['marksLocked',settings.marksLocked?'1':'0']],null);}
@@ -4810,7 +4810,7 @@ function emveAsRun(){
 }
 /* stale on own auto-save tab: usually the previous save reached the Sheet but the reply was lost (weak internet).
    Re-read the tab: same content = already saved; else keep rows only the Sheet has, screen wins for the rest, save again. */
-function emveAsOwnTab(t){return /^(notes_|att_|info_)/.test(String(t||''));}
+function emveAsOwnTab(t){return /^(notes_|att_|info_|marks_|mk5_)/.test(String(t||''));}
 function emveAsResync(j){
   emveAS.busy=true;
   function norm(rows){return (rows||[]).map(function(r){r=(r||[]).map(function(c){return String(c==null?'':c).trim();});while(r.length&&r[r.length-1]==='')r.pop();return r.join('\u0001');}).filter(function(x){return x!=='';});}
