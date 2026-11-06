@@ -4799,12 +4799,35 @@ function emveAsRun(){
       if(!emveAS.q.length)syncStatus('ok');
       emveAsRun();return;
     }
+    if(res&&res.stale&&emveAsOwnTab(j.tab)){emveAsResync(j);return;}
     if(res&&(res.auth||res.stale))return; /* app logs out / reloads by itself */
     /* no internet or server busy: keep this write (unless a newer one for the same tab is waiting) and retry */
     if(!emveAS.q.some(function(x){return x.tab===j.tab;}))emveAS.q.unshift(j);
     emveAS.fail++;syncStatus('err');
     if(j.manual||emveAS.fail===1)toast('Internet नाही / कमकुवत. भरलेले काम फोनवर राखले आहे, Internet आल्यावर आपोआप जतन होईल. App बंद करू नका.','err');
     emveAS.rt=setTimeout(emveAsRun,Math.min(60000,5000*emveAS.fail));
+  });
+}
+/* stale on own auto-save tab: usually the previous save reached the Sheet but the reply was lost (weak internet).
+   Re-read the tab: same content = already saved; else keep rows only the Sheet has, screen wins for the rest, save again. */
+function emveAsOwnTab(t){return /^(notes_|att_|info_)/.test(String(t||''));}
+function emveAsResync(j){
+  emveAS.busy=true;
+  function norm(rows){return (rows||[]).map(function(r){r=(r||[]).map(function(c){return String(c==null?'':c).trim();});while(r.length&&r[r.length-1]==='')r.pop();return r.join('\u0001');}).filter(function(x){return x!=='';});}
+  sheetGet(j.tab,function(srv){
+    emveAS.busy=false;
+    if(!srv||!srv.length){if(!emveAS.q.some(function(x){return x.tab===j.tab;}))emveAS.q.unshift(j);emveAS.fail++;syncStatus('err');emveAS.rt=setTimeout(emveAsRun,Math.min(60000,5000*emveAS.fail));return;}
+    var a=norm(srv),b=norm(j.rows);
+    if(a.join('\n')===b.join('\n')){
+      [].slice.call(document.querySelectorAll('.as-send[data-asj="'+j.id+'"]')).forEach(function(x){x.classList.remove('as-send');x.classList.add('as-ok');});
+      if(j.onOk)j.onOk();if(!emveAS.q.length)syncStatus('ok');emveAsRun();return;
+    }
+    if(j.re){toast(j.tab+': Sheet मध्ये दुसरीकडून बदल होत आहेत. App पुन्हा उघडा.','err');syncStatus('err');return;}
+    var mine={};j.rows.forEach(function(r){mine[String(r[0])]=1;});
+    var rows=j.rows.slice();
+    srv.forEach(function(r,i){if(i>0&&r&&String(r[0]||'').trim()&&!mine[String(r[0])])rows.push(r);});
+    if(!emveAS.q.some(function(x){return x.tab===j.tab;}))emveAS.q.unshift({id:j.id,tab:j.tab,rows:rows,manual:j.manual,onOk:j.onOk,re:1});
+    emveAsRun();
   });
 }
 function emveAsLogout(){
@@ -4823,7 +4846,7 @@ function emveAfterWrite(name,res){
   if(res.ts)emveLoadedAt[name]=res.ts;
   if(res.auth){emveAuthExpired();return;}
   /* sheet was changed by someone else: reload instead of overwriting it */
-  if(res.stale&&!emveReloading){emveReloading=true;toast(res.message||'Sheet मध्ये नवीन बदल. Data पुन्हा load होत आहे.','err');setTimeout(function(){emveReloading=false;},8000);loadShikshakFirst();}
+  if(res.stale&&!emveReloading&&!(emveAS.busy&&emveAsOwnTab(name))){emveReloading=true;toast(res.message||'Sheet मध्ये नवीन बदल. Data पुन्हा load होत आहे.','err');setTimeout(function(){emveReloading=false;},8000);loadShikshakFirst();}
 }
 function emveRosterHeaderMap(rows){
   var h=(rows&&rows.length)?rows[0].map(function(x){return String(x||'').trim().toLowerCase();}):[];
