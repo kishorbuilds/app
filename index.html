@@ -1318,8 +1318,8 @@ function buildTabs(){
   ]:curMod==='info'?[
     {id:'rinfo',i:'🧾',l:'विद्यार्थी परिचय'},
   ]:curMod==='fee'?[
-    {id:'fcol',i:'₹',l:'फी गोळा करा'},
     {id:'fsum',i:'📒',l:'हिशेब',h:!emveFeeIsAdm()},
+    {id:'fcol',i:'₹',l:'फी गोळा करा'},
     {id:'fnew',i:'➕',l:'नवीन शुल्क',h:!emveFeeIsAdm()},
   ]:curMod==='tt'?[
     {id:'ttcls',i:'&#x1F4DA;',l:'\u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F',h:!(curRole==='super'||curRole==='mukh')},
@@ -1523,6 +1523,7 @@ function emveFeeHomeTargets(){
 }
 function emveFeeHome(force){
   var w=document.getElementById('fee-home');if(!w||!curRole||!emveAllLoaded)return;
+  if(emveFeeIsAdm()){w.innerHTML='';return;} /* office sees fees inside शुल्क संकलन only */
   if(!force&&Date.now()-emveFeeHomeAt<300000&&emveFeesLoaded){emveFeeHomeRender();return;}
   if(emveFeeHomeBusy)return;emveFeeHomeBusy=true;
   emveFeeLoad(function(ok){
