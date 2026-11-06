@@ -472,6 +472,89 @@ table.pc2-tbl{width:100%!important;max-width:100%!important;margin:0;border-coll
 .pc2-rem i{flex:1;border-bottom:1.5px dotted #94a3b8;height:18px;}
 .pc2-sign{display:flex;justify-content:space-between;gap:20px;padding:46px 20px 0;}
 .pc2-sign div{flex:1;text-align:center;border-top:1.5px solid #1e3a8a;padding-top:5px;font-weight:800;font-size:12.5px;color:#1e3a8a;}
+/* ---- folding card ---- */
+.fc-sw,.fc-tabs{display:flex;gap:6px;justify-content:center;margin:0 auto 12px;max-width:520px;background:#eef2ff;padding:4px;border-radius:999px;}
+.fc-sw button,.fc-tabs button{flex:1;border:0;background:transparent;padding:9px 10px;border-radius:999px;font-family:inherit;font-weight:800;font-size:.86rem;color:#475569;cursor:pointer;}
+.fc-sw button.on,.fc-tabs button.on{background:#1e3a8a;color:#fff;box-shadow:0 2px 8px rgba(30,58,138,.3);}
+.fc-tabs{background:#fef3c7;}.fc-tabs button.on{background:#d97706;box-shadow:0 2px 8px rgba(217,119,6,.35);}
+.fc{max-width:1000px;margin:0 auto;perspective:1600px;}
+.fc-spread{display:none;align-items:stretch;background:#fffdf6;border-radius:6px;box-shadow:0 18px 40px -12px rgba(15,23,42,.35),0 2px 6px rgba(15,23,42,.12);color:#0f172a;font-size:11.5px;line-height:1.45;}
+.fc-spread.on{display:flex;animation:fcOpen .55s cubic-bezier(.2,.8,.2,1);}
+@keyframes fcOpen{from{opacity:0;transform:rotateY(-18deg) scale(.96);}to{opacity:1;transform:none;}}
+.fc-page{flex:1;min-width:0;padding:16px 16px 14px;margin:10px;border:1.5px dashed #94a3b8;border-radius:4px;background:#fffdf6;position:relative;}
+.fc-fold{flex:none;width:2px;background:linear-gradient(90deg,rgba(15,23,42,.18),rgba(255,255,255,.9),rgba(15,23,42,.18));margin:6px 0;}
+.fc-cover{border:2px solid #1e3a8a;outline:3px solid #fde68a;outline-offset:-7px;text-align:center;background:radial-gradient(circle at 50% 0,#eef2ff 0,#fffdf6 55%);}
+.fc-crest{width:76px;height:76px;margin:2px auto 2px;border-radius:50%;background:#fff;padding:5px;box-shadow:0 0 0 3px #1e3a8a,0 0 0 6px #fbbf24;}
+.fc-crest img{width:100%;height:100%;object-fit:contain;}
+.fc-roll{position:absolute;right:16px;top:16px;min-width:52px;border:1.5px solid #1e3a8a;border-radius:6px;padding:2px 6px;font-weight:900;font-size:16px;color:#1e3a8a;background:#fff;}
+.fc-roll small{display:block;font-size:8.5px;color:#64748b;font-weight:700;}
+.fc-motto{font-size:10.5px;color:#b45309;font-weight:800;margin-top:6px;}
+.fc-trust{font-weight:800;font-size:12px;color:#334155;margin-top:4px;}
+.fc-school{font-weight:900;font-size:18px;color:#1e3a8a;line-height:1.25;}
+.fc-addr{font-size:11px;color:#475569;padding-bottom:6px;border-bottom:1.5px dotted #94a3b8;}
+.fc-title{display:inline-block;margin:10px 0 6px;padding:5px 18px;border-radius:999px;background:linear-gradient(90deg,#f59e0b,#d97706);color:#fff;font-weight:900;font-size:16px;}
+.fc-title span{font-size:12px;font-weight:700;margin-left:6px;}
+.fc-sec{display:flex;align-items:center;gap:8px;margin:10px 0 6px;font-weight:900;color:#1e3a8a;font-size:12px;}
+.fc-sec:before,.fc-sec:after{content:'';flex:1;height:2px;background:#1e3a8a;opacity:.35;}
+.fc-lines{text-align:left;}
+.fc-ln{display:flex;align-items:flex-end;gap:6px;margin:5px 0;min-width:0;flex:1;}
+.fc-ln span{white-space:nowrap;font-weight:700;color:#334155;}
+.fc-ln span:before{content:'• ';color:#1e3a8a;}
+.fc-ln i{flex:1;min-width:20px;border-bottom:1.5px dotted #94a3b8;font-style:normal;min-height:17px;}
+.fc-ln.sm{flex:0 0 42%;}
+.fc-ln em{flex:1;min-width:28px;border:1.3px solid #64748b;border-radius:4px;font-style:normal;padding:0 5px;min-height:20px;background:#fff;}
+.fc-ln b{color:#1e3a8a;font-weight:800;}
+.fc-two{display:flex;gap:10px;}
+.fc-health{display:flex;gap:8px;border:1.5px solid #1e3a8a;border-radius:6px;padding:6px;}
+.fc-health div{flex:1;border:1.2px solid #94a3b8;border-radius:4px;padding:3px 6px;text-align:left;display:flex;gap:4px;align-items:baseline;}
+.fc-health span{font-weight:800;color:#334155;}.fc-health b{flex:1;color:#1e3a8a;}.fc-health small{color:#64748b;}
+.fc-th{text-align:center;font-weight:900;font-size:14px;color:#1e3a8a;margin:2px 0 6px;letter-spacing:.3px;}
+.fc-tbl{width:100%;min-width:0!important;border-collapse:collapse;margin-top:6px;}
+.fc-tbl th{background:#1e3a8a;color:#fff;font-weight:800;padding:5px 4px;border:1px solid #1e3a8a;font-size:11px;}
+.fc-tbl td{border:1px solid #94a3b8;padding:6px 5px;vertical-align:middle;}
+.fc-tbl td.c{text-align:center;width:1%;white-space:nowrap;}
+.fc-tbl tbody tr:nth-child(even) td:not(.fc-nt){background:#f8faff;}
+.fc-nt{vertical-align:top!important;width:42%;background:repeating-linear-gradient(#fffdf6 0 21px,#cbd5e1 21px 22px);}
+.fc-nt span{font-weight:800;color:#334155;font-size:10.5px;}
+.fc-nt p{margin:2px 0 0;color:#1e3a8a;font-weight:700;}
+.fc-g{display:inline-block;min-width:30px;padding:1px 6px;border-radius:999px;color:#fff;font-weight:900;font-size:11px;background:#64748b;}
+.fc-g.g1{background:#16a34a;}.fc-g.g2{background:#2563eb;}.fc-g.g3{background:#d97706;}.fc-g.g4{background:#dc2626;}
+.fc-sign{display:flex;justify-content:space-between;gap:8px;margin-top:26px;text-align:center;font-size:10.5px;font-weight:800;color:#334155;}
+.fc-sign div{flex:1;border-top:1.3px solid #64748b;padding-top:3px;}
+.fc-sign .hm{flex:1.6;color:#1e3a8a;font-size:12px;}.fc-sign small{display:block;font-size:9.5px;color:#475569;}
+.fc-att{width:100%;min-width:0!important;border-collapse:collapse;font-size:9.5px;margin-bottom:10px;table-layout:fixed;}
+.fc-att th,.fc-att td{border:1px solid #94a3b8;text-align:center;padding:4px 1px;}
+.fc-att td{font-size:10px!important;}
+.fc-att th{font-size:8.5px!important;white-space:nowrap;overflow:hidden;}
+.fc-band td{font-size:9px!important;}
+.fc-tbl td,.fc-tbl th{font-size:inherit;}
+.fc-att th{background:#eef2ff;color:#1e3a8a;font-weight:800;}
+.fc-att th:first-child,.fc-att td:first-child{width:76px;text-align:left;padding-left:4px;font-weight:800;line-height:1.2;}
+.fc-att th:last-child{width:30px;}
+.fc-att tr.fc-sg td{height:24px;}
+.fc-band td{font-size:9px;}.fc-band .fc-g{min-width:0;padding:1px 4px;font-size:9.5px;}
+.fc-rules{margin:0;padding-left:18px;font-size:10.5px;text-align:justify;}
+.fc-rules li{margin-bottom:2px;}
+.fc-psign{display:flex;gap:6px;justify-content:flex-end;font-weight:800;margin:8px 0 8px;}
+.fc-psign i{width:40%;border-bottom:1.5px dotted #94a3b8;}
+.fc-promo{border:1.5px solid #1e3a8a;border-radius:6px;padding:7px 9px;font-weight:700;background:#fff;line-height:1.9;}
+.fc-promo b{color:#1e3a8a;padding:0 4px;border-bottom:1.5px dotted #94a3b8;}
+.fc-promo i{display:inline-block;width:70px;border-bottom:1.5px dotted #94a3b8;}
+.fc-note{margin:12px auto 0;max-width:720px;font-size:.78rem;color:var(--mt);text-align:center;}
+@media (max-width:760px){
+  .fc-spread.on{flex-direction:column;}
+  .fc-spread[data-side="out"] .fc-cover{order:-1;}
+  .fc-fold{width:auto;height:2px;margin:0 6px;background:linear-gradient(180deg,rgba(15,23,42,.18),rgba(255,255,255,.9),rgba(15,23,42,.18));}
+  .fc-page{margin:8px;padding:12px 10px;}
+  .fc-spread{font-size:11px;}
+  .fc-two{flex-wrap:wrap;gap:0 10px;}
+  .fc-att th{font-size:7px!important;letter-spacing:-.3px;padding:3px 0;}
+  .fc-att td{font-size:9px!important;}
+  .fc-att th:first-child,.fc-att td:first-child{width:56px;font-size:8.5px!important;}
+  .fc-att th:last-child{width:24px;}
+  .fc-band td{font-size:7.5px!important;padding:2px 0;}
+  .fc-band .fc-g{font-size:8px;padding:1px 2px;}
+}
 /* printed card: tighter top part so the whole card fits one A4 page */
 #emve-print-root .pc2{padding-bottom:12px;}
 #emve-print-root .pc2-head{padding:9px 18px 8px;}
@@ -2561,6 +2644,106 @@ function secRCard(){
   return '<div class="card no-print"><div class="ct">&#x1F4CB; \u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930</div><div class="fg2"><div class="fg"><label>\u0935\u0930\u094D\u0917</label><select id="pc-cls"><option value="">\u0928\u093F\u0935\u0921\u093E</option>'+clsOpts+'</select></div><div class="fg"><label>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940</label><select id="pc-std"><option value="">\u0928\u093F\u0935\u0921\u093E</option></select></div></div><button class="btn bp" style="font-size:1.05rem;padding:12px 24px;" data-action="gencard">&#x1F4CB; \u0924\u092F\u093E\u0930 \u0915\u0930\u093E</button></div><div id="pc-wrap"></div>';
 }
 function loadStdsForCard(){var cls=(document.getElementById('pc-cls')||{}).value||'';var sel=document.getElementById('pc-std');if(!sel)return;sel.innerHTML='<option value="">\u0928\u093F\u0935\u0921\u093E</option>';getStds(cls).forEach(function(s){var o=document.createElement('option');o.value=s.id;o.textContent=s.roll+' - '+s.name;sel.appendChild(o);});}
+/* ---- school-style folding progress card (5-8): outside = back page + cover, inside = term 1 + term 2 ---- */
+var emveFcSkip={};
+function emvePcView(){var v='fold';try{v=localStorage.getItem('emvePcView')||'fold';}catch(e){}return v;}
+function emvePcSwitch(cls){
+  if(getCtype(cls)==='high')return '';
+  var v=emvePcView();
+  return '<div class="fc-sw no-print"><button type="button" class="'+(v==='fold'?'on':'')+'" data-action="pcview" data-v="fold">घडीचे कार्ड (शाळेचे)</button><button type="button" class="'+(v!=='fold'?'on':'')+'" data-action="pcview" data-v="a4">A4 कार्ड (print)</button></div>';
+}
+function emveFcSide(side){
+  var w=document.getElementById('pc-wrap');if(!w)return;
+  [].slice.call(w.querySelectorAll('.fc-spread')).forEach(function(x){x.classList.toggle('on',x.getAttribute('data-side')===side);});
+  [].slice.call(w.querySelectorAll('.fc-tabs button')).forEach(function(x){x.classList.toggle('on',x.getAttribute('data-side')===side);});
+}
+function emveFoldCard(cls,s){
+  var c=getCls(cls)||{label:cls},subjs=getSubjs(cls),E=emveEsc;
+  var lm=String(c.label||'').match(/^(\d+)\s*वी\s*(.*)$/),std=lm?lm[1]+' वी':c.label,div=lm?lm[2]:'';
+  var val=function(v){v=String(v==null?'':v).trim();return v?'<b>'+E(v)+'</b>':'';};
+  var line=function(l,v,cl){return '<div class="fc-ln'+(cl?' '+cl:'')+'"><span>'+l+'</span><i>'+val(v)+'</i></div>';};
+  var box=function(l,v){return '<div class="fc-ln"><span>'+l+'</span><em>'+val(v)+'</em></div>';};
+  /* date of birth and age */
+  var dob=String(s.dob||''),dd='',age='';
+  var m1=dob.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/),m2=dob.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);
+  var y=0,mo=0,da=0;if(m1){y=+m1[1];mo=+m1[2];da=+m1[3];}else if(m2){y=+m2[3];mo=+m2[2];da=+m2[1];}
+  if(y){var p2=function(n){return (n<10?'0':'')+n;};dd=p2(da)+'-'+p2(mo)+'-'+y;var now=new Date();var a=now.getFullYear()-y;if(now.getMonth()+1<mo||(now.getMonth()+1===mo&&now.getDate()<da))a--;if(a>0&&a<30)age=a+' वर्षे';}else dd=dob;
+  var subjName=function(sb){var map={'प्रथम भाषा':'प्रथम भाषा मराठी','द्वितीय भाषा':'द्वितीय भाषा हिंदी','तृतीय भाषा':'तृतीय भाषा इंग्रजी','सा.विज्ञान/परिसर अ.1':'सा. विज्ञान / परिसर अभ्यास','सामाजिक शास्त्रे/परिसर अ.2':'सामाजिक शास्त्रे'};if(map[sb])return map[sb];if(sb.indexOf('शा.')===0)return 'शा. शिक्षण व आरोग्य शिक्षण';return sb;};
+  var gc=function(g){var k=gradeColor(g);return k==='bgg'?'g1':k==='bgb'?'g2':k==='bgy'?'g3':k==='bgr'?'g4':'';};
+  var head='<div class="fc-crest"><img src="Saraswati Logo.jpg" alt=""></div>';
+  /* ---------- cover ---------- */
+  var cover='<div class="fc-page fc-cover">'+
+    '<div class="fc-roll"><small>हजेरी क्र.</small>'+E(String(s.roll||''))+'</div>'+
+    head+'<div class="fc-motto">विद्या विनयेन शोभते</div>'+
+    '<div class="fc-trust">समता जोगेश्वरी मंडळ, एरंडगाव चे</div>'+
+    '<div class="fc-school">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
+    '<div class="fc-addr">ता. शेवगाव, जि. अहिल्यानगर</div>'+
+    '<div class="fc-title">प्रगतिपत्रक <span>सन '+emveAcadYear()+'</span></div>'+
+    '<div class="fc-sec">वैयक्तिक माहिती</div>'+
+    '<div class="fc-lines">'+
+      line('विद्यार्थ्याचे नाव',s.name)+
+      '<div class="fc-two">'+box('हजेरी क्र.',s.roll)+box('इयत्ता',std)+box('तुकडी',div)+'</div>'+
+      '<div class="fc-two">'+box('रजि. नं.',s.regNo)+box('जन्म दि.',dd)+box('वय',age)+'</div>'+
+      '<div class="fc-two">'+line('वडिलांचे नाव',s.father)+line('व्यवसाय',s.fatherOcc,'sm')+'</div>'+
+      '<div class="fc-two">'+line('आईचे नाव',s.mother)+line('व्यवसाय',s.motherOcc,'sm')+'</div>'+
+      '<div class="fc-two">'+line('मातृभाषा',s.motherTongue)+line('माध्यम',s.medium||c.medium||'मराठी')+'</div>'+
+      line('पत्ता',s.address)+line('दूरध्वनी नं.',s.phone)+line('ई-मेल',s.email)+
+    '</div>'+
+    '<div class="fc-sec">आरोग्यविषयक माहिती</div>'+
+    '<div class="fc-health"><div><span>वजन</span><b>'+E(String(s.weight||''))+'</b><small>कि.ग्रॅ.</small></div><div><span>उंची</span><b>'+E(String(s.height||''))+'</b><small>सेंमी.</small></div><div><span>रक्तगट</span><b>'+E(String(s.blood||''))+'</b></div></div>'+
+  '</div>';
+  /* ---------- inside: one page per term ---------- */
+  var term=function(t){
+    var n=subjs.length,b1=Math.ceil(n/3),b2=Math.ceil((n-b1)/2),blocks=[[0,b1,'vp','विशेष प्रगती'],[b1,b2,'av','आवड / छंद'],[b1+b2,n-b1-b2,'su','आवश्यक सुधारणा']];
+    var rows=subjs.map(function(sb,i){
+      var r=calc5TotRow(s.id,cls,sb,t),g=r.hasData?grade(r.pct100,cls):'';
+      var note='';blocks.forEach(function(bk){if(bk[0]===i&&bk[1]>0){var tx=emveNote(cls,EMVE_CT,s.id,'t'+t+'_'+bk[2]);note='<td class="fc-nt" rowspan="'+bk[1]+'"><span>'+bk[3]+' :-</span><p>'+(tx?E(tx):'')+'</p></td>';}});
+      return '<tr><td class="c">'+(i+1)+')</td><td>'+E(subjName(sb))+'</td><td class="c">'+(g?'<b class="fc-g '+gc(g)+'">'+g+'</b>':'')+'</td>'+note+'</tr>';
+    }).join('');
+    return '<div class="fc-page fc-term">'+
+      '<div class="fc-th">✱ '+(t===1?'प्रथम':'द्वितीय')+' सत्र ✱</div>'+
+      (t===1?'<div class="fc-lines">'+line('विद्यार्थ्याचे नाव',s.name)+'<div class="fc-two">'+box('इयत्ता',std)+box('तुकडी',div)+'</div></div>'
+            :'<div class="fc-lines">'+line('वर्गशिक्षकाचे नाव श्री/श्रीमती',emveClassTeacher(cls))+'</div>')+
+      '<table class="fc-tbl"><thead><tr><th>अ. नं.</th><th>विषय</th><th>श्रेणी</th><th>वर्णनात्मक नोंदी</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+      '<div class="fc-sign"><div>वर्गशिक्षक<br>स्वाक्षरी</div><div class="hm">मुख्याध्यापक<small>एकनाथ माध्यमिक विद्यालय, एरंडगाव</small></div><div>पालकांची<br>स्वाक्षरी</div></div>'+
+    '</div>';
+  };
+  /* ---------- back page ---------- */
+  var tw=0,tp=0,anyP=false;
+  var wdC=EMVE_ATT_M.map(function(m){var v=emveWD[m[0]];if(v!==''&&v!=null)tw+=+v||0;return '<td>'+(v===''||v==null?'':v)+'</td>';}).join('');
+  var pC=EMVE_ATT_M.map(function(m){var v=emveAttGet(cls,s.id,m[0]);if(v!==''){tp+=+v||0;anyP=true;}return '<td>'+(v===''?'':v)+'</td>';}).join('');
+  var sig=function(l){return '<tr class="fc-sg"><td>'+l+'</td><td colspan="5"></td><td colspan="7"></td></tr>';};
+  var bands=[['91% ते 100%','अ-1'],['81% ते 90%','अ-2'],['71% ते 80%','ब-1'],['61% ते 70%','ब-2'],['51% ते 60%','क-1'],['41% ते 50%','क-2'],['33% ते 40%','ड'],['21% ते 32%','इ-1'],['20% व कमी','इ-2']];
+  var nx=parseInt(std,10);nx=nx?(nx+1)+' वी':'';
+  var back='<div class="fc-page fc-back">'+
+    '<div class="fc-th">✱ उपस्थिती ✱</div>'+
+    '<table class="fc-att"><thead><tr><th>महिना</th>'+EMVE_ATT_M.map(function(m){return '<th>'+m[2]+'</th>';}).join('')+'<th>एकूण</th></tr></thead><tbody>'+
+      '<tr><td>कामाचे दिवस</td>'+wdC+'<td><b>'+(tw||'')+'</b></td></tr>'+
+      '<tr><td>हजर दिवस</td>'+pC+'<td><b>'+(anyP?tp:'')+'</b></td></tr>'+
+      sig('वर्गशिक्षक स्वाक्षरी')+sig('पालक स्वाक्षरी')+sig('मुख्याध्यापक स्वाक्षरी')+
+    '</tbody></table>'+
+    '<div class="fc-th">✱ श्रेणी तक्ता ✱</div>'+
+    '<table class="fc-att fc-band"><tbody><tr><td>गुणांचे शेकडा प्रमाण</td>'+bands.map(function(b){return '<td>'+b[0]+'</td>';}).join('')+'</tr>'+
+      '<tr><td>श्रेणी</td>'+bands.map(function(b){return '<td><b class="fc-g '+gc(b[1])+'">'+b[1]+'</b></td>';}).join('')+'</tr></tbody></table>'+
+    '<div class="fc-th">: शाळेचे नियम :</div>'+
+    '<ol class="fc-rules">'+
+      '<li>विद्यार्थ्याने नियमितपणे शाळेत आले पाहिजे. परवानगीशिवाय गैरहजर राहू नये. गैरहजर राहिल्यास शाळेत येताना पालकांची चिठ्ठी आणल्याशिवाय वर्गात बसू दिले जाणार नाही.</li>'+
+      '<li>विद्यार्थ्याने दररोज गणवेशातच शाळेत आले पाहिजे.</li>'+
+      '<li>वर्गशिक्षकांनी सांगितलेला गृहपाठ व अभ्यास न चुकता करावा.</li>'+
+      '<li>शाळेच्या शिस्तीला बाधक वर्तन होत असल्यास उपाययोजना करण्याचा अधिकार शाळेला राहील.</li>'+
+      '<li>शाळेच्या सामानाची विद्यार्थ्याकडून मोडतोड, नासधूस झाल्यास नुकसान भरपाई द्यावी लागेल.</li>'+
+      '<li>पालकांनी परस्पर वर्गशिक्षकांना न भेटता अडचणी व सूचना मुख्याध्यापकांना भेटून सांगाव्यात.</li>'+
+    '</ol>'+
+    '<div class="fc-psign">पालकांची स्वाक्षरी <i></i></div>'+
+    '<div class="fc-promo">विद्यार्थी वरच्या वर्गात जाण्यास पात्र. पुढील वर्षी इयत्ता <b>'+nx+'</b> तुकडी <i></i> मध्ये बसेल.<br><i></i> वार, तारीख <i></i> या दिवशी शाळा सुरू होईल.</div>'+
+  '</div>';
+  return '<div class="fc">'+
+    '<div class="fc-tabs no-print"><button type="button" class="on" data-action="fcside" data-side="out">बाहेरील बाजू</button><button type="button" data-action="fcside" data-side="in">आतील बाजू (निकाल)</button></div>'+
+    '<div class="fc-spread on" data-side="out">'+back+'<div class="fc-fold"></div>'+cover+'</div>'+
+    '<div class="fc-spread" data-side="in">'+term(1)+'<div class="fc-fold"></div>'+term(2)+'</div>'+
+    '<div class="fc-note no-print">हे शाळेच्या सध्याच्या घडीच्या कार्डासारखे app मधील रूप आहे. छपाईचा आराखडा ऑफिसशी बोलून ठरवायचा आहे. रिकाम्या ओळींची माहिती (वडील, पत्ता, आरोग्य…) app मध्ये भरण्याची सोय पुढे येईल.</div>'+
+  '</div>';
+}
 function genCard(){
   var cls=(document.getElementById('pc-cls')||{}).value||'';
   var sId=parseInt((document.getElementById('pc-std')||{}).value)||0;
@@ -2570,6 +2753,11 @@ function genCard(){
   var s=students.find(function(x){return x.id===sId;});if(!s)return;
   if(!emveMarksReady(cls)){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ गुण आणत आहे…</div>';emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;genCard();});return;}
   if(!emveWDLoaded||!emveAttLoaded[cls]){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ हजेरी आणत आहे…</div>';emveAttEnsure(cls,function(ok){if(!ok){emveWDLoaded=true;emveAttLoaded[cls]=1;toast('हजेरी आणता आली नाही; प्रगतिपत्रकावर ती रिकामी दिसेल.','err');}genCard();});return;}
+  if(getCtype(cls)!=='high'&&emvePcView()==='fold'){
+    var nk=cls+'|'+EMVE_CT;
+    if(!emveNotesLoaded[nk]&&!emveFcSkip[nk]){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ नोंदी आणत आहे…</div>';emveLoadNotes(cls,[EMVE_CT],function(){if(!emveNotesLoaded[nk])emveFcSkip[nk]=1;genCard();});return;}
+    wrap.innerHTML=emvePcSwitch(cls)+emveFoldCard(cls,s);return;
+  }
   var c=getCls(cls);var subjs=getSubjs(cls);
   var grandTotal=0;var grandMax=0;
   var subjCodes={'प्रथम भाषा':'01','द्वितीय भाषा':'02','तृतीय भाषा':'03','गणित':'04','सा.विज्ञान/परिसर अ.1':'05','सामाजिक शास्त्रे/परिसर अ.2':'06','कला':'07','कार्यानुभव':'08','शा.शिक्षण':'09'};
@@ -2597,7 +2785,7 @@ function genCard(){
   var nextCls=pf==='उत्तीर्ण'?'पुढील इयत्तेत प्रविष्ट':'त्याच इयत्तेत';
   var med=s.medium||c.medium||'मराठी';
   var info=function(l,v){return '<div class="pc2-f"><span>'+l+'</span><b>'+(v||'—')+'</b></div>';};
-  wrap.innerHTML=
+  wrap.innerHTML=emvePcSwitch(cls)+
     '<div class="pcard-wrap pc2">'+
     '<div class="pc2-head">'+
       '<div class="pc2-logo"><img src="Saraswati Logo.jpg" alt=""></div>'+
@@ -3795,6 +3983,8 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='saveallmk'){var mc=el.getAttribute('data-cls')||'';var ms=el.getAttribute('data-subj')||'';if(!mc)mc=(document.getElementById('m-cls')||{}).value||'';if(!ms)ms=(document.getElementById('m-subj')||{}).value||'';if(mc&&ms)saveAllMk(mc,ms);}
         else if(act==='save5mk'){var mc5=el.getAttribute('data-cls')||'';var ms5=el.getAttribute('data-subj')||'';var mt5=el.getAttribute('data-term')||'';if(mc5&&ms5&&mt5)save5Marks(mc5,ms5,mt5);}
         else if(act==='gencard')genCard();
+        else if(act==='pcview'){try{localStorage.setItem('emvePcView',el.getAttribute('data-v')||'fold');}catch(e){}genCard();}
+        else if(act==='fcside')emveFcSide(el.getAttribute('data-side')||'out');
         else if(act==='genbona')genBona();
         else if(act==='changepw')changePW();
         else if(act==='changetcpw')changeTcPw(parseInt(el.getAttribute('data-tcid')||0));
