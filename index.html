@@ -191,6 +191,11 @@ tr:hover td{background:#f1f5f9;}
 .fee-st{font-size:.8rem;font-weight:800;color:var(--mt);}.fee-st.ok{color:#15803d;}.fee-st.err{color:#dc2626;}
 .fee-rows{border:1px solid var(--bdr);border-radius:14px;overflow:hidden;background:#fff;}
 .fee-r{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:9px 10px;border-top:1px solid #f1f5f9;}
+.fee-led{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;font-size:.88rem;}
+.fee-led>div{display:flex;justify-content:space-between;gap:10px;}
+.fee-led .tot{border-top:1px dashed #cbd5e1;padding-top:5px;margin-top:2px;font-weight:800;}
+.fee-led .tot.due b{color:#b45309;}
+.fee-r.ejump-hit{background:#fef08a!important;}
 .fee-r:first-child{border-top:0;}.fee-r.done{background:#f7fef9;}
 .fee-roll{flex:none;width:28px;text-align:center;font-weight:800;color:#64748b;font-size:.85rem;}
 .fee-nm{flex:1 1 140px;min-width:0;font-weight:700;font-size:.9rem;}
@@ -1586,9 +1591,13 @@ function renderFeeList(){
     '<div class="fee-k g"><b>'+o.paid+' / '+(o.n-o.waived)+'</b><span>पूर्ण भरले</span></div>'+
     '<div class="fee-k o"><b>'+o.due+'</b><span>बाकी ('+emveRs(o.dueAmt)+')</span></div>'+
     '<div class="fee-k b"><b>'+emveRs(o.coll)+'</b><span>जमा</span></div></div>'+
-    '<div class="fee-hand"><div>हातात: <b>'+emveRs(o.inHand)+'</b> · ऑफिसला दिले: <b>'+emveRs(o.given)+'</b>'+(o.given>o.rec?' <span class="fee-pend">(पुष्टी बाकी '+emveRs(o.given-o.rec)+')</span>':'')+'</div>'+
-    (o.inHand>0?'<button class="btn bs bsm" data-action="feegive">ऑफिसला '+emveRs(o.inHand)+' दिले</button>':'')+'</div>'+
-    (d.hand.length?'<div class="fee-hlist">'+d.hand.map(function(h){return '<div>'+formatDateIndian(h.on)+' · '+emveRs(h.amt)+' · '+emveEsc(h.by)+' → '+(h.recOn?'<span class="fee-ok">मिळाले ✓ ('+emveEsc(h.recBy)+')</span>':'<span class="fee-pend">ऑफिसची पुष्टी बाकी</span>')+'</div>';}).join('')+'</div>':'')+
+    '<div class="fee-hand"><div class="fee-led">'+
+      '<div><span>विद्यार्थ्यांकडून जमा</span><b>'+emveRs(o.coll)+'</b></div>'+
+      '<div><span>ऑफिसमध्ये भरणा केला</span><b>'+emveRs(o.given)+'</b></div>'+
+      (o.given>o.rec?'<div class="fee-pend"><span>└ ऑफिसची पावती / पुष्टी प्रलंबित</span><b>'+emveRs(o.given-o.rec)+'</b></div>':'')+
+      '<div class="tot'+(o.inHand>0?' due':'')+'"><span>ऑफिसमध्ये भरणा करायची बाकी</span><b>'+emveRs(o.inHand)+'</b></div></div>'+
+    (o.inHand>0?'<button class="btn bs bsm" data-action="feegive">'+emveRs(o.inHand)+' ऑफिसमध्ये भरणा करा</button>':'<div class="fee-ok" style="font-weight:800;">✓ सर्व रक्कम ऑफिसमध्ये भरणा झाली</div>')+'</div>'+
+    (d.hand.length?'<div class="fee-hlist">'+d.hand.map(function(h){return '<div>'+formatDateIndian(h.on)+' · '+emveRs(h.amt)+' · '+emveEsc(h.by)+' → '+(h.recOn?'<span class="fee-ok">ऑफिसमध्ये जमा ✓ ('+emveEsc(h.recBy)+')</span>':'<span class="fee-pend">भरणा केला · ऑफिसची पुष्टी प्रलंबित</span>')+'</div>';}).join('')+'</div>':'')+
     '<div class="fee-tools"><span id="fee-st" class="fee-st"></span><span style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn bs bsm" data-action="feesharedue">बाकी यादी WhatsApp चित्र</button><button class="btn bo bsm" data-action="feeprintdue">print</button></span></div>';
   var rows=getStds(cls).map(function(s){
     var p=d.pay[s.id]||{paid:0,st:''},full=p.paid>=amt&&amt>0,act;
@@ -1630,16 +1639,16 @@ function emveFeePart(sid){
 function emveFeeUndo(sid){
   var c=emveFeeCur();if(!c)return;sid=parseInt(sid,10);var p=c.d.pay[sid];if(!p)return;
   var o=emveFeeStats(c.f,c.cls,c.d);
-  if(o.coll-p.paid<o.rec){toast('ही रक्कम ऑफिसला जमा होऊन पुष्टी झाली आहे. बदलासाठी ऑफिसशी बोला.','err');return;}
+  if(o.coll-p.paid<o.rec){toast('ही रक्कम ऑफिसमध्ये जमा होऊन पुष्टी झाली आहे. बदलासाठी ऑफिसशी बोला.','err');return;}
   if(!confirm('या विद्यार्थ्याची नोंद ('+(p.st||emveRs(p.paid))+') रद्द करायची?'))return;
   p.paid=0;p.st='';p.log=(p.log?p.log+' · रद्द ('+formatDateIndian(today()).slice(0,5)+')':'');p.by=emveFeeWho();p.upd=today();
   renderFeeList();emveFeeSave(c.f.id,c.cls);
 }
 function emveFeeGive(){
   var c=emveFeeCur();if(!c)return;var o=emveFeeStats(c.f,c.cls,c.d);
-  var v=prompt('ऑफिसला किती रुपये दिले?',String(o.inHand));if(v==null)return;
+  var v=prompt('ऑफिसमध्ये किती रक्कम भरणा करत आहात?\n(भरणा करायची बाकी: '+emveRs(o.inHand)+'. कमी रक्कम भरत असल्यास आकडा बदला.)',String(o.inHand));if(v==null)return;
   var n=emveNum(v);if(!n){toast('रक्कम टाका.','err');return;}
-  if(n>o.inHand){toast('हातातील रकमेपेक्षा ('+emveRs(o.inHand)+') जास्त देता येत नाही.','err');return;}
+  if(n>o.inHand){toast('भरणा करायची बाकी फक्त '+emveRs(o.inHand)+' आहे. त्यापेक्षा जास्त रकमेचा भरणा नोंदवता येत नाही.','err');return;}
   c.d.hand.push({amt:n,on:today(),by:emveFeeWho(),recOn:'',recBy:''});
   renderFeeList();emveFeeSave(c.f.id,c.cls);
 }
@@ -1687,24 +1696,24 @@ function renderFeeSumTable(reload){
       '<td style="text-align:center;">'+o.paid+'/'+(o.n-o.waived)+'</td><td style="text-align:center;">'+o.due+'</td>'+
       '<td style="text-align:right;">'+emveRs(o.coll)+'</td><td style="text-align:right;">'+emveRs(o.inHand)+'</td>'+
       '<td style="text-align:right;">'+emveRs(o.rec)+'</td>'+
-      '<td>'+(pend>0?'<button class="btn bs bsm" data-action="feerecv" data-cls="'+c+'">'+emveRs(pend)+' मिळाले ✓</button>':(o.rec?'<span class="fee-ok">✓</span>':''))+'</td></tr>';
+      '<td>'+(pend>0?'<button class="btn bs bsm" data-action="feerecv" data-cls="'+c+'">'+emveRs(pend)+' जमा झाले ✓</button>':(o.rec?'<span class="fee-ok">✓</span>':''))+'</td></tr>';
   }).join('');
   var Texp=0,Tcoll=0;f.classes.forEach(function(c){var d=emveFeeData[emveFeeTab(f.id,c)];if(!d)return;var o=emveFeeStats(f,c,d),p=emveFeePct(f,c,o);Texp+=p.exp;Tcoll+=Math.min(o.coll,p.exp);});
   var Tp=Texp>0?Math.round(100*Tcoll/Texp):100;
   w.innerHTML='<div class="fee-state'+(f.closed?' off':'')+'"><span>'+(f.closed?'⏸ फी भरणे थांबवले आहे — शिक्षकांना दिसत नाही':'● फी भरणे सुरू आहे')+'</span>'+emveFeePauseBtn(f)+'</div>'+
     emveBar(Tp,'संपूर्ण शाळा वसुली',emveRs(Tcoll)+' / '+emveRs(Texp))+'<div class="fee-sum">'+
     '<div class="fee-k b"><b>'+emveRs(T.coll)+'</b><span>एकूण जमा</span></div>'+
-    '<div class="fee-k g"><b>'+emveRs(T.rec)+'</b><span>ऑफिसला मिळाले</span></div>'+
-    '<div class="fee-k o"><b>'+emveRs(T.coll-T.rec)+'</b><span>शिक्षकांकडे / पुष्टी बाकी</span></div>'+
+    '<div class="fee-k g"><b>'+emveRs(T.rec)+'</b><span>ऑफिसमध्ये जमा (पुष्टी)</span></div>'+
+    '<div class="fee-k o"><b>'+emveRs(T.coll-T.rec)+'</b><span>भरणा / पुष्टी प्रलंबित</span></div>'+
     '<div class="fee-k"><b>'+T.due+'</b><span>बाकी विद्यार्थी ('+emveRs(T.dueAmt)+')</span></div></div>'+
-    '<div class="tw"><table id="fee-sum-tbl"><thead><tr><th>वर्ग / गोळा करणारे</th><th>भरले</th><th>बाकी</th><th>जमा</th><th>शिक्षकाकडे</th><th>ऑफिसला मिळाले</th><th class="no-print">पुष्टी</th></tr></thead><tbody>'+rows+
+    '<div class="tw"><table id="fee-sum-tbl"><thead><tr><th>वर्ग / गोळा करणारे</th><th>भरले</th><th>बाकी</th><th>जमा</th><th>भरणा बाकी</th><th>ऑफिसमध्ये जमा</th><th class="no-print">पुष्टी</th></tr></thead><tbody>'+rows+
     '<tr style="font-weight:900;background:#f8fafc;"><td>एकूण</td><td style="text-align:center;">'+T.paid+'</td><td style="text-align:center;">'+T.due+'</td><td style="text-align:right;">'+emveRs(T.coll)+'</td><td style="text-align:right;">'+emveRs(T.inHand)+'</td><td style="text-align:right;">'+emveRs(T.rec)+'</td><td class="no-print"></td></tr></tbody></table></div>'+
     '<div class="sp-act"><button class="btn bo bsm" data-action="feesumprint">PDF / Print</button><button class="btn bo bsm" data-action="feesumreload">↻ ताजे करा</button></div>';
 }
 function emveFeeRecv(cls){
   var f=emveFeeFind((document.getElementById('fee-sf')||{}).value);if(!f)return;var d=emveFeeData[emveFeeTab(f.id,cls)];if(!d)return;
   var pend=d.hand.filter(function(h){return !h.recOn;});var sum=0;pend.forEach(function(h){sum+=h.amt;});
-  if(!pend.length||!confirm(emveClsLabel(cls)+': '+emveRs(sum)+' ऑफिसला मिळाले, अशी नोंद करायची?'))return;
+  if(!pend.length||!confirm(emveClsLabel(cls)+': '+emveRs(sum)+' ऑफिसमध्ये जमा झाले (पावती दिली), अशी नोंद करायची?'))return;
   pend.forEach(function(h){h.recOn=today();h.recBy=emveFeeWho();});
   renderFeeSumTable(false);emveFeeSave(f.id,cls);
 }
@@ -2768,7 +2777,7 @@ function emveJumpCheck(){
     j.innerHTML='<button type="button" data-action="jtop" aria-label="वर">▲</button><button type="button" data-action="jroll" aria-label="क्रमांकावर जा">क्र.</button><button type="button" data-action="jbot" aria-label="खाली">▼</button>';
     document.body.appendChild(j);}
   var sec=document.getElementById('mod-secs');
-  var rows=sec?sec.querySelectorAll('table tbody tr').length:0;
+  var rows=sec?sec.querySelectorAll('table tbody tr').length+sec.querySelectorAll('.fee-r').length:0;
   var long=document.documentElement.scrollHeight>window.innerHeight*1.6||!!emveJumpBox();
   /* shown only while the list is being scrolled (or the roll-number box is open), then fades away */
   var busy=(Date.now()-emveJumpAt<2500)||!!document.getElementById('ejump-in');
@@ -2794,6 +2803,7 @@ function emveJumpGo(){
   var n=String((document.getElementById('ejump-n')||{}).value||'').trim();if(!n)return;
   var trs=document.querySelectorAll('#mod-secs table tbody tr'),hit=null;
   for(var i=0;i<trs.length;i++){var c=trs[i].cells&&trs[i].cells[0];if(c&&String(c.textContent||'').trim()===n){hit=trs[i];break;}}
+  if(!hit){var frs=document.querySelectorAll('#mod-secs .fee-r');for(var j=0;j<frs.length;j++){var fr=frs[j].querySelector('.fee-roll');if(fr&&String(fr.textContent||'').trim()===n){hit=frs[j];break;}}}
   if(!hit){toast('ह.क्र. '+n+' सापडला नाही','err');return;}
   emveJumpInClose();
   hit.scrollIntoView({block:'center'});
