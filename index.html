@@ -805,7 +805,7 @@ main:has(#mod-secs [data-action="emve-print"]) .ep-top-print,main:has(#mod-secs 
         <button class="lbtn" id="login-btn" data-action="login">&#x1F510; प्रवेश करा</button>
       </div>
     </div>
-    <div class="lfoot">&copy; 2026 एकनाथ माध्यमिक विद्यालय, एरंडगाव<br>केवळ अधिकृत शिक्षक व कर्मचाऱ्यांसाठी · माहिती गोपनीय</div>
+    <div class="lfoot">&copy; 2026 एकनाथ माध्यमिक विद्यालय, एरंडगाव<br>केवळ अधिकृत शिक्षक व कर्मचाऱ्यांसाठी</div>
   </div>
 </div>
 <div id="app">
@@ -2577,7 +2577,8 @@ function emveJumpCheck(){
   var long=document.documentElement.scrollHeight>window.innerHeight*1.6||!!emveJumpBox();
   /* shown only while the list is being scrolled (or the roll-number box is open), then fades away */
   var busy=(Date.now()-emveJumpAt<2500)||!!document.getElementById('ejump-in');
-  var on=!!(sec&&sec.offsetParent!==null&&rows>12&&long&&busy);
+  var card=sec?sec.querySelector('.fc-page,[class^="pc2-"]'):null; /* not on progress card */
+  var on=!!(sec&&sec.offsetParent!==null&&!card&&rows>12&&long&&busy);
   j.className='ejump no-print'+(on?' on':'');
   if(!on)emveJumpInClose();
 }
@@ -2751,7 +2752,6 @@ function emveFoldCard(cls,s){
     '<div class="fc-tabs no-print"><button type="button" class="on" data-action="fcside" data-side="out">बाहेरील बाजू</button><button type="button" data-action="fcside" data-side="in">आतील बाजू (निकाल)</button></div>'+
     '<div class="fc-spread on" data-side="out">'+back+'<div class="fc-fold"></div>'+cover+'</div>'+
     '<div class="fc-spread" data-side="in">'+term(1)+'<div class="fc-fold"></div>'+term(2)+'</div>'+
-    '<div class="fc-note no-print">हे शाळेच्या सध्याच्या घडीच्या कार्डासारखे app मधील रूप आहे. छपाईचा आराखडा ऑफिसशी बोलून ठरवायचा आहे. रिकाम्या ओळींची माहिती (वडील, पत्ता, आरोग्य…) app मध्ये भरण्याची सोय पुढे येईल.</div>'+
   '</div>';
 }
 function genCard(){
