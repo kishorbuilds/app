@@ -937,23 +937,49 @@ var SA5=[
   {key:'sa_prat',label:'प्रात्यक्षिक',max:10},
   {key:'sa_lekh',label:'लेखी',max:50},
 ];
-/* इ. 5-6: आकारिक 50 (4 साधने) + संकलित 50; इ. 7-8: 40 + 60 (FA5/SA5 above) */
-var FA56=[
-  {key:'fa_tond',label:'तोंडी काम',max:15},
-  {key:'fa_prat',label:'प्रात्य./प्रयोग',max:15},
-  {key:'fa_prak',label:'प्रकल्प',max:15},
-  {key:'fa_cha', label:'चाचणी',max:10},
-  {key:'fa_swa', label:'स्वाध्याय',max:10},
-];
-var SA56=[
-  {key:'sa_tond',label:'तोंडी',max:10},
-  {key:'sa_lekh',label:'लेखी',max:40},
-];
+/* 5-8 marks table by class band and subject group (FA = अ, SA = ब)
+   इ. 5-6: अ /50 (साधन 15, चाचणी/स्वाध्याय 10) + ब /50 (लेखी 40); इ. 7-8: अ /40 (प्रत्येकी 10) + ब /60 (लेखी 50)
+   भाषा: सत्र 1 उपक्रम/कृती, सत्र 2 प्रकल्प, प्रात्य. नाही; गणित: तोंडी/प्रात्यक्षिक एकच रकाना;
+   कला/कार्यानुभव/शा.शिक्षण: तोंडी 20 + प्रात्यक्षिक 60 + उपक्रम/कृती 20 = 100, ब नाही;
+   ब: तोंडी + प्रात्यक्षिक मिळून जास्तीत जास्त 10. 'इतर' रकाना काढला.
+   Old values in a column no longer used stay visible (marked 'जुने') so nothing is lost. */
 function emve56(cls){return /^[56]/.test(String(cls||''));}
-function emveFA(cls){return emve56(cls)?FA56:FA5;}
-function emveSA(cls){return emve56(cls)?SA56:SA5;}
-function emveFAMax(cls){return emve56(cls)?50:40;}
-function emveSAMax(cls){return emve56(cls)?50:60;}
+function emveSubjGrp(subj){
+  var c=EMVE_CAT[subj]||subj;
+  if(/भाषा/.test(c))return 'lang';
+  if(c==='गणित')return 'math';
+  if(c==='कला'||c==='कार्यानुभव'||c==='शा.शिक्षण')return 'art';
+  return 'other';
+}
+var emveMkOldC={};
+function emveMkOld(cls,subj,term,list,olds){
+  var ck=cls+'|'+subj+'|'+term+'|'+list.length,c=emveMkOldC[ck];
+  if(c&&Date.now()-c.t<1500)return c.v;
+  var have={},out=[],st=getStds(cls);list.forEach(function(f){have[f.key]=1;});
+  olds.forEach(function(o){if(have[o.key])return;
+    for(var i=0;i<st.length;i++){if(getMk(st[i].id,cls,subj,'t'+term+'_'+o.key)!==''){out.push({key:o.key,label:o.label+' (जुने)',max:o.max});break;}}});
+  emveMkOldC[ck]={t:Date.now(),v:out};
+  return out;
+}
+function emveFA(cls,subj,term){
+  var g=emveSubjGrp(subj),b56=emve56(cls),M=b56?15:10,L;
+  function f(k,l,m){return {key:k,label:l,max:m};}
+  if(g==='art')L=[f('fa_tond','तोंडी',20),f('fa_prat','प्रात्यक्षिक',60),f('fa_upkr','उपक्रम/कृती',20)];
+  else if(g==='lang')L=[f('fa_tond','तोंडी काम',M),String(term)==='2'?f('fa_prak','प्रकल्प',M):f('fa_upkr','उपक्रम/कृती',M),f('fa_cha','चाचणी',10),f('fa_swa','स्वाध्याय',10)];
+  else{
+    L=[g==='math'?f('fa_tond','तोंडी/प्रात्यक्षिक',M):f('fa_tond','तोंडी काम',M)];
+    if(g!=='math')L.push(f('fa_prat','प्रात्य./प्रयोग',M));
+    if(!b56)L.push(f('fa_upkr','उपक्रम/कृती',M));
+    L.push(f('fa_prak','प्रकल्प',M),f('fa_cha','चाचणी',10),f('fa_swa','स्वाध्याय',10));
+  }
+  return L.concat(emveMkOld(cls,subj,term,L,FA5));
+}
+function emveSA(cls,subj,term){
+  var L=emveSubjGrp(subj)==='art'?[]:[{key:'sa_tond',label:'तोंडी',max:10},{key:'sa_prat',label:'प्रात्यक्षिक',max:10},{key:'sa_lekh',label:'लेखी',max:emve56(cls)?40:50}];
+  return L.concat(emveMkOld(cls,subj,term,L,SA5));
+}
+function emveFAMax(cls,subj){return emveSubjGrp(subj)==='art'?100:emve56(cls)?50:40;}
+function emveSAMax(cls,subj){return emveSubjGrp(subj)==='art'?0:emve56(cls)?50:60;}
 var books=[],transactions=[],students=[],marksData={},descData={};
 var timetable={};
 var ttData=[];
@@ -2387,8 +2413,8 @@ function saveAllMk(cls,subj){if(settings.marksLocked && curRole==='shik'){ toast
 function calc5TotRow(sId,cls,subj,term){
   var pfx='t'+term+'_';
   var fa=0,sa=0,hasFa=false,hasSa=false;
-  emveFA(cls).forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
-  emveSA(cls).forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
+  emveFA(cls,subj,term).forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
+  emveSA(cls,subj,term).forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
   var hasData=hasFa||hasSa;
   var total=hasData?Math.round((fa+sa)*10)/10:'';
   return{fa:hasFa?Math.round(fa*10)/10:'',sa:hasSa?Math.round(sa*10)/10:'',total:total,pct100:hasData?Math.round(fa+sa):0,hasData:hasData};
@@ -2405,16 +2431,17 @@ function loadMkTable5(cls,subj,term){
   var termLabel = term==='2' ? 'द्वितीय सत्र' : 'प्रथम सत्र';
   var stds2=getStds(cls);var wrap=document.getElementById('mk-wrap');
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
-  var faHdr=emveFA(cls).map(function(f){return '<th data-k="'+pfx+f.key+'" style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bfdbfe;">/'+f.max+'</span></th>';}).join('');
-  var saHdr=emveSA(cls).map(function(f){return '<th data-k="'+pfx+f.key+'" style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bbf7d0;">/'+f.max+'</span></th>';}).join('');
+  var faHdr=emveFA(cls,subj,term).map(function(f){return '<th data-k="'+pfx+f.key+'" style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bfdbfe;">/'+f.max+'</span></th>';}).join('');
+  var hasSA=emveSA(cls,subj,term).length>0,isArt=emveSubjGrp(subj)==='art';
+  var saHdr=emveSA(cls,subj,term).map(function(f){return '<th data-k="'+pfx+f.key+'" style="text-align:center;font-size:.7rem;min-width:44px;font-weight:700;">'+f.label+'<br><span style="color:#bbf7d0;">/'+f.max+'</span></th>';}).join('');
   var rows=stds2.map(function(s){
-    var faCells=emveFA(cls).map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
-    var saCells=emveSA(cls).map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
+    var faCells=emveFA(cls,subj,term).map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
+    var saCells=emveSA(cls,subj,term).map(function(f){var v=getMk(s.id,cls,subj,pfx+f.key);return '<td><input class="mi" type="number" inputmode="decimal" enterkeyhint="next" min="0" max="'+f.max+'" value="'+v+'" data-action="setmk5" data-sid="'+s.id+'" data-cls="'+cls+'" data-subj="'+subj+'" data-exam="'+pfx+f.key+'" data-max="'+f.max+'" data-term="'+term+'"></td>';}).join('');
     var tot=calc5TotRow(s.id,cls,subj,term);
     var gr=tot.hasData?grade58(tot.pct100):'-';
     return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-size:.9rem;font-weight:700;">'+s.name+'</td>'+
-      faCells+'<td id="fa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--b);font-size:1rem;">'+(tot.fa!==''?tot.fa:'-')+'</td>'+
-      saCells+'<td id="sa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--g);font-size:1rem;">'+(tot.sa!==''?tot.sa:'-')+'</td>'+
+      faCells+(isArt?'':'<td id="fa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--b);font-size:1rem;">'+(tot.fa!==''?tot.fa:'-')+'</td>')+
+      (hasSA?saCells+'<td id="sa5-'+s.id+'" style="font-weight:900;text-align:center;color:var(--g);font-size:1rem;">'+(tot.sa!==''?tot.sa:'-')+'</td>':'')+
       '<td id="tot5-'+s.id+'" style="font-weight:900;text-align:center;font-size:1.1rem;">'+(tot.total!==''?tot.total:'-')+'</td>'+
       '<td><span class="bdg '+gradeColor(gr)+'" id="grd5-'+s.id+'">'+gr+'</span></td>'+
       '<td id="warn5-'+s.id+'-'+term+'" class="no-print" style="min-width:160px;vertical-align:middle;"></td></tr>';
@@ -2427,11 +2454,11 @@ function loadMkTable5(cls,subj,term){
     '<div class="tw mkw"><table class="mkt">'+
     '<thead><tr>'+
     '<th rowspan="2">ह.क्र.</th><th rowspan="2">नाव</th>'+
-    '<th colspan="'+emveFA(cls).length+'" style="text-align:center;background:#1e40af;color:white;font-size:.8rem;padding:12px;">अ - आकारिक मूल्यमापन (FA) /'+emveFAMax(cls)+'</th>'+
-    '<th rowspan="2" style="text-align:center;background:#1e40af;color:white;font-size:.75rem;padding:12px;">एकूण<br>(अ)<br>/'+emveFAMax(cls)+'</th>'+
-    '<th colspan="'+emveSA(cls).length+'" style="text-align:center;background:#166534;color:white;font-size:.8rem;padding:12px;">ब - संकलित मूल्यमापन (SA) /'+emveSAMax(cls)+'</th>'+
-    '<th rowspan="2" style="text-align:center;background:#166534;color:white;font-size:.75rem;padding:12px;">एकूण<br>(ब)<br>/'+emveSAMax(cls)+'</th>'+
-    '<th rowspan="2" style="text-align:center;font-size:.75rem;padding:12px;background:#475569;color:white;">अ+ब<br>/100</th>'+
+    '<th colspan="'+emveFA(cls,subj,term).length+'" style="text-align:center;background:#1e40af;color:white;font-size:.8rem;padding:12px;">'+(isArt?'गुणदान (तोंडी 20 + प्रात्यक्षिक 60 + उपक्रम/कृती 20) /100':'अ - आकारिक मूल्यमापन (FA) /'+emveFAMax(cls,subj))+'</th>'+
+    (isArt?'':'<th rowspan="2" style="text-align:center;background:#1e40af;color:white;font-size:.75rem;padding:12px;">एकूण<br>(अ)<br>/'+emveFAMax(cls,subj)+'</th>')+
+    (hasSA?'<th colspan="'+emveSA(cls,subj,term).length+'" style="text-align:center;background:#166534;color:white;font-size:.8rem;padding:12px;">ब - संकलित मूल्यमापन (SA) /'+emveSAMax(cls,subj)+'</th>'+
+    '<th rowspan="2" style="text-align:center;background:#166534;color:white;font-size:.75rem;padding:12px;">एकूण<br>(ब)<br>/'+emveSAMax(cls,subj)+'</th>':'')+
+    '<th rowspan="2" style="text-align:center;font-size:.75rem;padding:12px;background:#475569;color:white;">'+(hasSA?'अ+ब':'एकूण')+'<br>/100</th>'+
     '<th rowspan="2" style="background:#475569;color:white;">श्रेणी</th>'+
     '<th rowspan="2" class="no-print" style="min-width:160px;background:#475569;color:white;">⚠️ सूचना</th>'+
     '</tr><tr>'+faHdr+saHdr+'</tr></thead>'+
@@ -2445,15 +2472,15 @@ function validate5Row(sId,cls,subj,term){
   var el=document.getElementById('warn5-'+sId+'-'+term);if(!el)return;
   var pfx='t'+term+'_';var warns=[];var hasBlock=false;
   var faFilled=0,faSum=0;
-  emveFA(cls).forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);var num=parseFloat(v)||0;if(v!==''&&num>0){faFilled++;faSum+=num;}});
+  emveFA(cls,subj,term).forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);var num=parseFloat(v)||0;if(v!==''&&num>0){faFilled++;faSum+=num;}});
   if(faFilled>=5){warns.push('⛔ 5 पेक्षा जास्त कृती भरल्या आहेत — फक्त 4 भरा');hasBlock=true;}
-  if(faSum>emveFAMax(cls))warns.push('FA एकूण '+emveFAMax(cls)+' पेक्षा जास्त');
+  if(faSum>emveFAMax(cls,subj))warns.push('FA एकूण '+emveFAMax(cls,subj)+' पेक्षा जास्त');
   var tond=getMk(sId,cls,subj,pfx+'sa_tond');
   var prat=getMk(sId,cls,subj,pfx+'sa_prat');
   var saSum=0;
-  emveSA(cls).forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!=='')saSum+=parseFloat(v)||0;});
-  if(tond!==''&&prat!=='')warns.push('तोंडी किंवा प्रात्यक्षिक एकच असावे');
-  if(saSum>emveSAMax(cls))warns.push('SA एकूण '+emveSAMax(cls)+' पेक्षा जास्त');
+  emveSA(cls,subj,term).forEach(function(f){var v=getMk(sId,cls,subj,pfx+f.key);if(v!=='')saSum+=parseFloat(v)||0;});
+  if((parseFloat(tond)||0)+(parseFloat(prat)||0)>10){warns.push('⛔ संकलित: तोंडी + प्रात्यक्षिक मिळून 10 पेक्षा जास्त');hasBlock=true;}
+  if(saSum>emveSAMax(cls,subj))warns.push('SA एकूण '+emveSAMax(cls,subj)+' पेक्षा जास्त');
   el.innerHTML=warns.length?'<div class="no-print" style="'+(hasBlock?'background:#fef2f2;border:2px solid var(--r);border-radius:10px;padding:8px 12px;':'')+
     'color:var(--r);font-size:.7rem;font-weight:700;line-height:1.6;">'+warns.join('<br>')+'</div>':'';
 }
@@ -2470,10 +2497,12 @@ function update5TotRow(sId,cls,subj,term){
 }
 function save5Marks(cls,subj,term){
   if(settings.marksLocked && curRole==='shik'){ toast('गुण नोंदणी बंद आहे!','err'); return; }
-  var pfx='t'+term+'_';var stds2=getStds(cls);var allFields=emveFA(cls).concat(emveSA(cls));
+  var pfx='t'+term+'_';var stds2=getStds(cls);var allFields=emveFA(cls,subj,term).concat(emveSA(cls,subj,term));
   var blocked=false;
-  stds2.forEach(function(s){var cnt=0;emveFA(cls).forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp&&(parseFloat(inp.value)||0)>0)cnt++;});if(cnt>=5)blocked=true;});
+  stds2.forEach(function(s){var cnt=0;emveFA(cls,subj,term).forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp&&(parseFloat(inp.value)||0)>0)cnt++;});if(cnt>=5)blocked=true;});
   if(blocked){toast('काही विद्यार्थ्यांचे FA 5+ entries आहेत — आधी 4 वर आणा!','err');return;}
+  var over10=false;stds2.forEach(function(s){var t=0;['sa_tond','sa_prat'].forEach(function(k){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+k+'"][data-cls="'+cls+'"]');if(inp)t+=parseFloat(inp.value)||0;});if(t>10)over10=true;});
+  if(over10){toast('संकलित: तोंडी + प्रात्यक्षिक मिळून 10 पेक्षा जास्त (लाल ओळी). आधी दुरुस्त करा!','err');return;}
   stds2.forEach(function(s){allFields.forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp)setMk(s.id,cls,subj,pfx+f.key,inp.value);});});
   toast('सत्र-'+term+' गुण सेव्ह! ✅');
   syncStatus('ing');
@@ -3029,8 +3058,8 @@ function renderNikal(cls,term){term=term||'1';
   function getSubjResult(sId,subj){
     var fa=0,sa=0,hasFa=false,hasSa=false;
     if(isPrimary){
-      emveFA(cls).forEach(function(f){var v=getMk(sId,cls,subj,'t'+term+'_'+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
-      emveSA(cls).forEach(function(f){var v=getMk(sId,cls,subj,'t'+term+'_'+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
+      emveFA(cls,subj,term).forEach(function(f){var v=getMk(sId,cls,subj,'t'+term+'_'+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
+      emveSA(cls,subj,term).forEach(function(f){var v=getMk(sId,cls,subj,'t'+term+'_'+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
     }else if(isHigh){
       var hfaK=term==='1'?['s1l']:['s2l'];var hsaK=term==='1'?['s1t']:['s2t'];
       hfaK.forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
