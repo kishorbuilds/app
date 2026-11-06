@@ -2251,7 +2251,7 @@ function loadGosawara(){
   var passed=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct>=33;}).length;
   var failed=stds2.filter(function(s){var r=calcStudentTotal(s.id,cls);return r.hasData&&r.pct<33;}).length;
   var noData=stds2.filter(function(s){return !calcStudentTotal(s.id,cls).hasData;}).length;
-  var stats='<div class="sg" style="margin:20px 0;"><div class="sc b"><div class="sn">'+stds2.length+'</div><div class="sl">\u090F\u0915\u0942\u0923 \u092A\u091F</div></div><div class="sc g"><div class="sn">'+passed+'</div><div class="sl">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc r"><div class="sn">'+failed+'</div><div class="sl">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc gold"><div class="sn">'+noData+'</div><div class="sl">\u0917\u0941\u0923 \u0928\u093E\u0939\u0940\u0924</div></div></div>';
+  var stats='<div class="sg" style="margin:20px 0;"><div class="sc b"><div class="sn">'+stds2.length+'</div><div class="sl">\u090F\u0915\u0942\u0923 \u092A\u091F</div></div><div class="sc g"><div class="sn">'+passed+'</div><div class="sl">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</div></div><div class="sc r"><div class="sn">'+failed+'</div><div class="sl">'+(isHigh?'\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923':'विशेष लक्ष (33% खाली)')+'</div></div><div class="sc gold"><div class="sn">'+noData+'</div><div class="sl">\u0917\u0941\u0923 \u0928\u093E\u0939\u0940\u0924</div></div></div>';
   var table='';
   if(isHigh){
     var slabs=[{l:'90-100%',mn:90,mx:100},{l:'80-89%',mn:80,mx:89},{l:'70-79%',mn:70,mx:79},{l:'60-69%',mn:60,mx:69},{l:'50-59%',mn:50,mx:59},{l:'35-49%',mn:35,mx:49},{l:'0-34%',mn:0,mx:34}];
@@ -2549,7 +2549,7 @@ function loadRBook(){
   var subjs=getSubjs(cls);var exams=getExams(cls);
   var thSubjs=subjs.map(function(s){return '<th colspan="'+exams.length+'" style="text-align:center;background:var(--d);color:white;font-size:.7rem;padding:10px;">'+s+'</th>';}).join('');
   var thExams=subjs.map(function(){return exams.map(function(e){return '<th style="font-size:.65rem;text-align:center;font-weight:700;">'+e.key.toUpperCase()+'</th>';}).join('');}).join('');
-  var rows=stds2.map(function(s){var r=calcStudentTotal(s.id,cls);var cells=subjs.map(function(subj){return exams.map(function(exam){var v=getMk(s.id,cls,subj,exam.key);return '<td style="text-align:center;font-size:.85rem;font-weight:600;">'+(v!==''?v:'-')+'</td>';}).join('');}).join('');var gr=r.hasData?grade(r.pct,cls):'-';var pf=r.pct>=33?'<span class="bdg bgg">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':'<span class="bdg bgr">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>';return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-weight:700;font-size:.9rem;">'+s.name+'</td>'+cells+'<td style="font-weight:900;text-align:center;font-size:1rem;color:var(--b);">'+r.pct+'%</td><td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td><td>'+pf+'</td></tr>';}).join('');
+  var rows=stds2.map(function(s){var r=calcStudentTotal(s.id,cls);var cells=subjs.map(function(subj){return exams.map(function(exam){var v=getMk(s.id,cls,subj,exam.key);return '<td style="text-align:center;font-size:.85rem;font-weight:600;">'+(v!==''?v:'-')+'</td>';}).join('');}).join('');var gr=r.hasData?grade(r.pct,cls):'-';var pf=r.pct>=33?'<span class="bdg bgg">\u0909\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':(getCtype(cls)==='high'?'<span class="bdg bgr">\u0905\u0928\u0941\u0924\u094D\u0924\u0940\u0930\u094D\u0923</span>':'<span class="bdg bgy">विशेष लक्ष</span>');return '<tr><td><strong>'+s.roll+'</strong></td><td style="white-space:nowrap;font-weight:700;font-size:.9rem;">'+s.name+'</td>'+cells+'<td style="font-weight:900;text-align:center;font-size:1rem;color:var(--b);">'+r.pct+'%</td><td style="text-align:center;"><span class="bdg '+gradeColor(gr)+'">'+gr+'</span></td><td>'+pf+'</td></tr>';}).join('');
   wrap.innerHTML='<div class="tw" style="font-size:.85rem;"><table><thead><tr><th rowspan="2">\u0939.\u0915\u094D\u0930.</th><th rowspan="2">\u0928\u093E\u0935</th>'+thSubjs+'<th rowspan="2">%</th><th rowspan="2">\u0936\u094D\u0930\u0947\u0923\u0940</th><th rowspan="2">\u0928\u093F\u0915\u093E\u0932</th></tr><tr>'+thExams+'</tr></thead><tbody>'+rows+'</tbody></table></div>'+emveRBookNotes(cls,stds2)+'<button class="btn bp no-print" style="margin-top:20px;font-size:1rem;padding:12px 24px;" data-action="emve-print" data-target="rb-wrap" data-title="\u0928\u093F\u0915\u093E\u0932 \u092A\u0941\u0938\u094D\u0924\u093F\u0915\u093E" data-filters="rb-cls" data-orient="landscape" data-sign="1">&#x1F5A8;&#xFE0F; \u092A\u094D\u0930\u093F\u0902\u091F \u0915\u0930\u093E</button>';
 }
 
@@ -2593,7 +2593,7 @@ function genCard(){
   }).join('');
   var totalPct=grandMax>0?Math.round(grandTotal/grandMax*100):0;
   var totalGr=totalPct>0?grade(totalPct,cls):'-';
-  var pf=totalPct>=33?'उत्तीर्ण':'अनुत्तीर्ण';
+  var pf=(getCtype(cls)!=='high'||totalPct>=33)?'उत्तीर्ण':'अनुत्तीर्ण'; /* 5-8: no one is held back */
   var nextCls=pf==='उत्तीर्ण'?'पुढील इयत्तेत प्रविष्ट':'त्याच इयत्तेत';
   var med=s.medium||c.medium||'मराठी';
   var info=function(l,v){return '<div class="pc2-f"><span>'+l+'</span><b>'+(v||'—')+'</b></div>';};
