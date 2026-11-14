@@ -217,6 +217,25 @@ tr:hover td{background:#f1f5f9;}
 .att-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.88rem;margin-top:6px;}
 .att-r{display:flex;align-items:center;gap:8px;padding:7px 10px;border-top:1px solid #f1f5f9;}.att-r:first-child{border-top:0;}
 .att-in{flex:none;display:flex;align-items:center;gap:5px;}
+.pg-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;}
+.pg-seg{display:inline-flex;border:1.5px solid #cbd5e1;border-radius:10px;overflow:hidden;}
+.pg-seg button{border:0;background:#fff;padding:7px 12px;font-weight:800;font-size:.85rem;color:#475569;cursor:pointer;font-family:inherit;}
+.pg-seg button.on{background:var(--b,#1d4ed8);color:#fff;}
+.pg-rf{margin-left:auto;border:1.5px solid #cbd5e1;background:#fff;border-radius:10px;padding:7px 12px;font-weight:800;font-size:.85rem;cursor:pointer;font-family:inherit;}
+.pg-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:8px;}
+.pg-k{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;}
+.pg-k b{display:block;font-size:.8rem;color:#475569;}.pg-k span{font-size:1.15rem;font-weight:900;}
+.pg-big{display:flex;align-items:baseline;gap:10px;}.pg-big span{font-size:2rem;font-weight:900;}
+.pg-bar{height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin-top:5px;}
+.pg-bar i{display:block;height:100%;border-radius:6px;}
+.pg-r{padding:10px 12px;border-bottom:1px solid #eef2f7;cursor:pointer;}.pg-r:active{background:#f1f5f9;}
+.pg-h{display:flex;justify-content:space-between;gap:8px;align-items:baseline;}
+.pg-n{font-weight:800;}.pg-c{font-size:.8rem;color:#64748b;font-weight:700;white-space:nowrap;}
+.pg-d{background:#f8fafc;padding:4px 12px 8px 22px;border-bottom:1px solid #eef2f7;}
+.pg-i{padding:6px 0;border-bottom:1px dashed #e2e8f0;}.pg-i:last-child{border-bottom:0;}
+.pg-i .pg-n{font-weight:700;font-size:.88rem;}.pg-i .pg-bar{height:7px;}
+.pg-pend{display:inline-block;background:#fee2e2;color:#b91c1c;border-radius:20px;padding:1px 8px;font-size:.72rem;font-weight:800;margin-left:6px;}
+.pg-note{font-size:.78rem;color:#64748b;margin-top:6px;}
 .info-r{cursor:pointer;}.info-r:active{background:#f1f5f9;}
 .info-n{flex:none;font-size:.75rem;font-weight:800;padding:3px 8px;border-radius:999px;background:#f1f5f9;color:#64748b;}
 .info-n.part{background:#fef3c7;color:#92400e;}.info-n.full{background:#dcfce7;color:#166534;}
@@ -1335,6 +1354,7 @@ function buildTabs(){
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
     {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='super'||curRole==='mukh'||curRole==='clerk'||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rnik',i:'&#x1F4CA;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='shik'&&curTc&&curTc.classOf)},
+    {id:'rprg',i:'&#x1F4C9;',l:'कामाची प्रगती',h:!(curRole==='super'||curRole==='mukh')},
   ];
   var nav=document.getElementById('nav-tabs');nav.innerHTML='';
   var first=null;
@@ -1366,6 +1386,7 @@ function renderSec(id){
     else if(id==='rnote')html=secRNote();
     else if(id==='ratt')html=secRAtt();
     else if(id==='rinfo')html=secRInfo();
+    else if(id==='rprg')html=secRPrg();
     else if(id==='rprog')html=secRProg();else if(id==='rgos')html=secRGos();
     else if(id==='rbook')html=secRBook();else if(id==='rcard')html=secRCard();else if(id==='rnik')html=secRNikal();
     else if(id==='astd')html=secRStd();else if(id==='atch')html=secRTch();
@@ -1381,6 +1402,7 @@ function renderSec(id){
   if(id==='rnik')loadAndRenderNikal();
   if(id==='ratt')renderRAtt();
   if(id==='rinfo'){emveInfoCur=0;renderInfoList();}
+  if(id==='rprg')emvePgStart(false);
   if(id==='ttcls')renderTTCls();
   if(id==='tttc'){if(curRole==='shik'&&curTc)renderTTTc();}
   if(id==='ttsub')renderTTSub();
@@ -2622,6 +2644,126 @@ function emveLoadNotes(cls,subjects,done){
     if(failed)toast('काही नोंदी Sheet मधून आणता आल्या नाहीत. Internet तपासा.','err');
     done();
   });});
+}
+/* ===== निकाल कामाची प्रगती: मुख्याध्यापक / संस्थाचालक (शिक्षकनिहाय + वर्गनिहाय) ===== */
+var emvePg={term:1,view:'tc',items:null,loading:false,open:{},at:'',done:0,total:0,fterm:0};
+var EMVE_PG_K=[['mk','गुण'],['nt','विषय नोंदी'],['vs','वर्गशिक्षक नोंदी'],['att','हजेरी'],['info','परिचय']];
+function emvePg58(cls){return getCtype(cls)!=='high';}
+function emvePgMkTab(cls,sb,t){return emvePg58(cls)?'mk5_t'+t+'_'+cls+'_'+sb.replace(/[^a-zA-Z0-9]/g,'X'):emveMarksTabs(cls,sb)[0];}
+function emvePgTc(name){var t=ttFindTeacher(name);return t?{k:ttNorm(t.ttName||t.name),n:String(t.name||name).replace(/श्री\.\s*|श्रीम\.\s*/g,'').trim()}:{k:ttNorm(name),n:String(name)};}
+function emvePgCT(cls){for(var i=0;i<TEACHERS.length;i++){var t=TEACHERS[i];if(t.classOf&&normalizeClass(t.classOf)===cls)return emvePgTc(t.ttName||t.name);}return null;}
+function emvePgTabs(t){
+  var out=[];function add(n){if(out.indexOf(n)<0)out.push(n);}
+  (emveWorkload||[]).forEach(function(w){if(!EMVE_CAT[w.subject]||!getCls(w.cls))return;add(emvePgMkTab(w.cls,w.subject,t));if(emvePg58(w.cls)&&EMVE_NOTE_SUBJ[w.subject])add(emveNotesTab(w.cls,w.subject));});
+  CLASSES.forEach(function(c){if(emvePg58(c.id))add(emveNotesTab(c.id,EMVE_CT));add('att_'+c.id);add('info_'+c.id);});
+  add(EMVE_ATT_WD);return out;
+}
+/* many tabs, 20 per request, 2 requests at a time; a tab that could not be read = null */
+function emvePgFetch(names,prog,done){
+  var out={},ch=[],i,next=0,active=0,left;for(i=0;i<names.length;i+=20)ch.push(names.slice(i,i+20));left=ch.length;
+  if(!left){done(out);return;}
+  function one(c){
+    var xhr=new XMLHttpRequest(),fin=false;
+    function end(p){if(fin)return;fin=true;c.forEach(function(n){var b=p&&p.batch?p.batch[n]:null;out[n]=(b&&Array.isArray(b.rows)&&!b.error)?b.rows:null;});
+      if(p&&p.auth==='expired')emveAuthExpired();
+      active--;left--;prog(names.length-left*20);if(!left)done(out);else pump();}
+    try{xhr.open('GET',SURL+'?sheets='+encodeURIComponent(c.join(','))+'&token='+encodeURIComponent(emveToken)+'&t='+Date.now(),true);}catch(e){end(null);return;}
+    xhr.timeout=60000;xhr.ontimeout=function(){end(null);};xhr.onerror=function(){end(null);};
+    xhr.onreadystatechange=function(){if(xhr.readyState!==4||xhr.status===0)return;var p=null;try{p=JSON.parse(xhr.responseText||'{}');}catch(e){}end(p);};
+    xhr.send();
+  }
+  function pump(){while(active<2&&next<ch.length){active++;one(ch[next++]);}}
+  pump();
+}
+function emvePgById(rows,keyFn){var m={};if(!rows||rows.length<2)return m;var h=rows[0].map(function(x){x=String(x||'').trim();return keyFn?keyFn(x):x;});
+  rows.slice(1).forEach(function(r){var id=parseInt(r[0],10)||0;if(!id)return;var o={};for(var i=2;i<h.length;i++){if(h[i])o[h[i]]=r[i]==null?'':String(r[i]).trim();}m[id]=o;});return m;}
+function emvePgBuild(t,data){
+  var items=[],T='t'+t+'_';
+  function cnt(cls,rows,fn,per,keyFn){
+    if(rows===null)return {err:1,d:0,n:0};
+    var m=emvePgById(rows,keyFn),st=getStds(cls),d=0;
+    st.forEach(function(s){d+=fn(m[s.id]||{},s);});return {d:d,n:st.length*(per||1)};
+  }
+  function v(o,k){return o[k]!=null&&String(o[k])!=='';}
+  (emveWorkload||[]).forEach(function(w){
+    var cls=w.cls,sb=w.subject;if(!EMVE_CAT[sb]||!getCls(cls))return;
+    var tc=emvePgTc(w.teacher),c58=emvePg58(cls),art=c58&&emveSubjGrp(sb)==='art';
+    var r=cnt(cls,data[emvePgMkTab(cls,sb,t)],function(o){
+      if(!c58)return v(o,'s'+t+'l')&&v(o,'s'+t+'t')?1:0;
+      if(art)return v(o,T+'fa_prat')?1:0;
+      if(!v(o,T+'sa_lekh'))return 0;
+      for(var k in o){if(k.indexOf(T+'fa_')===0&&v(o,k))return 1;}return 0;
+    });
+    items.push({cls:cls,kind:'mk',sb:sb,tc:tc,d:r.d,n:r.n,err:r.err});
+    if(c58&&EMVE_NOTE_SUBJ[sb]){r=cnt(cls,data[emveNotesTab(cls,sb)],function(o){return v(o,'t'+t)?1:0;});items.push({cls:cls,kind:'nt',sb:sb,tc:tc,d:r.d,n:r.n,err:r.err});}
+  });
+  /* attendance: only finished months of this term that have working days set */
+  var wd={};(data[EMVE_ATT_WD]||[]).slice(1).forEach(function(r){var k=String(r[0]||'').trim();if(k&&r[2]!==''&&r[2]!=null)wd[k]=1;});
+  var mk=EMVE_ATT_M.map(function(x){return x[0];}),cur=mk.indexOf(emveAttCurMonth()),mm=new Date().getMonth();
+  if(mm===4)cur=mk.length; /* May: whole year finished */
+  var months=mk.filter(function(k,i){return (t===1?i<5:i>=5)&&i<cur&&wd[k];});
+  CLASSES.forEach(function(c){
+    var ct=emvePgCT(c.id)||{k:'_none',n:'वर्गशिक्षक नेमलेले नाहीत'},r;
+    if(emvePg58(c.id)){r=cnt(c.id,data[emveNotesTab(c.id,EMVE_CT)],function(o){var x=0;EMVE_CT_F.forEach(function(f){if(v(o,'t'+t+'_'+f[0]))x++;});return x===EMVE_CT_F.length?1:0;});items.push({cls:c.id,kind:'vs',sb:'',tc:ct,d:r.d,n:r.n,err:r.err});}
+    if(months.length){r=cnt(c.id,data['att_'+c.id],function(o){var x=0;months.forEach(function(k){if(v(o,k))x++;});return x;},months.length);items.push({cls:c.id,kind:'att',sb:'',tc:ct,d:r.d,n:r.n,err:r.err});}
+    r=cnt(c.id,data['info_'+c.id],function(o){var x=0;EMVE_INFO_F.forEach(function(f){if(v(o,f[0]))x++;});return x;},EMVE_INFO_F.length,emveInfoKeyOf);
+    items.push({cls:c.id,kind:'info',sb:'',tc:ct,d:r.d,n:r.n,err:r.err});
+  });
+  return {items:items.filter(function(it){return it.err||it.n>0;}),months:months.length};
+}
+function emvePgStart(force){
+  if(emvePg.loading)return;
+  if(!force&&emvePg.items&&emvePg.fterm===emvePg.term){emvePgRender();return;}
+  emvePg.loading=true;emvePgRender();
+  emveWithWorkload(function(){
+    var names=emvePgTabs(emvePg.term),t=emvePg.term;
+    emvePgFetch(names,function(x){var el=document.getElementById('pg-load');if(el)el.textContent=Math.min(x,names.length)+' / '+names.length;},function(data){
+      var b=emvePgBuild(t,data);emvePg.items=b.items;emvePg.months=b.months;emvePg.fterm=t;emvePg.loading=false;
+      var d=new Date();emvePg.at=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+      emvePgRender();
+    });
+  });
+}
+function emvePgPct(d,n){return n?Math.round(d/n*100):0;}
+function emvePgBar(d,n){var p=emvePgPct(d,n),c=p>=90?'#16a34a':p>=50?'#f59e0b':'#dc2626';return '<div class="pg-bar"><i style="width:'+p+'%;background:'+c+';"></i></div>';}
+function emvePgLbl(it){var k={mk:'गुण',nt:'विषय नोंदी',vs:'वर्गशिक्षक नोंदी',att:'हजेरी',info:'विद्यार्थी परिचय'}[it.kind];return it.sb?emveSubjLabel(it.cls,it.sb)+' · '+k:k;}
+function emvePgUnit(it){return it.kind==='att'?'महिने':it.kind==='info'?'माहिती':'विद्यार्थी';}
+function emvePgItem(it,who){
+  var cl=(getCls(it.cls)||{}).label||it.cls,head=who?emveEsc(it.tc.n)+' · '+emveEsc(cl):emveEsc(cl);
+  var cnt=it.err?'<span style="color:#b91c1c;">⚠ वाचता आले नाही</span>':(it.kind==='att'||it.kind==='info'?emvePgPct(it.d,it.n)+'%':it.d+' / '+it.n+' '+emvePgUnit(it));
+  return '<div class="pg-i"><div class="pg-h"><div class="pg-n">'+head+' · '+emveEsc(emvePgLbl(it))+'</div><div class="pg-c">'+cnt+'</div></div>'+(it.err?'':emvePgBar(it.d,it.n))+'</div>';
+}
+function emvePgGroups(by){
+  var g={},order=[];
+  (emvePg.items||[]).forEach(function(it){var k=by==='tc'?it.tc.k:it.cls;if(!g[k]){g[k]={k:k,name:by==='tc'?it.tc.n:((getCls(it.cls)||{}).label||it.cls),items:[],sp:0,c:0,pend:0,err:0};order.push(k);}
+    var x=g[k];x.items.push(it);if(it.err){x.err++;return;}x.sp+=emvePgPct(it.d,it.n);x.c++;if(it.d<it.n)x.pend++;});
+  order.forEach(function(k){var x=g[k];x.p=x.c?Math.round(x.sp/x.c):0;});
+  var arr=order.map(function(k){return g[k];});
+  if(by==='tc')arr.sort(function(a,b){return a.p-b.p;});
+  return arr;
+}
+function secRPrg(){
+  if(!(curRole==='super'||curRole==='mukh'))return noAccess();
+  return '<div class="card"><div class="ct">📉 निकाल कामाची प्रगती</div><div id="pg-wrap"></div></div>';
+}
+function emvePgRender(){
+  var w=document.getElementById('pg-wrap');if(!w)return;
+  var top='<div class="pg-top"><div class="pg-seg"><button data-action="pgterm" data-t="1" class="'+(emvePg.term===1?'on':'')+'">प्रथम सत्र</button><button data-action="pgterm" data-t="2" class="'+(emvePg.term===2?'on':'')+'">द्वितीय सत्र</button></div>'+
+    '<div class="pg-seg"><button data-action="pgview" data-v="tc" class="'+(emvePg.view==='tc'?'on':'')+'">शिक्षकनिहाय</button><button data-action="pgview" data-v="cls" class="'+(emvePg.view==='cls'?'on':'')+'">वर्गनिहाय</button></div>'+
+    '<button class="pg-rf" data-action="pgload">⟳ ताजे करा</button></div>';
+  if(emvePg.loading||!emvePg.items){w.innerHTML=top+'<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ सर्व शिक्षकांचे काम तपासत आहे… <span id="pg-load"></span><div class="pg-note">पहिल्यांदा थोडा वेळ लागतो.</div></div>';return;}
+  var tot={},all={d:0,n:0},errs=0;
+  emvePg.items.forEach(function(it){if(it.err){errs++;return;}if(!tot[it.kind])tot[it.kind]={d:0,n:0};tot[it.kind].d+=it.d;tot[it.kind].n+=it.n;if(it.kind!=='info'&&it.kind!=='att'){all.d+=it.d;all.n+=it.n;}});
+  var sum='<div class="pg-k" style="grid-column:1/-1;"><div class="pg-big"><span>'+emvePgPct(all.d,all.n)+'%</span><b style="font-size:.9rem;">संपूर्ण शाळा: गुण + नोंदी ('+(emvePg.term===1?'प्रथम':'द्वितीय')+' सत्र)</b></div>'+emvePgBar(all.d,all.n)+'</div>';
+  EMVE_PG_K.forEach(function(k){var x=tot[k[0]];if(!x)return;sum+='<div class="pg-k"><b>'+k[1]+'</b><span>'+emvePgPct(x.d,x.n)+'%</span>'+emvePgBar(x.d,x.n)+'</div>';});
+  var rows='';
+  emvePgGroups(emvePg.view).forEach(function(g){
+    var open=!!emvePg.open[g.k],p=g.p;
+    rows+='<div class="pg-r" data-action="pgopen" data-k="'+emveAttr(g.k)+'"><div class="pg-h"><div class="pg-n">'+(open?'▾ ':'▸ ')+emveEsc(g.name)+(g.pend?'<span class="pg-pend">'+g.pend+' बाकी</span>':'')+'</div><div class="pg-c">'+p+'%</div></div>'+emvePgBar(p,100)+'</div>';
+    if(open){var its=g.items.slice().sort(function(a,b){return emvePgPct(a.d,a.n)-emvePgPct(b.d,b.n);});rows+='<div class="pg-d">'+its.map(function(it){return emvePgItem(it,emvePg.view==='cls');}).join('')+'</div>';}
+  });
+  var note='<div class="pg-note">गुण: '+(emvePg.term===1?'प्रथम':'द्वितीय')+' सत्राचे मुख्य रकाने भरले (5-8: संकलित लेखी + किमान एक आकारिक साधन; कला/कार्यानुभव/शा.शि.: प्रात्यक्षिक; 9-10: लेखी + तोंडी) तर विद्यार्थी पूर्ण. वर्गशिक्षक नोंदी: चारही नोंदी. हजेरी: '+(emvePg.months?'संपलेले '+emvePg.months+' महिने (कामाचे दिवस भरलेले).':'या सत्राचा एकही महिना अजून संपलेला नाही / कामाचे दिवस भरलेले नाहीत.')+' शेवटचे ताजे: '+emvePg.at+(errs?' · <b style="color:#b91c1c;">'+errs+' याद्या वाचता आल्या नाहीत (⟳ ताजे करा)</b>':'')+'</div>';
+  w.innerHTML=top+'<div class="pg-sum">'+sum+'</div><div style="margin-top:12px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">'+rows+'</div>'+note;
 }
 function secRNote(){
   var isA=(curRole==='super'||curRole==='mukh');
@@ -4243,6 +4385,10 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='attwdsave'){emveAttWDSave();break;}
         else if(act==='attfull'){emveAttFull();break;}
         else if(act==='attsave'){emveAttSave(false);break;}
+        else if(act==='pgterm'){emvePg.term=parseInt(el.getAttribute('data-t'),10)||1;emvePgStart(false);break;}
+        else if(act==='pgview'){emvePg.view=el.getAttribute('data-v')||'tc';emvePg.open={};emvePgRender();break;}
+        else if(act==='pgload'){emvePgStart(true);break;}
+        else if(act==='pgopen'){var pk=el.getAttribute('data-k');emvePg.open[pk]=!emvePg.open[pk];emvePgRender();break;}
         else if(act==='infopick'){emveInfoGo(parseInt(el.getAttribute('data-sid'),10)||0);break;}
         else if(act==='infonav'){emveInfoNav(parseInt(el.getAttribute('data-d'),10)||0);break;}
         else if(act==='infoback'){emveInfoGo(0);break;}
