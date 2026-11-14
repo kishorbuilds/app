@@ -1731,7 +1731,7 @@ function renderFeeSumTable(reload){
     '<div class="fee-k"><b>'+T.due+'</b><span>बाकी विद्यार्थी ('+emveRs(T.dueAmt)+')</span></div></div>'+
     '<div class="tw"><table id="fee-sum-tbl"><thead><tr><th>वर्ग / गोळा करणारे</th><th>भरले</th><th>बाकी</th><th>जमा</th><th>भरणा बाकी</th><th>ऑफिसमध्ये जमा</th><th class="no-print">पुष्टी</th></tr></thead><tbody>'+rows+
     '<tr style="font-weight:900;background:#f8fafc;"><td>एकूण</td><td style="text-align:center;">'+T.paid+'</td><td style="text-align:center;">'+T.due+'</td><td style="text-align:right;">'+emveRs(T.coll)+'</td><td style="text-align:right;">'+emveRs(T.inHand)+'</td><td style="text-align:right;">'+emveRs(T.rec)+'</td><td class="no-print"></td></tr></tbody></table></div>'+
-    '<div class="sp-act"><button class="btn bo bsm" data-action="feesumprint">PDF / Print</button><button class="btn bo bsm" data-action="feesumreload">↻ ताजे करा</button></div>';
+    '<div class="sp-act"><button class="btn bo bsm" data-action="feesumprint">PDF / Print</button><button class="btn bo bsm" data-action="feesumreload">↻ Refresh</button></div>';
 }
 function emveFeeRecv(cls){
   var f=emveFeeFind((document.getElementById('fee-sf')||{}).value);if(!f)return;var d=emveFeeData[emveFeeTab(f.id,cls)];if(!d)return;
@@ -2296,7 +2296,7 @@ function loadMkTable(){
   }
   if(!cls||!subj){wrap.innerHTML='';return;}
   if(emveMarksErr[cls+'|'+subj]){
-    wrap.innerHTML='<div class="alert aw"><div>⚠️ जतन केलेले गुण Sheet मधून आणता आले नाहीत (Internet कमकुवत?). जुने गुण पुसले जाऊ नयेत म्हणून गुण नोंदणी थांबवली आहे.<br><button class="btn bp" style="margin-top:10px;" data-action="mkretry">पुन्हा प्रयत्न करा</button></div></div>';
+    wrap.innerHTML='<div class="alert aw"><div>⚠️ जतन केलेले गुण server वरून आणता आले नाहीत (Internet कमकुवत?). जुने गुण पुसले जाऊ नयेत म्हणून गुण नोंदणी थांबवली आहे.<br><button class="btn bp" style="margin-top:10px;" data-action="mkretry">पुन्हा प्रयत्न करा</button></div></div>';
     return;
   }
   if(!emveMarksLoaded[cls+'|'+subj]){
@@ -2414,7 +2414,7 @@ function emveLoadMarks(cls,subjects,done,force){
     else{emveParseMarks(rows,cls,x.sb);if(!emveMarksErr[cls+'|'+x.sb])emveMarksLoaded[cls+'|'+x.sb]=1;}
     left--;if(left)return;
     todo.forEach(function(sb){if(emveMarksErr[cls+'|'+sb])delete emveMarksLoaded[cls+'|'+sb];});
-    if(failed)toast('काही गुण Sheet मधून आणता आले नाहीत. Internet तपासा.','err');
+    if(failed)toast('काही गुण server वरून आणता आले नाहीत. Internet तपासा.','err');
     done();
     /* reports retry next time they open */
     if(failed)delete emveMarksReadyCls[cls];
@@ -2641,7 +2641,7 @@ function emveLoadNotes(cls,subjects,done){
       emveNotesLoaded[cls+'|'+sb]=1;
     }
     left--;if(left)return;
-    if(failed)toast('काही नोंदी Sheet मधून आणता आल्या नाहीत. Internet तपासा.','err');
+    if(failed)toast('काही नोंदी server वरून आणता आल्या नाहीत. Internet तपासा.','err');
     done();
   });});
 }
@@ -2750,7 +2750,7 @@ function emvePgRender(){
   var w=document.getElementById('pg-wrap');if(!w)return;
   var top='<div class="pg-top"><div class="pg-seg"><button data-action="pgterm" data-t="1" class="'+(emvePg.term===1?'on':'')+'">प्रथम सत्र</button><button data-action="pgterm" data-t="2" class="'+(emvePg.term===2?'on':'')+'">द्वितीय सत्र</button></div>'+
     '<div class="pg-seg"><button data-action="pgview" data-v="tc" class="'+(emvePg.view==='tc'?'on':'')+'">शिक्षकनिहाय</button><button data-action="pgview" data-v="cls" class="'+(emvePg.view==='cls'?'on':'')+'">वर्गनिहाय</button></div>'+
-    '<button class="pg-rf" data-action="pgload">⟳ ताजे करा</button></div>';
+    '<button class="pg-rf" data-action="pgload">⟳ Refresh</button></div>';
   if(emvePg.loading||!emvePg.items){w.innerHTML=top+'<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ सर्व शिक्षकांचे काम तपासत आहे… <span id="pg-load"></span><div class="pg-note">पहिल्यांदा थोडा वेळ लागतो.</div></div>';return;}
   var tot={},all={d:0,n:0},errs=0;
   emvePg.items.forEach(function(it){if(it.err){errs++;return;}if(!tot[it.kind])tot[it.kind]={d:0,n:0};tot[it.kind].d+=it.d;tot[it.kind].n+=it.n;if(it.kind!=='info'&&it.kind!=='att'){all.d+=it.d;all.n+=it.n;}});
@@ -2762,7 +2762,7 @@ function emvePgRender(){
     rows+='<div class="pg-r" data-action="pgopen" data-k="'+emveAttr(g.k)+'"><div class="pg-h"><div class="pg-n">'+(open?'▾ ':'▸ ')+emveEsc(g.name)+(g.pend?'<span class="pg-pend">'+g.pend+' बाकी</span>':'')+'</div><div class="pg-c">'+p+'%</div></div>'+emvePgBar(p,100)+'</div>';
     if(open){var its=g.items.slice().sort(function(a,b){return emvePgPct(a.d,a.n)-emvePgPct(b.d,b.n);});rows+='<div class="pg-d">'+its.map(function(it){return emvePgItem(it,emvePg.view==='cls');}).join('')+'</div>';}
   });
-  var note='<div class="pg-note">गुण: '+(emvePg.term===1?'प्रथम':'द्वितीय')+' सत्राचे मुख्य रकाने भरले (5-8: संकलित लेखी + किमान एक आकारिक साधन; कला/कार्यानुभव/शा.शि.: प्रात्यक्षिक; 9-10: लेखी + तोंडी) तर विद्यार्थी पूर्ण. वर्गशिक्षक नोंदी: चारही नोंदी. हजेरी: '+(emvePg.months?'संपलेले '+emvePg.months+' महिने (कामाचे दिवस भरलेले).':'या सत्राचा एकही महिना अजून संपलेला नाही / कामाचे दिवस भरलेले नाहीत.')+' शेवटचे ताजे: '+emvePg.at+(errs?' · <b style="color:#b91c1c;">'+errs+' याद्या वाचता आल्या नाहीत (⟳ ताजे करा)</b>':'')+'</div>';
+  var note='<div class="pg-note">गुण: '+(emvePg.term===1?'प्रथम':'द्वितीय')+' सत्राचे मुख्य रकाने भरले (5-8: संकलित लेखी + किमान एक आकारिक साधन; कला/कार्यानुभव/शा.शि.: प्रात्यक्षिक; 9-10: लेखी + तोंडी) तर विद्यार्थी पूर्ण. वर्गशिक्षक नोंदी: चारही नोंदी. हजेरी: '+(emvePg.months?'संपलेले '+emvePg.months+' महिने (कामाचे दिवस भरलेले).':'या सत्राचा एकही महिना अजून संपलेला नाही / कामाचे दिवस भरलेले नाहीत.')+' शेवटचे ताजे: '+emvePg.at+(errs?' · <b style="color:#b91c1c;">'+errs+' याद्या वाचता आल्या नाहीत (⟳ Refresh)</b>':'')+'</div>';
   w.innerHTML=top+'<div class="pg-sum">'+sum+'</div><div style="margin-top:12px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">'+rows+'</div>'+note;
 }
 function secRNote(){
@@ -2793,7 +2793,7 @@ function loadNoteTable(){
   emveNtCtx=null;
   if(!cls||!subj||!term){wrap.innerHTML='';return;}
   var k=cls+'|'+subj;
-  if(emveNotesErr[k]){wrap.innerHTML='<div class="alert aw"><div>⚠️ जतन केलेल्या नोंदी Sheet मधून आणता आल्या नाहीत (Internet कमकुवत?). जुन्या नोंदी पुसल्या जाऊ नयेत म्हणून नोंदणी थांबवली आहे.<br><button class="btn bp" style="margin-top:10px;" data-action="ntretry">पुन्हा प्रयत्न करा</button></div></div>';return;}
+  if(emveNotesErr[k]){wrap.innerHTML='<div class="alert aw"><div>⚠️ जतन केलेल्या नोंदी server वरून आणता आल्या नाहीत (Internet कमकुवत?). जुन्या नोंदी पुसल्या जाऊ नयेत म्हणून नोंदणी थांबवली आहे.<br><button class="btn bp" style="margin-top:10px;" data-action="ntretry">पुन्हा प्रयत्न करा</button></div></div>';return;}
   if(!emveNotesLoaded[k]){
     wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ जतन केलेल्या नोंदी आणत आहे…</div>';
     emveLoadNotes(cls,[subj],function(){var c2=(document.getElementById('nt-cls')||{}).value,s2=(document.getElementById('nt-subj')||{}).value;if(c2===cls&&s2===subj)loadNoteTable();});
@@ -3197,7 +3197,7 @@ function loadAndRenderNikal(){
   var el=document.getElementById('nikal-root');if(!el)return;
   if(!curTc||!curTc.classOf){el.innerHTML='<div class="alert aw">\u0935\u0930\u094D\u0917 \u0928\u093E\u0939\u0940</div>';return;}
   var selTerm=(document.getElementById('nikal-term')||{}).value||'1';
-  el.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;font-size:1.1rem;">&#x23F3; Google Sheet \u092E\u0927\u0942\u0928 \u0921\u0947\u091F\u093E \u0906\u0923\u0924 \u0906\u0939\u0947...</div>';
+  el.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;font-size:1.1rem;">&#x23F3; Server \u0935\u0930\u0942\u0928 \u0921\u0947\u091F\u093E \u0906\u0923\u0924 \u0906\u0939\u0947...</div>';
   var cls=normalizeClass(curTc.classOf);
   emveEnsureClassMarks(cls,function(){emveMarksReadyCls[cls]=1;renderNikal(cls,selTerm);},true);
 }
@@ -3714,7 +3714,7 @@ function secTTAdm(){
   var clsOpts=CLASSES.map(function(c){return '<option value="'+c.id+'">'+c.label+'</option>';}).join('');
   return '<div class="card tt-editor-card">'+
     '<div class="ct">📅 2026–27 वेळापत्रक <span class="ctag">Safe Drag & Drop</span></div>'+
-    '<div class="tt-editor-note"><b>View Mode</b> मध्ये timetable फक्त पाहता येईल. बदल करण्यासाठी <b>✏️ Edit Timetable</b> दाबा. Edit Mode मध्ये केलेले बदल <b>💾 Save Timetable</b> दाबल्याशिवाय Google Sheet मध्ये जाणार नाहीत.</div>'+
+    '<div class="tt-editor-note"><b>View Mode</b> मध्ये timetable फक्त पाहता येईल. बदल करण्यासाठी <b>✏️ Edit Timetable</b> दाबा. Edit Mode मध्ये केलेले बदल <b>💾 Save Timetable</b> दाबल्याशिवाय server वर जाणार नाहीत.</div>'+
     '<div class="fg2 tt-editor-top"><div class="fg"><label>वर्ग</label><select id="ttadm-cls"><option value="">वर्ग निवडा</option>'+clsOpts+'</select></div>'+ 
     '<div class="tt-save-box"><div id="tt-progress"></div><button class="btn bo" data-action="tt-refresh">↻ Refresh</button><button class="btn bp" data-action="tt-generate">⚡ Generate / Rebuild</button><button class="btn bs" id="tt-edit-btn" style="display:none" data-action="tt-enter-edit">✏️ Edit Timetable</button></div></div>'+ 
     '<div id="tt-editor-actions" style="display:none;margin:4px 0 14px;padding:12px;border-radius:14px;background:#f8fafc;border:1px solid var(--bdr);gap:8px;flex-wrap:wrap;align-items:center;">'+
@@ -3768,7 +3768,7 @@ function ttRebuildData(){ttData=[];Object.keys(timetable).forEach(function(cls){
 function ttStartHistory(){ttHistory=[ttSnapshot()];ttHistoryIndex=0;}
 function ttRecordChange(){if(!ttEditMode)return;ttHistory=ttHistory.slice(0,ttHistoryIndex+1);ttHistory.push(ttSnapshot());if(ttHistory.length>40)ttHistory.shift();ttHistoryIndex=ttHistory.length-1;}
 function ttEnterEditMode(){var cls=(document.getElementById('ttadm-cls')||{}).value||'';if(!cls){toast('आधी वर्ग निवडा.','err');return;}ttEditMode=true;ttPreEditState=ttSnapshot();ttStartHistory();ttSuggestionHtml='<div class="tt-info"><strong>✏️ Edit Mode सुरू.</strong><br>आता drag & drop करता येईल. Locked lesson हलणार नाही.</div>';var a=document.getElementById('tt-editor-actions');if(a)a.style.display='flex';var b=document.getElementById('tt-edit-btn');if(b)b.style.display='none';renderTTAdmGrid(cls);}
-function ttCancelEdit(){if(!ttEditMode)return;if(!confirm('सर्व unsaved बदल रद्द करायचे?'))return;ttRestore(ttPreEditState||ttSnapshot());ttEditMode=false;ttPendingSwap=null;ttSuggestionHtml='<div class="tt-info">बदल रद्द झाले. Google Sheet बदललेली नाही.</div>';var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';renderTTAdmGrid((document.getElementById('ttadm-cls')||{}).value||'');}
+function ttCancelEdit(){if(!ttEditMode)return;if(!confirm('सर्व unsaved बदल रद्द करायचे?'))return;ttRestore(ttPreEditState||ttSnapshot());ttEditMode=false;ttPendingSwap=null;ttSuggestionHtml='<div class="tt-info">बदल रद्द झाले. server वर काहीही बदललेले नाही.</div>';var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';renderTTAdmGrid((document.getElementById('ttadm-cls')||{}).value||'');}
 function ttUndo(){if(!ttEditMode||ttHistoryIndex<=0)return;ttHistoryIndex--;ttRestore(ttHistory[ttHistoryIndex]);renderTTAdmGrid((document.getElementById('ttadm-cls')||{}).value||'');}
 function ttRedo(){if(!ttEditMode||ttHistoryIndex>=ttHistory.length-1)return;ttHistoryIndex++;ttRestore(ttHistory[ttHistoryIndex]);renderTTAdmGrid((document.getElementById('ttadm-cls')||{}).value||'');}
 function ttToggleLock(cls,day,p){if(!ttEditMode)return;var sl=getTTSlot(cls,day,p);if(!sl)return;if(sl.locked){if(!confirm('हा lesson unlock करायचा?'))return;sl.locked=false;ttSuggestionHtml='<div class="tt-info">🔓 Lesson unlocked.</div>';}else{sl.locked=true;ttSuggestionHtml='<div class="tt-info">🔒 Lesson locked. Generate केल्यावरही हा slot हलणार नाही.</div>';}ttRecordChange();renderTTAdmGrid(cls);}
@@ -3792,7 +3792,7 @@ function renderTTAdm(){var cls=(document.getElementById('ttadm-cls')||{}).value|
 function renderTTAdmGrid(cls){if(ttEditMode)renderTTAdmEditGrid(cls);else renderTTAdmViewGrid(cls);}
 function renderTTAdmViewGrid(cls){var wrap=document.getElementById('ttadm-wrap');if(!wrap)return;var progress=ttClassProgress(cls);var pr=document.getElementById('tt-progress');if(pr)pr.innerHTML='<div class="tt-progress-pill">Class '+String(cls).toUpperCase()+': <b>'+progress.placed+'/'+progress.total+'</b> placed · <span>'+progress.remaining+' remaining</span></div>';var cols='82px '+Array(8).fill(0).map(function(){return 'minmax(110px,1fr)';}).join(' ');var hdr='<div class="tt-hdr">Day</div>'+Array(8).fill(0).map(function(_,i){return '<div class="tt-hdr">P'+(i+1)+'</div>';}).join('');var body=DAYS.map(function(day){var cells='';for(var i=1;i<=8;i++){if(day==='शनिवार'&&i===2){cells+='<div class="tt-drop tt-pt-slot"><div class="tt-pt">COMMON PT</div></div>';continue;}if(day==='शनिवार'&&i>6){cells+='<div class="tt-drop" style="background:#f8fafc;"><div style="font-size:.7rem;text-align:center;color:#94a3b8;font-weight:800;">—</div></div>';continue;}var sl=getTTSlot(cls,day,'P'+i)||getTTSlot(cls,day,String(i));if(sl)cells+='<div class="tt-drop tt-lesson '+(sl.locked?'tt-locked':'')+'"><div class="tt-lesson-subj">'+(sl.subj||sl.subject||'')+'</div><div class="tt-lesson-teacher">'+ttTeacherDisplayName(ttSlotTeacher(sl))+'</div><div class="tt-drag">'+(sl.locked?'🔒':'')+'</div></div>';else cells+='<div class="tt-drop tt-empty-slot"><div class="tt-period-num">P'+i+'</div><div>—</div></div>';}return '<div class="tt-day-row"><div class="tt-day-label">'+day+'</div><div class="tt-periods">'+cells+'</div></div>';}).join('');wrap.innerHTML='<div class="tt-week"><div class="tt-week-title">CLASS '+String(cls).toUpperCase()+' — WEEKLY TIMETABLE</div><div class="tt-editor-note" style="margin:10px 0 12px;background:#f8fafc;color:var(--mt);">View Mode — timetable सुरक्षित आहे. बदल करण्यासाठी <b>Edit Timetable</b> दाबा.</div>'+body+'</div>'+ttSuggestionHtml;}
 function renderTTAdmEditGrid(cls){var wrap=document.getElementById('ttadm-wrap');if(!wrap)return;var progress=ttClassProgress(cls);var pr=document.getElementById('tt-progress');if(pr)pr.innerHTML='<div class="tt-progress-pill">Class '+String(cls).toUpperCase()+': <b>'+progress.placed+'/'+progress.total+'</b> placed · <span>'+progress.remaining+' remaining</span></div>';var workload=ttWorkloadRows.filter(function(w){return String(w.cls).toLowerCase()===String(cls).toLowerCase()&&ttRemaining(w.teacher,w.subject,cls)>0;});var bank='';workload.forEach(function(w){var rem=ttRemaining(w.teacher,w.subject,cls);if(rem>0)bank+='<div class="tt-bank-item" draggable="true" ondragstart="ttDragStartWorkload(event,'+JSON.stringify(w.teacher)+','+JSON.stringify(w.subject)+','+JSON.stringify(cls)+');"><div class="tt-bank-subj">'+w.subject+'</div><div class="tt-bank-teacher">'+w.teacher+'</div><div class="tt-bank-rem">Remaining: <b>'+rem+'</b></div></div>';});if(!bank)bank='<div class="tt-bank-done">✓ Workload पूर्ण झाला.</div>';var grid='<div class="tt-editor-layout"><div class="tt-bank"><div class="tt-pane-title">WORKLOAD BANK</div><div class="tt-pane-sub">Lesson पकडा आणि slotवर drop करा</div>'+bank+'</div><div class="tt-week"><div class="tt-week-title">CLASS '+String(cls).toUpperCase()+' — EDIT MODE</div>';DAYS.forEach(function(day){var max=day==='शनिवार'?6:8;grid+='<div class="tt-day-row"><div class="tt-day-label">'+day+'</div><div class="tt-periods">';for(var i=1;i<=8;i++){if(day==='शनिवार'&&i===2){grid+='<div class="tt-drop tt-pt-slot"><div class="tt-pt">COMMON PT<br><small>FIXED</small></div></div>';continue;}if(day==='शनिवार'&&i>6){grid+='<div class="tt-drop" style="background:#f8fafc;"><div style="font-size:.7rem;text-align:center;color:#94a3b8;font-weight:800;">—</div></div>';continue;}var p='P'+i,sl=getTTSlot(cls,day,p);if(sl){grid+='<div class="tt-drop tt-lesson '+(sl.locked?'tt-locked':'')+'" draggable="'+(!sl.locked)+'" ondragstart="ttDragStartExisting(event,'+JSON.stringify(cls)+','+JSON.stringify(day)+','+JSON.stringify(p)+')" ondragover="ttAllowDrop(event)" ondrop="ttDrop(event,'+JSON.stringify(cls)+','+JSON.stringify(day)+','+JSON.stringify(p)+')"><div class="tt-lesson-subj">'+(sl.subj||sl.subject||'')+'</div><div class="tt-lesson-teacher">'+ttTeacherDisplayName(ttSlotTeacher(sl))+'</div><div class="tt-drag">'+(sl.locked?'🔒':'↕')+'</div><button class="tt-lock-btn" onclick="event.stopPropagation();ttToggleLock('+JSON.stringify(cls)+','+JSON.stringify(day)+','+JSON.stringify(p)+');return false;">'+(sl.locked?'Unlock':'Lock')+'</button></div>';}else grid+='<div class="tt-drop tt-empty-slot" ondragover="ttAllowDrop(event)" ondrop="ttDrop(event,'+JSON.stringify(cls)+','+JSON.stringify(day)+','+JSON.stringify(p)+')"><div class="tt-period-num">'+p+'</div><div>DROP</div></div>';}grid+='</div></div>';});grid+='</div></div>'+ttRenderSuggestionBox();wrap.innerHTML=grid;}
-function ttRequestGenerate(){if(ttEditMode){toast('आधी Save किंवा Cancel करा.','err');return;}if(!confirm('2026–27 timetable generate/rebuild करायचे? Locked lessons जागेवर राहतील.'))return;syncStatus('ing');var xhr=new XMLHttpRequest();xhr.open('GET',SURL+'?action=generateTimetable&year='+TT_YEAR+'&role='+encodeURIComponent(curRole||'')+'&token='+encodeURIComponent(emveToken)+'&t='+Date.now(),true);xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){}if(res.success){sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttWorkloadLoaded=false;ttLoadWorkload('',function(){ttSuggestionHtml='<div class="tt-ok"><strong>✓ Timetable generated.</strong><br>Placed: '+(res.placed||0)+' | Locked: '+(res.locked||0)+'</div>';renderTTAdm();});});toast('Timetable तयार झाले! ✅');}else{syncStatus('err');var b=document.getElementById('tt-conflict-banner');if(b)b.innerHTML='<div class="tt-warn"><strong>Generate पूर्ण झाले नाही.</strong><br>'+String(res.message||'Rule conflict')+(res.unfilled&&res.unfilled.length?'<div style="margin-top:8px;">'+res.unfilled.slice(0,12).join('<br>')+'</div>':'')+'</div>';toast('Timetable पूर्ण तयार झाले नाही.','err');}};xhr.onerror=function(){syncStatus('err');toast('Google Apps Script connection failed.','err');};xhr.send();}
+function ttRequestGenerate(){if(ttEditMode){toast('आधी Save किंवा Cancel करा.','err');return;}if(!confirm('2026–27 timetable generate/rebuild करायचे? Locked lessons जागेवर राहतील.'))return;syncStatus('ing');var xhr=new XMLHttpRequest();xhr.open('GET',SURL+'?action=generateTimetable&year='+TT_YEAR+'&role='+encodeURIComponent(curRole||'')+'&token='+encodeURIComponent(emveToken)+'&t='+Date.now(),true);xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){}if(res.success){sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttWorkloadLoaded=false;ttLoadWorkload('',function(){ttSuggestionHtml='<div class="tt-ok"><strong>✓ Timetable generated.</strong><br>Placed: '+(res.placed||0)+' | Locked: '+(res.locked||0)+'</div>';renderTTAdm();});});toast('Timetable तयार झाले! ✅');}else{syncStatus('err');var b=document.getElementById('tt-conflict-banner');if(b)b.innerHTML='<div class="tt-warn"><strong>Generate पूर्ण झाले नाही.</strong><br>'+String(res.message||'Rule conflict')+(res.unfilled&&res.unfilled.length?'<div style="margin-top:8px;">'+res.unfilled.slice(0,12).join('<br>')+'</div>':'')+'</div>';toast('Timetable पूर्ण तयार झाले नाही.','err');}};xhr.onerror=function(){syncStatus('err');toast('Server शी connection झाले नाही.','err');};xhr.send();}
 function saveTimetable(){
   if(!ttEditMode){toast('Edit Mode सुरू करा.','err');return;}
   var dayToCode={'सोमवार':'Mon','मंगळवार':'Tue','बुधवार':'Wed','गुरुवार':'Thu','शुक्रवार':'Fri','शनिवार':'Sat'};
@@ -3811,14 +3811,14 @@ function saveTimetable(){
       }
     });
   });
-  if(!confirm('हे timetable Google Sheet मध्ये Save करायचे?'))return;
+  if(!confirm('हे timetable server वर Save करायचे?'))return;
   postTimetableValidated(rows,function(res){
     if(res&&res.success){
       sheetGet(TT_SHEET,function(savedRows){
         parseTimetableRows(savedRows);
         ttEditMode=false;
         ttPendingSwap=null;
-        ttSuggestionHtml='<div class="tt-ok"><strong>✓ Timetable Google Sheet मध्ये Save झाले.</strong></div>';
+        ttSuggestionHtml='<div class="tt-ok"><strong>✓ Timetable server वर Save झाले.</strong></div>';
         var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';
         renderTTAdm();
         toast('वेळापत्रक सेव्ह झाले! ✅');
@@ -3831,8 +3831,8 @@ function saveTimetable(){
     }
   });
 }
-function postTimetableValidated(rows,cb){syncStatus('ing');var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){res={success:false,message:'Server response unreadable.'};}if(cb)cb(res);};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false,message:'Google Apps Script connection failed.'});};xhr.send(JSON.stringify({action:'saveTimetableValidated',sheet:TT_SHEET,token:emveToken,rows:rows}));}
-function ttRefreshFromSheet(){if(ttEditMode&& !confirm('Unsaved changes आहेत. Refresh केल्यास ते रद्द होतील. Continue?'))return;ttEditMode=false;sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttSuggestionHtml='<div class="tt-info">↻ 2026–27 timetable Google Sheet मधून load झाले.</div>';renderTTAdm();});}
+function postTimetableValidated(rows,cb){syncStatus('ing');var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){res={success:false,message:'Server response unreadable.'};}if(cb)cb(res);};xhr.onerror=function(){syncStatus('err');if(cb)cb({success:false,message:'Server शी connection झाले नाही.'});};xhr.send(JSON.stringify({action:'saveTimetableValidated',sheet:TT_SHEET,token:emveToken,rows:rows}));}
+function ttRefreshFromSheet(){if(ttEditMode&& !confirm('Unsaved changes आहेत. Refresh केल्यास ते रद्द होतील. Continue?'))return;ttEditMode=false;sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttSuggestionHtml='<div class="tt-info">↻ 2026–27 timetable server वरून load झाले.</div>';renderTTAdm();});}
 function parseTTTeachers(rows){TT_TEACHERS=[];if(!rows||rows.length<2)return;rows.slice(1).forEach(function(r){if(!r[0]&&!r[1])return;TT_TEACHERS.push({id:parseInt(r[0],10)||0,name:String(r[1]||''),classOf:normalizeClass(r[2]),subjects:String(r[3]||'').split('|').map(function(x){return x.trim();}).filter(Boolean),classes:String(r[4]||'').split('|').map(function(x){return normalizeClass(x);}).filter(Boolean),ttName:String(r[5]||r[1]||'').trim()});});}
 function parseTTClassSettings(rows){TT_CLASS_SETTINGS={};if(!rows||rows.length<2)return;rows.slice(1).forEach(function(r){var c=normalizeClass(r[0]);if(!c)return;TT_CLASS_SETTINGS[c]={teacher:String(r[1]||'').trim(),p1Rule:String(r[2]||'').trim(),saturdayP2:String(r[3]||'').trim(),satPeriods:parseInt(r[4],10)||6,weekdayPeriods:parseInt(r[5],10)||8,morningPriority:String(r[6]||'').trim(),routinePriority:String(r[7]||'').trim()};});}
 function parseTTSubjectSettings(rows){TT_SUBJECT_SETTINGS={};if(!rows||rows.length<2)return;rows.slice(1).forEach(function(r){var subject=String(r[0]||'').trim();if(!subject)return;var pref=String(r[2]||'').trim(),priority=String(r[3]||'').trim().toUpperCase(),dbl=String(r[4]||'').trim().toUpperCase();var inf=(pref.match(/HIGH|MEDIUM|LOW/i)||[])[0];if((!priority||priority==='NO')&&inf)priority=inf.toUpperCase();if(!priority)priority='MEDIUM';if(dbl==='CORE SUBJECT'||dbl.indexOf('SUBJECT')>=0)dbl='NO';TT_SUBJECT_SETTINGS[subject.toLowerCase()]={subject:subject,preferredTime:String(r[1]||'').trim(),preferredPeriods:pref,priority:priority,doublePeriod:dbl||'NO',notes:String(r[5]||'').trim()};});}
@@ -4146,7 +4146,7 @@ function loadAll(){
   function done(){
     left--;if(left>0)return;
     syncStatus('ok');emveAllLoaded=true;
-    if(emveGetFailed.Students)toast('विद्यार्थी यादी Sheet मधून आली नाही. Internet तपासून app पुन्हा उघडा.','err');
+    if(emveGetFailed.Students)toast('विद्यार्थी यादी server वरून आली नाही. Internet तपासून app पुन्हा उघडा.','err');
     else toast('डेटा लोड झाला! ✅');
     emveHideLoader();
     renderNoticeBoard();
@@ -4160,7 +4160,7 @@ function loadAll(){
   }));
   sheetGet('Students',function(sR){
     if(sR&&sR.length>1)step(parseAndLoadStudents)(sR);
-    else if(emveGetFailed.Students){students=[];toast('विद्यार्थी यादी Sheet मधून आली नाही. Internet तपासून app पुन्हा उघडा.','err');done();}
+    else if(emveGetFailed.Students){students=[];toast('विद्यार्थी यादी server वरून आली नाही. Internet तपासून app पुन्हा उघडा.','err');done();}
     else sheetGet('vidyarthi',step(parseAndLoadStudents));
   });
   sheetGet('BonafideLog',step(function(rows){
@@ -4968,7 +4968,7 @@ function emveAsResync(j){
       [].slice.call(document.querySelectorAll('.as-send[data-asj="'+j.id+'"]')).forEach(function(x){x.classList.remove('as-send');x.classList.add('as-ok');});
       if(j.onOk)j.onOk();if(!emveAS.q.length)syncStatus('ok');emveAsRun();return;
     }
-    if(j.re){toast(j.tab+': Sheet मध्ये दुसरीकडून बदल होत आहेत. App पुन्हा उघडा.','err');syncStatus('err');return;}
+    if(j.re){toast('ही यादी दुसरीकडूनही बदलली जात आहे. App पुन्हा उघडा.','err');syncStatus('err');return;}
     var mine={};j.rows.forEach(function(r){mine[String(r[0])]=1;});
     var rows=j.rows.slice();
     srv.forEach(function(r,i){if(i>0&&r&&String(r[0]||'').trim()&&!mine[String(r[0])])rows.push(r);});
@@ -4992,7 +4992,7 @@ function emveAfterWrite(name,res){
   if(res.ts)emveLoadedAt[name]=res.ts;
   if(res.auth){emveAuthExpired();return;}
   /* sheet was changed by someone else: reload instead of overwriting it */
-  if(res.stale&&!emveReloading&&!(emveAS.busy&&emveAsOwnTab(name))){emveReloading=true;toast(res.message||'Sheet मध्ये नवीन बदल. Data पुन्हा load होत आहे.','err');setTimeout(function(){emveReloading=false;},8000);loadShikshakFirst();}
+  if(res.stale&&!emveReloading&&!(emveAS.busy&&emveAsOwnTab(name))){emveReloading=true;toast('याच यादीत दुसरीकडून नवीन बदल झाले आहेत. माहिती पुन्हा आणत आहे; तुमचा शेवटचा बदल पुन्हा तपासा.','err');setTimeout(function(){emveReloading=false;},8000);loadShikshakFirst();}
 }
 function emveRosterHeaderMap(rows){
   var h=(rows&&rows.length)?rows[0].map(function(x){return String(x||'').trim().toLowerCase();}):[];
@@ -5182,7 +5182,7 @@ function secTTAdm(){
     '</div>'+
     '<div id="tt-progress"></div>'+ 
     '<div id="tt-editor-actions" style="display:none;margin-top:12px;padding:12px;border-radius:14px;background:#f8fafc;border:1px solid var(--bdr);">'+
-      '<div class="tt-editor-actions2"><button class="btn bo bsm" data-action="tt-undo">↶ Undo</button><button class="btn bo bsm" data-action="tt-redo">↷ Redo</button><button class="btn bo bsm" data-action="tt-cancel-edit">✕ Cancel</button><button class="btn bs bsm" data-action="tt-save">💾 Save Changes</button><span id="tt-edit-status" class="tt-edit-badge">EDIT MODE — Google Sheet अजून बदललेली नाही</span></div>'+
+      '<div class="tt-editor-actions2"><button class="btn bo bsm" data-action="tt-undo">↶ Undo</button><button class="btn bo bsm" data-action="tt-redo">↷ Redo</button><button class="btn bo bsm" data-action="tt-cancel-edit">✕ Cancel</button><button class="btn bs bsm" data-action="tt-save">💾 Save Changes</button><span id="tt-edit-status" class="tt-edit-badge">EDIT MODE — server वर अजून बदल केलेला नाही</span></div>'+
     '</div>'+
     '<details id="tt-rules-panel" style="margin-top:14px;"><summary style="cursor:pointer;font-weight:900;color:var(--d);padding:8px 0;">⚙️ Rules & Availability — गरजेनुसार बदला</summary><div id="tt-rules-inner" style="margin-top:10px;"></div></details>'+
     '<div id="tt-conflict-banner"></div>'+
@@ -5280,14 +5280,14 @@ function renderTTAdm(){
 }
 function ttEnterEditMode(){
   if(curRole!=='super'&&curRole!=='mukh'){toast('वेळापत्रक बदलण्याचा अधिकार फक्त प्रशासनाला आहे.','err');return;}
-  if(!confirm('वेळापत्रक Edit Mode मध्ये उघडायचे आहे? Google Sheet मध्ये कोणताही बदल आत्ता होणार नाही.'))return;
+  if(!confirm('वेळापत्रक Edit Mode मध्ये उघडायचे आहे? server वर कोणताही बदल आत्ता होणार नाही.'))return;
   ttEditMode=true;ttPreEditState=ttSnapshot();ttStartHistory();ttSuggestionHtml='<div class="tt-info"><strong>✏️ Edit Mode सुरू.</strong> Drag & Drop, Lock/Unlock आणि Safe suggestions आता उपलब्ध आहेत.</div>';
   var a=document.getElementById('tt-editor-actions');if(a)a.style.display='block';renderTTAdm();
 }
 function ttCancelEdit(){
   if(!ttEditMode)return;
   if(!confirm('सर्व unsaved बदल रद्द करायचे?'))return;
-  ttRestore(ttPreEditState||ttSnapshot());ttEditMode=false;ttPendingSwap=null;ttSuggestionHtml='<div class="tt-info">बदल रद्द झाले. Google Sheet मध्ये काहीही save केलेले नाही.</div>';
+  ttRestore(ttPreEditState||ttSnapshot());ttEditMode=false;ttPendingSwap=null;ttSuggestionHtml='<div class="tt-info">बदल रद्द झाले. server वर काहीही save केलेले नाही.</div>';
   var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';renderTTAdm();
 }
 function ttUndo(){if(!ttEditMode||ttHistoryIndex<=0)return;ttHistoryIndex--;ttRestore(ttHistory[ttHistoryIndex]);renderTTAdm();}
@@ -5419,14 +5419,14 @@ function ttRequestGenerate(){
       toast('Generation failed — कारण वर दिले आहे.','err');
     }
   };
-  xhr.onerror=function(){emveHideLoader();toast('Google Apps Script शी connection झाली नाही.','err');};
+  xhr.onerror=function(){emveHideLoader();toast('Server शी connection झाले नाही.','err');};
   xhr.send();
 }
 function postTimetableValidated(rows,cb){
   var xhr=new XMLHttpRequest();
   xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');
   xhr.onreadystatechange=function(){if(xhr.readyState!==4)return;var res={success:false};try{res=JSON.parse(xhr.responseText);}catch(e){res={success:false,message:'Server response unreadable.'};}if(cb)cb(res);};
-  xhr.onerror=function(){if(cb)cb({success:false,message:'Google Apps Script connection failed.'});};
+  xhr.onerror=function(){if(cb)cb({success:false,message:'Server शी connection झाले नाही.'});};
   xhr.send(JSON.stringify({action:'saveTimetableValidated',sheet:TT_SHEET,editor:curUser||'',role:curRole||'',token:emveToken,rows:rows}));
 }
 function saveTimetable(){
@@ -5435,16 +5435,16 @@ function saveTimetable(){
   var rows=[['Day','Class','Period','Subject','Teacher','Locked']];
   CLASSES.forEach(function(c){DAYS.forEach(function(day){var max=day==='शनिवार'?6:8;for(var i=1;i<=max;i++){if(day==='शनिवार'&&i===2)continue;var sl=getTTSlot(c.id,day,'P'+i)||getTTSlot(c.id,day,String(i));if(!sl)continue;var teacher=ttSlotTeacher(sl),subject=sl.subj||sl.subject||'';if(teacher&&subject)rows.push([dayToCode[day]||day,c.id,'P'+i,subject,teacher,sl.locked?'TRUE':'FALSE']);}});});
   if(rows.length-1!==405){toast('Save थांबवले: पूर्ण 405 periods अजून भरलेले नाहीत.','err');ttSuggestionHtml='<div class="tt-warn"><strong>⚠ Timetable incomplete.</strong><br>Placed '+(rows.length-1)+' / 405. आधी उरलेले lessons बसवा.</div>';renderTTAdm();return;}
-  if(!confirm('हे '+(rows.length-1)+' timetable entries Google Sheet मध्ये कायमचे Save करायचे?'))return;
+  if(!confirm('हे '+(rows.length-1)+' timetable entries server वर कायमचे Save करायचे?'))return;
   emveShowLoader('वेळापत्रक सुरक्षितपणे Save होत आहे…');
   postTimetableValidated(rows,function(res){
-    if(res&&res.success){sheetGet(TT_SHEET,function(savedRows){parseTimetableRows(savedRows);ttEditMode=false;ttPendingSwap=null;ttSuggestionHtml='<div class="tt-ok"><strong>✓ Timetable Google Sheet मध्ये Save झाले.</strong></div>';var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';emveHideLoader();renderTTAdm();toast('वेळापत्रक Save झाले! ✅');});}
+    if(res&&res.success){sheetGet(TT_SHEET,function(savedRows){parseTimetableRows(savedRows);ttEditMode=false;ttPendingSwap=null;ttSuggestionHtml='<div class="tt-ok"><strong>✓ Timetable server वर Save झाले.</strong></div>';var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';emveHideLoader();renderTTAdm();toast('वेळापत्रक Save झाले! ✅');});}
     else{emveHideLoader();var b=document.getElementById('tt-conflict-banner');if(b)b.innerHTML='<div class="tt-warn"><strong>⚠ Save थांबवले.</strong><br>'+ttEsc((res&&res.message)||'Conflict found.')+(res&&res.errors?'<div style="margin-top:8px;">'+res.errors.slice(0,12).map(function(e){return '• '+ttEsc(e);}).join('<br>')+'</div>':'')+'</div>';toast('Save झाले नाही — conflict तपासा.','err');}
   });
 }
 function ttRefreshFromSheet(){
   if(ttEditMode&&!confirm('Unsaved changes आहेत. Refresh केल्यास ते रद्द होतील. Continue?'))return;
-  ttEditMode=false;sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttSuggestionHtml='<div class="tt-info">↻ 2026–27 timetable Google Sheet मधून load झाले.</div>';var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';renderTTAdm();});
+  ttEditMode=false;sheetGet(TT_SHEET,function(rows){parseTimetableRows(rows);ttSuggestionHtml='<div class="tt-info">↻ 2026–27 timetable server वरून load झाले.</div>';var a=document.getElementById('tt-editor-actions');if(a)a.style.display='none';renderTTAdm();});
 }
 function ttPrintSchool(){
   var wrap=document.getElementById('ttadm-wrap');if(!wrap)return;
