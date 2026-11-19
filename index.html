@@ -253,6 +253,7 @@ tr:hover td{background:#f1f5f9;}
 .att-in input.bad{border-color:#ef4444;background:#fef2f2;color:#b91c1c;}
 input.as-wait:not(.bad),input.as-send:not(.bad){border-color:#f59e0b!important;background:#fffbeb!important;}
 input.as-ok:not(.bad){border-color:#16a34a!important;}
+.mkt input.mi.err.as-wait,.mkt input.mi.err.as-send,.mkt input.mi.err.as-ok{border-color:var(--r)!important;background:#fef2f2!important;}
 .att-in small{color:var(--mt);font-weight:700;}
 .att-year{font-size:.8rem;}.att-year th,.att-year td{text-align:center;padding:6px 5px;}.att-year .att-nm{text-align:left;white-space:nowrap;}.att-wdr td{background:#eef2ff;font-weight:800;}
 .fee-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
@@ -2442,7 +2443,7 @@ function emveMkSticky(){
 }
 window.addEventListener('resize',function(){var t=document.querySelector('#mk-wrap table.mkt');if(!t)return;var r=t.querySelector('thead tr');if(r)t.style.setProperty('--mkh1',r.offsetHeight+'px');});
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
-function saveAllMk(cls,subj){if(settings.marksLocked && curRole==='shik'){ toast('गुण नोंदणी बंद आहे!','err'); return; }var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj);}
+function saveAllMk(cls,subj,auto){if(settings.marksLocked && curRole==='shik'){ if(!auto)toast('गुण नोंदणी बंद आहे!','err'); return; }var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});if(!auto)toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj,auto);}
 
 function calc5TotRow(sId,cls,subj,term){
   var pfx='t'+term+'_';
@@ -2529,8 +2530,8 @@ function update5TotRow(sId,cls,subj,term){
   if(grd5){var gr=tot.hasData?grade58(tot.pct100):'-';grd5.textContent=gr;grd5.className='bdg '+gradeColor(gr);}
   validate5Row(sId,cls,subj,term);
 }
-function save5Marks(cls,subj,term){
-  if(settings.marksLocked && curRole==='shik'){ toast('गुण नोंदणी बंद आहे!','err'); return; }
+function save5Marks(cls,subj,term,auto){
+  if(settings.marksLocked && curRole==='shik'){ if(!auto)toast('गुण नोंदणी बंद आहे!','err'); return; }
   var pfx='t'+term+'_';var stds2=getStds(cls);var allFields=emveFA(cls,subj,term).concat(emveSA(cls,subj,term));
   var blocked=false;
   stds2.forEach(function(s){var cnt=0;emveFA(cls,subj,term).forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp&&(parseFloat(inp.value)||0)>0)cnt++;});if(cnt>=5)blocked=true;});
@@ -2538,12 +2539,12 @@ function save5Marks(cls,subj,term){
   var over10=false;stds2.forEach(function(s){var t=0;['sa_tond','sa_prat'].forEach(function(k){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+k+'"][data-cls="'+cls+'"]');if(inp)t+=parseFloat(inp.value)||0;});if(t>10)over10=true;});
   if(over10){toast('संकलित: तोंडी + प्रात्यक्षिक मिळून 10 पेक्षा जास्त (लाल ओळी). आधी दुरुस्त करा!','err');return;}
   stds2.forEach(function(s){allFields.forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp)setMk(s.id,cls,subj,pfx+f.key,inp.value);});});
-  toast('सत्र-'+term+' गुण सेव्ह! ✅');
+  if(!auto)toast('सत्र-'+term+' गुण सेव्ह! ✅');
   syncStatus('ing');
   var header=['sId','cls','subj'].concat(allFields.map(function(f){return pfx+f.key;})).concat(['ह.क्र.','नाव']);
   var rows=[header];
   getStds(cls).forEach(function(s){var row=[s.id,cls,subj];allFields.forEach(function(f){row.push(getMk(s.id,cls,subj,pfx+f.key));});row.push(s.roll||'',s.name||'');rows.push(row);});
-  emveAsPost('mk5_t'+term+'_'+cls+'_'+subj.replace(/[^a-zA-Z0-9]/g,'X'),rows,'#mk-none',true,null);
+  emveAsPost('mk5_t'+term+'_'+cls+'_'+subj.replace(/[^a-zA-Z0-9]/g,'X'),rows,'#mk-wrap',!auto,null);
 }
 function secRProg(){
   var isA=(curRole==='super'||curRole==='mukh');
@@ -4049,7 +4050,7 @@ function syncAll(){
   });
 }
 
-function syncMks(cls,subj){
+function syncMks(cls,subj,auto){
   syncStatus('ing');
   var exams=getExams(cls);
   var rows=[['sId','cls','subj'].concat(exams.map(function(e){return e.key;})).concat(['ह.क्र.','नाव'])];
@@ -4060,7 +4061,7 @@ function syncMks(cls,subj){
     rows.push(row);
   });
   var shName='marks_'+cls+'_'+subj.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');
-  emveAsPost(shName,rows,'#mk-none',true,null);
+  emveAsPost(shName,rows,'#mk-wrap',!auto,null);
 }
 
 function syncSettings(){sheetPost('settings',[['key','value'],['marksLocked',settings.marksLocked?'1':'0']],null);}
@@ -4241,9 +4242,10 @@ document.addEventListener('DOMContentLoaded',function(){
 
   document.addEventListener('change',function(ev){
     var t=ev.target;if(!t)return;var id=t.id||'';var act=t.getAttribute('data-action')||'';
-    if(/^(nt-cls|nt-subj|nt-term|att-cls|att-m|info-cls)$/.test(id))emveAsFlush();
+    if(/^(nt-cls|nt-subj|nt-term|att-cls|att-m|info-cls|m-cls|m-subj|m-term)$/.test(id))emveAsFlush();
     else if(t.classList&&(t.classList.contains('nti')||t.classList.contains('atti')))emveAsSoon(1200);
     else if(t.classList&&t.classList.contains('infi')){emveAsTouch(t);emveInfoCheck();emveAsSoon(1200);}
+    else if(t.classList&&t.classList.contains('mi')&&t.closest&&t.closest('#mk-wrap')){emveAsTouch(t);emveAsSoon(1500);}
     var field=t.getAttribute('data-field')||'';
     if(field==='role'||id==='l-role')onRole();
     else if(id==='m-cls')onMCls();
@@ -4298,7 +4300,7 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 
   document.addEventListener('toggle',function(ev){if(ev.target&&ev.target.id==='sub-det')emveSubOpen=ev.target.open;},true);
-  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();else if((ev.target.className||'').indexOf('atti')>=0)emveAttCheck();var cn=' '+(ev.target.className||'')+' ';if(/ (mi|att-wdi) /.test(cn))emveDirty=true;if(/ (nti|atti) /.test(cn)){emveAsTouch(ev.target);emveAsSoon(4000);}if(/ infi /.test(cn)){emveAsTouch(ev.target);emveInfoCheck();emveAsSoon(4000);}});
+  document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();else if((ev.target.className||'').indexOf('atti')>=0)emveAttCheck();var cn=' '+(ev.target.className||'')+' ';if(/ (mi|att-wdi) /.test(cn))emveDirty=true;if(/ mi /.test(cn)&&ev.target.closest&&ev.target.closest('#mk-wrap')){emveAsTouch(ev.target);emveAsSoon(4000);}if(/ (nti|atti) /.test(cn)){emveAsTouch(ev.target);emveAsSoon(4000);}if(/ infi /.test(cn)){emveAsTouch(ev.target);emveInfoCheck();emveAsSoon(4000);}});
 
   document.addEventListener('click',function(ev){
     var el=ev.target;
@@ -4927,6 +4929,15 @@ function emveAsFlush(){
   if(emveNtCtx&&document.querySelector('#nt-wrap input.nti'))saveNotes(true);
   if(emveAttCtx&&document.querySelector('#att-wrap input.atti'))emveAttSave(true);
   if(emveInfoCtx&&document.querySelector('#info-wrap .infi'))emveInfoSave(true);
+  if(document.querySelector('#mk-wrap input.mi'))emveMkAuto();
+}
+/* marks auto-save: the table's own Save button says which class/subject/term is on screen */
+function emveMkAuto(){
+  var b=document.querySelector('#mk-wrap [data-action="saveallmk"],#mk-wrap [data-action="save5mk"]');if(!b)return;
+  var c=b.getAttribute('data-cls')||'',sb=b.getAttribute('data-subj')||'',tm=b.getAttribute('data-term')||'';if(!c||!sb)return;
+  var over=[].slice.call(document.querySelectorAll('#mk-wrap input.mi')).some(function(x){var mx=parseFloat(x.getAttribute('max')||0);return mx&&(parseFloat(x.value)||0)>mx;});
+  if(over){emveAS.dirty=true;return;}
+  if(b.getAttribute('data-action')==='save5mk'){if(tm)save5Marks(c,sb,tm,true);}else saveAllMk(c,sb,true);
 }
 function emveAsPost(tab,rows,wrapSel,manual,onOk){
   var id=++emveAS.jid;
