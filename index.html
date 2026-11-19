@@ -2395,7 +2395,7 @@ function emveParseMarks(rows,cls,sb){
   rows.slice(1).forEach(function(row){
     var sId=parseInt(row[0],10)||0;if(!sId)return;
     for(var i=3;i<hdr.length;i++){
-      if(!hdr[i])continue;var raw=row[i];var v=(raw===undefined||raw===null)?'':String(raw);
+      if(!hdr[i]||hdr[i]==='ह.क्र.'||hdr[i]==='नाव')continue;var raw=row[i];var v=(raw===undefined||raw===null)?'':String(raw);
       if(v!==''&&v!=='undefined'&&v!=='null')setMk(sId,cls,sb,hdr[i],v);
     }
   });
@@ -2540,9 +2540,9 @@ function save5Marks(cls,subj,term){
   stds2.forEach(function(s){allFields.forEach(function(f){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+pfx+f.key+'"][data-cls="'+cls+'"]');if(inp)setMk(s.id,cls,subj,pfx+f.key,inp.value);});});
   toast('सत्र-'+term+' गुण सेव्ह! ✅');
   syncStatus('ing');
-  var header=['sId','cls','subj'].concat(allFields.map(function(f){return pfx+f.key;}));
+  var header=['sId','cls','subj'].concat(allFields.map(function(f){return pfx+f.key;})).concat(['ह.क्र.','नाव']);
   var rows=[header];
-  getStds(cls).forEach(function(s){var row=[s.id,cls,subj];allFields.forEach(function(f){row.push(getMk(s.id,cls,subj,pfx+f.key));});rows.push(row);});
+  getStds(cls).forEach(function(s){var row=[s.id,cls,subj];allFields.forEach(function(f){row.push(getMk(s.id,cls,subj,pfx+f.key));});row.push(s.roll||'',s.name||'');rows.push(row);});
   emveAsPost('mk5_t'+term+'_'+cls+'_'+subj.replace(/[^a-zA-Z0-9]/g,'X'),rows,'#mk-none',true,null);
 }
 function secRProg(){
@@ -4052,10 +4052,11 @@ function syncAll(){
 function syncMks(cls,subj){
   syncStatus('ing');
   var exams=getExams(cls);
-  var rows=[['sId','cls','subj'].concat(exams.map(function(e){return e.key;}))];
+  var rows=[['sId','cls','subj'].concat(exams.map(function(e){return e.key;})).concat(['ह.क्र.','नाव'])];
   getStds(cls).forEach(function(s){
     var row=[s.id,cls,subj];
     exams.forEach(function(e){row.push(getMk(s.id,cls,subj,e.key));});
+    row.push(s.roll||'',s.name||'');
     rows.push(row);
   });
   var shName='marks_'+cls+'_'+subj.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X');
