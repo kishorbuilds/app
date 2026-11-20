@@ -2511,6 +2511,28 @@ function emveMarksTabs(cls,sb){
   if(getCtype(cls)==='high')return ['marks_'+cls+'_'+sb.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'X')];
   return ['mk5_t1_'+cls+'_'+sb.replace(/[^a-zA-Z0-9]/g,'X'),'mk5_t2_'+cls+'_'+sb.replace(/[^a-zA-Z0-9]/g,'X')];
 }
+/* 5 वी परिसर अभ्यास: marks saved earlier in the old part lists (भाग 1 / भाग 2) show in the joint subject.
+   A box empty in the joint list takes the part mark (both parts filled = average). Old part lists are never changed. */
+function emveMkPartTabs(tab){return /^mk5_t\d_5\w*_Parisar$/.test(String(tab||''))?[tab+'X1',tab+'X2']:null;}
+function emveMkMerge(main,a,b){
+  var skip={'sId':1,'cls':1,'subj':1,'ह.क्र.':1,'नाव':1},head=(main&&main[0]?main[0]:['sId','cls','subj']).map(function(h){return String(h||'').trim();}),out={},order=[],keys=[];
+  head.forEach(function(h){if(h&&!skip[h]&&keys.indexOf(h)<0)keys.push(h);});
+  [a,b].forEach(function(R){if(R&&R[0])R[0].forEach(function(h){h=String(h||'').trim();if(h&&!skip[h]&&keys.indexOf(h)<0)keys.push(h);});});
+  function rowsOf(R){var m={};if(!R||!R.length)return m;var h=R[0].map(function(x){return String(x||'').trim();});
+    R.slice(1).forEach(function(r){var id=parseInt(r[0],10)||0;if(!id)return;var o={};h.forEach(function(k,i){if(i>0)o[k]=r[i]==null?'':String(r[i]).trim();});m[id]=o;if(order.indexOf(id)<0)order.push(id);});return m;}
+  var M=rowsOf(main),A=rowsOf(a),B=rowsOf(b);
+  var rows=[['sId','cls','subj'].concat(keys)];
+  order.forEach(function(id){var m=M[id]||{},x=A[id]||{},y=B[id]||{},r=[id,m.cls||x.cls||y.cls||'',m.subj||'Parisar'];
+    keys.forEach(function(k){var v=m[k]!=null?m[k]:'';if(v===''){var va=x[k]||'',vb=y[k]||'';v=va!==''&&vb!==''?String(Math.round((emveNum(va)+emveNum(vb))/2*10)/10):(va!==''?va:vb);}r.push(v);});
+    rows.push(r);});
+  return rows;
+}
+function emveMkGet(tab,cb){
+  var parts=emveMkPartTabs(tab);if(!parts){sheetGet(tab,function(rows){cb(rows,false);});return;}
+  var got={},left=3,bad=false;
+  [tab].concat(parts).forEach(function(n){sheetGet(n,function(rows){if(emveGetFailed[n])bad=true;got[n]=rows||[];left--;if(left)return;
+    cb(bad?[]:emveMkMerge(got[tab],got[parts[0]],got[parts[1]]),bad);});});
+}
 function emveParseMarks(rows,cls,sb){
   if(!rows||rows.length<2)return;
   var hdr=rows[0].map(function(h){return String(h||'').trim();});
@@ -2533,8 +2555,8 @@ function emveLoadMarks(cls,subjects,done,force){
   var tabs=[];todo.forEach(function(sb){emveMarksTabs(cls,sb).forEach(function(t){tabs.push({t:t,sb:sb});});});
   if(!tabs.length){done();return;}
   var left=tabs.length,failed=false;
-  tabs.forEach(function(x){sheetGet(x.t,function(rows){
-    if(emveGetFailed[x.t]){failed=true;emveMarksErr[cls+'|'+x.sb]=1;}
+  tabs.forEach(function(x){emveMkGet(x.t,function(rows,bad){
+    if(bad||emveGetFailed[x.t]){failed=true;emveMarksErr[cls+'|'+x.sb]=1;}
     else{emveParseMarks(rows,cls,x.sb);if(!emveMarksErr[cls+'|'+x.sb])emveMarksLoaded[cls+'|'+x.sb]=1;}
     left--;if(left)return;
     todo.forEach(function(sb){if(emveMarksErr[cls+'|'+sb])delete emveMarksLoaded[cls+'|'+sb];});
@@ -2807,15 +2829,25 @@ var emvePg={term:1,view:'tc',items:null,loading:false,open:{},at:'',done:0,total
 var EMVE_PG_K=[['mk','गुण'],['nt','विषय नोंदी'],['vs','वर्गशिक्षक नोंदी'],['att','हजेरी'],['info','परिचय']];
 function emvePg58(cls){return getCtype(cls)!=='high';}
 function emvePgMkTab(cls,sb,t){return emvePg58(cls)?'mk5_t'+t+'_'+cls+'_'+sb.replace(/[^a-zA-Z0-9]/g,'X'):emveMarksTabs(cls,sb)[0];}
+function emvePgNtPar(cls,sb){return sb==='Parisar'&&/^5/.test(cls);}
+function emvePgAddNt(add,cls,sb){add(emveNotesTab(cls,sb));if(emvePgNtPar(cls,sb)){add(emveNotesTab(cls,'Parisar 1'));add(emveNotesTab(cls,'Parisar 2'));}}
+/* joint 5 वी परिसर notes: a student not yet in the joint list counts with the old part note (भाग 1, else भाग 2) */
+function emvePgNtRows(data,cls,sb){var tb=emveNotesTab(cls,sb);if(!emvePgNtPar(cls,sb))return data[tb];var a=data[emveNotesTab(cls,'Parisar 1')],b=data[emveNotesTab(cls,'Parisar 2')],m=data[tb];if(m===null||a===null||b===null)return null;
+  var have={},out=[['sId','नाव','t1','t2']];function h(R){return R&&R[0]?R[0].map(function(x){return String(x||'').trim();}):[];}
+  var hm=h(m);(m||[]).slice(1).forEach(function(r){var id=parseInt(r[0],10)||0;if(!id)return;have[id]=1;out.push([id,'',r[hm.indexOf('t1')]||'',r[hm.indexOf('t2')]||'']);});
+  var P={};[a,b].forEach(function(R,k){var hh=h(R);(R||[]).slice(1).forEach(function(r){var id=parseInt(r[0],10)||0;if(!id||have[id])return;if(!P[id])P[id]=['',''];['t1','t2'].forEach(function(f,j){var v=hh.indexOf(f)>=0?String(r[hh.indexOf(f)]||'').trim():'';if(v&&!P[id][j])P[id][j]=v;});});});
+  for(var id in P)if(P.hasOwnProperty(id))out.push([id,'',P[id][0],P[id][1]]);return out;}
+function emvePgAddMk(add,cls,sb,t){var tb=emvePgMkTab(cls,sb,t);add(tb);(emveMkPartTabs(tb)||[]).forEach(add);}
+function emvePgMkRows(data,tb){var pt=emveMkPartTabs(tb);if(!pt)return data[tb];if(data[tb]===null||data[pt[0]]===null||data[pt[1]]===null)return null;return emveMkMerge(data[tb],data[pt[0]],data[pt[1]]);}
 function emvePgTc(name){var t=ttFindTeacher(name);return t?{k:ttNorm(t.ttName||t.name),n:String(t.name||name).replace(/श्री\.\s*|श्रीम\.\s*/g,'').trim()}:{k:ttNorm(name),n:String(name)};}
 function emvePgCT(cls){for(var i=0;i<TEACHERS.length;i++){var t=TEACHERS[i];if(t.classOf&&normalizeClass(t.classOf)===cls)return emvePgTc(t.ttName||t.name);}return null;}
 /* teacher login: only own subjects + own class (class teacher) */
 function emvePgMe(){return curRole==='shik'&&curTc?emvePgTc(curTc.ttName||curTc.name).k:'';}
 function emvePgTabs(t){
   var out=[],me=emvePgMe(),my=me&&curTc.classOf?normalizeClass(curTc.classOf):'';function add(n){if(out.indexOf(n)<0)out.push(n);}
-  if(me){(emveWorkload||[]).forEach(function(w){if(!EMVE_CAT[w.subject]||!getCls(w.cls)||emvePgTc(w.teacher).k!==me)return;add(emvePgMkTab(w.cls,w.subject,t));if(emvePg58(w.cls)&&EMVE_NOTE_SUBJ[w.subject])add(emveNotesTab(w.cls,w.subject));});
+  if(me){(emveWorkload||[]).forEach(function(w){if(!EMVE_CAT[w.subject]||!getCls(w.cls)||emvePgTc(w.teacher).k!==me)return;emvePgAddMk(add,w.cls,w.subject,t);if(emvePg58(w.cls)&&EMVE_NOTE_SUBJ[w.subject])emvePgAddNt(add,w.cls,w.subject);});
     if(my&&getCls(my)){if(emvePg58(my))add(emveNotesTab(my,EMVE_CT));add('att_'+my);add('info_'+my);add(EMVE_ATT_WD);}return out;}
-  (emveWorkload||[]).forEach(function(w){if(!EMVE_CAT[w.subject]||!getCls(w.cls))return;add(emvePgMkTab(w.cls,w.subject,t));if(emvePg58(w.cls)&&EMVE_NOTE_SUBJ[w.subject])add(emveNotesTab(w.cls,w.subject));});
+  (emveWorkload||[]).forEach(function(w){if(!EMVE_CAT[w.subject]||!getCls(w.cls))return;emvePgAddMk(add,w.cls,w.subject,t);if(emvePg58(w.cls)&&EMVE_NOTE_SUBJ[w.subject])emvePgAddNt(add,w.cls,w.subject);});
   CLASSES.forEach(function(c){if(emvePg58(c.id))add(emveNotesTab(c.id,EMVE_CT));add('att_'+c.id);add('info_'+c.id);});
   add(EMVE_ATT_WD);return out;
 }
@@ -2849,14 +2881,14 @@ function emvePgBuild(t,data){
   (emveWorkload||[]).forEach(function(w){
     var cls=w.cls,sb=w.subject;if(!EMVE_CAT[sb]||!getCls(cls))return;
     var tc=emvePgTc(w.teacher),c58=emvePg58(cls),art=c58&&emveSubjGrp(sb)==='art';
-    var r=cnt(cls,data[emvePgMkTab(cls,sb,t)],function(o){
+    var r=cnt(cls,emvePgMkRows(data,emvePgMkTab(cls,sb,t)),function(o){
       if(!c58)return v(o,'s'+t+'l')&&v(o,'s'+t+'t')?1:0;
       if(art)return v(o,T+'fa_prat')?1:0;
       if(!v(o,T+'sa_lekh'))return 0;
       for(var k in o){if(k.indexOf(T+'fa_')===0&&v(o,k))return 1;}return 0;
     });
     items.push({cls:cls,kind:'mk',sb:sb,tc:tc,d:r.d,n:r.n,err:r.err});
-    if(c58&&EMVE_NOTE_SUBJ[sb]){r=cnt(cls,data[emveNotesTab(cls,sb)],function(o){return v(o,'t'+t)?1:0;});items.push({cls:cls,kind:'nt',sb:sb,tc:tc,d:r.d,n:r.n,err:r.err});}
+    if(c58&&EMVE_NOTE_SUBJ[sb]){r=cnt(cls,emvePgNtRows(data,cls,sb),function(o){return v(o,'t'+t)?1:0;});items.push({cls:cls,kind:'nt',sb:sb,tc:tc,d:r.d,n:r.n,err:r.err});}
   });
   /* attendance: only finished months of this term that have working days set */
   var wd={};(data[EMVE_ATT_WD]||[]).slice(1).forEach(function(r){var k=String(r[0]||'').trim();if(k&&r[2]!==''&&r[2]!=null)wd[k]=1;});
