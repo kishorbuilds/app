@@ -1759,7 +1759,7 @@ function renderFeeSumTable(reload){
   }).join('');
   var Texp=0,Tcoll=0;f.classes.forEach(function(c){var d=emveFeeData[emveFeeTab(f.id,c)];if(!d)return;var o=emveFeeStats(f,c,d),p=emveFeePct(f,c,o);Texp+=p.exp;Tcoll+=Math.min(o.coll,p.exp);});
   var Tp=Texp>0?Math.round(100*Tcoll/Texp):100;
-  w.innerHTML='<div class="fee-state'+(f.closed?' off':'')+'"><span>'+(f.closed?'⏸ फी भरणे थांबवले आहे — शिक्षकांना दिसत नाही':'● फी भरणे सुरू आहे')+'</span>'+emveFeePauseBtn(f)+'</div>'+
+  w.innerHTML='<div class="fee-state'+(f.closed?' off':'')+'"><span>'+(f.closed?'⏸ फी भरणे थांबवले आहे — शिक्षकांना दिसत नाही':'● फी भरणे सुरू आहे')+'</span><span style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn bo bsm" data-action="feecol" data-id="'+emveAttr(f.id)+'">👤 संकलन अधिकार</button>'+emveFeePauseBtn(f)+'</span></div>'+
     emveBar(Tp,'संपूर्ण शाळा वसुली',emveRs(Tcoll)+' / '+emveRs(Texp))+'<div class="fee-sum">'+
     '<div class="fee-k b"><b>'+emveRs(T.coll)+'</b><span>एकूण जमा</span></div>'+
     '<div class="fee-k g"><b>'+emveRs(T.rec)+'</b><span>ऑफिसमध्ये जमा (पुष्टी)</span></div>'+
@@ -1810,7 +1810,7 @@ function renderFeeNew(){
 }
 /* ---- who collects in each class (admin can change any time) ---- */
 function emveFeeColEdit(id){
-  var f=emveFeeFind(id),w=document.getElementById('fee-all');if(!f||!w)return;
+  var f=emveFeeFind(id),w=document.getElementById('fee-all')||document.getElementById('fee-sum-t');if(!f||!w)return;
   var tl=(TEACHERS||[]).filter(function(t){return !t.isMukh;});
   w.innerHTML='<div class="fee-fl"><div style="font-weight:800;font-size:1.05rem;">👤 '+emveEsc(f.name)+' — संकलन अधिकार</div>'+
     '<div class="fee-sub" style="margin:4px 0 10px;">प्रत्येक वर्गात फी कोण गोळा करेल ते निवडा (हवे तर दुसराही; दोघांची जमा वेगवेगळी दिसते). वर्गशिक्षकांना आपल्या वर्गाची फी स्थिती नेहमी दिसते (फक्त पाहण्यासाठी). बदलण्यापूर्वी जुन्या व्यक्तीकडील जमा रक्कम ऑफिसमध्ये भरणा करून घ्या.</div>'+
@@ -1820,8 +1820,9 @@ function emveFeeColEdit(id){
       var ctO='<option value="">वर्गशिक्षक'+(ct?' ('+emveEsc(ct)+')':'')+'</option>';
       return '<div class="fee-r"><span class="fee-nm" style="flex:0 0 90px;">'+emveClsLabel(c)+'</span><select class="fc-sel" data-c="'+c+'" style="'+st+'">'+opts(raw[0],ctO)+'</select>'+
         '<select class="fc-sel2" data-c="'+c+'" style="'+st+'">'+(raw.length>1?opts(raw[1],'<option value="-">+ दुसरा: नाही</option>'+ctO.replace('value=""','value="@CT"'+(raw[1]===''?' selected':''))):opts('','<option value="-">+ दुसरा: नाही</option>'+ctO.replace('value=""','value="@CT"')))+'</select></div>';}).join('')+'</div>'+
-    '<div class="sp-act" style="margin-top:12px;"><button class="btn bp" data-action="feecolsave" data-id="'+emveAttr(f.id)+'">💾 जतन करा</button><button class="btn bo bsm" data-action="feeduecancel">रद्द</button></div></div>';
+    '<div class="sp-act" style="margin-top:12px;"><button class="btn bp" data-action="feecolsave" data-id="'+emveAttr(f.id)+'">💾 जतन करा</button><button class="btn bo bsm" data-action="feecolback">रद्द</button></div></div>';
 }
+function emveFeeColBack(){if(document.getElementById('fee-all'))renderFeeNew();else if(document.getElementById('fee-sum-t'))renderFeeSumTable(false);}
 function emveFeeColSave(id){
   var f=emveFeeFind(id);if(!f)return;
   var old={c:f.collector,m:f.clsCol},m={};
@@ -1832,7 +1833,7 @@ function emveFeeColSave(id){
   sheetPost('Fees',emveFeeRows(),function(res){
     if(res&&res.success){syncStatus('ok');emveFeeHomeAt=0;toast('संकलन अधिकार जतन झाले ✅');}
     else{f.collector=old.c;f.clsCol=old.m;if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही.','err');}}
-    renderFeeNew();
+    emveFeeColBack();
   });
 }
 /* ---- fee for chosen students only: paste names, tick, save to FeeList ---- */
@@ -4612,6 +4613,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='feelist'){emveFeeListEdit(el.getAttribute('data-id'));break;}
         else if(act==='feecol'){emveFeeColEdit(el.getAttribute('data-id'));break;}
         else if(act==='feecolsave'){emveFeeColSave(el.getAttribute('data-id'));break;}
+        else if(act==='feecolback'){emveFeeColBack();break;}
         else if(act==='feelistmatch'){emveFlMatch();break;}
         else if(act==='feelistsave'){emveFlSave(false);break;}
         else if(act==='feelistclear'){emveFlSave(true);break;}
