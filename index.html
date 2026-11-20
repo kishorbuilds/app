@@ -997,8 +997,10 @@ function emveFA(cls,subj,term){
        The saved column is kept where marks were already entered: भाषा सत्र 2 and 5-6 वी used fa_prak. */
     var sci=/^Science/.test(String(subj||''));
     var uk=(g==='lang'?String(term)==='2':b56)?'fa_prak':'fa_upkr';
-    L=[g==='math'?f('fa_tond','तोंडी/प्रात्यक्षिक',M):f('fa_tond','तोंडी काम',M)];
-    if(sci)L.push(f('fa_prat','प्रात्य./प्रयोग',M));
+    /* गणित व विज्ञान: तोंडी, प्रात्यक्षिक/प्रयोग, उपक्रम, चाचणी, स्वाध्याय */
+    var gs=g==='math'||sci;
+    L=[f('fa_tond',gs?'तोंडी':'तोंडी काम',M)];
+    if(gs)L.push(f('fa_prat','प्रात्यक्षिक/प्रयोग',M));
     L.push(f(uk,'उपक्रम',M),f('fa_cha','चाचणी',10),f('fa_swa','स्वाध्याय',10));
   }
   return L.concat(emveMkOld(cls,subj,term,L,FA5));
