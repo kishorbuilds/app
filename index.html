@@ -1430,11 +1430,13 @@ function emveFeeParse(rows){
   var out=[];(rows||[]).slice(1).forEach(function(r){if(!r[0])return;
     var ca={};String(r[3]||'').split('|').forEach(function(p){var q=p.split(':');if(q.length===2&&q[0])ca[normalizeClass(q[0])]=emveNum(q[1]);});
     out.push({id:String(r[0]),name:String(r[1]||''),amount:emveNum(r[2]),clsAmt:ca,classes:String(r[4]||'').split('|').map(normalizeClass).filter(Boolean),
-      collector:String(r[5]||'').trim(),due:normalizeDate(String(r[6]||'')),created:String(r[7]||''),closed:String(r[8]||'')==='1'});});
+      collector:String(r[5]||'').trim(),due:normalizeDate(String(r[6]||'')),created:String(r[7]||''),closed:String(r[8]||'')==='1',clsCol:emveFeeColParse(r[9])});});
   return out;
 }
-function emveFeeRows(){return [['ID','शुल्क','रक्कम','वर्गानुसार रक्कम','वर्ग','गोळा करणारे','शेवटची तारीख','तयार','बंद']].concat(emveFees.map(function(f){
-  return [f.id,f.name,f.amount,Object.keys(f.clsAmt).map(function(c){return c+':'+f.clsAmt[c];}).join('|'),f.classes.join('|'),f.collector,f.due,f.created,f.closed?'1':''];}));}
+function emveFeeRows(){return [['ID','शुल्क','रक्कम','वर्गानुसार रक्कम','वर्ग','गोळा करणारे','शेवटची तारीख','तयार','बंद','वर्गनिहाय संकलन']].concat(emveFees.map(function(f){
+  return [f.id,f.name,f.amount,Object.keys(f.clsAmt).map(function(c){return c+':'+f.clsAmt[c];}).join('|'),f.classes.join('|'),f.collector,f.due,f.created,f.closed?'1':'',Object.keys(f.clsCol||{}).map(function(c){return c+':'+f.clsCol[c];}).join('|')];}));}
+/* 'वर्गनिहाय संकलन' = 7a:Name|8:Name (who collects in each class; empty = default) */
+function emveFeeColParse(v){var o={};String(v||'').split('|').forEach(function(p){var i=p.indexOf(':');if(i>0){var c=normalizeClass(p.slice(0,i)),n=p.slice(i+1).trim();if(c&&n)o[c]=n;}});return o;}
 function emveFeeLoad(done){
   var n=2,bad=false;
   function fin(){n--;if(n)return;if(bad){done(false);return;}emveFeesLoaded=true;done(true);}
@@ -1452,8 +1454,10 @@ function emveFeeListParse(rows){
 function emveFeeStds(f,cls){var all=getStds(cls),L=f&&emveFeeList[f.id];if(!L)return all;var m=L[cls]||{};return all.filter(function(s){return m[s.id];});}
 /* class teacher of a class (from roster) */
 function emveClassTeacher(cls){var t=(TEACHERS||[]).find(function(x){return normalizeClass(x.classOf)===cls;});return t?t.name:'';}
-function emveFeeCollector(f,cls){return f.collector||emveClassTeacher(cls);}
+function emveFeeCollector(f,cls){return (f.clsCol&&f.clsCol[cls])||f.collector||emveClassTeacher(cls);}
 function emveFeeMine(f,cls){if(emveFeeIsAdm())return true;if(!curTc)return false;return emveSameName(emveFeeCollector(f,cls),curTc.name);}
+/* class teacher can always see own class (estimate), even when someone else collects */
+function emveFeeView(f,cls){if(emveFeeMine(f,cls))return true;return !!(curTc&&normalizeClass(curTc.classOf)===cls);}
 function emveFeeFind(id){return emveFees.find(function(f){return f.id===String(id);});}
 function emveFeeDataLoad(id,cls,done){
   var tab=emveFeeTab(id,cls);
@@ -1554,7 +1558,7 @@ function emveFeeShareDue(){
 /* home widget: teacher sees own classes, office sees whole school */
 var emveFeeHomeAt=0,emveFeeHomeBusy=false;
 function emveFeeHomeTargets(){
-  var out=[];emveFees.forEach(function(f){if(f.closed)return;f.classes.forEach(function(c){if(emveFeeMine(f,c))out.push({f:f,cls:c});});});return out;
+  var out=[];emveFees.forEach(function(f){if(f.closed)return;f.classes.forEach(function(c){if(emveFeeView(f,c))out.push({f:f,cls:c});});});return out;
 }
 function emveFeeHome(force){
   var w=document.getElementById('fee-home');if(!w||!curRole||!emveAllLoaded)return;
@@ -1592,7 +1596,7 @@ function renderFeeCol(){
   emveFeeData={};emveFeeHomeAt=0;emveFeeCheckAt=Date.now();
   emveFeeLoad(function(ok){
     if(!ok){w.innerHTML='<div class="alert aw"><div>⚠️ शुल्कांची यादी आणता आली नाही (Internet?).</div></div><button class="btn bp" data-action="feeretry">पुन्हा प्रयत्न करा</button>';return;}
-    var list=emveFees.filter(function(f){return !f.closed&&f.classes.some(function(c){return emveFeeMine(f,c);});});
+    var list=emveFees.filter(function(f){return !f.closed&&f.classes.some(function(c){return emveFeeView(f,c);});});
     if(!list.length){w.innerHTML='<div class="alert ai"><div>ℹ️</div><div>सध्या तुमच्याकडे गोळा करण्यासाठी कोणतेही शुल्क नाही.</div></div>';return;}
     w.innerHTML='<div class="fg2"><div class="fg"><label>शुल्क</label><select id="fee-f">'+list.map(function(f){return '<option value="'+emveAttr(f.id)+'">'+emveEsc(f.name)+'</option>';}).join('')+'</select></div>'+
       '<div class="fg"><label>वर्ग</label><select id="fee-c"></select></div></div><div id="fee-list"></div>';
@@ -1601,7 +1605,7 @@ function renderFeeCol(){
 }
 function emveFeeClsOpts(){
   var f=emveFeeFind((document.getElementById('fee-f')||{}).value);var sel=document.getElementById('fee-c');if(!f||!sel)return;
-  var cl=f.classes.filter(function(c){return emveFeeMine(f,c);});
+  var cl=f.classes.filter(function(c){return emveFeeView(f,c);});
   var mine=curTc?normalizeClass(curTc.classOf):'';
   sel.innerHTML=cl.map(function(c){return '<option value="'+c+'"'+(c===mine?' selected':'')+'>'+emveClsLabel(c)+'</option>';}).join('');
   renderFeeList();
@@ -1620,7 +1624,7 @@ function renderFeeList(){
     });
     return;
   }
-  var d=emveFeeData[tab],amt=emveFeeAmt(f,cls),o=emveFeeStats(f,cls,d);
+  var d=emveFeeData[tab],amt=emveFeeAmt(f,cls),o=emveFeeStats(f,cls,d),can=emveFeeMine(f,cls);
   var pp=emveFeePct(f,cls,o);
   var head=emveBar(pp.pct,'वसुली (रक्कम)',o.paid+'/'+(o.n-o.waived)+' विद्यार्थी पूर्ण · '+emveRs(Math.min(o.coll,pp.exp))+' / '+emveRs(pp.exp))+'<div class="fee-sum">'+
     '<div class="fee-k"><b>'+emveRs(amt)+'</b><span>प्रति विद्यार्थी</span></div>'+
@@ -1632,13 +1636,14 @@ function renderFeeList(){
       '<div><span>ऑफिसमध्ये भरणा केला</span><b>'+emveRs(o.given)+'</b></div>'+
       (o.given>o.rec?'<div class="fee-pend"><span>└ ऑफिसची पावती / पुष्टी प्रलंबित</span><b>'+emveRs(o.given-o.rec)+'</b></div>':'')+
       '<div class="tot'+(o.inHand>0?' due':'')+'"><span>ऑफिसमध्ये भरणा करायची बाकी</span><b>'+emveRs(o.inHand)+'</b></div></div>'+
-    (o.inHand>0?'<button class="btn bs bsm" data-action="feegive">'+emveRs(o.inHand)+' ऑफिसमध्ये भरणा करा</button>':'<div class="fee-ok" style="font-weight:800;">✓ सर्व रक्कम ऑफिसमध्ये भरणा झाली</div>')+'</div>'+
+    (o.inHand>0&&!can?'<div class="fee-pend" style="font-weight:800;">संकलन: '+emveEsc(emveFeeCollector(f,cls)||'—')+'</div>':o.inHand>0?'<button class="btn bs bsm" data-action="feegive">'+emveRs(o.inHand)+' ऑफिसमध्ये भरणा करा</button>':'<div class="fee-ok" style="font-weight:800;">✓ सर्व रक्कम ऑफिसमध्ये भरणा झाली</div>')+'</div>'+
     (d.hand.length?'<div class="fee-hlist">'+d.hand.map(function(h){return '<div>'+formatDateIndian(h.on)+' · '+emveRs(h.amt)+' · '+emveEsc(h.by)+' → '+(h.recOn?'<span class="fee-ok">ऑफिसमध्ये जमा ✓ ('+emveEsc(h.recBy)+')</span>':'<span class="fee-pend">भरणा केला · ऑफिसची पुष्टी प्रलंबित</span>')+'</div>';}).join('')+'</div>':'')+
     '<div class="fee-tools"><span id="fee-st" class="fee-st"></span><span style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn bs bsm" data-action="feesharedue">बाकी यादी WhatsApp चित्र</button><button class="btn bo bsm" data-action="feeprintdue">print</button></span></div>';
   var inL={};emveFeeStds(f,cls).forEach(function(s){inL[s.id]=1;});
   var rows=getStds(cls).filter(function(s){var p=d.pay[s.id];return inL[s.id]||(p&&(p.paid||p.st));}).map(function(s){
     var p=d.pay[s.id]||{paid:0,st:''},full=p.paid>=amt&&amt>0,act;
-    if(p.st==='माफ')act='<span class="fee-chip w">माफ</span><button class="fee-mini" data-action="feeundo" data-sid="'+s.id+'">↺</button>';
+    if(!can)act=p.st==='माफ'?'<span class="fee-chip w">माफ</span>':full?'<span class="fee-chip g">✓ '+emveRs(p.paid)+'</span>':'<span class="fee-chip o">बाकी '+emveRs(amt-p.paid)+'</span>';
+    else if(p.st==='माफ')act='<span class="fee-chip w">माफ</span><button class="fee-mini" data-action="feeundo" data-sid="'+s.id+'">↺</button>';
     else if(full)act='<span class="fee-chip g">✓ '+emveRs(p.paid)+'</span><button class="fee-mini" data-action="feeundo" data-sid="'+s.id+'">↺</button>';
     else act=(p.paid>0?'<span class="fee-chip o">'+emveRs(p.paid)+' / '+emveRs(amt)+'</span>':'')+
       '<button class="fee-pay" data-action="feepay" data-sid="'+s.id+'">✓ '+emveRs(amt-p.paid)+'</button>'+
@@ -1646,7 +1651,7 @@ function renderFeeList(){
       (p.paid>0?'':'<button class="fee-mini" data-action="feewaive" data-sid="'+s.id+'">माफ</button>');
     return '<div class="fee-r'+(full||p.st==='माफ'?' done':'')+'"><span class="fee-roll">'+emveEsc(String(s.roll||''))+'</span><span class="fee-nm">'+emveEsc(s.name)+(inL[s.id]?'':' <span class="fee-chip w">यादीबाहेर</span>')+'</span><span class="fee-act">'+act+'</span></div>';
   }).join('');
-  w.innerHTML=head+'<div class="fee-rows">'+(rows||'<div style="padding:16px;color:var(--mt);">या वर्गात या शुल्काच्या यादीत कोणी विद्यार्थी नाही.</div>')+'</div>';
+  w.innerHTML=(can?'':'<div class="alert ai" style="margin-bottom:10px;"><div>👁</div><div>फक्त पाहण्यासाठी (तुमचा वर्ग). या वर्गात फी संकलन: <b>'+emveEsc(emveFeeCollector(f,cls)||'—')+'</b></div></div>')+head+'<div class="fee-rows">'+(rows||'<div style="padding:16px;color:var(--mt);">या वर्गात या शुल्काच्या यादीत कोणी विद्यार्थी नाही.</div>')+'</div>';
 }
 function emveFeeCur(){var f=emveFeeFind((document.getElementById('fee-f')||{}).value),cls=(document.getElementById('fee-c')||{}).value||'';if(!f||!cls)return null;var d=emveFeeData[emveFeeTab(f.id,cls)];return d?{f:f,cls:cls,d:d,amt:emveFeeAmt(f,cls)}:null;}
 /* a teacher's open screen notices within a minute when the office pauses the fee */
@@ -1656,7 +1661,7 @@ function emveFeeRecheck(id){
   emveFeeLoad(function(ok){var f=ok&&emveFeeFind(id);if(ok&&(!f||f.closed)&&document.getElementById('fee-col')){toast('ऑफिसने हे फी भरणे थांबवले आहे.','err');renderFeeCol();}});
 }
 function emveFeeAdd(sid,add,st){
-  var c=emveFeeCur();if(!c)return;sid=parseInt(sid,10);
+  var c=emveFeeCur();if(!c||!emveFeeMine(c.f,c.cls))return;sid=parseInt(sid,10);
   if(c.f.closed&&!emveFeeIsAdm()){toast('हे फी भरणे थांबवले आहे.','err');return;}
   emveFeeRecheck(c.f.id);
   var p=c.d.pay[sid]||{paid:0,st:'',log:''};
@@ -1674,7 +1679,7 @@ function emveFeePart(sid){
   emveFeeAdd(sid,n,'');
 }
 function emveFeeUndo(sid){
-  var c=emveFeeCur();if(!c)return;sid=parseInt(sid,10);var p=c.d.pay[sid];if(!p)return;
+  var c=emveFeeCur();if(!c||!emveFeeMine(c.f,c.cls))return;sid=parseInt(sid,10);var p=c.d.pay[sid];if(!p)return;
   var o=emveFeeStats(c.f,c.cls,c.d);
   if(o.coll-p.paid<o.rec){toast('ही रक्कम ऑफिसमध्ये जमा होऊन पुष्टी झाली आहे. बदलासाठी ऑफिसशी बोला.','err');return;}
   if(!confirm('या विद्यार्थ्याची नोंद ('+(p.st||emveRs(p.paid))+') रद्द करायची?'))return;
@@ -1682,7 +1687,7 @@ function emveFeeUndo(sid){
   renderFeeList();emveFeeSave(c.f.id,c.cls);
 }
 function emveFeeGive(){
-  var c=emveFeeCur();if(!c)return;var o=emveFeeStats(c.f,c.cls,c.d);
+  var c=emveFeeCur();if(!c||!emveFeeMine(c.f,c.cls))return;var o=emveFeeStats(c.f,c.cls,c.d);
   var v=prompt('ऑफिसमध्ये किती रक्कम भरणा करत आहात?\n(भरणा करायची बाकी: '+emveRs(o.inHand)+'. कमी रक्कम भरत असल्यास आकडा बदला.)',String(o.inHand));if(v==null)return;
   var n=emveNum(v);if(!n){toast('रक्कम टाका.','err');return;}
   if(n>o.inHand){toast('भरणा करायची बाकी फक्त '+emveRs(o.inHand)+' आहे. त्यापेक्षा जास्त रकमेचा भरणा नोंदवता येत नाही.','err');return;}
@@ -1782,8 +1787,31 @@ function renderFeeNew(){
     if(!ok){w.innerHTML='<div class="alert aw"><div>⚠️ यादी आणता आली नाही.</div></div><button class="btn bp" data-action="feeretry">पुन्हा प्रयत्न करा</button>';return;}
     w.innerHTML=emveFees.length?emveFees.slice().reverse().map(function(f){
       return '<div class="fee-item'+(f.closed?' closed':'')+'"><div><b>'+emveEsc(f.name)+'</b> · '+emveRs(f.amount)+(Object.keys(f.clsAmt).length?' (काही वर्गांना वेगळी)':'')+
-        '<div class="fee-sub">'+f.classes.map(emveClsLabel).join(', ')+' · '+(f.collector?emveEsc(f.collector):'वर्गशिक्षक')+(f.due?' · शेवट '+formatDateIndian(f.due):'')+'</div></div>'+
-        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feelist" data-id="'+emveAttr(f.id)+'">👥 विद्यार्थी यादी'+(emveFeeList[f.id]?' ✓':'')+'</button><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'</span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
+        '<div class="fee-sub">'+f.classes.map(emveClsLabel).join(', ')+' · '+(Object.keys(f.clsCol||{}).length?'संकलन वर्गनिहाय':f.collector?emveEsc(f.collector):'वर्गशिक्षक')+(f.due?' · शेवट '+formatDateIndian(f.due):'')+'</div></div>'+
+        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feelist" data-id="'+emveAttr(f.id)+'">👥 विद्यार्थी यादी'+(emveFeeList[f.id]?' ✓':'')+'</button><button class="btn bo bsm" data-action="feecol" data-id="'+emveAttr(f.id)+'">👤 संकलन अधिकार</button><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'</span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
+  });
+}
+/* ---- who collects in each class (admin can change any time) ---- */
+function emveFeeColEdit(id){
+  var f=emveFeeFind(id),w=document.getElementById('fee-all');if(!f||!w)return;
+  var tl=(TEACHERS||[]).filter(function(t){return !t.isMukh;});
+  w.innerHTML='<div class="fee-fl"><div style="font-weight:800;font-size:1.05rem;">👤 '+emveEsc(f.name)+' — संकलन अधिकार</div>'+
+    '<div class="fee-sub" style="margin:4px 0 10px;">प्रत्येक वर्गात फी कोण गोळा करेल ते निवडा. वर्गशिक्षकांना आपल्या वर्गाची फी स्थिती नेहमी दिसते (फक्त पाहण्यासाठी). बदलण्यापूर्वी जुन्या व्यक्तीकडील जमा रक्कम ऑफिसमध्ये भरणा करून घ्या.</div>'+
+    '<div class="fee-rows">'+f.classes.map(function(c){var cur=emveFeeCollector(f,c),ct=emveClassTeacher(c);
+      return '<div class="fee-r"><span class="fee-nm" style="flex:0 0 90px;">'+emveClsLabel(c)+'</span><select class="fc-sel" data-c="'+c+'" style="flex:1 1 180px;padding:8px;border-radius:9px;border:1px solid var(--bdr);font-family:inherit;">'+
+        '<option value="">वर्गशिक्षक'+(ct?' ('+emveEsc(ct)+')':'')+'</option>'+tl.map(function(t){return '<option value="'+emveAttr(t.name)+'"'+(cur&&emveSameName(cur,t.name)&&!emveSameName(cur,ct)?' selected':'')+'>'+emveEsc(t.name)+'</option>';}).join('')+'</select></div>';}).join('')+'</div>'+
+    '<div class="sp-act" style="margin-top:12px;"><button class="btn bp" data-action="feecolsave" data-id="'+emveAttr(f.id)+'">💾 जतन करा</button><button class="btn bo bsm" data-action="feeduecancel">रद्द</button></div></div>';
+}
+function emveFeeColSave(id){
+  var f=emveFeeFind(id);if(!f)return;
+  var old={c:f.collector,m:f.clsCol},m={};
+  [].slice.call(document.querySelectorAll('.fc-sel')).forEach(function(x){var c=x.getAttribute('data-c'),v=x.value;if(v)m[c]=v;});
+  f.collector='';f.clsCol=m;
+  syncStatus('ing');
+  sheetPost('Fees',emveFeeRows(),function(res){
+    if(res&&res.success){syncStatus('ok');emveFeeHomeAt=0;toast('संकलन अधिकार जतन झाले ✅');}
+    else{f.collector=old.c;f.clsCol=old.m;if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही.','err');}}
+    renderFeeNew();
   });
 }
 /* ---- fee for chosen students only: paste names, tick, save to FeeList ---- */
@@ -4509,6 +4537,8 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='attretry'){emveAttErr={};renderSec('ratt');break;}
         else if(act==='feedue'){emveFeeDueEdit(el.getAttribute('data-id'));break;}
         else if(act==='feelist'){emveFeeListEdit(el.getAttribute('data-id'));break;}
+        else if(act==='feecol'){emveFeeColEdit(el.getAttribute('data-id'));break;}
+        else if(act==='feecolsave'){emveFeeColSave(el.getAttribute('data-id'));break;}
         else if(act==='feelistmatch'){emveFlMatch();break;}
         else if(act==='feelistsave'){emveFlSave(false);break;}
         else if(act==='feelistclear'){emveFlSave(true);break;}
