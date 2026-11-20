@@ -1458,8 +1458,10 @@ function emveFeeListParse(rows){
 function emveFeeStds(f,cls){var all=getStds(cls),L=f&&emveFeeList[f.id];if(!L)return all;var m=L[cls]||{};return all.filter(function(s){return m[s.id];});}
 /* class teacher of a class (from roster) */
 function emveClassTeacher(cls){var t=(TEACHERS||[]).find(function(x){return normalizeClass(x.classOf)===cls;});return t?t.name:'';}
-function emveFeeCollector(f,cls){return (f.clsCol&&f.clsCol[cls])||f.collector||emveClassTeacher(cls);}
-function emveFeeMine(f,cls){if(emveFeeIsAdm())return true;if(!curTc)return false;return emveSameName(emveFeeCollector(f,cls),curTc.name);}
+/* collectors of a class: 'वर्गनिहाय संकलन' value 'A;B' (@CT = class teacher); else the fee's collector; else the class teacher */
+function emveFeeCollectors(f,cls){var v=f.clsCol&&f.clsCol[cls],out=[];(v?String(v).split(';'):[f.collector||'@CT']).forEach(function(n){n=String(n||'').trim();if(n==='@CT')n=emveClassTeacher(cls);if(n&&!out.some(function(x){return emveSameName(x,n);}))out.push(n);});return out;}
+function emveFeeCollector(f,cls){return emveFeeCollectors(f,cls).join(', ');}
+function emveFeeMine(f,cls){if(emveFeeIsAdm())return true;if(!curTc)return false;return emveFeeCollectors(f,cls).some(function(n){return emveSameName(n,curTc.name);});}
 /* class teacher can always see own class (estimate), even when someone else collects */
 function emveFeeView(f,cls){if(emveFeeMine(f,cls))return true;return !!(curTc&&normalizeClass(curTc.classOf)===cls);}
 function emveFeeFind(id){return emveFees.find(function(f){return f.id===String(id);});}
@@ -1472,7 +1474,9 @@ function emveFeeDataLoad(id,cls,done){
     (rows||[]).slice(1).forEach(function(r){
       if(String(r[0])==='H'){d.hand.push({amt:emveNum(r[1]),on:normalizeDate(String(r[2]||'')),by:String(r[3]||''),recOn:normalizeDate(String(r[4]||'')),recBy:String(r[5]||'')});return;}
       var id2=parseInt(r[0],10)||0;if(!id2)return;
-      d.pay[id2]={paid:emveNum(r[2]),st:String(r[3]||''),log:String(r[4]||''),by:String(r[5]||''),upd:String(r[6]||'')};
+      d.pay[id2]={paid:emveNum(r[2]),st:String(r[3]||''),log:String(r[4]||''),by:String(r[5]||''),upd:String(r[6]||''),cby:{}};
+      String(r[7]||'').split(';').forEach(function(x){var i=x.lastIndexOf(':');if(i>0){var a=emveNum(x.slice(i+1));if(a)d.pay[id2].cby[x.slice(0,i).trim()]=a;}});
+      if(!Object.keys(d.pay[id2].cby).length&&d.pay[id2].paid)d.pay[id2].cby[d.pay[id2].by||'?']=d.pay[id2].paid;
     });
     emveFeeData[tab]=d;done(true);
   });
@@ -1490,8 +1494,8 @@ function emveFeeSave(id,cls){
   var tab=emveFeeTab(id,cls),d=emveFeeData[tab];if(!d)return;
   if(emveFeeSaving[tab]){emveFeePend[tab]=1;return;}
   emveFeeSaving[tab]=1;emveFeeStatus('जतन होत आहे…','');
-  var rows=[['sId','नाव','भरले','स्थिती','नोंद','By','Updated']];
-  getStds(cls).forEach(function(s){var p=d.pay[s.id];if(p&&(p.paid||p.st||p.log))rows.push([s.id,s.name,p.paid,p.st,p.log,p.by,p.upd]);});
+  var rows=[['sId','नाव','भरले','स्थिती','नोंद','By','Updated','जमा करणारे']];
+  getStds(cls).forEach(function(s){var p=d.pay[s.id];if(p&&(p.paid||p.st||p.log))rows.push([s.id,s.name,p.paid,p.st,p.log,p.by,p.upd,Object.keys(p.cby||{}).map(function(k){return k+':'+p.cby[k];}).join(';')]);});
   d.hand.forEach(function(h){rows.push(['H',h.amt,h.on,h.by,h.recOn,h.recBy]);});
   syncStatus('ing');
   sheetPost(tab,rows,function(res){
@@ -1505,6 +1509,14 @@ function emveFeeSave(id,cls){
     if(emveFeePend[tab]){delete emveFeePend[tab];emveFeeSave(id,cls);}
   });
 }
+/* per collector: collected from students and paid to office */
+function emveFeePer(f,cls,d){var per=[];function g(n){n=String(n||'?');for(var i=0;i<per.length;i++)if(emveSameName(per[i].n,n))return per[i];var x={n:n,coll:0,given:0};per.push(x);return x;}
+  emveFeeCollectors(f,cls).forEach(g);
+  getStds(cls).forEach(function(s){var p=d.pay[s.id];if(!p||!p.cby)return;for(var k in p.cby)if(p.cby.hasOwnProperty(k))g(k).coll+=p.cby[k];});
+  d.hand.forEach(function(h){g(h.by).given+=h.amt;});
+  per.forEach(function(x){x.coll=Math.round(x.coll*100)/100;x.given=Math.round(x.given*100)/100;});return per;}
+/* amount the logged-in collector still has to pay to the office */
+function emveFeeMyHand(f,cls,d,o){var per=emveFeePer(f,cls,d);if(per.length<2)return o.inHand;if(!curTc)return 0;var me=per.filter(function(x){return emveSameName(x.n,curTc.name);})[0];return me?Math.max(0,Math.round((me.coll-me.given)*100)/100):0;}
 function emveFeeStatus(t,k){var e=document.getElementById('fee-st');if(e){e.textContent=t;e.className='fee-st '+(k||'');}}
 function emveFeeWho(){return curTc?curTc.name:(curRole==='super'?'संस्थाचालक':curRole==='mukh'?'मुख्याध्यापक':'लिपिक');}
 
@@ -1628,7 +1640,7 @@ function renderFeeList(){
     });
     return;
   }
-  var d=emveFeeData[tab],amt=emveFeeAmt(f,cls),o=emveFeeStats(f,cls,d),can=emveFeeMine(f,cls);
+  var d=emveFeeData[tab],amt=emveFeeAmt(f,cls),o=emveFeeStats(f,cls,d),can=emveFeeMine(f,cls),per=emveFeePer(f,cls,d),myHand=emveFeeMyHand(f,cls,d,o);
   var pp=emveFeePct(f,cls,o);
   var head=emveBar(pp.pct,'वसुली (रक्कम)',o.paid+'/'+(o.n-o.waived)+' विद्यार्थी पूर्ण · '+emveRs(Math.min(o.coll,pp.exp))+' / '+emveRs(pp.exp))+'<div class="fee-sum">'+
     '<div class="fee-k"><b>'+emveRs(amt)+'</b><span>प्रति विद्यार्थी</span></div>'+
@@ -1640,7 +1652,8 @@ function renderFeeList(){
       '<div><span>ऑफिसमध्ये भरणा केला</span><b>'+emveRs(o.given)+'</b></div>'+
       (o.given>o.rec?'<div class="fee-pend"><span>└ ऑफिसची पावती / पुष्टी प्रलंबित</span><b>'+emveRs(o.given-o.rec)+'</b></div>':'')+
       '<div class="tot'+(o.inHand>0?' due':'')+'"><span>ऑफिसमध्ये भरणा करायची बाकी</span><b>'+emveRs(o.inHand)+'</b></div></div>'+
-    (o.inHand>0&&!can?'<div class="fee-pend" style="font-weight:800;">संकलन: '+emveEsc(emveFeeCollector(f,cls)||'—')+'</div>':o.inHand>0?'<button class="btn bs bsm" data-action="feegive">'+emveRs(o.inHand)+' ऑफिसमध्ये भरणा करा</button>':'<div class="fee-ok" style="font-weight:800;">✓ सर्व रक्कम ऑफिसमध्ये भरणा झाली</div>')+'</div>'+
+    (o.inHand>0&&!can?'<div class="fee-pend" style="font-weight:800;">संकलन: '+emveEsc(emveFeeCollector(f,cls)||'—')+'</div>':myHand>0?'<button class="btn bs bsm" data-action="feegive">'+emveRs(myHand)+' ऑफिसमध्ये भरणा करा</button>':o.inHand>0?'<div class="fee-pend" style="font-weight:800;">इतर संकलकांकडून भरणा बाकी</div>':'<div class="fee-ok" style="font-weight:800;">✓ सर्व रक्कम ऑफिसमध्ये भरणा झाली</div>')+'</div>'+
+    (per.length>1?'<div class="fee-hlist"><b>संकलकनिहाय:</b>'+per.map(function(x){var b=Math.round((x.coll-x.given)*100)/100;return '<div>'+emveEsc(x.n)+' · जमा '+emveRs(x.coll)+' · भरणा '+emveRs(x.given)+' · <span class="'+(b>0?'fee-pend':'fee-ok')+'">बाकी '+emveRs(b)+'</span></div>';}).join('')+'</div>':'')+
     (d.hand.length?'<div class="fee-hlist">'+d.hand.map(function(h){return '<div>'+formatDateIndian(h.on)+' · '+emveRs(h.amt)+' · '+emveEsc(h.by)+' → '+(h.recOn?'<span class="fee-ok">ऑफिसमध्ये जमा ✓ ('+emveEsc(h.recBy)+')</span>':'<span class="fee-pend">भरणा केला · ऑफिसची पुष्टी प्रलंबित</span>')+'</div>';}).join('')+'</div>':'')+
     '<div class="fee-tools"><span id="fee-st" class="fee-st"></span><span style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn bs bsm" data-action="feesharedue">बाकी यादी WhatsApp चित्र</button><button class="btn bo bsm" data-action="feeprintdue">print</button></span></div>';
   var inL={};emveFeeStds(f,cls).forEach(function(s){inL[s.id]=1;});
@@ -1670,7 +1683,7 @@ function emveFeeAdd(sid,add,st){
   emveFeeRecheck(c.f.id);
   var p=c.d.pay[sid]||{paid:0,st:'',log:''};
   if(st!=null)p.st=st;
-  if(add){p.paid=Math.round((p.paid+add)*100)/100;p.log=(p.log?p.log+' + ':'')+add+' ('+formatDateIndian(today()).slice(0,5)+')';}
+  if(add){var who=emveFeeWho();p.cby=p.cby||{};p.cby[who]=Math.round(((p.cby[who]||0)+add)*100)/100;p.paid=Math.round((p.paid+add)*100)/100;p.log=(p.log?p.log+' + ':'')+add+' ('+formatDateIndian(today()).slice(0,5)+')';}
   p.by=emveFeeWho();p.upd=today();c.d.pay[sid]=p;
   renderFeeList();emveFeeSave(c.f.id,c.cls);
 }
@@ -1687,11 +1700,11 @@ function emveFeeUndo(sid){
   var o=emveFeeStats(c.f,c.cls,c.d);
   if(o.coll-p.paid<o.rec){toast('ही रक्कम ऑफिसमध्ये जमा होऊन पुष्टी झाली आहे. बदलासाठी ऑफिसशी बोला.','err');return;}
   if(!confirm('या विद्यार्थ्याची नोंद ('+(p.st||emveRs(p.paid))+') रद्द करायची?'))return;
-  p.paid=0;p.st='';p.log=(p.log?p.log+' · रद्द ('+formatDateIndian(today()).slice(0,5)+')':'');p.by=emveFeeWho();p.upd=today();
+  p.paid=0;p.st='';p.cby={};p.log=(p.log?p.log+' · रद्द ('+formatDateIndian(today()).slice(0,5)+')':'');p.by=emveFeeWho();p.upd=today();
   renderFeeList();emveFeeSave(c.f.id,c.cls);
 }
 function emveFeeGive(){
-  var c=emveFeeCur();if(!c||!emveFeeMine(c.f,c.cls))return;var o=emveFeeStats(c.f,c.cls,c.d);
+  var c=emveFeeCur();if(!c||!emveFeeMine(c.f,c.cls))return;var o=emveFeeStats(c.f,c.cls,c.d);o.inHand=emveFeeMyHand(c.f,c.cls,c.d,o);
   var v=prompt('ऑफिसमध्ये किती रक्कम भरणा करत आहात?\n(भरणा करायची बाकी: '+emveRs(o.inHand)+'. कमी रक्कम भरत असल्यास आकडा बदला.)',String(o.inHand));if(v==null)return;
   var n=emveNum(v);if(!n){toast('रक्कम टाका.','err');return;}
   if(n>o.inHand){toast('भरणा करायची बाकी फक्त '+emveRs(o.inHand)+' आहे. त्यापेक्षा जास्त रकमेचा भरणा नोंदवता येत नाही.','err');return;}
@@ -1800,16 +1813,20 @@ function emveFeeColEdit(id){
   var f=emveFeeFind(id),w=document.getElementById('fee-all');if(!f||!w)return;
   var tl=(TEACHERS||[]).filter(function(t){return !t.isMukh;});
   w.innerHTML='<div class="fee-fl"><div style="font-weight:800;font-size:1.05rem;">👤 '+emveEsc(f.name)+' — संकलन अधिकार</div>'+
-    '<div class="fee-sub" style="margin:4px 0 10px;">प्रत्येक वर्गात फी कोण गोळा करेल ते निवडा. वर्गशिक्षकांना आपल्या वर्गाची फी स्थिती नेहमी दिसते (फक्त पाहण्यासाठी). बदलण्यापूर्वी जुन्या व्यक्तीकडील जमा रक्कम ऑफिसमध्ये भरणा करून घ्या.</div>'+
-    '<div class="fee-rows">'+f.classes.map(function(c){var cur=emveFeeCollector(f,c),ct=emveClassTeacher(c);
-      return '<div class="fee-r"><span class="fee-nm" style="flex:0 0 90px;">'+emveClsLabel(c)+'</span><select class="fc-sel" data-c="'+c+'" style="flex:1 1 180px;padding:8px;border-radius:9px;border:1px solid var(--bdr);font-family:inherit;">'+
-        '<option value="">वर्गशिक्षक'+(ct?' ('+emveEsc(ct)+')':'')+'</option>'+tl.map(function(t){return '<option value="'+emveAttr(t.name)+'"'+(cur&&emveSameName(cur,t.name)&&!emveSameName(cur,ct)?' selected':'')+'>'+emveEsc(t.name)+'</option>';}).join('')+'</select></div>';}).join('')+'</div>'+
+    '<div class="fee-sub" style="margin:4px 0 10px;">प्रत्येक वर्गात फी कोण गोळा करेल ते निवडा (हवे तर दुसराही; दोघांची जमा वेगवेगळी दिसते). वर्गशिक्षकांना आपल्या वर्गाची फी स्थिती नेहमी दिसते (फक्त पाहण्यासाठी). बदलण्यापूर्वी जुन्या व्यक्तीकडील जमा रक्कम ऑफिसमध्ये भरणा करून घ्या.</div>'+
+    '<div class="fee-rows">'+f.classes.map(function(c){var ct=emveClassTeacher(c),raw=(f.clsCol&&f.clsCol[c]?String(f.clsCol[c]).split(';'):[f.collector||'@CT']).map(function(x){x=String(x||'').trim();return (x==='@CT'||emveSameName(x,ct))?'':x;});
+      var st='flex:1 1 150px;padding:8px;border-radius:9px;border:1px solid var(--bdr);font-family:inherit;';
+      function opts(v,first){return first+tl.map(function(t){return '<option value="'+emveAttr(t.name)+'"'+(v&&emveSameName(v,t.name)?' selected':'')+'>'+emveEsc(t.name)+'</option>';}).join('');}
+      var ctO='<option value="">वर्गशिक्षक'+(ct?' ('+emveEsc(ct)+')':'')+'</option>';
+      return '<div class="fee-r"><span class="fee-nm" style="flex:0 0 90px;">'+emveClsLabel(c)+'</span><select class="fc-sel" data-c="'+c+'" style="'+st+'">'+opts(raw[0],ctO)+'</select>'+
+        '<select class="fc-sel2" data-c="'+c+'" style="'+st+'">'+(raw.length>1?opts(raw[1],'<option value="-">+ दुसरा: नाही</option>'+ctO.replace('value=""','value="@CT"'+(raw[1]===''?' selected':''))):opts('','<option value="-">+ दुसरा: नाही</option>'+ctO.replace('value=""','value="@CT"')))+'</select></div>';}).join('')+'</div>'+
     '<div class="sp-act" style="margin-top:12px;"><button class="btn bp" data-action="feecolsave" data-id="'+emveAttr(f.id)+'">💾 जतन करा</button><button class="btn bo bsm" data-action="feeduecancel">रद्द</button></div></div>';
 }
 function emveFeeColSave(id){
   var f=emveFeeFind(id);if(!f)return;
   var old={c:f.collector,m:f.clsCol},m={};
-  [].slice.call(document.querySelectorAll('.fc-sel')).forEach(function(x){var c=x.getAttribute('data-c'),v=x.value;if(v)m[c]=v;});
+  [].slice.call(document.querySelectorAll('.fc-sel')).forEach(function(x){var c=x.getAttribute('data-c'),a=x.value||'@CT',y=document.querySelector('.fc-sel2[data-c="'+c+'"]'),b=y?y.value:'-',L=[a];
+    if(b&&b!=='-'&&b!==a)L.push(b);if(L.length>1||a!=='@CT')m[c]=L.join(';');});
   f.collector='';f.clsCol=m;
   syncStatus('ing');
   sheetPost('Fees',emveFeeRows(),function(res){
