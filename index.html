@@ -1436,11 +1436,20 @@ function emveFeeParse(rows){
 function emveFeeRows(){return [['ID','शुल्क','रक्कम','वर्गानुसार रक्कम','वर्ग','गोळा करणारे','शेवटची तारीख','तयार','बंद']].concat(emveFees.map(function(f){
   return [f.id,f.name,f.amount,Object.keys(f.clsAmt).map(function(c){return c+':'+f.clsAmt[c];}).join('|'),f.classes.join('|'),f.collector,f.due,f.created,f.closed?'1':''];}));}
 function emveFeeLoad(done){
-  sheetGet('Fees',function(rows,ok){
-    if(emveGetFailed.Fees){done(false);return;}
-    emveFees=emveFeeParse(rows);emveFeesLoaded=true;done(true);
-  });
+  var n=2,bad=false;
+  function fin(){n--;if(n)return;if(bad){done(false);return;}emveFeesLoaded=true;done(true);}
+  sheetGet('Fees',function(rows,ok){if(emveGetFailed.Fees)bad=true;else emveFees=emveFeeParse(rows);fin();});
+  sheetGet('FeeList',function(rows){if(emveGetFailed.FeeList)bad=true;else emveFeeListParse(rows);fin();});
 }
+/* FeeList tab: a fee can be only for chosen students (e.g. ID card). rows [FeeID,वर्ग,sId,नाव]; no rows for a fee = whole class */
+var emveFeeList={},emveFeeListRaw=[];
+function emveFeeListParse(rows){
+  emveFeeList={};emveFeeListRaw=[];
+  (rows||[]).slice(1).forEach(function(r){var fid=String(r[0]||'').trim(),c=normalizeClass(r[1]),sid=parseInt(r[2],10)||0;if(!fid||fid==='-'||!c||!sid)return;
+    emveFeeListRaw.push([fid,c,sid,String(r[3]||'')]);
+    if(!emveFeeList[fid])emveFeeList[fid]={};if(!emveFeeList[fid][c])emveFeeList[fid][c]={};emveFeeList[fid][c][sid]=1;});
+}
+function emveFeeStds(f,cls){var all=getStds(cls),L=f&&emveFeeList[f.id];if(!L)return all;var m=L[cls]||{};return all.filter(function(s){return m[s.id];});}
 /* class teacher of a class (from roster) */
 function emveClassTeacher(cls){var t=(TEACHERS||[]).find(function(x){return normalizeClass(x.classOf)===cls;});return t?t.name:'';}
 function emveFeeCollector(f,cls){return f.collector||emveClassTeacher(cls);}
@@ -1461,8 +1470,9 @@ function emveFeeDataLoad(id,cls,done){
   });
 }
 function emveFeeStats(f,cls,d){
-  var amt=emveFeeAmt(f,cls),st=getStds(cls),o={n:st.length,paid:0,part:0,due:0,waived:0,coll:0,dueAmt:0,given:0,rec:0};
-  st.forEach(function(s){var p=d.pay[s.id]||{paid:0,st:''};o.coll+=p.paid;
+  var amt=emveFeeAmt(f,cls),st=emveFeeStds(f,cls),o={n:st.length,paid:0,part:0,due:0,waived:0,coll:0,dueAmt:0,given:0,rec:0};
+  getStds(cls).forEach(function(s){var p=d.pay[s.id];if(p)o.coll+=p.paid;});
+  st.forEach(function(s){var p=d.pay[s.id]||{paid:0,st:''};
     if(p.st==='माफ')o.waived++;else if(p.paid>=amt&&amt>0)o.paid++;else{if(p.paid>0)o.part++;o.due++;o.dueAmt+=Math.max(0,amt-p.paid);}});
   d.hand.forEach(function(h){o.given+=h.amt;if(h.recOn)o.rec+=h.amt;});
   o.inHand=o.coll-o.given;return o;
@@ -1505,7 +1515,7 @@ function emveShareCanvas(cv,name){
   return false;
 }
 function emveFeeDueCanvas(c){
-  var list=getStds(c.cls).filter(function(s){var p=c.d.pay[s.id]||{paid:0,st:''};return p.st!=='माफ'&&p.paid<c.amt;});
+  var list=emveFeeStds(c.f,c.cls).filter(function(s){var p=c.d.pay[s.id]||{paid:0,st:''};return p.st!=='माफ'&&p.paid<c.amt;});
   var W=1080,PAD=48,F='-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans Devanagari",Arial,sans-serif';
   var HEAD=300,RH=70,FOOT=130,H=HEAD+30+list.length*RH+30+FOOT;
   var cv=document.createElement('canvas');cv.width=W;cv.height=H;var x=cv.getContext('2d');
@@ -1625,7 +1635,8 @@ function renderFeeList(){
     (o.inHand>0?'<button class="btn bs bsm" data-action="feegive">'+emveRs(o.inHand)+' ऑफिसमध्ये भरणा करा</button>':'<div class="fee-ok" style="font-weight:800;">✓ सर्व रक्कम ऑफिसमध्ये भरणा झाली</div>')+'</div>'+
     (d.hand.length?'<div class="fee-hlist">'+d.hand.map(function(h){return '<div>'+formatDateIndian(h.on)+' · '+emveRs(h.amt)+' · '+emveEsc(h.by)+' → '+(h.recOn?'<span class="fee-ok">ऑफिसमध्ये जमा ✓ ('+emveEsc(h.recBy)+')</span>':'<span class="fee-pend">भरणा केला · ऑफिसची पुष्टी प्रलंबित</span>')+'</div>';}).join('')+'</div>':'')+
     '<div class="fee-tools"><span id="fee-st" class="fee-st"></span><span style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn bs bsm" data-action="feesharedue">बाकी यादी WhatsApp चित्र</button><button class="btn bo bsm" data-action="feeprintdue">print</button></span></div>';
-  var rows=getStds(cls).map(function(s){
+  var inL={};emveFeeStds(f,cls).forEach(function(s){inL[s.id]=1;});
+  var rows=getStds(cls).filter(function(s){var p=d.pay[s.id];return inL[s.id]||(p&&(p.paid||p.st));}).map(function(s){
     var p=d.pay[s.id]||{paid:0,st:''},full=p.paid>=amt&&amt>0,act;
     if(p.st==='माफ')act='<span class="fee-chip w">माफ</span><button class="fee-mini" data-action="feeundo" data-sid="'+s.id+'">↺</button>';
     else if(full)act='<span class="fee-chip g">✓ '+emveRs(p.paid)+'</span><button class="fee-mini" data-action="feeundo" data-sid="'+s.id+'">↺</button>';
@@ -1633,9 +1644,9 @@ function renderFeeList(){
       '<button class="fee-pay" data-action="feepay" data-sid="'+s.id+'">✓ '+emveRs(amt-p.paid)+'</button>'+
       '<button class="fee-mini" data-action="feepart" data-sid="'+s.id+'" title="थोडी रक्कम">थोडे</button>'+
       (p.paid>0?'':'<button class="fee-mini" data-action="feewaive" data-sid="'+s.id+'">माफ</button>');
-    return '<div class="fee-r'+(full||p.st==='माफ'?' done':'')+'"><span class="fee-roll">'+emveEsc(String(s.roll||''))+'</span><span class="fee-nm">'+emveEsc(s.name)+'</span><span class="fee-act">'+act+'</span></div>';
+    return '<div class="fee-r'+(full||p.st==='माफ'?' done':'')+'"><span class="fee-roll">'+emveEsc(String(s.roll||''))+'</span><span class="fee-nm">'+emveEsc(s.name)+(inL[s.id]?'':' <span class="fee-chip w">यादीबाहेर</span>')+'</span><span class="fee-act">'+act+'</span></div>';
   }).join('');
-  w.innerHTML=head+'<div class="fee-rows">'+rows+'</div>';
+  w.innerHTML=head+'<div class="fee-rows">'+(rows||'<div style="padding:16px;color:var(--mt);">या वर्गात या शुल्काच्या यादीत कोणी विद्यार्थी नाही.</div>')+'</div>';
 }
 function emveFeeCur(){var f=emveFeeFind((document.getElementById('fee-f')||{}).value),cls=(document.getElementById('fee-c')||{}).value||'';if(!f||!cls)return null;var d=emveFeeData[emveFeeTab(f.id,cls)];return d?{f:f,cls:cls,d:d,amt:emveFeeAmt(f,cls)}:null;}
 /* a teacher's open screen notices within a minute when the office pauses the fee */
@@ -1680,7 +1691,7 @@ function emveFeeGive(){
 }
 function emveFeePrintDue(){
   var c=emveFeeCur();if(!c)return;var i=0;
-  var rows=getStds(c.cls).filter(function(s){var p=c.d.pay[s.id]||{paid:0,st:''};return p.st!=='माफ'&&p.paid<c.amt;}).map(function(s){var p=c.d.pay[s.id]||{paid:0};i++;
+  var rows=emveFeeStds(c.f,c.cls).filter(function(s){var p=c.d.pay[s.id]||{paid:0,st:''};return p.st!=='माफ'&&p.paid<c.amt;}).map(function(s){var p=c.d.pay[s.id]||{paid:0};i++;
     return '<tr><td style="text-align:center;">'+i+'</td><td style="text-align:center;">'+emveEsc(String(s.roll||''))+'</td><td>'+emveEsc(s.name)+'</td><td style="text-align:right;">'+emveRs(p.paid)+'</td><td style="text-align:right;font-weight:800;">'+emveRs(c.amt-p.paid)+'</td></tr>';}).join('');
   if(!rows){toast('सर्वांनी फी भरली आहे.');return;}
   emvePrint('<table><thead><tr><th>#</th><th>हजेरी क्र.</th><th>नाव</th><th>भरले</th><th>बाकी</th></tr></thead><tbody>'+rows+'</tbody></table>',
@@ -1772,7 +1783,65 @@ function renderFeeNew(){
     w.innerHTML=emveFees.length?emveFees.slice().reverse().map(function(f){
       return '<div class="fee-item'+(f.closed?' closed':'')+'"><div><b>'+emveEsc(f.name)+'</b> · '+emveRs(f.amount)+(Object.keys(f.clsAmt).length?' (काही वर्गांना वेगळी)':'')+
         '<div class="fee-sub">'+f.classes.map(emveClsLabel).join(', ')+' · '+(f.collector?emveEsc(f.collector):'वर्गशिक्षक')+(f.due?' · शेवट '+formatDateIndian(f.due):'')+'</div></div>'+
-        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'</span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
+        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feelist" data-id="'+emveAttr(f.id)+'">👥 विद्यार्थी यादी'+(emveFeeList[f.id]?' ✓':'')+'</button><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'</span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
+  });
+}
+/* ---- fee for chosen students only: paste names, tick, save to FeeList ---- */
+var emveFl=null;
+function emveFlTok(t){return String(t||'').toLowerCase().replace(/[0-9\u0966-\u096F]/g,' ').replace(/[^\u0900-\u0963\u0970-\u097Fa-z\s]/g,' ').split(/\s+/).filter(function(w){return w.length>1&&w!=='वी';});}
+function emveFeeListEdit(id){
+  var f=emveFeeFind(id);if(!f)return;
+  var sel={},L=emveFeeList[f.id]||{};f.classes.forEach(function(c){sel[c]={};var m=L[c]||{};for(var k in m)if(m.hasOwnProperty(k))sel[c][k]=1;});
+  emveFl={id:f.id,cls:f.classes[0],sel:sel,un:[],had:!!emveFeeList[f.id]};
+  var w=document.getElementById('fee-all');if(!w)return;
+  w.innerHTML='<div class="fee-fl"><div style="font-weight:800;font-size:1.05rem;">👥 '+emveEsc(f.name)+' — विद्यार्थी यादी</div>'+
+    '<div class="fee-sub" style="margin:4px 0 10px;">जतन केल्यावर या शुल्कात फक्त टिक केलेले विद्यार्थी दिसतील (बाकी व % त्यांच्यावरच). आधी भरलेले पैसे पुसले जात नाहीत.</div>'+
+    '<textarea id="fl-paste" rows="5" placeholder="नावे इथे paste करा (एका ओळीत एक नाव; क्रमांक/वर्ग असले तरी चालेल)" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--bdr);font-family:inherit;font-size:.95rem;"></textarea>'+
+    '<button class="btn bp bsm" data-action="feelistmatch" style="margin:8px 0;">नावे जुळवा व टिक करा</button>'+
+    '<div id="fl-un"></div><div class="fg"><label>वर्ग</label><select id="fl-c"></select></div><div id="fl-body"></div>'+
+    '<div class="sp-act" style="margin-top:12px;"><button class="btn bp" data-action="feelistsave">💾 यादी जतन करा</button><button class="btn bo bsm" data-action="feeduecancel">रद्द</button>'+
+    (emveFl.had?'<button class="btn bo bsm" data-action="feelistclear">यादी काढा (सर्व विद्यार्थी)</button>':'')+'</div></div>';
+  emveFlRender();
+}
+function emveFlCount(c){var m=emveFl.sel[c]||{},n=0;for(var k in m)if(m.hasOwnProperty(k)&&m[k])n++;return n;}
+function emveFlRender(){
+  if(!emveFl)return;var f=emveFeeFind(emveFl.id);if(!f)return;
+  var cs=document.getElementById('fl-c');if(cs){var v=cs.value||emveFl.cls;emveFl.cls=v;
+    cs.innerHTML=f.classes.map(function(c){return '<option value="'+c+'"'+(c===v?' selected':'')+'>'+emveClsLabel(c)+' ('+emveFlCount(c)+'/'+getStds(c).length+')</option>';}).join('');}
+  var u=document.getElementById('fl-un');
+  if(u)u.innerHTML=emveFl.un.length?'<div class="alert aw" style="display:block;"><b>न जुळलेली नावे ('+emveFl.un.length+'):</b> खाली वर्ग निवडून हाताने टिक करा.<div style="margin-top:4px;font-size:.85rem;">'+emveFl.un.map(emveEsc).join('<br>')+'</div></div>':'';
+  var b=document.getElementById('fl-body');if(!b)return;
+  var c=emveFl.cls,m=emveFl.sel[c]||{},tab=emveFeeData[emveFeeTab(f.id,c)];
+  b.innerHTML='<div style="display:flex;gap:6px;margin:6px 0;"><button class="fee-mini" data-action="feelistall">सर्व ✓</button><button class="fee-mini" data-action="feelistnone">सर्व काढा</button><span class="fee-sub" style="align-self:center;">'+emveFlCount(c)+' निवडले</span></div>'+
+    '<div class="fee-rows">'+getStds(c).map(function(s){var pd=tab&&tab.pay[s.id]&&tab.pay[s.id].paid;
+      return '<label class="fee-r" style="cursor:pointer;"><input type="checkbox" class="fl-s" data-sid="'+s.id+'"'+(m[s.id]?' checked':'')+' style="width:20px;height:20px;"><span class="fee-roll">'+emveEsc(String(s.roll||''))+'</span><span class="fee-nm">'+emveEsc(s.name)+(pd&&!m[s.id]?' <span class="fee-chip o">पैसे भरले आहेत</span>':'')+'</span></label>';}).join('')+'</div>';
+  if(!tab)emveFeeDataLoad(f.id,c,function(ok){if(ok&&emveFl&&emveFl.cls===c&&document.getElementById('fl-body'))emveFlRender();});
+}
+function emveFlMatch(){
+  var f=emveFeeFind(emveFl&&emveFl.id);if(!f)return;
+  var lines=String((document.getElementById('fl-paste')||{}).value||'').split(/\n/).map(function(x){return x.trim();}).filter(Boolean);
+  if(!lines.length){toast('आधी नावे paste करा.','err');return;}
+  var pool=[];f.classes.forEach(function(c){getStds(c).forEach(function(s){var tk={};emveFlTok(s.name).forEach(function(w){tk[w]=1;});pool.push({s:s,c:c,tk:tk});});});
+  var ok=0;emveFl.un=[];
+  lines.forEach(function(ln){var T=emveFlTok(ln);if(!T.length)return;
+    var best=0,hit=[];pool.forEach(function(x){var sc=0;T.forEach(function(w){if(x.tk[w])sc++;});if(sc>best){best=sc;hit=[x];}else if(sc===best&&sc>0)hit.push(x);});
+    if(hit.length===1&&(best>=2||(best===1&&T.length===1))){var x=hit[0];if(!emveFl.sel[x.c])emveFl.sel[x.c]={};emveFl.sel[x.c][x.s.id]=1;ok++;}
+    else emveFl.un.push(ln);});
+  toast(ok+' नावे जुळली'+(emveFl.un.length?', '+emveFl.un.length+' तपासा':' ✅'));
+  emveFlRender();
+}
+function emveFlSave(clear){
+  var f=emveFeeFind(emveFl&&emveFl.id);if(!f)return;
+  if(clear&&!confirm('ही यादी काढायची? मग या शुल्कात वर्गातील सर्व विद्यार्थी दिसतील.'))return;
+  var rows=[['FeeID','वर्ग','sId','नाव']],n=0;
+  emveFeeListRaw.forEach(function(r){if(r[0]!==f.id)rows.push(r);});
+  if(!clear)f.classes.forEach(function(c){var m=emveFl.sel[c]||{};getStds(c).forEach(function(s){if(m[s.id]){rows.push([f.id,c,s.id,s.name]);n++;}});});
+  if(!clear&&!n){toast('किमान एक विद्यार्थी टिक करा.','err');return;}
+  if(rows.length<2)rows.push(['-','','','']);
+  syncStatus('ing');
+  sheetPost('FeeList',rows,function(res){
+    if(res&&res.success){syncStatus('ok');emveFeeListParse(rows);emveFl=null;toast(clear?'यादी काढली ✅':'यादी जतन झाली ✅ ('+n+' विद्यार्थी)');renderFeeNew();}
+    else if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही. पुन्हा प्रयत्न करा.','err');}
   });
 }
 function emveFeeDiffInputs(){
@@ -4286,6 +4355,8 @@ document.addEventListener('DOMContentLoaded',function(){
     if(field==='role'||id==='l-role')onRole();
     else if(id==='m-cls')onMCls();
     else if(id==='m-subj')loadMkTable();
+    else if(id==='fl-c')emveFlRender();
+    else if(t.classList&&t.classList.contains('fl-s')&&emveFl){var fsid=parseInt(t.getAttribute('data-sid'),10)||0;if(!emveFl.sel[emveFl.cls])emveFl.sel[emveFl.cls]={};if(t.checked)emveFl.sel[emveFl.cls][fsid]=1;else delete emveFl.sel[emveFl.cls][fsid];emveFlRender();}
     else if(id==='m-term')loadMkTable();
     else if(id==='i-cls'){loadStdByClass();refreshIssued();}
     else if(id==='is-cls')refreshIssued();
@@ -4437,6 +4508,11 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='inforetry'){emveInfoErr={};renderSec('rinfo');break;}
         else if(act==='attretry'){emveAttErr={};renderSec('ratt');break;}
         else if(act==='feedue'){emveFeeDueEdit(el.getAttribute('data-id'));break;}
+        else if(act==='feelist'){emveFeeListEdit(el.getAttribute('data-id'));break;}
+        else if(act==='feelistmatch'){emveFlMatch();break;}
+        else if(act==='feelistsave'){emveFlSave(false);break;}
+        else if(act==='feelistclear'){emveFlSave(true);break;}
+        else if(act==='feelistall'||act==='feelistnone'){if(emveFl){var fc=emveFl.cls,fm={};if(act==='feelistall')getStds(fc).forEach(function(s){fm[s.id]=1;});emveFl.sel[fc]=fm;emveFlRender();}break;}
         else if(act==='feeduesave'){emveFeeDueSave(el.getAttribute('data-id'));break;}
         else if(act==='feeduecancel'){renderFeeNew();break;}
         else if(act==='feeclose'){emveFeeClose(el.getAttribute('data-id'));break;}
@@ -5173,7 +5249,7 @@ function loadShikshakFirst(preRows){
     },200);
   };
   var first=function(){if(preRows)go(preRows);else sheetGet(TT_TEACHERS_SHEET,go);};
-  emvePrefetch(['pustake','Students','BonafideLog','vyavhar','settings',TT_SHEET,TT_WORKLOAD_SHEET,TT_TEACHERS_SHEET,TT_CLASS_SETTINGS_SHEET,TT_SUBJECT_SETTINGS_SHEET,TT_TEACHER_AVAIL_SHEET,TT_CLASS_AVAIL_SHEET,'SubLog','Notices','Fees'],first);
+  emvePrefetch(['pustake','Students','BonafideLog','vyavhar','settings',TT_SHEET,TT_WORKLOAD_SHEET,TT_TEACHERS_SHEET,TT_CLASS_SETTINGS_SHEET,TT_SUBJECT_SETTINGS_SHEET,TT_TEACHER_AVAIL_SHEET,TT_CLASS_AVAIL_SHEET,'SubLog','Notices','Fees','FeeList'],first);
 }
 
 /* Keep teacher management pointed to the 2026-27 roster. */
