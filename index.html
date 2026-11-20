@@ -992,17 +992,20 @@ function emveFA(cls,subj,term){
   var g=emveSubjGrp(subj),b56=emve56(cls),M=b56?15:10,L;
   function f(k,l,m){return {key:k,label:l,max:m};}
   if(g==='art')L=[f('fa_tond','तोंडी',20),f('fa_prat','प्रात्यक्षिक',60),f('fa_upkr','उपक्रम/कृती',20)];
-  else if(g==='lang')L=[f('fa_tond','तोंडी काम',M),String(term)==='2'?f('fa_prak','प्रकल्प',M):f('fa_upkr','उपक्रम/कृती',M),f('fa_cha','चाचणी',10),f('fa_swa','स्वाध्याय',10)];
   else{
+    /* one 'उपक्रम' column (no 'प्रकल्प'); practical only for गणित (with तोंडी) and विज्ञान.
+       The saved column is kept where marks were already entered: भाषा सत्र 2 and 5-6 वी used fa_prak. */
+    var sci=/^Science/.test(String(subj||''));
+    var uk=(g==='lang'?String(term)==='2':b56)?'fa_prak':'fa_upkr';
     L=[g==='math'?f('fa_tond','तोंडी/प्रात्यक्षिक',M):f('fa_tond','तोंडी काम',M)];
-    if(g!=='math')L.push(f('fa_prat','प्रात्य./प्रयोग',M));
-    if(!b56)L.push(f('fa_upkr','उपक्रम/कृती',M));
-    L.push(f('fa_prak','प्रकल्प',M),f('fa_cha','चाचणी',10),f('fa_swa','स्वाध्याय',10));
+    if(sci)L.push(f('fa_prat','प्रात्य./प्रयोग',M));
+    L.push(f(uk,'उपक्रम',M),f('fa_cha','चाचणी',10),f('fa_swa','स्वाध्याय',10));
   }
   return L.concat(emveMkOld(cls,subj,term,L,FA5));
 }
 function emveSA(cls,subj,term){
-  var L=emveSubjGrp(subj)==='art'?[]:[{key:'sa_tond',label:'तोंडी',max:10},{key:'sa_prat',label:'प्रात्यक्षिक',max:10},{key:'sa_lekh',label:'लेखी',max:emve56(cls)?40:50}];
+  var g=emveSubjGrp(subj),pr=g==='math'||/^Science/.test(String(subj||''));
+  var L=g==='art'?[]:[{key:'sa_tond',label:'तोंडी',max:10}].concat(pr?[{key:'sa_prat',label:'प्रात्यक्षिक',max:10}]:[],[{key:'sa_lekh',label:'लेखी',max:emve56(cls)?40:50}]);
   return L.concat(emveMkOld(cls,subj,term,L,SA5));
 }
 function emveFAMax(cls,subj){return emveSubjGrp(subj)==='art'?100:emve56(cls)?50:40;}
