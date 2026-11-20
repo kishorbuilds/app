@@ -1341,7 +1341,7 @@ function buildTabs(){
     {id:'rinfo',i:'🧾',l:'विद्यार्थी परिचय'},
   ]:curMod==='fee'?[
     {id:'fsum',i:'📒',l:'हिशेब',h:!emveFeeIsAdm()},
-    {id:'fcol',i:'₹',l:'फी गोळा करा'},
+    {id:'fcol',i:'₹',l:'फी संकलन'},
     {id:'fnew',i:'➕',l:'नवीन शुल्क',h:!emveFeeIsAdm()},
   ]:curMod==='tt'?[
     {id:'ttcls',i:'&#x1F4DA;',l:'\u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F',h:!(curRole==='super'||curRole==='mukh')},
@@ -1585,7 +1585,7 @@ function emveFeeHomeRender(){
 
 /* ===== tab 1: collect ===== */
 function secFeeCol(){
-  return '<div class="card"><div class="ct">₹ फी गोळा करा</div><div id="fee-col">⏳ शुल्कांची यादी आणत आहे…</div></div>';
+  return '<div class="card"><div class="ct">₹ फी संकलन</div><div id="fee-col">⏳ शुल्कांची यादी आणत आहे…</div></div>';
 }
 function renderFeeCol(){
   var w=document.getElementById('fee-col');if(!w)return;
@@ -1865,7 +1865,7 @@ function emveFeeCreate(){
   emveFees.push({id:id,name:name,amount:amt,clsAmt:ca,classes:cls,collector:col,due:(document.getElementById('fn-due')||{}).value||'',created:today(),closed:false});
   syncStatus('ing');
   sheetPost('Fees',emveFeeRows(),function(res){
-    if(res&&res.success){syncStatus('ok');toast('शुल्क तयार झाले ✅ शिक्षकांना "फी गोळा करा" मध्ये दिसेल.');renderSec('fnew');}
+    if(res&&res.success){syncStatus('ok');toast('शुल्क तयार झाले ✅ शिक्षकांना "फी संकलन" मध्ये दिसेल.');renderSec('fnew');}
     else{emveFees=emveFees.filter(function(f){return f.id!==id;});if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही. पुन्हा प्रयत्न करा.','err');}}
   });
 }
