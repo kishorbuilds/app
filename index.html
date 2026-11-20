@@ -1358,6 +1358,7 @@ function buildTabs(){
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
     {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='super'||curRole==='mukh'||curRole==='clerk'||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rnik',i:'&#x1F4CA;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='shik'&&curTc&&curTc.classOf)},
+    {id:'rprg',i:'&#x1F4C9;',l:'माझी प्रगती',h:!(curRole==='shik'&&curTc)},
   ];
   var nav=document.getElementById('nav-tabs');nav.innerHTML='';
   var first=null;
@@ -2788,8 +2789,12 @@ function emvePg58(cls){return getCtype(cls)!=='high';}
 function emvePgMkTab(cls,sb,t){return emvePg58(cls)?'mk5_t'+t+'_'+cls+'_'+sb.replace(/[^a-zA-Z0-9]/g,'X'):emveMarksTabs(cls,sb)[0];}
 function emvePgTc(name){var t=ttFindTeacher(name);return t?{k:ttNorm(t.ttName||t.name),n:String(t.name||name).replace(/श्री\.\s*|श्रीम\.\s*/g,'').trim()}:{k:ttNorm(name),n:String(name)};}
 function emvePgCT(cls){for(var i=0;i<TEACHERS.length;i++){var t=TEACHERS[i];if(t.classOf&&normalizeClass(t.classOf)===cls)return emvePgTc(t.ttName||t.name);}return null;}
+/* teacher login: only own subjects + own class (class teacher) */
+function emvePgMe(){return curRole==='shik'&&curTc?emvePgTc(curTc.ttName||curTc.name).k:'';}
 function emvePgTabs(t){
-  var out=[];function add(n){if(out.indexOf(n)<0)out.push(n);}
+  var out=[],me=emvePgMe(),my=me&&curTc.classOf?normalizeClass(curTc.classOf):'';function add(n){if(out.indexOf(n)<0)out.push(n);}
+  if(me){(emveWorkload||[]).forEach(function(w){if(!EMVE_CAT[w.subject]||!getCls(w.cls)||emvePgTc(w.teacher).k!==me)return;add(emvePgMkTab(w.cls,w.subject,t));if(emvePg58(w.cls)&&EMVE_NOTE_SUBJ[w.subject])add(emveNotesTab(w.cls,w.subject));});
+    if(my&&getCls(my)){if(emvePg58(my))add(emveNotesTab(my,EMVE_CT));add('att_'+my);add('info_'+my);add(EMVE_ATT_WD);}return out;}
   (emveWorkload||[]).forEach(function(w){if(!EMVE_CAT[w.subject]||!getCls(w.cls))return;add(emvePgMkTab(w.cls,w.subject,t));if(emvePg58(w.cls)&&EMVE_NOTE_SUBJ[w.subject])add(emveNotesTab(w.cls,w.subject));});
   CLASSES.forEach(function(c){if(emvePg58(c.id))add(emveNotesTab(c.id,EMVE_CT));add('att_'+c.id);add('info_'+c.id);});
   add(EMVE_ATT_WD);return out;
@@ -2845,16 +2850,17 @@ function emvePgBuild(t,data){
     r=cnt(c.id,data['info_'+c.id],function(o){var x=0;EMVE_INFO_F.forEach(function(f){if(v(o,f[0]))x++;});return x;},EMVE_INFO_F.length,emveInfoKeyOf);
     items.push({cls:c.id,kind:'info',sb:'',tc:ct,d:r.d,n:r.n,err:r.err});
   });
-  return {items:items.filter(function(it){return it.err||it.n>0;}),months:months.length};
+  var me=emvePgMe();
+  return {items:items.filter(function(it){return (!me||it.tc.k===me)&&(it.err||it.n>0);}),months:months.length};
 }
 function emvePgStart(force){
   if(emvePg.loading)return;
-  if(!force&&emvePg.items&&emvePg.fterm===emvePg.term){emvePgRender();return;}
+  if(!force&&emvePg.items&&emvePg.fterm===emvePg.term&&emvePg.who===emvePgMe()){emvePgRender();return;}
   emvePg.loading=true;emvePgRender();
   emveWithWorkload(function(){
     var names=emvePgTabs(emvePg.term),t=emvePg.term;
     emvePgFetch(names,function(x){var el=document.getElementById('pg-load');if(el)el.textContent=Math.min(x,names.length)+' / '+names.length;},function(data){
-      var b=emvePgBuild(t,data);emvePg.items=b.items;emvePg.months=b.months;emvePg.fterm=t;emvePg.loading=false;
+      var b=emvePgBuild(t,data);emvePg.items=b.items;emvePg.who=emvePgMe();emvePg.months=b.months;emvePg.fterm=t;emvePg.loading=false;
       var d=new Date();emvePg.at=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
       emvePgRender();
     });
@@ -2879,11 +2885,12 @@ function emvePgGroups(by){
   return arr;
 }
 function secRPrg(){
-  if(!(curRole==='super'||curRole==='mukh'))return noAccess();
-  return '<div class="card"><div class="ct">📉 निकाल कामाची प्रगती</div><div id="pg-wrap"></div></div>';
+  if(!(curRole==='super'||curRole==='mukh'||(curRole==='shik'&&curTc)))return noAccess();
+  return '<div class="card"><div class="ct">📉 '+(curRole==='shik'?'माझ्या कामाची प्रगती':'निकाल कामाची प्रगती')+'</div><div id="pg-wrap"></div></div>';
 }
 function emvePgRender(){
   var w=document.getElementById('pg-wrap');if(!w)return;
+  if(emvePgMe()){emvePgRenderMe(w);return;}
   var top='<div class="pg-top"><div class="pg-seg"><button data-action="pgterm" data-t="1" class="'+(emvePg.term===1?'on':'')+'">प्रथम सत्र</button><button data-action="pgterm" data-t="2" class="'+(emvePg.term===2?'on':'')+'">द्वितीय सत्र</button></div>'+
     '<div class="pg-seg"><button data-action="pgview" data-v="tc" class="'+(emvePg.view==='tc'?'on':'')+'">शिक्षकनिहाय</button><button data-action="pgview" data-v="cls" class="'+(emvePg.view==='cls'?'on':'')+'">वर्गनिहाय</button></div>'+
     '<button class="pg-rf" data-action="pgload">⟳ Refresh</button></div>';
@@ -2900,6 +2907,20 @@ function emvePgRender(){
   });
   var note='<div class="pg-note">गुण: '+(emvePg.term===1?'प्रथम':'द्वितीय')+' सत्राचे मुख्य रकाने भरले (5-8: संकलित लेखी + किमान एक आकारिक साधन; कला/कार्यानुभव/शा.शि.: प्रात्यक्षिक; 9-10: लेखी + तोंडी) तर विद्यार्थी पूर्ण. वर्गशिक्षक नोंदी: चारही नोंदी. हजेरी: '+(emvePg.months?'संपलेले '+emvePg.months+' महिने (कामाचे दिवस भरलेले).':'या सत्राचा एकही महिना अजून संपलेला नाही / कामाचे दिवस भरलेले नाहीत.')+' शेवटचे ताजे: '+emvePg.at+(errs?' · <b style="color:#b91c1c;">'+errs+' याद्या वाचता आल्या नाहीत (⟳ Refresh)</b>':'')+'</div>';
   w.innerHTML=top+'<div class="pg-sum">'+sum+'</div><div style="margin-top:12px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">'+rows+'</div>'+note;
+}
+/* teacher's own view: one list, least-done first */
+function emvePgRenderMe(w){
+  var top='<div class="pg-top"><div class="pg-seg"><button data-action="pgterm" data-t="1" class="'+(emvePg.term===1?'on':'')+'">प्रथम सत्र</button><button data-action="pgterm" data-t="2" class="'+(emvePg.term===2?'on':'')+'">द्वितीय सत्र</button></div>'+
+    '<button class="pg-rf" data-action="pgload">⟳ Refresh</button></div>';
+  if(emvePg.loading||!emvePg.items){w.innerHTML=top+'<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ तुमचे काम तपासत आहे… <span id="pg-load"></span></div>';return;}
+  if(!emvePg.items.length){w.innerHTML=top+'<div class="alert ai"><div>ℹ️</div><div>वेळापत्रकात तुमच्या नावावर निकालाचे काम (विषय / वर्गशिक्षक) सापडले नाही.</div></div>';return;}
+  var all={d:0,n:0},sp=0,c=0,pend=0;
+  emvePg.items.forEach(function(it){if(it.err)return;sp+=emvePgPct(it.d,it.n);c++;if(it.d<it.n)pend++;});
+  var p=c?Math.round(sp/c):0;
+  var its=emvePg.items.slice().sort(function(a,b){return emvePgPct(a.d,a.n)-emvePgPct(b.d,b.n);});
+  w.innerHTML=top+'<div class="pg-sum"><div class="pg-k" style="grid-column:1/-1;"><div class="pg-big"><span>'+p+'%</span><b style="font-size:.9rem;">माझे काम ('+(emvePg.term===1?'प्रथम':'द्वितीय')+' सत्र)'+(pend?' · '+pend+' बाकी':' · सर्व पूर्ण ✓')+'</b></div>'+emvePgBar(p,100)+'</div></div>'+
+    '<div style="margin-top:12px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;"><div class="pg-d">'+its.map(function(it){return emvePgItem(it,false);}).join('')+'</div></div>'+
+    '<div class="pg-note">गुण: सत्राचे मुख्य रकाने भरलेले विद्यार्थी मोजले आहेत. हजेरी: संपलेले महिने. शेवटचे तपासले: '+emveEsc(emvePg.at||'')+'</div>';
 }
 function secRNote(){
   var isA=(curRole==='super'||curRole==='mukh');
