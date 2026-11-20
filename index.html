@@ -1751,7 +1751,7 @@ function renderFeeSumTable(reload){
     var o=emveFeeStats(f,c,d);Object.keys(T).forEach(function(k){T[k]+=o[k]||0;});
     var pend=o.given-o.rec;
     var pc=emveFeePct(f,c,o).pct,pcc=pc>=90?'#16a34a':pc>=50?'#f59e0b':'#ef4444';
-    return '<tr><td><b>'+emveClsLabel(c)+'</b> <b style="color:'+pcc+'">'+pc+'%</b><div class="ebar-t sm"><div class="ebar-f" style="width:'+pc+'%;background:'+pcc+'"></div></div><div class="fee-sub">'+emveEsc(emveFeeCollector(f,c)||'—')+' · '+emveRs(emveFeeAmt(f,c))+'</div></td>'+
+    return '<tr><td><b>'+emveClsLabel(c)+'</b> <b style="color:'+pcc+'">'+pc+'%</b><div class="ebar-t sm"><div class="ebar-f" style="width:'+pc+'%;background:'+pcc+'"></div></div><div class="fee-sub">'+emveEsc(emveFeeCollector(f,c)||'—')+' · '+emveRs(emveFeeAmt(f,c))+'</div>'+emveFeeCtBtn(f,c)+'</td>'+
       '<td style="text-align:center;">'+o.paid+'/'+(o.n-o.waived)+'</td><td style="text-align:center;">'+o.due+'</td>'+
       '<td style="text-align:right;">'+emveRs(o.coll)+'</td><td style="text-align:right;">'+emveRs(o.inHand)+'</td>'+
       '<td style="text-align:right;">'+emveRs(o.rec)+'</td>'+
@@ -1821,6 +1821,26 @@ function emveFeeColEdit(id){
       return '<div class="fee-r"><span class="fee-nm" style="flex:0 0 90px;">'+emveClsLabel(c)+'</span><select class="fc-sel" data-c="'+c+'" style="'+st+'">'+opts(raw[0],ctO)+'</select>'+
         '<select class="fc-sel2" data-c="'+c+'" style="'+st+'">'+(raw.length>1?opts(raw[1],'<option value="-">+ दुसरा: नाही</option>'+ctO.replace('value=""','value="@CT"'+(raw[1]===''?' selected':''))):opts('','<option value="-">+ दुसरा: नाही</option>'+ctO.replace('value=""','value="@CT"')))+'</select></div>';}).join('')+'</div>'+
     '<div class="sp-act" style="margin-top:12px;"><button class="btn bp" data-action="feecolsave" data-id="'+emveAttr(f.id)+'">💾 जतन करा</button><button class="btn bo bsm" data-action="feecolback">रद्द</button></div></div>';
+}
+/* हिशेब table: one tap gives / removes the class teacher's right to collect in that class */
+function emveFeeCtBtn(f,c){var ct=emveClassTeacher(c);if(!ct)return '';var on=emveFeeCollectors(f,c).some(function(n){return emveSameName(n,ct);});
+  return '<button class="fee-mini no-print" data-action="feecttog" data-id="'+emveAttr(f.id)+'" data-cls="'+c+'" style="margin-top:4px;">'+(on?'✓ वर्गशिक्षक संकलन करतात · काढा':'+ वर्गशिक्षकाला ('+emveEsc(ct)+') अधिकार द्या')+'</button>';}
+function emveFeeCtToggle(id,c){
+  var f=emveFeeFind(id);if(!f)return;var ct=emveClassTeacher(c);if(!ct)return;
+  var raw=(f.clsCol&&f.clsCol[c]?String(f.clsCol[c]).split(';'):[f.collector||'@CT']).map(function(x){return String(x||'').trim();}).filter(Boolean);
+  var isCt=function(x){return x==='@CT'||emveSameName(x,ct);},on=raw.some(isCt),L;
+  if(on){L=raw.filter(function(x){return !isCt(x);});if(!L.length){toast('या वर्गात दुसरा संकलक नाही. आधी "संकलन अधिकार" मधून दुसरा निवडा.','err');return;}
+    if(!confirm(emveClsLabel(c)+': वर्गशिक्षक ('+ct+') यांचा फी संकलन अधिकार काढायचा?'))return;}
+  else{L=raw.concat(['@CT']);if(L.length>2){toast('एका वर्गात जास्तीत जास्त दोन संकलक. आधी "संकलन अधिकार" मधून एक काढा.','err');return;}}
+  var old={c:f.collector,m:f.clsCol},m={};for(var k in (f.clsCol||{}))if(f.clsCol.hasOwnProperty(k))m[k]=f.clsCol[k];
+  f.classes.forEach(function(x){if(!m[x]&&x!==c&&f.collector)m[x]=f.collector;});
+  m[c]=L.join(';');f.collector='';f.clsCol=m;
+  syncStatus('ing');
+  sheetPost('Fees',emveFeeRows(),function(res){
+    if(res&&res.success){syncStatus('ok');emveFeeHomeAt=0;toast(on?'अधिकार काढला ✅':'वर्गशिक्षकाला अधिकार दिला ✅');}
+    else{f.collector=old.c;f.clsCol=old.m;if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही.','err');}}
+    renderFeeSumTable(false);
+  });
 }
 function emveFeeColBack(){if(document.getElementById('fee-all'))renderFeeNew();else if(document.getElementById('fee-sum-t'))renderFeeSumTable(false);}
 function emveFeeColSave(id){
@@ -4614,6 +4634,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='feecol'){emveFeeColEdit(el.getAttribute('data-id'));break;}
         else if(act==='feecolsave'){emveFeeColSave(el.getAttribute('data-id'));break;}
         else if(act==='feecolback'){emveFeeColBack();break;}
+        else if(act==='feecttog'){emveFeeCtToggle(el.getAttribute('data-id'),el.getAttribute('data-cls'));break;}
         else if(act==='feelistmatch'){emveFlMatch();break;}
         else if(act==='feelistsave'){emveFlSave(false);break;}
         else if(act==='feelistclear'){emveFlSave(true);break;}
