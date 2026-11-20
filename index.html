@@ -1354,6 +1354,7 @@ function buildTabs(){
     {id:'ttadm',i:'&#x2699;&#xFE0F;',l:'\u0938\u0902\u092A\u093E\u0926\u0928',h:!(curRole==='super'||curRole==='mukh')},
   ]:[
     {id:'rprg',i:'&#x1F4C9;',l:'कामाची प्रगती',h:!(curRole==='super'||curRole==='mukh')},
+    {id:'rprg',i:'&#x2705;',l:'माझे काम',h:!(curRole==='shik'&&curTc)},
     {id:'rm',i:'&#x270F;&#xFE0F;',l:'\u0917\u0941\u0923 \u0928\u094B\u0902\u0926\u0923\u0940',h:(curRole==='clerk')},
     {id:'rnote',i:'&#x1F4DC;',l:'वर्णनात्मक नोंदी',h:(curRole==='clerk')},
     {id:'rbook',i:'&#x1F4C3;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:(!isA && curRole!=='clerk')},
@@ -1361,7 +1362,6 @@ function buildTabs(){
     {id:'rprog',i:'&#x1F4C8;',l:'\u0936\u094D\u0930\u0947\u0923\u0940 \u092A\u0924\u094D\u0930\u0915'},
     {id:'rcard',i:'&#x1F4CB;',l:'\u092A\u094D\u0930\u0917\u0924\u0940\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='super'||curRole==='mukh'||curRole==='clerk'||(curRole==='shik'&&curTc&&curTc.classOf))},
     {id:'rnik',i:'&#x1F4CA;',l:'\u0928\u093F\u0915\u093E\u0932\u092A\u0924\u094D\u0930\u0915',h:!(curRole==='shik'&&curTc&&curTc.classOf)},
-    {id:'rprg',i:'&#x1F4C9;',l:'माझी प्रगती',h:!(curRole==='shik'&&curTc)},
   ];
   var nav=document.getElementById('nav-tabs');nav.innerHTML='';
   var first=null;
@@ -2938,7 +2938,7 @@ function emvePgGroups(by){
 }
 function secRPrg(){
   if(!(curRole==='super'||curRole==='mukh'||(curRole==='shik'&&curTc)))return noAccess();
-  return '<div class="card"><div class="ct">📉 '+(curRole==='shik'?'माझ्या कामाची प्रगती':'निकाल कामाची प्रगती')+'</div><div id="pg-wrap"></div></div>';
+  return '<div class="card"><div class="ct">📉 '+(curRole==='shik'?'माझे निकालाचे काम: किती पूर्ण झाले':'निकाल कामाची प्रगती')+'</div><div id="pg-wrap"></div></div>';
 }
 function emvePgRender(){
   var w=document.getElementById('pg-wrap');if(!w)return;
@@ -2970,7 +2970,7 @@ function emvePgRenderMe(w){
   emvePg.items.forEach(function(it){if(it.err)return;sp+=emvePgPct(it.d,it.n);c++;if(it.d<it.n)pend++;});
   var p=c?Math.round(sp/c):0;
   var its=emvePg.items.slice().sort(function(a,b){return emvePgPct(a.d,a.n)-emvePgPct(b.d,b.n);});
-  w.innerHTML=top+'<div class="pg-sum"><div class="pg-k" style="grid-column:1/-1;"><div class="pg-big"><span>'+p+'%</span><b style="font-size:.9rem;">माझे काम ('+(emvePg.term===1?'प्रथम':'द्वितीय')+' सत्र)'+(pend?' · '+pend+' बाकी':' · सर्व पूर्ण ✓')+'</b></div>'+emvePgBar(p,100)+'</div></div>'+
+  w.innerHTML=top+'<div class="pg-sum"><div class="pg-k" style="grid-column:1/-1;"><div class="pg-big"><span>'+p+'%</span><b style="font-size:.9rem;">मी भरलेले काम ('+(emvePg.term===1?'प्रथम':'द्वितीय')+' सत्र)'+(pend?' · '+pend+' बाकी':' · सर्व पूर्ण ✓')+'</b></div>'+emvePgBar(p,100)+'</div></div>'+
     '<div style="margin-top:12px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;"><div class="pg-d">'+its.map(function(it){return emvePgItem(it,false);}).join('')+'</div></div>'+
     '<div class="pg-note">गुण: सत्राचे मुख्य रकाने भरलेले विद्यार्थी मोजले आहेत. हजेरी: संपलेले महिने. शेवटचे तपासले: '+emveEsc(emvePg.at||'')+'</div>';
 }
