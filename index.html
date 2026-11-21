@@ -1089,12 +1089,14 @@ function gradeColor(g){if(!g||g==='-')return'';if(g==='A'||g[0]==='\u0905')retur
 function getCls(id){return CLASSES.find(function(c){return c.id===id;});}
 function getCtype(id){var c=getCls(id);return c?c.type:'mid';}
 function getSubjs(clsId){return SUBJS[getCtype(clsId)]||SUBJS.mid;}
-function getExams(clsId){if(clsId==='10')return EXAM_STRUCT.high10;return EXAM_STRUCT[getCtype(clsId)]||EXAM_STRUCT.mid;}
+/* 9 वी भाषा (मराठी/हिंदी/इंग्रजी): 10 वी सारखे लेखी 80 + तोंडी 20 */
+function emveIsLang(subj){return /^(Marathi|Hindi|English|\u092A\u094D\u0930\u0925\u092E \u092D\u093E\u0937\u093E|\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u092D\u093E\u0937\u093E|\u0924\u0943\u0924\u0940\u092F \u092D\u093E\u0937\u093E)$/.test(String(subj||''));}
+function getExams(clsId,subj){if(clsId==='10'||(clsId==='9'&&emveIsLang(subj)))return EXAM_STRUCT.high10;return EXAM_STRUCT[getCtype(clsId)]||EXAM_STRUCT.mid;}
 function getStds(clsId){return students.filter(function(s){return s.cls===clsId&&s.status!=='removed';}).sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);});}
 function getMk(sId,cls,subj,exam){var k=cls+'|'+subj+'|'+exam;var d=marksData[k];if(!d)return'';var e=d.find(function(x){return x.sId===sId;});return e?e.m:'';}
 function setMk(sId,cls,subj,exam,val){var k=cls+'|'+subj+'|'+exam;if(!marksData[k])marksData[k]=[];var idx=-1;for(var i=0;i<marksData[k].length;i++){if(marksData[k][i].sId===sId){idx=i;break;}}if(idx>=0)marksData[k][idx].m=val;else marksData[k].push({sId:sId,m:val});}
-function calcSubjTotal(sId,cls,subj){if(getCtype(cls)!=='high'){var t1=calc5TotRow(sId,cls,subj,1);var t2=calc5TotRow(sId,cls,subj,2);var has=t1.hasData||t2.hasData;if(!has)return{total:'',max:200,pct:0};var tot=Math.round(((parseFloat(t1.total)||0)+(parseFloat(t2.total)||0))*10)/10;return{total:tot,max:200,pct:Math.round(tot/200*100)};}var exams=getExams(cls);var total=0;var max=0;var hasAny=false;exams.forEach(function(e){var v=getMk(sId,cls,subj,e.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=e.max;});if(!hasAny)return{total:'',max:max,pct:0};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0};}
-function calcStudentTotal(sId,clsId){if(getCtype(clsId)!=='high'){var subjs=getSubjs(clsId);var total=0;var hasAny=false;subjs.forEach(function(subj){var r=calcSubjTotal(sId,clsId,subj);if(r.total!==''){hasAny=true;total+=parseFloat(r.total)||0;}});var max=subjs.length*200;if(!hasAny)return{total:0,max:max,pct:0,hasData:false};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0,hasData:true};}var subjs=getSubjs(clsId);var exams=getExams(clsId);var total=0;var max=0;var hasAny=false;subjs.forEach(function(subj){exams.forEach(function(exam){var v=getMk(sId,clsId,subj,exam.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=exam.max;});});if(!hasAny)return{total:0,max:max,pct:0,hasData:false};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0,hasData:true};}
+function calcSubjTotal(sId,cls,subj){if(getCtype(cls)!=='high'){var t1=calc5TotRow(sId,cls,subj,1);var t2=calc5TotRow(sId,cls,subj,2);var has=t1.hasData||t2.hasData;if(!has)return{total:'',max:200,pct:0};var tot=Math.round(((parseFloat(t1.total)||0)+(parseFloat(t2.total)||0))*10)/10;return{total:tot,max:200,pct:Math.round(tot/200*100)};}var exams=getExams(cls,subj);var total=0;var max=0;var hasAny=false;exams.forEach(function(e){var v=getMk(sId,cls,subj,e.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=e.max;});if(!hasAny)return{total:'',max:max,pct:0};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0};}
+function calcStudentTotal(sId,clsId){if(getCtype(clsId)!=='high'){var subjs=getSubjs(clsId);var total=0;var hasAny=false;subjs.forEach(function(subj){var r=calcSubjTotal(sId,clsId,subj);if(r.total!==''){hasAny=true;total+=parseFloat(r.total)||0;}});var max=subjs.length*200;if(!hasAny)return{total:0,max:max,pct:0,hasData:false};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0,hasData:true};}var subjs=getSubjs(clsId);var total=0;var max=0;var hasAny=false;subjs.forEach(function(subj){var exams=getExams(clsId,subj);exams.forEach(function(exam){var v=getMk(sId,clsId,subj,exam.key);if(v!==''){hasAny=true;total+=parseFloat(v)||0;}max+=exam.max;});});if(!hasAny)return{total:0,max:max,pct:0,hasData:false};return{total:Math.round(total*10)/10,max:max,pct:max>0?Math.round(total/max*100):0,hasData:true};}
 var _toast=null;
 function toast(msg,t){var el=document.getElementById('toast');el.textContent=msg;el.className='show '+(t||'ok');if(_toast)clearTimeout(_toast);_toast=setTimeout(function(){el.className='';},3000);}
 function openM(id){document.getElementById(id).classList.add('op');}
@@ -2454,7 +2456,7 @@ function loadMkTable(){
   }
   var stds2=getStds(cls);
   if(!stds2.length){wrap.innerHTML='<div class="alert aw"><div>&#x1F50D;</div><div>विद्यार्थी नाहीत</div></div>';return;}
-  var exams=getExams(cls);
+  var exams=getExams(cls,subj);
   var groups={};var groupKeys=[];
   exams.forEach(function(e){if(groupKeys.indexOf(e.group)<0)groupKeys.push(e.group);groups[e.group]=(groups[e.group]||[]).concat([e]);});
   var thGroup=groupKeys.map(function(g){return '<th colspan="'+groups[g].length+'" style="text-align:center;background:var(--d);color:white;padding:12px;">'+g+'</th>';}).join('');
@@ -2609,7 +2611,7 @@ function emveMkSticky(){
 }
 window.addEventListener('resize',function(){var t=document.querySelector('#mk-wrap table.mkt');if(!t)return;var r=t.querySelector('thead tr');if(r)t.style.setProperty('--mkh1',r.offsetHeight+'px');});
 function updateRowTotal(sId,cls,subj){var t=calcSubjTotal(sId,cls,subj);var totEl=document.getElementById('tot-'+sId);var grdEl=document.getElementById('grd-'+sId);if(totEl)totEl.textContent=t.total!==''?t.total:'-';if(grdEl){var gr=t.total!==''?grade(t.pct,cls):'-';grdEl.textContent=gr;grdEl.className='bdg '+gradeColor(gr);}}
-function saveAllMk(cls,subj,auto){if(settings.marksLocked && curRole==='shik'){ if(!auto)toast('गुण नोंदणी बंद आहे!','err'); return; }var stds2=getStds(cls);var exams=getExams(cls);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});if(!auto)toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj,auto);}
+function saveAllMk(cls,subj,auto){if(settings.marksLocked && curRole==='shik'){ if(!auto)toast('गुण नोंदणी बंद आहे!','err'); return; }var stds2=getStds(cls);var exams=getExams(cls,subj);var count=0;stds2.forEach(function(s){exams.forEach(function(e){var inp=document.querySelector('[data-sid="'+s.id+'"][data-exam="'+e.key+'"][data-cls="'+cls+'"]');if(inp){setMk(s.id,cls,subj,e.key,inp.value);if(inp.value!=='')count++;}});});if(!auto)toast('\u0917\u0941\u0923 \u0938\u0947\u0935\u094D\u0939! ('+count+') &#x2705;');syncMks(cls,subj,auto);}
 
 function calc5TotRow(sId,cls,subj,term){
   var pfx='t'+term+'_';
@@ -3439,7 +3441,7 @@ function renderNikal(cls,term){term=term||'1';
   var subjs=getSubjs(cls);var stds2=getStds(cls);var ct=getCtype(cls);
   var isHigh=ct==='high';var isPrimary=!isHigh;
   if(!stds2.length){el.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
-  function subjMax(){return isHigh&&cls!=='10'?80:100;}
+  function subjMax(subj){return isHigh&&cls!=='10'&&!(cls==='9'&&emveIsLang(subj))?80:100;}
   function getSubjResult(sId,subj){
     var fa=0,sa=0,hasFa=false,hasSa=false;
     if(isPrimary){
@@ -3456,14 +3458,14 @@ function renderNikal(cls,term){term=term||'1';
     }
     var has=hasFa||hasSa;
     var tot=has?Math.round((fa+sa)*10)/10:'';
-    var pct=has?Math.round((fa+sa)/subjMax()*100):0;
+    var pct=has?Math.round((fa+sa)/subjMax(subj)*100):0;
     return{fa:hasFa?Math.round(fa*10)/10:'',sa:hasSa?Math.round(sa*10)/10:'',tot:tot,pct:pct,has:has};
   }
   var stdData=stds2.map(function(s){
     var results=subjs.map(function(subj){return getSubjResult(s.id,subj);});
     var gTotal=0,hasAny=false;
     results.forEach(function(r){if(r.has){hasAny=true;gTotal+=parseFloat(r.tot)||0;}});
-    var grandMax=subjs.length*subjMax();
+    var grandMax=0;subjs.forEach(function(sb){grandMax+=subjMax(sb);});
     var pct=hasAny&&grandMax>0?Math.round(gTotal/grandMax*100):0;
     return{s:s,results:results,gTotal:hasAny?Math.round(gTotal*10)/10:'',pct:pct,hasAny:hasAny};
   });
