@@ -1406,9 +1406,9 @@ function buildTabs(){
     {id:'fcol',i:'₹',l:'फी संकलन'},
     {id:'fnew',i:'➕',l:'नवीन शुल्क',h:!emveFeeIsAdm()},
   ]:curMod==='tt'?[
+    {id:'ttsub',i:'&#x1F504;',l:'तासिका समायोजन',h:!(curRole==='super'||curRole==='mukh')},
     {id:'ttcls',i:'&#x1F4DA;',l:'\u0935\u0930\u094D\u0917\u0928\u093F\u0939\u093E\u092F',h:!(curRole==='super'||curRole==='mukh')},
     {id:'tttc',i:'&#x1F468;&#x200D;&#x1F3EB;',l:'\u0936\u093F\u0915\u094D\u0937\u0915\u0928\u093F\u0939\u093E\u092F'},
-    {id:'ttsub',i:'&#x1F504;',l:'तासिका समायोजन',h:!(curRole==='super'||curRole==='mukh')},
     {id:'ttslg',i:'&#x1F4CB;',l:'समायोजन अहवाल',h:!(curRole==='super'||curRole==='mukh')},
     {id:'ttadm',i:'&#x2699;&#xFE0F;',l:'\u0938\u0902\u092A\u093E\u0926\u0928',h:!(curRole==='super'||curRole==='mukh')},
   ]:[
@@ -3898,6 +3898,30 @@ function emveSubAbsLocal(dt,id,on){
   var m=emveSubAbsList(dt).filter(function(x){return x!==id;});if(on)m.push(id);emveSubAbsMem[dt]=m;
   try{localStorage.setItem('emveSubAbs:'+dt,JSON.stringify(m));}catch(e){}
 }
+/* cancel several SubLog rows in one request (leave, adjustment, merge rows) */
+function emveSubCancelRows(list,okMsg,errMsg){
+  if(!list.length)return;
+  syncStatus('ing');
+  var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4)return;
+    var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}
+    if(res.auth){emveAuthExpired();return;}
+    if(res.success){syncStatus('ok');substitutions=substitutions.filter(function(s){return list.indexOf(s)<0;});emveLeaves=emveLeaves.filter(function(s){return list.indexOf(s)<0;});if(okMsg)toast(okMsg);}
+    else{syncStatus('err');toast(errMsg||'&#x274C; रद्द झाले नाही. पुन्हा प्रयत्न करा.','err');}
+    if(document.getElementById('ttsub-wrap'))renderTTSub();else if(!curMod)renderNoticeBoard();
+  };
+  xhr.send(JSON.stringify({action:'cancelSub',token:emveToken,items:list.map(function(s){return{id:s.id,cls:s.cls||'',period:s.period||''};})}));
+}
+/* whole day: remove every leave/adjustment/merge row of the date so it can be done again */
+function emveSubClearDay(){
+  var dt=(document.getElementById('ttsub-date')||{}).value||'';if(!dt)return;
+  var subs=substitutions.filter(function(s){return s.date===dt;}),lv=emveLeaves.filter(function(s){return s.date===dt;});
+  if(!subs.length&&!lv.length){toast('या दिवशी काहीही नोंद नाही.');return;}
+  if(!confirm(dt+' या दिवसाचे सर्व समायोजन ('+subs.length+' नोंदी) व रजेवरील शिक्षकांची निवड ('+lv.length+') रद्द करायची?\nत्यानंतर पुन्हा नव्याने समायोजन करता येईल.'))return;
+  emveSubAbsMem[dt]=[];try{localStorage.removeItem('emveSubAbs:'+dt);}catch(e){}
+  emveSubCancelRows(subs.concat(lv),'या दिवसाचे समायोजन रद्द केले. आता पुन्हा करता येईल.');
+}
 function emveSubAbsSet(dt,id,on){
   if(!id)return;
   var mine=emveLeaves.filter(function(s){return s.date===dt&&parseInt(s.absTcId)===id;});
@@ -3913,6 +3937,13 @@ function emveSubAbsSet(dt,id,on){
     return;
   }
   emveSubAbsLocal(dt,id,false);
+  /* teacher no longer on leave: their filled periods / merges for that date are cancelled too */
+  var done=substitutions.filter(function(s){return s.date===dt&&parseInt(s.absTcId)===id;});
+  if(done.length){
+    var t2=TEACHERS.find(function(x){return x.id===id;});
+    if(!confirm((t2?t2.name:'')+' यांचे या दिवसाचे '+done.length+' समायोजन/एकत्रीकरण रद्द होईल. पुढे जायचे?'))return;
+    emveSubCancelRows(mine.concat(done),'रजा काढली, त्यांचे समायोजन रद्द केले.');return;
+  }
   if(!mine.length)return;
   syncStatus('ing');
   var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');
@@ -3958,7 +3989,7 @@ function renderTTSub(){
   var abs=dt?emveSubAbsGet(dt):{};
   if(aw)aw.innerHTML=dt?TEACHERS.filter(function(t){return !t.isMukh;}).map(function(t){
     var on=!!abs[t.id],lk=on&&emveSubAbsLocked(dt,t.id);
-    return '<label class="sub-ab'+(on?' on':'')+'"'+(lk?' title="यांचे समायोजन झाले आहे. काढायचे असल्यास आधी ते रद्द करा."':'')+'><input type="checkbox" class="ttsub-ab" data-id="'+t.id+'"'+(on?' checked':'')+(lk?' disabled':'')+'>'+emveEsc(t.name)+'</label>';
+    return '<label class="sub-ab'+(on?' on':'')+'"'+(lk?' title="टिक काढल्यास यांचे झालेले समायोजन रद्द होईल."':'')+'><input type="checkbox" class="ttsub-ab" data-id="'+t.id+'"'+(on?' checked':'')+'>'+emveEsc(t.name)+'</label>';
   }).join(''):'';
   if(!dt){wrap.innerHTML='';return;}
   if(!day){wrap.innerHTML='<div class="alert ai"><div>ℹ️</div><div>ही तारीख रविवार आहे. वेळापत्रक नाही.</div></div>';return;}
@@ -4031,6 +4062,7 @@ function renderTTSub(){
   }).join('');
 
   wrap.innerHTML=
+    ((substitutions.some(function(s){return s.date===dt;})||emveLeaves.some(function(s){return s.date===dt;}))?'<div style="text-align:right;margin:-4px 0 8px;"><button class="btn bo bsm" data-action="subdayclear">🗑 या दिवसाचे सर्व समायोजन रद्द करा</button></div>':'')+
     '<div class="sub-sum">'+absTcs.length+' शिक्षक रजेवर · '+slots.length+' तास भरायचे · <b>'+done+' पूर्ण</b>'+(pending?' · '+pending+' बाकी':'')+(mergeTotal?' · 🔗 '+mergeTotal+' तास एकत्र'+(freedTotal?' ('+freedTotal+' शिक्षक-तास मोकळे)':''):'')+'</div>'+
     (mp?'<div class="sub-step"><span class="sub-sn">2</span>🔗 वर्ग एकत्रीकरण <small>(गरज असेल तरच)</small></div>'+
       '<div style="font-size:.8rem;color:var(--mt);margin-bottom:8px;">दोन तुकड्या एकत्र बसवल्या की एकच शिक्षक वर्ग घेतो; त्याचाच विषय चालतो. दुसऱ्या तुकडीचे शिक्षक त्या तासाला मोकळे होतात. ⭐ = app ची सूचना, निर्णय तुमचा.</div>'+mp:'')+
@@ -4871,6 +4903,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='feeretry'){emveFeeData={};renderSec(curTab);break;}
         else if(act==='subshare'){emveShareSubs(el.getAttribute('data-d')||today());break;}
         else if(act==='subprint'){emvePrintSubs(el.getAttribute('data-d')||today());break;}
+        else if(act==='subdayclear'){emveSubClearDay();break;}
         else if(act==='subcancel'){emveCancelSub(el.getAttribute('data-id'),el.getAttribute('data-cls'),el.getAttribute('data-p'),el.getAttribute('data-d'));break;}
         else if(act==='assignttsub')assignTTSub(el.getAttribute('data-cls'),el.getAttribute('data-day'),el.getAttribute('data-p'),el.getAttribute('data-subj'),el.getAttribute('data-abs'));
         else if(act==='ttsuball')emveSubAssignAll();
