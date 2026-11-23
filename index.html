@@ -1173,7 +1173,10 @@ function setupHeader(){document.getElementById('uname').textContent=curUser;var 
 
 // ---- DASHBOARD (NOTICE BOARD) ----
 /* ---- substitution plan (dashboard + substitution page + WhatsApp) ---- */
-function emveParseSubLog(slR){var out=[];if(slR&&slR.length>1)slR.slice(1).forEach(function(r){if(!r[0])return;out.push({id:parseInt(r[0])||0,date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2])||0,absTcName:String(r[3]||''),subTcId:parseInt(r[4])||0,subTcName:String(r[5]||''),cls:String(r[6]||''),period:String(r[7]||''),subj:String(r[8]||'')});});return out;}
+/* रजा: SubLog row with Subject '#रजा' (no class/period) = teacher on leave that date, seen on every phone */
+var EMVE_LEAVE='#रजा',emveLeaves=[];
+function emveIsLeave(s){return String((s&&s.subj)||'')===EMVE_LEAVE;}
+function emveParseSubLog(slR){var out=[];if(slR&&slR.length>1)slR.slice(1).forEach(function(r){if(!r[0])return;out.push({id:parseInt(r[0])||0,date:normalizeDate(String(r[1]||'')),absTcId:parseInt(r[2])||0,absTcName:String(r[3]||''),subTcId:parseInt(r[4])||0,subTcName:String(r[5]||''),cls:String(r[6]||''),period:String(r[7]||''),subj:String(r[8]||'')});});emveLeaves=out.filter(emveIsLeave);return out.filter(function(s){return !emveIsLeave(s);});}
 function emveRefreshSubs(){if(!curRole||!emveAllLoaded)return;sheetGet('SubLog',function(r,ok){if(ok===false||!r||!r.length)return;substitutions=emveParseSubLog(r);if(!curMod)renderNoticeBoard();});}
 /* वर्ग एकत्रीकरण: a merge is a SubLog row whose Subject is '#एकत्र:<host class>|<host subject>'.
    Class = the division that joins the host class; SubTc = host teacher; AbsentTc = the joining class's teacher when on leave (else 0). */
@@ -1452,7 +1455,7 @@ function renderSec(id){
   if(id==='rprg')emvePgStart(false);
   if(id==='ttcls')renderTTCls();
   if(id==='tttc'){if(curRole==='shik'&&curTc)renderTTTc();}
-  if(id==='ttsub')renderTTSub();
+  if(id==='ttsub'){renderTTSub();sheetGet('SubLog',function(r,ok){if(ok===false||!r||!r.length)return;substitutions=emveParseSubLog(r);if(document.getElementById('ttsub-wrap'))renderTTSub();});}
   if(id==='ttslg')renderSubLog();
   if(id==='ttadm')renderTTAdm();
   if(id==='ntview')renderNtView();
@@ -3865,13 +3868,40 @@ function emveSubAbsList(dt){
 }
 function emveSubAbsGet(dt){
   var o={};emveSubAbsList(dt).forEach(function(id){if(id)o[id]=1;});
-  substitutions.forEach(function(s){if(s.date===dt&&parseInt(s.absTcId))o[parseInt(s.absTcId)]=1;});
+  substitutions.concat(emveLeaves).forEach(function(s){if(s.date===dt&&parseInt(s.absTcId))o[parseInt(s.absTcId)]=1;});
   return o;
+}
+function emveSubAbsLocal(dt,id,on){
+  var m=emveSubAbsList(dt).filter(function(x){return x!==id;});if(on)m.push(id);emveSubAbsMem[dt]=m;
+  try{localStorage.setItem('emveSubAbs:'+dt,JSON.stringify(m));}catch(e){}
 }
 function emveSubAbsSet(dt,id,on){
   if(!id)return;
-  var m=emveSubAbsList(dt).filter(function(x){return x!==id;});if(on)m.push(id);emveSubAbsMem[dt]=m;
-  try{localStorage.setItem('emveSubAbs:'+dt,JSON.stringify(m));}catch(e){}
+  var mine=emveLeaves.filter(function(s){return s.date===dt&&parseInt(s.absTcId)===id;});
+  if(on){
+    if(mine.length){emveSubAbsLocal(dt,id,false);return;}
+    var t=TEACHERS.find(function(x){return x.id===id;});
+    emveSubAbsLocal(dt,id,true);
+    emveSubPost({date:dt,absTcId:id,absTcName:t?t.name:'',subTcId:0,subTcName:'',cls:'',period:'',subj:EMVE_LEAVE},null,'',function(ok){
+      emveSubAbsLocal(dt,id,false);
+      if(!ok)toast('&#x274C; रजेची नोंद server वर जतन झाली नाही. पुन्हा टिक करा.','err');
+      if(document.getElementById('ttsub-wrap'))renderTTSub();
+    });
+    return;
+  }
+  emveSubAbsLocal(dt,id,false);
+  if(!mine.length)return;
+  syncStatus('ing');
+  var xhr=new XMLHttpRequest();xhr.open('POST',SURL,true);xhr.setRequestHeader('Content-Type','text/plain');
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState!==4)return;
+    var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}
+    if(res.auth){emveAuthExpired();return;}
+    if(res.success){syncStatus('ok');emveLeaves=emveLeaves.filter(function(s){return mine.indexOf(s)<0;});}
+    else{syncStatus('err');toast('&#x274C; रजा काढता आली नाही. पुन्हा प्रयत्न करा.','err');}
+    if(document.getElementById('ttsub-wrap'))renderTTSub();
+  };
+  xhr.send(JSON.stringify({action:'cancelSub',token:emveToken,items:mine.map(function(s){return{id:s.id,cls:'',period:''};})}));
 }
 function emveSubAbsLocked(dt,id){return substitutions.some(function(s){return s.date===dt&&parseInt(s.absTcId)===id;});}
 /* merge row for this class/period (cls joins or hosts) */
@@ -3986,7 +4016,7 @@ function renderTTSub(){
 
 /* one SubLog row -> Sheet; shown as done only after the Sheet confirms */
 function emveSubPost(rec,sel,okMsg,cb){
-  rec.id=(substitutions.length?Math.max.apply(null,substitutions.map(function(s){return s.id||0;}))+1:1);
+  rec.id=emveIsLeave(rec)?new Date().getTime():(substitutions.length?Math.max.apply(null,substitutions.map(function(s){return s.id||0;}))+1:1);
   var subData={'token':emveToken,'ID':rec.id,'Date':rec.date,'AbsentTcId':rec.absTcId,'AbsentTcName':rec.absTcName,
     'SubTcId':rec.subTcId,'SubTcName':rec.subTcName,'Class':rec.cls,'Period':rec.period,'Subject':rec.subj};
   if(sel)sel.disabled=true;
@@ -3997,7 +4027,7 @@ function emveSubPost(rec,sel,okMsg,cb){
     var res={};try{res=JSON.parse(xhr.responseText);}catch(e){}
     if(res.auth){emveAuthExpired();return;}
     var ok=!!res.success;
-    if(ok){syncStatus('ok');substitutions.push(rec);if(okMsg)toast(okMsg);}
+    if(ok){syncStatus('ok');if(emveIsLeave(rec))emveLeaves.push(rec);else substitutions.push(rec);if(okMsg)toast(okMsg);}
     else{syncStatus('err');if(okMsg)toast('&#x274C; Save झाले नाही. पुन्हा प्रयत्न करा','err');}
     if(cb)cb(ok);else renderTTSub();
   };
