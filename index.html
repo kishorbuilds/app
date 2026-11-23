@@ -293,6 +293,19 @@ input.as-ok:not(.bad){border-color:#16a34a!important;}
 .sub-lv{display:inline-block;background:#fff7ed;color:#c2410c;border-radius:999px;padding:1px 8px;font-size:.7rem;font-weight:800;}
 .sub-mc{background:#f8fafc;}
 .sub-okm{color:#0f766e;font-weight:800;}
+.sub-mgx{margin:4px 0 10px;}
+.sub-mgx>summary{cursor:pointer;font-size:.82rem;font-weight:800;color:var(--b);padding:6px 2px;}
+@media (max-width:700px){
+  .sub-t2,.sub-t3,.sub-t2 tbody,.sub-t3 tbody{display:block;width:100%;min-width:0;}
+  .sub-t2 thead,.sub-t3 thead{display:none;}
+  .sub-t2 td,.sub-t3 td{display:block;padding:0;border:0;white-space:normal!important;font-size:.9rem;}
+  .sub-t2 tr.sub-r1{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;padding:10px 10px 6px;border-top:1px solid var(--bdr);}
+  .sub-t2 tr.sub-r1 td:first-child{grid-column:1/-1;color:var(--b);}
+  .sub-t2 tr.sub-r2{display:block;padding:8px 10px 10px;}
+  .sub-t3 tr{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;padding:10px;border-bottom:1px solid var(--bdr);align-items:start;}
+  .sub-t3 td:nth-child(n+3){grid-column:1/-1;}
+  .sub-t3 select{width:100%;}
+}
 .sub-msel{padding:7px 8px;border-radius:10px;font-size:.85rem;flex:1 1 180px;min-width:0;max-width:100%;}
 .sp-x{flex:none;border:1px solid #fecaca;background:#fff;color:#dc2626;border-radius:8px;width:30px;height:30px;font-weight:900;cursor:pointer;}
 .sp-mine{background:#fef9c3;border:1px solid #fde047;color:#854d0e;font-weight:800;font-size:.85rem;border-radius:10px;padding:8px 12px;margin:8px 0;}
@@ -3860,6 +3873,7 @@ function emveSlotTc(cls,day,p){var sl=emveSlotAt(cls,day,p);return sl?emveTcByTT
 function emveDayPeriods(day){var o=[];for(var i=1;i<=8;i++){if(ttIsValidPeriod(day,i)&&!ttIsReserved(day,i))o.push(i);}return o;}
 function emveLogAbs(s){return emveIsMerge(s)?'🔗 वर्ग एकत्र'+(s.absTcName?' ('+s.absTcName+' रजेवर)':''):s.absTcName;}
 
+var emveMgOpen=null,emveMgMore={};
 /* teachers on leave for a date: ticked on this phone + everyone already entered as absent in SubLog */
 var emveSubAbsMem={};
 function emveSubAbsList(dt){
@@ -3946,12 +3960,12 @@ function renderTTSub(){
   /* ---- step 2: class merging ---- */
   var freedTotal=0,mergeTotal=0;
   var mp=['5','6','7'].map(function(b){
-    var a=b+'a',c=b+'b',rows=[],rel=false,nM=0,nOpen=0;
+    var a=b+'a',c=b+'b',rows=[],rowsX=[],rel=false,nM=0,nOpen=0,nRel=0,lvNames=[];
     periods.forEach(function(i){
       var sa=emveSlotAt(a,day,i),sb=emveSlotAt(c,day,i);if(!sa||!sb)return;
       var ta=emveTcByTT(ttSlotTeacher(sa)),tb=emveTcByTT(ttSlotTeacher(sb));
       var na=ta?ta.name:ttSlotTeacher(sa),nb=tb?tb.name:ttSlotTeacher(sb);
-      var absA=!!(ta&&abs[ta.id]),absB=!!(tb&&abs[tb.id]);if(absA||absB)rel=true;
+      var absA=!!(ta&&abs[ta.id]),absB=!!(tb&&abs[tb.id]);if(absA||absB){rel=true;nRel++;[[absA,na],[absB,nb]].forEach(function(x){if(x[0]&&lvNames.indexOf(x[1])<0)lvNames.push(x[1]);});}
       var side=function(cl,sl,nm,ab){return '<b>'+emveEsc(emveClsLabel(cl))+'</b> · '+emveEsc(emveSubjName(sl.subj||sl.subject||''))+'<br><small>'+emveEsc(nm)+(ab?' <span class="sub-lv">रजेवर</span>':'')+'</small>';};
       var m=emveMergeAt(dt,a,i),cell;
       if(m){
@@ -3964,18 +3978,22 @@ function renderTTSub(){
         cell='<small style="color:var(--mt);">या तासाचे समायोजन झाले आहे. एकत्र करायचे असल्यास आधी ते रद्द करा.</small>';
       }else{
         /* suggestion only: the present teacher takes both; if both present, the one with more periods today keeps teaching */
-        nOpen++;
+        if(absA||absB)nOpen++;
         var h=absA&&!absB?c:(absB&&!absA?a:(!absA&&!absB?(load(ta)>=load(tb)?a:c):a));
         var opt=function(cl,nm,sl,ab){return '<option value="'+cl+'"'+(h===cl?' selected':'')+'>'+(h===cl?'⭐ ':'')+emveEsc(nm)+(ab?' (रजेवर)':'')+' घेतील — '+emveEsc(emveSubjName(sl.subj||sl.subject||''))+'</option>';};
         cell='<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;"><select class="tt-sel sub-msel" id="mg-'+b+'-'+i+'">'+opt(a,na,sa,absA)+opt(c,nb,sb,absB)+'</select>'+
           '<button class="btn bp bsm" data-action="ttmerge" data-b="'+b+'" data-p="'+i+'">🔗 एकत्र करा</button></div>';
       }
-      rows.push('<tr><td rowspan="2" style="font-weight:700;white-space:nowrap;vertical-align:top;">तास '+i+'</td><td>'+side(a,sa,na,absA)+'</td><td>'+side(c,sb,nb,absB)+'</td></tr><tr><td colspan="2" class="sub-mc">'+cell+'</td></tr>');
+      (absA||absB||m?rows:rowsX).push('<tr class="sub-r1"><td rowspan="2" style="font-weight:700;white-space:nowrap;vertical-align:top;">तास '+i+'</td><td>'+side(a,sa,na,absA)+'</td><td>'+side(c,sb,nb,absB)+'</td></tr><tr class="sub-r2"><td colspan="2" class="sub-mc">'+cell+'</td></tr>');
     });
-    if(!rows.length)return '';
-    return '<details class="sub-mg"'+(rel||nM?' open':'')+'><summary>🔗 '+b+' वी अ + ब'+(nM?' <span class="ctag">'+nM+' तास एकत्र</span>':'')+(rel?' <span class="sub-lv">रजेवरील शिक्षकाचा वर्ग</span>':'')+'</summary>'+
-      '<div class="tw"><table><thead><tr><th>तास</th><th>'+b+' वी अ</th><th>'+b+' वी ब</th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>'+
-      (nOpen>1?'<div style="margin:8px 0 10px;"><button class="btn bo bsm" data-action="ttmergeall" data-b="'+b+'">🔗 बाकी सर्व '+nOpen+' तास एकत्र करा</button><div style="font-size:.75rem;color:var(--mt);margin-top:4px;">प्रत्येक तासाला वर निवडलेले शिक्षक वर्ग घेतील.</div></div>':'')+'</details>';
+    if(!rows.length&&!rowsX.length)return '';
+    var thd='<thead><tr><th>तास</th><th>'+b+' वी अ</th><th>'+b+' वी ब</th></tr></thead>';
+    /* one pair open at a time (remembered across re-render); leave/merged periods first, the rest folded */
+    return '<details class="sub-mg" data-b="'+b+'"'+(emveMgOpen===b?' open':'')+'><summary>🔗 '+b+' वी अ + ब'+(nM?' <span class="ctag">'+nM+' तास एकत्र</span>':'')+
+      (nRel?' <span class="sub-lv">रजेवरील शिक्षकांचे '+nRel+' तास</span><br><small style="font-weight:600;color:var(--mt);">'+emveEsc(lvNames.join(', '))+'</small>':' <small style="font-weight:600;color:var(--mt);">रजेवरील शिक्षकांचा तास नाही</small>')+'</summary>'+
+      (rows.length?'<div class="tw"><table class="sub-t2">'+thd+'<tbody>'+rows.join('')+'</tbody></table></div>':'')+
+      (rowsX.length?'<details class="sub-mgx" data-b="'+b+'"'+(emveMgMore[b]?' open':'')+'><summary>इतर '+rowsX.length+' तास (शिक्षक मोकळे करण्यासाठी एकत्र करायचे असल्यास)</summary><div class="tw"><table class="sub-t2">'+thd+'<tbody>'+rowsX.join('')+'</tbody></table></div></details>':'')+
+      (nOpen>1?'<div style="margin:8px 0 10px;"><button class="btn bo bsm" data-action="ttmergeall" data-b="'+b+'">🔗 रजेवरील शिक्षकांचे बाकी '+nOpen+' तास एकत्र करा</button><div style="font-size:.75rem;color:var(--mt);margin-top:4px;">प्रत्येक तासाला वर निवडलेले शिक्षक वर्ग घेतील.</div></div>':'')+'</details>';
   }).join('');
 
   /* ---- step 3: periods of teachers on leave ---- */
@@ -4009,7 +4027,7 @@ function renderTTSub(){
       '<div style="font-size:.8rem;color:var(--mt);margin-bottom:8px;">दोन तुकड्या एकत्र बसवल्या की एकच शिक्षक वर्ग घेतो; त्याचाच विषय चालतो. दुसऱ्या तुकडीचे शिक्षक त्या तासाला मोकळे होतात. ⭐ = app ची सूचना, निर्णय तुमचा.</div>'+mp:'')+
     '<div class="sub-step"><span class="sub-sn">'+(mp?'3':'2')+'</span>तासिका समायोजन</div>'+
     (slots.length?'<div style="font-size:.8rem;color:var(--mt);margin-bottom:8px;">यादीत फक्त त्या तासाला मोकळे असलेले शिक्षक दिसतात. ज्यांचे आज कमी तास आहेत ते आधी. 🔗 मोकळे = वर्ग एकत्र केल्यामुळे मोकळे झालेले.</div>'+
-      '<div class="tw"><table><thead><tr><th>तास</th><th>वर्ग · विषय</th><th>मोकळे शिक्षक</th><th>कृती</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+      '<div class="tw"><table class="sub-t3"><thead><tr><th>तास</th><th>वर्ग · विषय</th><th>मोकळे शिक्षक</th><th>कृती</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
       (pending>0?'<div style="margin-top:10px;"><button class="btn bs" data-action="ttsuball">&#x2705; सर्व सुचवलेले द्या ('+pending+')</button></div>':'')
       :'<div class="alert ai"><div>&#x2705;</div><div>निवडलेल्या शिक्षकांचे '+day+' रोजी कोणतेही तास नाहीत.</div></div>');
 }
@@ -4086,7 +4104,7 @@ function emveMergeSave(b,p,cb){
 }
 /* merges every still-open period of one pair, one save after another, each with the teacher chosen in its row */
 function emveMergeAll(b){
-  var q=[].slice.call(document.querySelectorAll('#ttsub-wrap [data-action="ttmerge"][data-b="'+b+'"]'));
+  var q=[].slice.call(document.querySelectorAll('#ttsub-wrap [data-action="ttmerge"][data-b="'+b+'"]')).filter(function(el){return !el.closest('.sub-mgx');});
   if(!q.length||!confirm(b+' वी अ+ब चे '+q.length+' तास एकत्र करायचे?\nप्रत्येक तासाला निवडलेले शिक्षक वर्ग घेतील.'))return;
   q.forEach(function(el){el.disabled=true;});
   var ps=q.map(function(el){return el.getAttribute('data-p');}),ok=0,bad=0;
@@ -4724,6 +4742,10 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 
   document.addEventListener('toggle',function(ev){if(ev.target&&ev.target.id==='sub-det')emveSubOpen=ev.target.open;},true);
+  document.addEventListener('toggle',function(ev){var d=ev.target,cn=(d&&d.className)||'';if(typeof cn!=='string')return;var b=d.getAttribute('data-b');
+    if(cn==='sub-mgx'){emveMgMore[b]=d.open;return;}
+    if(cn!=='sub-mg')return;
+    if(d.open){emveMgOpen=b;var all=document.querySelectorAll('details.sub-mg');for(var i=0;i<all.length;i++){if(all[i]!==d&&all[i].open)all[i].open=false;}}else if(emveMgOpen===b)emveMgOpen=null;},true);
   document.addEventListener('input',function(ev){var id=(ev.target||{}).id||'';if(id==='rt-q')filterReturn();else if(id==='is-q')refreshIssued();else if(id==='ntp-q')emveNtPickFilter();else if((ev.target.className||'').indexOf('atti')>=0)emveAttCheck();var cn=' '+(ev.target.className||'')+' ';if(/ (mi|att-wdi) /.test(cn))emveDirty=true;if(/ mi /.test(cn)&&ev.target.closest&&ev.target.closest('#mk-wrap')){emveAsTouch(ev.target);emveAsSoon(4000);}if(/ (nti|atti) /.test(cn)){emveAsTouch(ev.target);emveAsSoon(4000);}if(/ infi /.test(cn)){emveAsTouch(ev.target);emveInfoCheck();emveAsSoon(4000);}});
 
   document.addEventListener('click',function(ev){
