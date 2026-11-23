@@ -4000,7 +4000,7 @@ function renderTTSub(){
   /* ---- step 2: class merging ---- */
   var freedTotal=0,mergeTotal=0;
   var mp=['5','6','7'].map(function(b){
-    var a=b+'a',c=b+'b',rows=[],rowsX=[],rel=false,nM=0,nOpen=0,nRel=0,lvNames=[];
+    var a=b+'a',c=b+'b',rows=[],rowsX=[],rel=false,nM=0,nOpen=0,nAll=0,nRel=0,lvNames=[];
     periods.forEach(function(i){
       var sa=emveSlotAt(a,day,i),sb=emveSlotAt(c,day,i);if(!sa||!sb)return;
       var ta=emveTcByTT(ttSlotTeacher(sa)),tb=emveTcByTT(ttSlotTeacher(sb));
@@ -4018,7 +4018,7 @@ function renderTTSub(){
         cell='<small style="color:var(--mt);">या तासाचे समायोजन झाले आहे. एकत्र करायचे असल्यास आधी ते रद्द करा.</small>';
       }else{
         /* suggestion only: the present teacher takes both; if both present, the one with more periods today keeps teaching */
-        if(absA||absB)nOpen++;
+        nAll++;if(absA||absB)nOpen++;
         var h=absA&&!absB?c:(absB&&!absA?a:(!absA&&!absB?(load(ta)>=load(tb)?a:c):a));
         var opt=function(cl,nm,sl,ab){return '<option value="'+cl+'"'+(h===cl?' selected':'')+'>'+(h===cl?'⭐ ':'')+emveEsc(nm)+(ab?' (रजेवर)':'')+' घेतील — '+emveEsc(emveSubjName(sl.subj||sl.subject||''))+'</option>';};
         cell='<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;"><select class="tt-sel sub-msel" id="mg-'+b+'-'+i+'">'+opt(a,na,sa,absA)+opt(c,nb,sb,absB)+'</select>'+
@@ -4033,7 +4033,7 @@ function renderTTSub(){
       (nRel?' <span class="sub-lv">रजेवरील शिक्षकांचे '+nRel+' तास</span><br><small style="font-weight:600;color:var(--mt);">'+emveEsc(lvNames.join(', '))+'</small>':' <small style="font-weight:600;color:var(--mt);">रजेवरील शिक्षकांचा तास नाही</small>')+'</summary>'+
       (rows.length?'<div class="tw"><table class="sub-t2">'+thd+'<tbody>'+rows.join('')+'</tbody></table></div>':'')+
       (rowsX.length?'<details class="sub-mgx" data-b="'+b+'"'+(emveMgMore[b]?' open':'')+'><summary>इतर '+rowsX.length+' तास (शिक्षक मोकळे करण्यासाठी एकत्र करायचे असल्यास)</summary><div class="tw"><table class="sub-t2">'+thd+'<tbody>'+rowsX.join('')+'</tbody></table></div></details>':'')+
-      (nOpen>1?'<div style="margin:8px 0 10px;"><button class="btn bo bsm" data-action="ttmergeall" data-b="'+b+'">🔗 रजेवरील शिक्षकांचे बाकी '+nOpen+' तास एकत्र करा</button><div style="font-size:.75rem;color:var(--mt);margin-top:4px;">प्रत्येक तासाला वर निवडलेले शिक्षक वर्ग घेतील.</div></div>':'')+'</details>';
+      ((nOpen>1||nAll>nOpen)?'<div style="margin:8px 0 10px;display:flex;flex-wrap:wrap;gap:8px;">'+(nOpen>1?'<button class="btn bo bsm" data-action="ttmergeall" data-b="'+b+'">🔗 रजेवरील शिक्षकांचे बाकी '+nOpen+' तास एकत्र करा</button>':'')+(nAll>nOpen?'<button class="btn bo bsm" data-action="ttmergeall" data-all="1" data-b="'+b+'">🔗 संपूर्ण दिवस: बाकी सर्व '+nAll+' तास एकत्र करा</button>':'')+'</div><div style="font-size:.75rem;color:var(--mt);margin:-4px 0 10px;">प्रत्येक तासाला निवडलेले (⭐) शिक्षक वर्ग घेतील.</div>':'')+'</details>';
   }).join('');
 
   /* ---- step 3: periods of teachers on leave ---- */
@@ -4144,8 +4144,8 @@ function emveMergeSave(b,p,cb){
     cls:join,period:String(p),subj:EMVE_MRG+host+'|'+(sh.subj||sh.subject||'')},sel,cb?'':'🔗 वर्ग एकत्र केले ✅',cb);
 }
 /* merges every still-open period of one pair, one save after another, each with the teacher chosen in its row */
-function emveMergeAll(b){
-  var q=[].slice.call(document.querySelectorAll('#ttsub-wrap [data-action="ttmerge"][data-b="'+b+'"]')).filter(function(el){return !el.closest('.sub-mgx');});
+function emveMergeAll(b,all){
+  var q=[].slice.call(document.querySelectorAll('#ttsub-wrap [data-action="ttmerge"][data-b="'+b+'"]')).filter(function(el){return all||!el.closest('.sub-mgx');});
   if(!q.length||!confirm(b+' वी अ+ब चे '+q.length+' तास एकत्र करायचे?\nप्रत्येक तासाला निवडलेले शिक्षक वर्ग घेतील.'))return;
   q.forEach(function(el){el.disabled=true;});
   var ps=q.map(function(el){return el.getAttribute('data-p');}),ok=0,bad=0;
@@ -4908,7 +4908,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='assignttsub')assignTTSub(el.getAttribute('data-cls'),el.getAttribute('data-day'),el.getAttribute('data-p'),el.getAttribute('data-subj'),el.getAttribute('data-abs'));
         else if(act==='ttsuball')emveSubAssignAll();
         else if(act==='ttmerge')emveMergeSave(el.getAttribute('data-b'),el.getAttribute('data-p'));
-        else if(act==='ttmergeall')emveMergeAll(el.getAttribute('data-b'));
+        else if(act==='ttmergeall')emveMergeAll(el.getAttribute('data-b'),el.getAttribute('data-all')==='1');
         else if(act==='filtersublog')renderSubLog();
         else if(act==='printsublog')printSubLog();
         else if(act==='savenotice')saveNotice();
