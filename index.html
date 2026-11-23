@@ -1118,7 +1118,10 @@ function getCtype(id){var c=getCls(id);return c?c.type:'mid';}
 function getSubjs(clsId){return SUBJS[getCtype(clsId)]||SUBJS.mid;}
 /* 9 वी भाषा (मराठी/हिंदी/इंग्रजी): 10 वी सारखे लेखी 80 + तोंडी 20 */
 function emveIsLang(subj){return /^(Marathi|Hindi|English|\u092A\u094D\u0930\u0925\u092E \u092D\u093E\u0937\u093E|\u0926\u094D\u0935\u093F\u0924\u0940\u092F \u092D\u093E\u0937\u093E|\u0924\u0943\u0924\u0940\u092F \u092D\u093E\u0937\u093E)$/.test(String(subj||''));}
-function getExams(clsId,subj){if(clsId==='10'||(clsId==='9'&&emveIsLang(subj)))return EXAM_STRUCT.high10;return EXAM_STRUCT[getCtype(clsId)]||EXAM_STRUCT.mid;}
+/* 10 वी इतिहास व भूगोल: प्रत्येकी लेखी 40 + स्वाध्याय 10 = 50; निकालात दोन्ही मिळून सामाजिक शास्त्रे 100 */
+EXAM_STRUCT.high10soc=EXAM_STRUCT.high.map(function(e){var l=/l$/.test(e.key);return{key:e.key,label:e.label.replace(/\u0924\u094B\u0902\u0921\u0940/,'\u0938\u094D\u0935\u093E\u0927\u094D\u092F\u093E\u092F'),max:l?40:10,group:e.group};});
+function emveIs10Soc(clsId,subj){return clsId==='10'&&(subj==='History'||subj==='Geography');}
+function getExams(clsId,subj){if(emveIs10Soc(clsId,subj))return EXAM_STRUCT.high10soc;if(clsId==='10'||(clsId==='9'&&emveIsLang(subj)))return EXAM_STRUCT.high10;return EXAM_STRUCT[getCtype(clsId)]||EXAM_STRUCT.mid;}
 function getStds(clsId){return students.filter(function(s){return s.cls===clsId&&s.status!=='removed';}).sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);});}
 function getMk(sId,cls,subj,exam){var k=cls+'|'+subj+'|'+exam;var d=marksData[k];if(!d)return'';var e=d.find(function(x){return x.sId===sId;});return e?e.m:'';}
 function setMk(sId,cls,subj,exam,val){var k=cls+'|'+subj+'|'+exam;if(!marksData[k])marksData[k]=[];var idx=-1;for(var i=0;i<marksData[k].length;i++){if(marksData[k][i].sId===sId){idx=i;break;}}if(idx>=0)marksData[k][idx].m=val;else marksData[k].push({sId:sId,m:val});}
@@ -2582,6 +2585,8 @@ getMk=function(sId,cls,subj,exam){
   var parts=emveParts(cls,subj);if(!parts.length)return '';
   var sum=0;
   for(var i=0;i<parts.length;i++){var pv=emveGetMkRaw(sId,cls,parts[i],exam);if(pv==='')return '';sum+=parseFloat(pv)||0;}
+  /* 10 वी सामाजिक शास्त्रे = इतिहास + भूगोल (बेरीज, सरासरी नाही) */
+  if(cls==='10'&&subj===EMVE_SOC)return String(Math.round(sum*10)/10);
   return String(Math.round(sum/parts.length*10)/10);
 };
 function emveMarksTabs(cls,sb){
@@ -3499,6 +3504,10 @@ function renderNikal(cls,term){term=term||'1';
     if(isPrimary){
       emveFA(cls,subj,term).forEach(function(f){var v=getMk(sId,cls,subj,'t'+term+'_'+f.key);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
       emveSA(cls,subj,term).forEach(function(f){var v=getMk(sId,cls,subj,'t'+term+'_'+f.key);if(v!==''){hasSa=true;sa+=parseFloat(v)||0;}});
+    }else if(isHigh&&cls==='10'&&subj===EMVE_SOC){
+      /* इतिहास (लेखी+स्वाध्याय /50) | भूगोल (/50) */
+      var tk=term==='1'?['s1l','s1t']:['s2l','s2t'];
+      [['History',0],['Geography',1]].forEach(function(pt){var hv=false,t=0;tk.forEach(function(k){var v=emveGetMkRaw(sId,cls,pt[0],k);if(v!==''){hv=true;t+=parseFloat(v)||0;}});if(!hv)return;if(pt[1]===0){hasFa=true;fa+=t;}else{hasSa=true;sa+=t;}});
     }else if(isHigh){
       var hfaK=term==='1'?['s1l']:['s2l'];var hsaK=term==='1'?['s1t']:['s2t'];
       hfaK.forEach(function(k){var v=getMk(sId,cls,subj,k);if(v!==''){hasFa=true;fa+=parseFloat(v)||0;}});
@@ -3527,7 +3536,7 @@ function renderNikal(cls,term){term=term||'1';
   var termLabel=term==='1'?'प्रथम सत्र':'द्वितीय सत्र';
   var col1=isHigh?'लेखी':'FA';var col2=isHigh?'तोंडी':'SA';
   var thSubjs=subjs.map(function(s){return '<th colspan="4" style="text-align:center;background:var(--d);color:#fff;font-size:.7rem;white-space:nowrap;padding:8px 6px;">'+s+'</th>';}).join('');
-  var thCols=subjs.map(function(){return '<th style="text-align:center;font-size:.65rem;background:#E8EAF0;padding:6px 4px;">'+col1+'</th><th style="text-align:center;font-size:.65rem;background:#E8EAF0;padding:6px 4px;">'+col2+'</th><th style="text-align:center;font-size:.65rem;background:#FFFDE7;padding:6px 4px;">\u090F\u0915\u0942\u0923</th><th style="text-align:center;font-size:.65rem;background:#E8EAF0;padding:6px 4px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>';}).join('');
+  var thCols=subjs.map(function(sb){var c1=col1,c2=col2;if(cls==='10'&&sb===EMVE_SOC){c1='इतिहास';c2='भूगोल';}return '<th style="text-align:center;font-size:.65rem;background:#E8EAF0;padding:6px 4px;">'+c1+'</th><th style="text-align:center;font-size:.65rem;background:#E8EAF0;padding:6px 4px;">'+c2+'</th><th style="text-align:center;font-size:.65rem;background:#FFFDE7;padding:6px 4px;">\u090F\u0915\u0942\u0923</th><th style="text-align:center;font-size:.65rem;background:#E8EAF0;padding:6px 4px;">\u0936\u094D\u0930\u0947\u0923\u0940</th>';}).join('');
   var rows=stdData.map(function(d){
     var cells=d.results.map(function(r){
       var gr=r.has?(isHigh?grade910(r.pct):grade58(r.pct)):'-';
