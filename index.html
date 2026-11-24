@@ -3220,7 +3220,7 @@ function emveJumpCheck(){
   /* shown only while the list is being scrolled (or the roll-number box is open), then fades away */
   var busy=(Date.now()-emveJumpAt<2500)||!!document.getElementById('ejump-in');
   var card=sec?sec.querySelector('.fc-page,[class^="pc2-"]'):null; /* not on progress card */
-  var on=!!(sec&&sec.offsetParent!==null&&!card&&rows>12&&long&&busy);
+  var on=!!(sec&&sec.offsetParent!==null&&!card&&curMod!=='tt'&&rows>12&&long&&busy); /* no roll numbers in timetable */
   j.className='ejump no-print'+(on?' on':'');
   if(!on)emveJumpInClose();
 }
