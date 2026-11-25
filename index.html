@@ -1874,7 +1874,7 @@ function renderFeeNew(){
     w.innerHTML=emveFees.length?emveFees.slice().reverse().map(function(f){
       return '<div class="fee-item'+(f.closed?' closed':'')+'"><div><b>'+emveEsc(f.name)+'</b> · '+emveRs(f.amount)+(Object.keys(f.clsAmt).length?' (काही वर्गांना वेगळी)':'')+
         '<div class="fee-sub">'+(emveFeeList[f.id]?'फक्त निवडक '+emveFeeListN(f.id)+' विद्यार्थी · ':'सर्व विद्यार्थी · ')+f.classes.map(emveClsLabel).join(', ')+' · '+(Object.keys(f.clsCol||{}).length?'संकलन वर्गनिहाय':f.collector?emveEsc(f.collector):'वर्गशिक्षक')+(f.due?' · शेवट '+formatDateIndian(f.due):'')+'</div></div>'+
-        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feelist" data-id="'+emveAttr(f.id)+'">👥 '+(emveFeeList[f.id]?'यादी ('+emveFeeListN(f.id)+') · नावे जोडा / काढा':'विद्यार्थी यादी')+'</button><button class="btn bo bsm" data-action="feecol" data-id="'+emveAttr(f.id)+'">👤 संकलन अधिकार</button><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'</span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
+        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feelist" data-id="'+emveAttr(f.id)+'">👥 '+(emveFeeList[f.id]?'यादी ('+emveFeeListN(f.id)+') · नावे जोडा / काढा':'विद्यार्थी यादी')+'</button><button class="btn bo bsm" data-action="feecol" data-id="'+emveAttr(f.id)+'">👤 संकलन अधिकार</button><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'<button class="btn bo bsm" data-action="feedel" data-id="'+emveAttr(f.id)+'" style="color:#b91c1c;border-color:#fca5a5;">🗑 शुल्क काढा</button></span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
   });
 }
 /* ---- who collects in each class (admin can change any time) ---- */
@@ -2048,6 +2048,35 @@ function emveFeeDueSave(id){
     else{f.due=old;if(!(res&&(res.auth||res.stale)))toast('जतन झाले नाही.','err');}
     renderFeeNew();
   });
+}
+/* delete a fee created by mistake (e.g. duplicate ID card fee): only when no money / माफ is recorded in any class */
+function emveFeeDelete(id){
+  var f=emveFeeFind(id);if(!f||!emveFeeIsAdm())return;
+  var cls=f.classes.slice(),i=0,used=[];toast('तपासत आहे…');
+  (function next(){
+    if(i>=cls.length){
+      if(used.length){alert('"'+f.name+'" काढता येणार नाही: '+used.join(', ')+' मध्ये पैसे / माफ नोंद आहे.\n\nहिशेब टिकावा म्हणून असे शुल्क पुसले जात नाही. ते शिक्षकांना दिसू नये म्हणून ⏸ थांबवा वापरा.');return;}
+      if(!confirm('"'+f.name+'" — '+emveRs(f.amount)+' हे शुल्क कायमचे काढायचे?\n(यात कोणतीही रक्कम जमा नाही. हे परत आणता येणार नाही.)'))return;
+      var keep=emveFees;emveFees=emveFees.filter(function(x){return x.id!==f.id;});
+      syncStatus('ing');
+      sheetPost('Fees',emveFeeRows(),function(res){
+        if(!(res&&res.success)){emveFees=keep;if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('काढता आले नाही. पुन्हा प्रयत्न करा.','err');}return;}
+        syncStatus('ok');toast('"'+f.name+'" काढले ✅');
+        if(emveFeeList[f.id]){var rows=[['FeeID','वर्ग','sId','नाव']];emveFeeListRaw.forEach(function(r){if(r[0]!==f.id)rows.push(r);});if(rows.length<2)rows.push(['-','','','']);
+          sheetPost('FeeList',rows,function(r2){if(r2&&r2.success){emveFeeListParse(rows);}renderSec('fnew');});}
+        else renderSec('fnew');
+      });
+      return;
+    }
+    var c=cls[i++];
+    emveFeeDataLoad(f.id,c,function(ok){
+      if(!ok){toast('Internet मुळे तपासता आले नाही. पुन्हा प्रयत्न करा.','err');return;}
+      var d=emveFeeData[emveFeeTab(f.id,c)]||{pay:{},hand:[]},any=d.hand.length>0;
+      for(var k in d.pay)if(d.pay.hasOwnProperty(k)&&(d.pay[k].paid>0||d.pay[k].st))any=true;
+      if(any)used.push(emveClsLabel(c));
+      next();
+    });
+  })();
 }
 function emveFeePauseBtn(f){return f.closed?'<button class="btn bs bsm" data-action="feeclose" data-id="'+emveAttr(f.id)+'">▶ पुन्हा सुरू करा</button>':'<button class="btn bo bsm fee-pause" data-action="feeclose" data-id="'+emveAttr(f.id)+'">⏸ थांबवा</button>';}
 function emveFeeClose(id){
@@ -4993,6 +5022,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='feelistall'||act==='feelistnone'){if(emveFl){var fc=emveFl.cls,fm={};if(act==='feelistall')getStds(fc).forEach(function(s){fm[s.id]=1;});emveFl.sel[fc]=fm;emveFlRender();}break;}
         else if(act==='feeduesave'){emveFeeDueSave(el.getAttribute('data-id'));break;}
         else if(act==='feeduecancel'){renderFeeNew();break;}
+        else if(act==='feedel'){emveFeeDelete(el.getAttribute('data-id'));break;}
         else if(act==='feeclose'){emveFeeClose(el.getAttribute('data-id'));break;}
         else if(act==='feeretry'){emveFeeData={};renderSec(curTab);break;}
         else if(act==='subshare'){emveShareSubs(el.getAttribute('data-d')||today());break;}
