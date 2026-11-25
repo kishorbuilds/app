@@ -1921,6 +1921,27 @@ function emveFeeColSave(id){
 }
 /* ---- fee for chosen students only: paste names, tick, save to FeeList ---- */
 var emveFl=null;
+/* sound-key of a name word so English and Marathi spellings match (Shinde = शिंदे) */
+var EMVE_DEV_LAT={'क':'k','ख':'kh','ग':'g','घ':'gh','ङ':'n','च':'ch','छ':'ch','ज':'j','झ':'jh','ञ':'n','ट':'t','ठ':'th','ड':'d','ढ':'dh','ण':'n','त':'t','थ':'th','द':'d','ध':'dh','न':'n','प':'p','फ':'ph','ब':'b','भ':'bh','म':'m','य':'y','र':'r','ल':'l','ळ':'l','व':'v','श':'sh','ष':'sh','स':'s','ह':'h','ं':'n','ँ':'n','ऋ':'r','ृ':'r','क़':'k','ज़':'j','फ़':'f'};
+var EMVE_FL_STOP={'class':1,'std':1,'ku':1,'kum':1,'kumari':1,'chi':1,'kumar':0,'कु':1,'कुमारी':1,'चि':1,'वी':1,'इयत्ता':1};
+function emveFlKey(w){
+  if(/^[a-z]+$/.test(w))w=w.replace(/^(dn|gn|jn|d|g)y/,'gy').replace(/(y|ee)$/,'i');else w=w.replace(/ज्ञ/g,'gy');
+  var o='',i,c;for(i=0;i<w.length;i++){c=w.charAt(i);o+=(EMVE_DEV_LAT[c]!==undefined)?EMVE_DEV_LAT[c]:(/[a-z]/.test(c)?c:'');}
+  o=o.replace(/x/g,'ks').replace(/q/g,'k').replace(/w/g,'v').replace(/z/g,'j').replace(/f/g,'p').replace(/h/g,'').replace(/[aeiou]/g,'');
+  return o.replace(/(.)\1+/g,'$1');
+}
+function emveFlKeys(t){
+  return String(t||'').toLowerCase().replace(/[0-9०-९]/g,' ').replace(/[^ऀ-ॣ॰-ॿa-z\s]/g,' ').split(/\s+/)
+    .filter(function(w){return w.length>1&&!EMVE_FL_STOP[w];}).map(emveFlKey).filter(function(k){return k.length>0;});
+}
+function emveFlNear(a,b){ /* same key, or one letter different for longer keys */
+  if(a===b)return 2;if(a.length<3||b.length<3||Math.abs(a.length-b.length)>1)return 0;
+  var i=0,j=0,d=0;while(i<a.length&&j<b.length){if(a.charAt(i)===b.charAt(j)){i++;j++;continue;}d++;if(d>1)return 0;
+    if(a.length>b.length)i++;else if(b.length>a.length)j++;else{i++;j++;}}
+  d+=(a.length-i)+(b.length-j);return d<=1?1:0;
+}
+function emveFlCls(ln){var m=/class\s*(\d+)\s*([ab]|अ|ब)?(?![a-z])/i.exec(ln)||/(\d+)\s*वी\s*(अ|ब)?/.exec(ln);if(!m)return '';
+  var d=m[2]?(/^(a|अ)$/i.test(m[2])?'a':'b'):'';return m[1]+d;}
 function emveFlTok(t){return String(t||'').toLowerCase().replace(/[0-9\u0966-\u096F]/g,' ').replace(/[^\u0900-\u0963\u0970-\u097Fa-z\s]/g,' ').split(/\s+/).filter(function(w){return w.length>1&&w!=='वी';});}
 function emveFeeListEdit(id){
   var f=emveFeeFind(id);if(!f)return;
@@ -1954,11 +1975,13 @@ function emveFlMatch(){
   var f=emveFeeFind(emveFl&&emveFl.id);if(!f)return;
   var lines=String((document.getElementById('fl-paste')||{}).value||'').split(/\n/).map(function(x){return x.trim();}).filter(Boolean);
   if(!lines.length){toast('आधी नावे paste करा.','err');return;}
-  var pool=[];f.classes.forEach(function(c){getStds(c).forEach(function(s){var tk={};emveFlTok(s.name).forEach(function(w){tk[w]=1;});pool.push({s:s,c:c,tk:tk});});});
+  var pool=[];f.classes.forEach(function(c){getStds(c).forEach(function(s){pool.push({s:s,c:c,k:emveFlKeys(s.name)});});});
   var ok=0;emveFl.un=[];
-  lines.forEach(function(ln){var T=emveFlTok(ln);if(!T.length)return;
-    var best=0,hit=[];pool.forEach(function(x){var sc=0;T.forEach(function(w){if(x.tk[w])sc++;});if(sc>best){best=sc;hit=[x];}else if(sc===best&&sc>0)hit.push(x);});
-    if(hit.length===1&&(best>=2||(best===1&&T.length===1))){var x=hit[0];if(!emveFl.sel[x.c])emveFl.sel[x.c]={};emveFl.sel[x.c][x.s.id]=1;ok++;}
+  lines.forEach(function(ln){var T=emveFlKeys(ln);if(!T.length)return;
+    var lc=emveFlCls(ln),P=pool.filter(function(x){return lc&&(x.c===lc||(lc.length<=2&&x.c.indexOf(lc)===0&&!/\d/.test(x.c.charAt(lc.length))));});if(!P.length)P=pool;
+    var best=0,bm=0,hit=[];P.forEach(function(x){var m=0,e=0;T.forEach(function(w){var g=0;x.k.forEach(function(k){g=Math.max(g,emveFlNear(w,k));});if(g){m++;if(g===2)e++;}});
+      var sc=m*10+e;if(sc>best){best=sc;bm=m;hit=[x];}else if(sc===best&&sc>0)hit.push(x);});
+    if(hit.length===1&&(bm>=2||(bm===1&&T.length===1))){var x=hit[0];if(!emveFl.sel[x.c])emveFl.sel[x.c]={};emveFl.sel[x.c][x.s.id]=1;ok++;}
     else emveFl.un.push(ln);});
   toast(ok+' नावे जुळली'+(emveFl.un.length?', '+emveFl.un.length+' तपासा':' ✅'));
   emveFlRender();
