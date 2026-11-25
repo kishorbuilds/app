@@ -1518,6 +1518,7 @@ function emveFeeListParse(rows){
     emveFeeListRaw.push([fid,c,sid,String(r[3]||'')]);
     if(!emveFeeList[fid])emveFeeList[fid]={};if(!emveFeeList[fid][c])emveFeeList[fid][c]={};emveFeeList[fid][c][sid]=1;});
 }
+function emveFeeListN(id){var L=emveFeeList[id]||{},n=0,c,k;for(c in L)if(L.hasOwnProperty(c))for(k in L[c])if(L[c].hasOwnProperty(k)&&L[c][k])n++;return n;}
 function emveFeeStds(f,cls){var all=getStds(cls),L=f&&emveFeeList[f.id];if(!L)return all;var m=L[cls]||{};return all.filter(function(s){return m[s.id];});}
 /* class teacher of a class (from roster) */
 function emveClassTeacher(cls){var t=(TEACHERS||[]).find(function(x){return normalizeClass(x.classOf)===cls;});return t?t.name:'';}
@@ -1857,18 +1858,23 @@ function secFeeNew(){
     '<label style="font-weight:800;display:block;margin:12px 0 6px;">वर्ग निवडा</label><div class="fee-cls">'+
     '<label class="fee-cb all"><input type="checkbox" id="fn-all"> सर्व वर्ग</label>'+
     CLASSES.map(function(c){return '<label class="fee-cb"><input type="checkbox" class="fn-c" value="'+c.id+'"> '+c.label+'</label>';}).join('')+'</div>'+
+    '<label style="font-weight:800;display:block;margin:14px 0 6px;">हे शुल्क कोणासाठी?</label>'+
+    '<label class="fee-cb" style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;"><input type="radio" name="fn-who" value="all" checked style="margin-top:3px;"> <span><b>सर्व विद्यार्थी</b><br><span class="fee-sub">निवडलेल्या वर्गांतील प्रत्येक विद्यार्थी (उदा. परीक्षा शुल्क). संपूर्ण शाळेसाठी वर "सर्व वर्ग" टिक करा.</span></span></label>'+
+    '<label class="fee-cb" style="display:flex;gap:8px;align-items:flex-start;"><input type="radio" name="fn-who" value="list" style="margin-top:3px;"> <span><b>फक्त काही विद्यार्थी</b><br><span class="fee-sub">उदा. आयकार्ड. शुल्क तयार झाल्यावर विद्यार्थी यादी लगेच उघडेल; नावे paste करा किंवा टिक करा.</span></span></label>'+
     '<label style="display:flex;gap:8px;align-items:center;margin:12px 0;font-weight:700;"><input type="checkbox" id="fn-diff"> काही वर्गांची रक्कम वेगळी आहे</label><div id="fn-diffw"></div>'+
     '<button class="btn bp" data-action="feecreate" style="margin-top:8px;">शुल्क तयार करा</button></div>'+
     '<div class="card"><div class="ct">सर्व शुल्क</div><div id="fee-all">⏳</div></div>';
 }
+var emveFlAfter='';
 function renderFeeNew(){
   emveFeeLoad(function(ok){
     var w=document.getElementById('fee-all');if(!w)return;
+    if(ok&&emveFlAfter&&emveFeeFind(emveFlAfter)){var nid=emveFlAfter;emveFlAfter='';emveFeeListEdit(nid);try{w.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}return;}
     if(!ok){w.innerHTML='<div class="alert aw"><div>⚠️ यादी आणता आली नाही.</div></div><button class="btn bp" data-action="feeretry">पुन्हा प्रयत्न करा</button>';return;}
     w.innerHTML=emveFees.length?emveFees.slice().reverse().map(function(f){
       return '<div class="fee-item'+(f.closed?' closed':'')+'"><div><b>'+emveEsc(f.name)+'</b> · '+emveRs(f.amount)+(Object.keys(f.clsAmt).length?' (काही वर्गांना वेगळी)':'')+
-        '<div class="fee-sub">'+f.classes.map(emveClsLabel).join(', ')+' · '+(Object.keys(f.clsCol||{}).length?'संकलन वर्गनिहाय':f.collector?emveEsc(f.collector):'वर्गशिक्षक')+(f.due?' · शेवट '+formatDateIndian(f.due):'')+'</div></div>'+
-        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feelist" data-id="'+emveAttr(f.id)+'">👥 विद्यार्थी यादी'+(emveFeeList[f.id]?' ✓':'')+'</button><button class="btn bo bsm" data-action="feecol" data-id="'+emveAttr(f.id)+'">👤 संकलन अधिकार</button><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'</span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
+        '<div class="fee-sub">'+(emveFeeList[f.id]?'फक्त निवडक '+emveFeeListN(f.id)+' विद्यार्थी · ':'सर्व विद्यार्थी · ')+f.classes.map(emveClsLabel).join(', ')+' · '+(Object.keys(f.clsCol||{}).length?'संकलन वर्गनिहाय':f.collector?emveEsc(f.collector):'वर्गशिक्षक')+(f.due?' · शेवट '+formatDateIndian(f.due):'')+'</div></div>'+
+        '<span class="fee-btns" id="fdw-'+emveAttr(f.id)+'"><button class="btn bo bsm" data-action="feelist" data-id="'+emveAttr(f.id)+'">👥 '+(emveFeeList[f.id]?'यादी ('+emveFeeListN(f.id)+') · नावे जोडा / काढा':'विद्यार्थी यादी')+'</button><button class="btn bo bsm" data-action="feecol" data-id="'+emveAttr(f.id)+'">👤 संकलन अधिकार</button><button class="btn bo bsm" data-action="feedue" data-id="'+emveAttr(f.id)+'">📅 मुदतवाढ</button>'+emveFeePauseBtn(f)+'</span></div>';}).join(''):'<div style="color:var(--mt);">अजून कोणतेही शुल्क नाही.</div>';
   });
 }
 /* ---- who collects in each class (admin can change any time) ---- */
@@ -1949,7 +1955,8 @@ function emveFeeListEdit(id){
   emveFl={id:f.id,cls:f.classes[0],sel:sel,un:[],had:!!emveFeeList[f.id]};
   var w=document.getElementById('fee-all');if(!w)return;
   w.innerHTML='<div class="fee-fl"><div style="font-weight:800;font-size:1.05rem;">👥 '+emveEsc(f.name)+' — विद्यार्थी यादी</div>'+
-    '<div class="fee-sub" style="margin:4px 0 10px;">जतन केल्यावर या शुल्कात फक्त टिक केलेले विद्यार्थी दिसतील (बाकी व % त्यांच्यावरच). आधी भरलेले पैसे पुसले जात नाहीत.</div>'+
+    (emveFl.had?'<div class="alert ai" style="display:block;margin:6px 0 10px;"><b>आधीची यादी उघडली आहे: '+emveFlTotal()+' विद्यार्थी.</b><br>➕ <b>नावे जोडायची:</b> नवीन नावे खाली paste करून "नावे जुळवा व टिक करा" (आधीची नावे तशीच राहतात) किंवा वर्ग निवडून हाताने टिक करा.<br>➖ <b>नाव काढायचे:</b> वर्ग निवडून त्या नावापुढची टिक काढा.<br>शेवटी 💾 यादी जतन करा.</div>':
+      '<div class="fee-sub" style="margin:4px 0 10px;">जतन केल्यावर या शुल्कात फक्त टिक केलेले विद्यार्थी दिसतील (बाकी व % त्यांच्यावरच). आधी भरलेले पैसे पुसले जात नाहीत. नंतर कधीही नावे जोडता / काढता येतात.</div>')+
     '<textarea id="fl-paste" rows="5" placeholder="नावे इथे paste करा (एका ओळीत एक नाव; क्रमांक/वर्ग असले तरी चालेल)" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--bdr);font-family:inherit;font-size:.95rem;"></textarea>'+
     '<button class="btn bp bsm" data-action="feelistmatch" style="margin:8px 0;">नावे जुळवा व टिक करा</button>'+
     '<div id="fl-un"></div><div class="fg"><label>वर्ग</label><select id="fl-c"></select></div><div id="fl-body"></div>'+
@@ -1957,6 +1964,7 @@ function emveFeeListEdit(id){
     (emveFl.had?'<button class="btn bo bsm" data-action="feelistclear">यादी काढा (सर्व विद्यार्थी)</button>':'')+'</div></div>';
   emveFlRender();
 }
+function emveFlTotal(){var n=0;for(var c in emveFl.sel)if(emveFl.sel.hasOwnProperty(c))n+=emveFlCount(c);return n;}
 function emveFlCount(c){var m=emveFl.sel[c]||{},n=0;for(var k in m)if(m.hasOwnProperty(k)&&m[k])n++;return n;}
 function emveFlRender(){
   if(!emveFl)return;var f=emveFeeFind(emveFl.id);if(!f)return;
@@ -2016,12 +2024,13 @@ function emveFeeCreate(){
   if(!emveFeesLoaded){toast('शुल्कांची यादी अजून आली नाही. थोडे थांबा.','err');return;}
   var ca={};if((document.getElementById('fn-diff')||{}).checked)[].slice.call(document.querySelectorAll('.fn-ca')).forEach(function(x){var v=emveNum(x.value);if(v&&v!==amt)ca[x.getAttribute('data-c')]=v;});
   var col=(document.getElementById('fn-col')||{}).value||'';
-  if(!confirm('"'+name+'" — '+emveRs(amt)+' — '+cls.map(emveClsLabel).join(', ')+'\nहे शुल्क तयार करायचे?'))return;
+  var who=(document.querySelector('input[name="fn-who"]:checked')||{}).value||'all';
+  if(!confirm('"'+name+'" — '+emveRs(amt)+' — '+cls.map(emveClsLabel).join(', ')+'\n'+(who==='list'?'फक्त निवडक विद्यार्थी (पुढे यादी उघडेल)':'सर्व विद्यार्थी')+'\nहे शुल्क तयार करायचे?'))return;
   var id=String(Date.now());
   emveFees.push({id:id,name:name,amount:amt,clsAmt:ca,classes:cls,collector:col,due:(document.getElementById('fn-due')||{}).value||'',created:today(),closed:false});
   syncStatus('ing');
   sheetPost('Fees',emveFeeRows(),function(res){
-    if(res&&res.success){syncStatus('ok');toast('शुल्क तयार झाले ✅ शिक्षकांना "फी संकलन" मध्ये दिसेल.');renderSec('fnew');}
+    if(res&&res.success){syncStatus('ok');if(who==='list'){emveFlAfter=id;toast('शुल्क तयार झाले ✅ आता विद्यार्थी यादी भरा व जतन करा.');}else toast('शुल्क तयार झाले ✅ शिक्षकांना "फी संकलन" मध्ये दिसेल.');renderSec('fnew');}
     else{emveFees=emveFees.filter(function(f){return f.id!==id;});if(!(res&&(res.auth||res.stale))){syncStatus('err');toast('जतन झाले नाही. पुन्हा प्रयत्न करा.','err');}}
   });
 }
