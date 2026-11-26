@@ -3384,6 +3384,11 @@ function emveFcPrint(){
     var sy=window.pageYOffset||0;window.scrollTo(0,0);document.body.appendChild(cap);
     var pages=cap.querySelectorAll('.fc-spread'),pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',orientation:'landscape'}),n=0;
     var M=8,CW=297-2*M,CH=210-2*M;
+    /* a short spread (inside: two term tables) would leave empty bands top and bottom: make its table rows taller so it fills the A4 page */
+    [].slice.call(pages).forEach(function(pg){var need=Math.floor(pg.offsetWidth*CH/CW)-4,h=pg.offsetHeight;if(h>=need-8)return;
+      [].slice.call(pg.querySelectorAll('.fc-tbl')).forEach(function(t){ /* the two term tables sit side by side: each grows by the whole gap */
+        var rows=[].slice.call(t.querySelectorAll('tr'));if(!rows.length)return;var hs=rows.map(function(r){return r.offsetHeight;}),add=(need-h)/rows.length;
+        rows.forEach(function(r,i){r.style.height=Math.round(hs[i]+add)+'px';});});});
     var finish=function(){if(cap.parentNode)cap.parentNode.removeChild(cap);emveHideLoader();window.scrollTo(0,sy);};
     var one=function(){
       if(n>=pages.length){
