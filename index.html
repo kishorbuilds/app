@@ -618,8 +618,8 @@ table.pc2-tbl{width:100%!important;max-width:100%!important;margin:0;border-coll
 .fc-promo{border:1.5px solid #1e3a8a;border-radius:6px;padding:7px 9px;font-weight:700;background:#fff;line-height:1.9;}
 .fc-promo b{color:#1e3a8a;padding:0 4px;border-bottom:1.5px dotted #94a3b8;}
 .fc-promo i{display:inline-block;width:70px;border-bottom:1.5px dotted #94a3b8;}
-.fc-cap{position:absolute;left:-30000px;top:0;width:1120px;background:#fff;}
-.fc-cap .fc-spread{display:flex!important;box-shadow:none;border-radius:0;background:#fff;margin:0;}
+.fc-cap{position:absolute;left:0;top:0;width:1120px;background:#fff;z-index:-1;}
+.fc-cap .fc-spread{display:flex!important;animation:none!important;transform:none!important;opacity:1!important;box-shadow:none;border-radius:0;background:#fff;margin:0;}
 .fc-cap .fc-page{border:0;margin:0;padding:18px 22px;}
 .fc-cap .fc-fold{width:0;border-left:1px dotted #cbd5e1;background:none;margin:0;}
 .fc-note{margin:12px auto 0;max-width:720px;font-size:.78rem;color:var(--mt);text-align:center;}
@@ -3381,10 +3381,10 @@ function emveFcPrint(){
   emveLoadLibs(EMVE_PDF_LIBS,function(){
     var cap=document.createElement('div');cap.className='fc fc-cap';
     for(var i=0;i<2;i++){var c=sp[i].cloneNode(true);c.classList.add('on');var rm=c.querySelectorAll('.no-print,button');for(var k=rm.length-1;k>=0;k--)rm[k].parentNode.removeChild(rm[k]);cap.appendChild(c);}
-    document.body.appendChild(cap);
+    var sy=window.pageYOffset||0;window.scrollTo(0,0);document.body.appendChild(cap);
     var pages=cap.querySelectorAll('.fc-spread'),pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',orientation:'landscape'}),n=0;
     var M=8,CW=297-2*M,CH=210-2*M;
-    var finish=function(){if(cap.parentNode)cap.parentNode.removeChild(cap);emveHideLoader();};
+    var finish=function(){if(cap.parentNode)cap.parentNode.removeChild(cap);emveHideLoader();window.scrollTo(0,sy);};
     var one=function(){
       if(n>=pages.length){
         try{var blob=pdf.output('blob');finish();
@@ -3393,7 +3393,7 @@ function emveFcPrint(){
         }catch(e){finish();fail();}
         return;}
       var el=pages[n],ew=el.offsetWidth,eh=el.offsetHeight;
-      window.html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',width:ew,height:eh,windowWidth:1200}).then(function(cv){
+      window.html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',width:ew,height:eh,scrollX:0,scrollY:0,windowWidth:1200}).then(function(cv){
         try{var f=Math.min(CW/ew,CH/eh),iw=ew*f,ih=eh*f;
           if(n)pdf.addPage('a4','landscape');
           pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',M+(CW-iw)/2,M+(CH-ih)/2,iw,ih);
