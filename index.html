@@ -618,20 +618,24 @@ table.pc2-tbl{width:100%!important;max-width:100%!important;margin:0;border-coll
 .fc-promo{border:1.5px solid #1e3a8a;border-radius:6px;padding:7px 9px;font-weight:700;background:#fff;line-height:1.9;}
 .fc-promo b{color:#1e3a8a;padding:0 4px;border-bottom:1.5px dotted #94a3b8;}
 .fc-promo i{display:inline-block;width:70px;border-bottom:1.5px dotted #94a3b8;}
+.fc-cap{position:absolute;left:-30000px;top:0;width:1120px;background:#fff;}
+.fc-cap .fc-spread{display:flex!important;box-shadow:none;border-radius:0;background:#fff;margin:0;}
+.fc-cap .fc-page{border:0;margin:0;padding:18px 22px;}
+.fc-cap .fc-fold{width:0;border-left:1px dotted #cbd5e1;background:none;margin:0;}
 .fc-note{margin:12px auto 0;max-width:720px;font-size:.78rem;color:var(--mt);text-align:center;}
 @media (max-width:760px){
-  .fc-spread.on{flex-direction:column;}
-  .fc-spread[data-side="out"] .fc-cover{order:-1;}
-  .fc-fold{width:auto;height:2px;margin:0 6px;background:linear-gradient(180deg,rgba(15,23,42,.18),rgba(255,255,255,.9),rgba(15,23,42,.18));}
-  .fc-page{margin:8px;padding:12px 10px;}
-  .fc-spread{font-size:11px;}
-  .fc-two{flex-wrap:wrap;gap:0 10px;}
-  .fc-att th{font-size:7px!important;letter-spacing:-.3px;padding:3px 0;}
-  .fc-att td{font-size:9px!important;}
-  .fc-att th:first-child,.fc-att td:first-child{width:56px;font-size:8.5px!important;}
-  .fc-att th:last-child{width:24px;}
-  .fc-band td{font-size:7.5px!important;padding:2px 0;}
-  .fc-band .fc-g{font-size:8px;padding:1px 2px;}
+  .fc:not(.fc-cap) .fc-spread.on{flex-direction:column;}
+  .fc:not(.fc-cap) .fc-spread[data-side="out"] .fc-cover{order:-1;}
+  .fc:not(.fc-cap) .fc-fold{width:auto;height:2px;margin:0 6px;background:linear-gradient(180deg,rgba(15,23,42,.18),rgba(255,255,255,.9),rgba(15,23,42,.18));}
+  .fc:not(.fc-cap) .fc-page{margin:8px;padding:12px 10px;}
+  .fc:not(.fc-cap) .fc-spread{font-size:11px;}
+  .fc:not(.fc-cap) .fc-two{flex-wrap:wrap;gap:0 10px;}
+  .fc:not(.fc-cap) .fc-att th{font-size:7px!important;letter-spacing:-.3px;padding:3px 0;}
+  .fc:not(.fc-cap) .fc-att td{font-size:9px!important;}
+  .fc:not(.fc-cap) .fc-att th:first-child,.fc-att td:first-child{width:56px;font-size:8.5px!important;}
+  .fc:not(.fc-cap) .fc-att th:last-child{width:24px;}
+  .fc:not(.fc-cap) .fc-band td{font-size:7.5px!important;padding:2px 0;}
+  .fc:not(.fc-cap) .fc-band .fc-g{font-size:8px;padding:1px 2px;}
 }
 /* printed card: tighter top part so the whole card fits one A4 page */
 #emve-print-root .pc2{padding-bottom:12px;}
@@ -3367,6 +3371,39 @@ function emvePcSwitch(cls){
   var v=emvePcView();
   return '<div class="fc-sw no-print"><button type="button" class="'+(v==='fold'?'on':'')+'" data-action="pcview" data-v="fold">घडीचे कार्ड (शाळेचे)</button><button type="button" class="'+(v!=='fold'?'on':'')+'" data-action="pcview" data-v="a4">A4 कार्ड (print)</button></div>';
 }
+/* fold card print: A4 landscape, page 1 = outside (back | cover), page 2 = inside (term 1 | term 2); fold in the middle = A5 card */
+function emveFcPrint(){
+  var w=document.getElementById('pc-wrap'),sp=w?w.querySelectorAll('.fc-spread'):[];if(sp.length<2){toast('आधी प्रगतिपत्रक तयार करा.','err');return;}
+  var nm=((document.getElementById('pc-std')||{}).selectedOptions||[{}])[0];nm=nm&&nm.text?nm.text.replace(/^\d+\s*-\s*/,''):'';
+  var fname=emvePdfName('घडीचे प्रगतिपत्रक',nm);
+  emveShowLoader('PDF तयार होत आहे…');
+  var fail=function(){emveHideLoader();toast('PDF बनली नाही. Internet तपासा.','err');};
+  emveLoadLibs(EMVE_PDF_LIBS,function(){
+    var cap=document.createElement('div');cap.className='fc fc-cap';
+    for(var i=0;i<2;i++){var c=sp[i].cloneNode(true);c.classList.add('on');var rm=c.querySelectorAll('.no-print,button');for(var k=rm.length-1;k>=0;k--)rm[k].parentNode.removeChild(rm[k]);cap.appendChild(c);}
+    document.body.appendChild(cap);
+    var pages=cap.querySelectorAll('.fc-spread'),pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',orientation:'landscape'}),n=0;
+    var M=8,CW=297-2*M,CH=210-2*M;
+    var finish=function(){if(cap.parentNode)cap.parentNode.removeChild(cap);emveHideLoader();};
+    var one=function(){
+      if(n>=pages.length){
+        try{var blob=pdf.output('blob');finish();
+          if(emveIsIOSApp())emvePdfReady(blob,fname);
+          else{var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'.pdf';document.body.appendChild(a);a.click();setTimeout(function(){a.parentNode.removeChild(a);},1000);toast('PDF तयार ✅ उघडून A4 आडवा, दोन्ही बाजूंनी प्रिंट करा.');}
+        }catch(e){finish();fail();}
+        return;}
+      var el=pages[n],ew=el.offsetWidth,eh=el.offsetHeight;
+      window.html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',width:ew,height:eh,windowWidth:1200}).then(function(cv){
+        try{var f=Math.min(CW/ew,CH/eh),iw=ew*f,ih=eh*f;
+          if(n)pdf.addPage('a4','landscape');
+          pdf.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',M+(CW-iw)/2,M+(CH-ih)/2,iw,ih);
+          n++;one();
+        }catch(e){finish();fail();}
+      },function(){finish();fail();});
+    };
+    setTimeout(one,80);
+  },fail);
+}
 function emveFcSide(side){
   var w=document.getElementById('pc-wrap');if(!w)return;
   [].slice.call(w.querySelectorAll('.fc-spread')).forEach(function(x){x.classList.toggle('on',x.getAttribute('data-side')===side);});
@@ -3472,7 +3509,9 @@ function genCard(){
   if(getCtype(cls)!=='high'&&emvePcView()==='fold'){
     var nk=cls+'|'+EMVE_CT;
     if(!emveNotesLoaded[nk]&&!emveFcSkip[nk]){wrap.innerHTML='<div style="padding:30px;text-align:center;color:var(--mt);font-weight:700;">⏳ नोंदी आणत आहे…</div>';emveLoadNotes(cls,[EMVE_CT],function(){if(!emveNotesLoaded[nk])emveFcSkip[nk]=1;genCard();});return;}
-    wrap.innerHTML=emvePcSwitch(cls)+emveFoldCard(cls,s);return;
+    wrap.innerHTML=emvePcSwitch(cls)+emveFoldCard(cls,s)+
+      '<div class="no-print" style="margin-top:16px;text-align:center;"><button class="btn bp" style="font-size:1rem;padding:12px 24px;" data-action="fcprint">🖨️ घडीचे कार्ड प्रिंट / PDF</button>'+
+      '<div class="fc-note">A4 कागद, आडवा (landscape), दोन्ही बाजूंनी (double-sided, flip on short edge). पान 1 = बाहेरील बाजू, पान 2 = आतील बाजू. मधोमध घडी घातल्यावर A5 आकाराचे कार्ड.</div></div>';return;
   }
   var c=getCls(cls);var subjs=getSubjs(cls);
   var grandTotal=0;var grandMax=0;
@@ -4962,6 +5001,7 @@ document.addEventListener('DOMContentLoaded',function(){
         else if(act==='save5mk'){var mc5=el.getAttribute('data-cls')||'';var ms5=el.getAttribute('data-subj')||'';var mt5=el.getAttribute('data-term')||'';if(mc5&&ms5&&mt5)save5Marks(mc5,ms5,mt5);}
         else if(act==='gencard')genCard();
         else if(act==='pcview'){try{localStorage.setItem('emvePcView',el.getAttribute('data-v')||'fold');}catch(e){}genCard();}
+        else if(act==='fcprint'){emveFcPrint();break;}
         else if(act==='fcside')emveFcSide(el.getAttribute('data-side')||'out');
         else if(act==='genbona')genBona();
         else if(act==='changepw')changePW();
