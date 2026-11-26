@@ -566,10 +566,10 @@ table.pc2-tbl{width:100%!important;max-width:100%!important;margin:0;border-coll
 .fc-crest img{width:100%;height:100%;object-fit:contain;}
 .fc-roll{position:absolute;right:16px;top:16px;min-width:52px;border:1.5px solid #1e3a8a;border-radius:6px;padding:2px 6px;font-weight:900;font-size:16px;color:#1e3a8a;background:#fff;}
 .fc-roll small{display:block;font-size:8.5px;color:#64748b;font-weight:700;}
-.fc-motto{font-size:10.5px;color:#b45309;font-weight:800;margin-top:6px;}
-.fc-trust{font-weight:800;font-size:12px;color:#334155;margin-top:4px;}
-.fc-school{font-weight:900;font-size:18px;color:#1e3a8a;line-height:1.25;}
-.fc-addr{font-size:11px;color:#475569;padding-bottom:6px;border-bottom:1.5px dotted #94a3b8;}
+.fc-motto{font-size:9px;color:#b45309;font-weight:700;letter-spacing:.6px;margin-top:5px;}
+.fc-trust{font-weight:800;font-size:12.5px;color:#334155;margin-top:6px;}
+.fc-school{font-weight:900;font-size:20px;color:#1e3a8a;line-height:1.25;}
+.fc-addr{font-size:10.5px;color:#475569;padding-bottom:6px;border-bottom:1.5px dotted #94a3b8;}
 .fc-title{display:inline-block;margin:10px 0 6px;padding:5px 18px;border-radius:999px;background:linear-gradient(90deg,#f59e0b,#d97706);color:#fff;font-weight:900;font-size:16px;}
 .fc-title span{font-size:12px;font-weight:700;margin-left:6px;}
 .fc-sec{display:flex;align-items:center;gap:8px;margin:10px 0 6px;font-weight:900;color:#1e3a8a;font-size:12px;}
@@ -3385,7 +3385,11 @@ function emveFcPrint(){
     var pages=cap.querySelectorAll('.fc-spread'),pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4',orientation:'landscape'}),n=0;
     var M=8,CW=297-2*M,CH=210-2*M;
     /* a short spread (inside: two term tables) would leave empty bands top and bottom: make its table rows taller so it fills the A4 page */
-    [].slice.call(pages).forEach(function(pg){var need=Math.floor(pg.offsetWidth*CH/CW)-4,h=pg.offsetHeight;if(h>=need-8)return;
+    [].slice.call(pages).forEach(function(pg){
+      /* term 2 has fewer lines above its table: start both term tables at the same height */
+      var tb=[].slice.call(pg.querySelectorAll('.fc-tbl'));if(tb.length>1){var tops=tb.map(function(t){return t.getBoundingClientRect().top;}),mx=Math.max.apply(null,tops);
+        tb.forEach(function(t,i){if(mx-tops[i]>1)t.style.marginTop=(parseFloat(getComputedStyle(t).marginTop)||0)+(mx-tops[i])+'px';});}
+      var need=Math.floor(pg.offsetWidth*CH/CW)-4,h=pg.offsetHeight;if(h>=need-8)return;
       [].slice.call(pg.querySelectorAll('.fc-tbl')).forEach(function(t){ /* the two term tables sit side by side: each grows by the whole gap */
         var rows=[].slice.call(t.querySelectorAll('tr'));if(!rows.length)return;var hs=rows.map(function(r){return r.offsetHeight;}),add=(need-h)/rows.length;
         rows.forEach(function(r,i){r.style.height=Math.round(hs[i]+add)+'px';});});});
@@ -3432,7 +3436,7 @@ function emveFoldCard(cls,s){
   var cover='<div class="fc-page fc-cover">'+
     '<div class="fc-roll"><small>हजेरी क्र.</small>'+E(String(s.roll||''))+'</div>'+
     head+'<div class="fc-motto">विद्या विनयेन शोभते</div>'+
-    '<div class="fc-trust">समता जोगेश्वरी मंडळ, एरंडगाव चे</div>'+
+    '<div class="fc-trust">समता जोगेश्वरी मंडळाचे</div>'+
     '<div class="fc-school">एकनाथ माध्यमिक विद्यालय, एरंडगाव</div>'+
     '<div class="fc-addr">ता. शेवगाव, जि. अहिल्यानगर</div>'+
     '<div class="fc-title">प्रगतिपत्रक <span>सन '+emveAcadYear()+'</span></div>'+
