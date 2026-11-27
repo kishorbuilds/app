@@ -1495,6 +1495,8 @@ var emveFees=[],emveFeesLoaded=false,emveFeeData={},emveFeeErr={},emveFeeSaving=
 function emveFeeIsAdm(){return curRole==='super'||curRole==='mukh'||curRole==='clerk';}
 function emveFeeTab(id,cls){return 'fee_'+id+'_'+cls;}
 function emveNum(v){var n=parseFloat(String(v==null?'':v).replace(/[^0-9.]/g,''));return isNaN(n)?0:n;}
+/* fee amount cell: if the cell got a date format, 150 comes back as a 1900 date — turn it back into the number */
+function emveFeeNum(v){var t=String(v==null?'':v),m=t.match(/^(\d{4})-(\d\d)-(\d\d)T/);if(m){var x=Date.parse(t);if(!isNaN(x))return Math.round((x-Date.UTC(1899,11,30))/86400000);}m=t.match(/^(\d{1,2})\/(\d{1,2})\/(1[89]\d\d)$/);if(m)return Math.round((Date.UTC(+m[3],+m[2]-1,+m[1])-Date.UTC(1899,11,30))/86400000);return emveNum(v);}
 function emveRs(n){return '₹'+(Math.round(n*100)/100);}
 function emveFeeAmt(f,cls){return f.clsAmt[cls]!=null?f.clsAmt[cls]:f.amount;}
 function emveFeeParse(rows){
@@ -1540,9 +1542,9 @@ function emveFeeDataLoad(id,cls,done){
     delete emveFeeErr[tab];
     var d={pay:{},hand:[]};
     (rows||[]).slice(1).forEach(function(r){
-      if(String(r[0])==='H'){d.hand.push({amt:emveNum(r[1]),on:normalizeDate(String(r[2]||'')),by:String(r[3]||''),recOn:normalizeDate(String(r[4]||'')),recBy:String(r[5]||'')});return;}
+      if(String(r[0])==='H'){d.hand.push({amt:emveFeeNum(r[1]),on:normalizeDate(String(r[2]||'')),by:String(r[3]||''),recOn:normalizeDate(String(r[4]||'')),recBy:String(r[5]||'')});return;}
       var id2=parseInt(r[0],10)||0;if(!id2)return;
-      d.pay[id2]={paid:emveNum(r[2]),st:String(r[3]||''),log:String(r[4]||''),by:String(r[5]||''),upd:String(r[6]||''),cby:{}};
+      d.pay[id2]={paid:emveFeeNum(r[2]),st:String(r[3]||''),log:String(r[4]||''),by:String(r[5]||''),upd:String(r[6]||''),cby:{}};
       String(r[7]||'').split(';').forEach(function(x){var i=x.lastIndexOf(':');if(i>0){var a=emveNum(x.slice(i+1));if(a)d.pay[id2].cby[x.slice(0,i).trim()]=a;}});
       if(!Object.keys(d.pay[id2].cby).length&&d.pay[id2].paid)d.pay[id2].cby[d.pay[id2].by||'?']=d.pay[id2].paid;
     });
@@ -1723,7 +1725,7 @@ function renderFeeList(){
     (o.inHand>0&&!can?'<div class="fee-pend" style="font-weight:800;">संकलन: '+emveEsc(emveFeeCollector(f,cls)||'—')+'</div>':myHand>0?'<button class="btn bs bsm" data-action="feegive">'+emveRs(myHand)+' ऑफिसमध्ये भरणा करा</button>':o.inHand>0?'<div class="fee-pend" style="font-weight:800;">इतर संकलकांकडून भरणा बाकी</div>':'<div class="fee-ok" style="font-weight:800;">✓ सर्व रक्कम ऑफिसमध्ये भरणा झाली</div>')+'</div>'+
     (per.length>1?'<div class="fee-hlist"><b>संकलकनिहाय:</b>'+per.map(function(x){var b=Math.round((x.coll-x.given)*100)/100;return '<div>'+emveEsc(x.n)+' · जमा '+emveRs(x.coll)+' · भरणा '+emveRs(x.given)+' · <span class="'+(b>0?'fee-pend':'fee-ok')+'">बाकी '+emveRs(b)+'</span></div>';}).join('')+'</div>':'')+
     (d.hand.length?'<div class="fee-hlist">'+d.hand.map(function(h){return '<div>'+formatDateIndian(h.on)+' · '+emveRs(h.amt)+' · '+emveEsc(h.by)+' → '+(h.recOn?'<span class="fee-ok">ऑफिसमध्ये जमा ✓ ('+emveEsc(h.recBy)+')</span>':'<span class="fee-pend">भरणा केला · ऑफिसची पुष्टी प्रलंबित</span>')+'</div>';}).join('')+'</div>':'')+
-    '<div class="fee-tools"><span id="fee-st" class="fee-st"></span><span style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn bs bsm" data-action="feesharedue">बाकी यादी WhatsApp चित्र</button><button class="btn bo bsm" data-action="feeprintdue">print</button></span></div>';
+    '<div class="fee-tools"><span id="fee-st" class="fee-st"></span><span style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn bs bsm" data-action="feesharedue">बाकी यादी WhatsApp चित्र</button><button class="btn bo bsm" data-action="feeprintdue">🖨️ वर्गाची फी यादी print</button></span></div>';
   var inL={};emveFeeStds(f,cls).forEach(function(s){inL[s.id]=1;});
   var rows=getStds(cls).filter(function(s){var p=d.pay[s.id];return inL[s.id]||(p&&(p.paid||p.st));}).map(function(s){
     var p=d.pay[s.id]||{paid:0,st:''},full=p.paid>=amt&&amt>0,act;
@@ -1780,12 +1782,14 @@ function emveFeeGive(){
   renderFeeList();emveFeeSave(c.f.id,c.cls);
 }
 function emveFeePrintDue(){
-  var c=emveFeeCur();if(!c)return;var i=0;
-  var rows=emveFeeStds(c.f,c.cls).filter(function(s){var p=c.d.pay[s.id]||{paid:0,st:''};return p.st!=='माफ'&&p.paid<c.amt;}).map(function(s){var p=c.d.pay[s.id]||{paid:0};i++;
-    return '<tr><td style="text-align:center;">'+i+'</td><td style="text-align:center;">'+emveEsc(String(s.roll||''))+'</td><td>'+emveEsc(s.name)+'</td><td style="text-align:right;">'+emveRs(p.paid)+'</td><td style="text-align:right;font-weight:800;">'+emveRs(c.amt-p.paid)+'</td></tr>';}).join('');
-  if(!rows){toast('सर्वांनी फी भरली आहे.');return;}
-  emvePrint('<table><thead><tr><th>#</th><th>हजेरी क्र.</th><th>नाव</th><th>भरले</th><th>बाकी</th></tr></thead><tbody>'+rows+'</tbody></table>',
-    {title:c.f.name+' — बाकी विद्यार्थी',sub:emveClsLabel(c.cls)+' · फी '+emveRs(c.amt),orient:'portrait'});
+  var c=emveFeeCur();if(!c)return;var i=0,o=emveFeeStats(c.f,c.cls,c.d);
+  var rows=emveFeeStds(c.f,c.cls).map(function(s){var p=c.d.pay[s.id]||{paid:0,st:''},st,due=0;i++;
+    if(p.st==='माफ')st='माफ';else if(p.paid>=c.amt&&c.amt>0)st='✓ भरले';else{due=c.amt-p.paid;st=p.paid>0?'थोडे भरले':'बाकी';}
+    return '<tr'+(due>0?' style="background:#fff7ed;"':'')+'><td style="text-align:center;">'+i+'</td><td style="text-align:center;">'+emveEsc(String(s.roll||''))+'</td><td>'+emveEsc(s.name)+'</td><td style="text-align:right;">'+emveRs(p.paid)+'</td><td style="text-align:right;font-weight:800;">'+(due>0?emveRs(due):'—')+'</td><td style="text-align:center;font-weight:700;">'+st+'</td></tr>';}).join('');
+  if(!rows){toast('या वर्गात विद्यार्थी नाहीत.','err');return;}
+  rows+='<tr style="font-weight:800;"><td colspan="3" style="text-align:right;">एकूण</td><td style="text-align:right;">'+emveRs(o.coll)+'</td><td style="text-align:right;">'+emveRs(o.dueAmt)+'</td><td style="text-align:center;">'+o.paid+'/'+(o.n-o.waived)+' पूर्ण</td></tr>';
+  emvePrint('<table><thead><tr><th>#</th><th>हजेरी क्र.</th><th>नाव</th><th>भरले</th><th>बाकी</th><th>स्थिती</th></tr></thead><tbody>'+rows+'</tbody></table>',
+    {title:c.f.name+' — फी यादी',sub:emveClsLabel(c.cls)+' · फी '+emveRs(c.amt)+' · पूर्ण '+o.paid+' · बाकी '+o.due+' ('+emveRs(o.dueAmt)+')',orient:'portrait'});
 }
 
 /* ===== tab 2: accounts (admin) ===== */
