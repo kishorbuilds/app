@@ -1131,8 +1131,8 @@ EXAM_STRUCT.high10soc=EXAM_STRUCT.high.map(function(e){var l=/l$/.test(e.key);re
 function emveIs10Soc(clsId,subj){return clsId==='10'&&(subj==='History'||subj==='Geography');}
 /* 9 वी गणित व विज्ञान: प्रत्येक सत्रात लेखी 40 + तोंडी 10 = 50 */
 EXAM_STRUCT.high9ms=EXAM_STRUCT.high.map(function(e){return{key:e.key,label:e.label,max:/l$/.test(e.key)?40:10,group:e.group};});
-function emveIs9MS(clsId,subj){return clsId==='9'&&(/^(Math|Maths|Science 1|Science 2|गणित)$/.test(String(subj||''))||subj===EMVE_SCI);}
-function getExams(clsId,subj){if(emveIs10Soc(clsId,subj))return EXAM_STRUCT.high10soc;if(emveIs9MS(clsId,subj))return EXAM_STRUCT.high9ms;if(clsId==='10'||(clsId==='9'&&emveIsLang(subj)))return EXAM_STRUCT.high10;return EXAM_STRUCT[getCtype(clsId)]||EXAM_STRUCT.mid;}
+function emveIs9MS(clsId,subj){if((clsId==='9'||clsId==='10')&&/^Math [12]$/.test(String(subj||'')))return true;return clsId==='9'&&(/^(Math|Maths|Science 1|Science 2)$/.test(String(subj||''))||subj===EMVE_SCI);}
+function getExams(clsId,subj){if(emveIs10Soc(clsId,subj))return EXAM_STRUCT.high10soc;if(emveIs9MS(clsId,subj))return EXAM_STRUCT.high9ms;if(clsId==='10'||(clsId==='9'&&(emveIsLang(subj)||subj==='गणित')))return EXAM_STRUCT.high10;return EXAM_STRUCT[getCtype(clsId)]||EXAM_STRUCT.mid;}
 function getStds(clsId){return students.filter(function(s){return s.cls===clsId&&s.status!=='removed';}).sort(function(a,b){return parseInt(a.roll||0)-parseInt(b.roll||0);});}
 function getMk(sId,cls,subj,exam){var k=cls+'|'+subj+'|'+exam;var d=marksData[k];if(!d)return'';var e=d.find(function(x){return x.sId===sId;});return e?e.m:'';}
 function setMk(sId,cls,subj,exam,val){var k=cls+'|'+subj+'|'+exam;if(!marksData[k])marksData[k]=[];var idx=-1;for(var i=0;i<marksData[k].length;i++){if(marksData[k][i].sId===sId){idx=i;break;}}if(idx>=0)marksData[k][idx].m=val;else marksData[k].push({sId:sId,m:val});}
@@ -2621,13 +2621,15 @@ var EMVE_SUBJ_MR={'Marathi':'मराठी','Hindi':'हिंदी','English
   'Parisar 1':'परिसर अभ्यास भाग 1','Parisar 2':'परिसर अभ्यास भाग 2','History':'इतिहास','Geography':'भूगोल','Samaj A':'सामाजिक शास्त्रे',
   'Art':'कला','Arts':'कला','Karya':'कार्यानुभव','Sports':'शारीरिक शिक्षण'};
 /* 5 वी: वेळापत्रकातील परिसर अभ्यास भाग 1 + भाग 2 = निकालात एकच विषय 'Parisar' (दोन्ही शिक्षक भरू शकतात) */
-EMVE_CAT['Parisar']='परिसर अभ्यास';EMVE_SUBJ_MR['Parisar']='परिसर अभ्यास';
+EMVE_CAT['Parisar']='परिसर अभ्यास';EMVE_CAT['Math 1']=EMVE_CAT['Math 2']='गणित';EMVE_SUBJ_MR['Math 1']='गणित भाग 1';EMVE_SUBJ_MR['Math 2']='गणित भाग 2';EMVE_SUBJ_MR['Parisar']='परिसर अभ्यास';
 var emveWorkload=null;
 function emveParseWorkload(rows){
   emveWorkload=[];
   (rows||[]).slice(1).forEach(function(r){
     var t=String(r[0]||'').trim(),sb=String(r[1]||'').trim(),c=normalizeClass(r[2]);
     if(t&&sb&&c&&/^5/.test(c)&&/^Parisar [12]$/.test(sb)){sb='Parisar';if(emveWorkload.some(function(w){return w.cls===c&&w.subject===sb&&emveSameName(w.teacher,t);}))return;}
+    /* 9 वी, 10 वी गणित: वेळापत्रकातील 'Math' = गणित भाग 1 + भाग 2 (गुण वेगवेगळे) */
+    if(t&&sb&&(c==='9'||c==='10')&&/^Maths?$/.test(sb)){['Math 1','Math 2'].forEach(function(m){if(!emveWorkload.some(function(w){return w.cls===c&&w.subject===m&&emveSameName(w.teacher,t);}))emveWorkload.push({teacher:t,subject:m,cls:c});});return;}
     if(t&&sb&&c)emveWorkload.push({teacher:t,subject:sb,cls:c});
   });
 }
@@ -2662,7 +2664,7 @@ getMk=function(sId,cls,subj,exam){
   var sum=0;
   for(var i=0;i<parts.length;i++){var pv=emveGetMkRaw(sId,cls,parts[i],exam);if(pv==='')return '';sum+=parseFloat(pv)||0;}
   /* 10 वी सामाजिक शास्त्रे = इतिहास + भूगोल (बेरीज, सरासरी नाही) */
-  if(cls==='10'&&subj===EMVE_SOC)return String(Math.round(sum*10)/10);
+  if((cls==='10'&&subj===EMVE_SOC)||((cls==='9'||cls==='10')&&subj==='गणित'))return String(Math.round(sum*10)/10);
   return String(Math.round(sum/parts.length*10)/10);
 };
 function emveMarksTabs(cls,sb){
@@ -3618,7 +3620,7 @@ function renderNikal(cls,term){term=term||'1';
   var subjs=getSubjs(cls);var stds2=getStds(cls);var ct=getCtype(cls);
   var isHigh=ct==='high';var isPrimary=!isHigh;
   if(!stds2.length){el.innerHTML='<div class="alert aw"><div>&#x26A0;&#xFE0F;</div><div>\u0935\u093F\u0926\u094D\u092F\u093E\u0930\u094D\u0925\u0940 \u0928\u093E\u0939\u0940\u0924</div></div>';return;}
-  function subjMax(subj){if(cls==='9'&&(subj==='गणित'||subj===EMVE_SCI))return 50;return isHigh&&cls!=='10'&&!(cls==='9'&&emveIsLang(subj))?80:100;}
+  function subjMax(subj){if(cls==='9'&&subj===EMVE_SCI)return 50;if(cls==='9'&&subj==='गणित')return 100;return isHigh&&cls!=='10'&&!(cls==='9'&&emveIsLang(subj))?80:100;}
   function getSubjResult(sId,subj){
     var fa=0,sa=0,hasFa=false,hasSa=false;
     if(isPrimary){
